@@ -1,24 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import React from 'react';
 
 function App() {
+  const [audioContext, setAudioContext] = React.useState<AudioContext>();
+  const [osc, setOsc] = React.useState<OscillatorNode>();
+  const [gain, setGain] = React.useState<GainNode>();
+
+  React.useEffect(() => {
+    if (!audioContext) {
+      setAudioContext(new AudioContext());
+    }
+
+    if (!osc) {
+      setOsc(audioContext?.createOscillator());
+    }
+
+    if (!gain) {
+      setGain(audioContext?.createGain());
+    }
+  }, [audioContext, osc]);
+
+  const playOsc = () => {
+    if (osc && audioContext && gain) {
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, audioContext.currentTime);
+
+      osc
+        .connect(gain)
+        .connect(audioContext.destination);
+
+      osc.start();
+    }
+  };
+
+  const changeGain: React.FormEventHandler<HTMLInputElement> = (e) => {
+    if (gain) {
+      gain.gain.value = parseFloat(e.currentTarget.value);
+    }
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <input type="range" min={0} max={1} step={0.01} onInput={changeGain} />
+      <button onClick={playOsc}>Play</button>
     </div>
   );
 }
