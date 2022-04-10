@@ -1,7 +1,7 @@
 import './App.css';
 import React from 'react';
 import { useAudioContext } from './lib/audio/hooks';
-import { create } from 'domain';
+import { ComponentGraphCanvas } from './lib/component-graph-canvas';
 
 interface OscillatorProps {
   oscillator: OscillatorNode;
@@ -224,7 +224,10 @@ function Connection({inTop, inLeft, outTop, outLeft,}: ConnectionProps) {
 function App() {
     return (
       <div style={{height: '100%'}}>
-        <AudioCanvas />
+        <ComponentGraphCanvas>
+          <div>First component</div>
+          <div>Second component</div>
+        </ComponentGraphCanvas>
       </div>
     );
 }
