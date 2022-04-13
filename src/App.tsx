@@ -226,7 +226,9 @@ function App() {
       <div style={{height: '100%'}}>
         <ComponentGraphCanvas>
           <div>First component</div>
-          <div>Second component</div>
+          <div>
+            <input type="range" />
+          </div>
         </ComponentGraphCanvas>
       </div>
     );
