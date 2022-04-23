@@ -1,7 +1,7 @@
 import './App.css';
 import React from 'react';
 import { useAudioContext } from './lib/audio/hooks';
-import { ComponentGraphCanvas } from './lib/component-graph-canvas';
+import { ComponentGraphCanvas, EdgeEnd } from './lib/component-graph-canvas';
 
 interface OscillatorProps {
   oscillator: OscillatorNode;
@@ -224,12 +224,42 @@ function Connection({inTop, inLeft, outTop, outLeft,}: ConnectionProps) {
 function App() {
     return (
       <div style={{height: '100%'}}>
-        <ComponentGraphCanvas>
-          <div>First component</div>
-          <div>
-            <input type="range" />
-          </div>
-        </ComponentGraphCanvas>
+        <ComponentGraphCanvas
+          nodes={[
+            {
+              name: 'Oscillator',
+              component: <div>Type: saw</div>,
+              inPlugs: [
+                {
+                  type: 'audio',
+                  name: 'Input'
+                }
+              ],
+              outPlugs: [
+                {
+                  type: 'audio',
+                  name: 'Output'
+                }
+              ],
+            },
+            {
+              name: 'Gain',
+              component: <input type="range" />,
+              inPlugs: [
+                {
+                  type: 'audio',
+                  name: 'Input'
+                }
+              ],
+              outPlugs: [
+                {
+                  type: 'audio',
+                  name: 'Output'
+                }
+              ],
+            }
+          ]}
+        />
       </div>
     );
 }
