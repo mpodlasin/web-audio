@@ -169,7 +169,6 @@ function AudioCanvas() {
   }
 
   const handleGainIn = (i: number) => () => {
-    console.log('handle gain in!!!!');
 
     if (createdConnection) {
       setConnections([
@@ -241,6 +240,10 @@ function App() {
                   name: 'Output'
                 }
               ],
+              position: {
+                top: 200, 
+                left: 400,
+              },
             },
             {
               name: 'Gain',
@@ -257,8 +260,13 @@ function App() {
                   name: 'Output'
                 }
               ],
+              position: {
+                top: 300,
+                left: 800,
+              }
             }
           ]}
+          edges={[]}
         />
       </div>
     );
