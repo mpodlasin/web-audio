@@ -1,7 +1,7 @@
 import './App.css';
 import React from 'react';
 import { useAudioContext } from './lib/audio/hooks';
-import { ComponentGraphCanvas, EdgeEnd } from './lib/component-graph-canvas';
+import { ComponentGraphCanvas, Node, Edge, EdgeEnd } from './lib/component-graph-canvas';
 
 interface OscillatorProps {
   oscillator: OscillatorNode;
@@ -220,53 +220,76 @@ function Connection({inTop, inLeft, outTop, outLeft,}: ConnectionProps) {
   </svg>
 }
 
+const COMPONENTS = {
+  'Oscillator': {
+      component: <div>Type: saw</div>,
+      inPlugs: [
+        {
+          type: 'audio',
+          name: 'Input'
+        }
+      ],
+      outPlugs: [
+        {
+          type: 'audio',
+          name: 'Output'
+        }
+      ],
+  },
+  'Gain': {
+    name: 'Gain',
+    component: <input type="range" />,
+    inPlugs: [
+      {
+        type: 'audio',
+        name: 'Input'
+      }
+    ],
+    outPlugs: [
+      {
+        type: 'audio',
+        name: 'Output'
+      }
+    ],
+  },
+};
+
 function App() {
+    const [edges, setEdges] = React.useState<Edge[]>(localStorage.getItem("EDGES") ? JSON.parse(localStorage.getItem('EDGES')!) : []);
+
+    React.useEffect(() => {
+      localStorage.setItem("EDGES", JSON.stringify(edges));
+    }, [edges]);
+
+    const [nodes, setNodes] = React.useState<Node[]>(localStorage.getItem("NODES") ? JSON.parse(localStorage.getItem('NODES')!) : [
+      {
+        name: 'Oscillator',
+        position: {
+          top: 200, 
+          left: 400,
+        },
+      },
+      {
+        name: 'Gain',
+        position: {
+          top: 300,
+          left: 800,
+        }
+      }
+    ]);
+
+    React.useEffect(() => {
+      localStorage.setItem("NODES", JSON.stringify(nodes));
+    }, [nodes]);
+  
     return (
       <div style={{height: '100%'}}>
         <ComponentGraphCanvas
-          nodes={[
-            {
-              name: 'Oscillator',
-              component: <div>Type: saw</div>,
-              inPlugs: [
-                {
-                  type: 'audio',
-                  name: 'Input'
-                }
-              ],
-              outPlugs: [
-                {
-                  type: 'audio',
-                  name: 'Output'
-                }
-              ],
-              position: {
-                top: 200, 
-                left: 400,
-              },
-            },
-            {
-              name: 'Gain',
-              component: <input type="range" />,
-              inPlugs: [
-                {
-                  type: 'audio',
-                  name: 'Input'
-                }
-              ],
-              outPlugs: [
-                {
-                  type: 'audio',
-                  name: 'Output'
-                }
-              ],
-              position: {
-                top: 300,
-                left: 800,
-              }
-            }
-          ]}
-          edges={[]}
+          componentDefinitions={COMPONENTS}
+          nodes={nodes}
+          onNodesChange={setNodes}
+          edges={edges}
+          onEdgesChange={setEdges}
         />
       </div>
     );

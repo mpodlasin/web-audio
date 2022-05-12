@@ -10,33 +10,41 @@ interface Position {
     left: number;
 }
 
-interface ComponentGraphCanvasPropsNode {
+export interface Node {
     name: string;
-    component: React.ReactNode;
-    inPlugs: Plug[];
-    outPlugs: Plug[];
     position: Position;
 }
 
-interface EdgeConnection {
+export interface ComponentDefinition {
+    component: React.ReactNode;
+    inPlugs: Plug[];
+    outPlugs: Plug[];
+}
+
+export interface ComponentDefinitions {
+    [index: string]: ComponentDefinition;
+}
+
+export interface Edge {
     inNodeIndex: number,
     inPlugIndex: number,
     outNodeIndex: number,
     outPlugIndex: number,
 }
 
-interface ComponentGraphCanvasProps {
-    nodes: ComponentGraphCanvasPropsNode[];
-    edges: EdgeConnection[];
-    onNodesChange?(newNodes: ComponentGraphCanvasPropsNode[]): void;
-    onEdgesChange?(edges: EdgeConnection[]): void;
+export interface ComponentGraphCanvasProps {
+    componentDefinitions: ComponentDefinitions;
+    nodes: Node[];
+    edges: Edge[];
+    onNodesChange?(newNodes: Node[]): void;
+    onEdgesChange?(newEdges: Edge[]): void;
 }
 
 export function EdgeEnd() {
     return <div style={{border: '1px solid black', backgroundColor: 'lightgray', height: '1rem', width: '1rem'}}></div>
 }
 
-export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, onEdgesChange = () => {} }: ComponentGraphCanvasProps) {
+export function ComponentGraphCanvas({ nodes, edges, componentDefinitions, onNodesChange = () => {}, onEdgesChange = () => {} }: ComponentGraphCanvasProps) {
     // -----------------------------------------------------------------------------
     // NODE POSITIONS
 
@@ -60,6 +68,11 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
 
     const handleDragStop = () => {
         setInternalElementPositions(nodes.map(() => null));
+
+        onNodesChange(nodes.map((node, i) => ({
+            ...node,
+            position: positions[i],
+        })))
     }
 
     const handleDrag: React.MouseEventHandler<HTMLDivElement> = e => {
@@ -148,9 +161,9 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
     };
 
     return <div onMouseUp={() => { handleDragStop(); handleCancelConnecting(); }} onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}>
-        {nodes.map((node, i) => <ComponentGraphCanvasNode
+        {nodes.map((node, i) => <Node
             key={i}
-            node={node} 
+            node={{...node, ...componentDefinitions[node.name]}} 
             position={positions[i]} 
             onDragStart={handleDragStart(i)} 
             onStartConnecting={handleStartConnecting(i)}
@@ -164,7 +177,7 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
                 x2={createdConnection.outPosition.left} y2={createdConnection.outPosition.top} 
                 stroke="black" 
             />}
-            {edges.map(edge => <line 
+            {edges.map(edge => plugPositions[edge.inNodeIndex][edge.inPlugIndex] && plugPositions[edge.outNodeIndex][edge.outPlugIndex] && <line 
                 x1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].left + positions[edge.inNodeIndex].left} 
                 y1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].top + positions[edge.inNodeIndex].top} 
                 x2={plugPositions[edge.outNodeIndex][edge.outPlugIndex].left + positions[edge.outNodeIndex].left} 
@@ -175,8 +188,10 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
     </div>;
 }
 
-interface ComponentGraphCanvasNodeProps {
-    node: ComponentGraphCanvasPropsNode;
+type ComponentGraphCanvasNodeNode = Node & ComponentDefinition; 
+
+interface NodeProps {
+    node: ComponentGraphCanvasNodeNode;
     position: Position;
     onDragStart(e: React.MouseEvent<HTMLDivElement>): void;
     onStartConnecting(plugIndex: number, position: Position): void;
@@ -184,7 +199,7 @@ interface ComponentGraphCanvasNodeProps {
     onPlugPositions(plugPositions: Position[]): void;
 }
 
-const ComponentGraphCanvasNode = ({ node, position, onDragStart, onStartConnecting, onStopConnecting, onPlugPositions }: ComponentGraphCanvasNodeProps) => {
+const Node = ({ node, position, onDragStart, onStartConnecting, onStopConnecting, onPlugPositions }: NodeProps) => {
     const [plugPositions, setPlugPositions] = React.useState<Position[]>([]);
 
     const ref = React.useRef<HTMLDivElement>(null);
