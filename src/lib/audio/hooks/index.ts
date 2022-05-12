@@ -1,14 +1,6 @@
 import React from 'react';
 
-export const useAudioContext = () => {
-    const ref = React.useRef<AudioContext>();
-  
-    if (!ref.current) {
-      ref.current = new AudioContext();
-    }
-  
-    return ref.current;
-  };
+export const AudioContextContext = React.createContext<AudioContext>(new AudioContext());
   
 export const useOscillator = (audioContext: AudioContext) => {
     const ref = React.useRef<OscillatorNode>();

@@ -233,7 +233,7 @@ const Node = ({ node, position, onDragStart, onStartConnecting, onStopConnecting
             </div>
             <div style={{cursor: 'initial', padding: 10}}>{node.component}</div>
             <div style={{padding: '10px 10px'}}>
-                {node.inPlugs.map((_, i) => <NodePlug onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
+                {node.outPlugs.map((_, i) => <NodePlug onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
             </div>
         </div>
     );
