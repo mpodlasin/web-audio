@@ -1,11 +1,8 @@
 import './App.css';
 import React from 'react';
-import { AudioContextContext, useGain, useOscillator } from './lib/audio/hooks';
-import { ComponentGraphCanvas, Node, Edge } from './lib/component-graph-canvas';
+import { ComponentGraphCanvas, Node, Edge, Plug, Position } from './lib/component-graph-canvas';
 
-function Oscillator() {
-  const audioContext = React.useContext(AudioContextContext);
-  const oscillator = useOscillator(audioContext);
+function Oscillator({ audioElement: oscillator, audioContext, }: { audioElement: OscillatorNode, audioContext: AudioContext, }) {
   React.useEffect(() => {
     oscillator.type = 'sine';
     oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
@@ -16,10 +13,7 @@ function Oscillator() {
   </div>;
 }
 
-function Gain() {
-  const audioContext = React.useContext(AudioContextContext);
-  const gain = useGain(audioContext);
-
+function Gain({ audioElement: gain }: { audioElement: GainNode }) {
   React.useEffect(() => {
     gain.gain.value = 0;
   }, [gain]);
@@ -33,8 +27,7 @@ function Gain() {
     </div>;
 }
 
-function Output() {
-  const audioContext = React.useContext(AudioContextContext);
+function Output({ audioContext }: { audioContext: AudioContext }) {
   const [audioContextState, setAudioContextState] = React.useState(audioContext.state);
 
   const togglePlay = () => {
@@ -85,9 +78,51 @@ function CreationMenu({ top, left, onCreate }: CreationMenuProps) {
   </div>
 }
 
-const COMPONENTS = {
+interface NodeDescription {
+  name: string;
+  position: Position;
+}
+
+interface AudioNode extends Node {
+  audioElement: any;
+}
+
+const audioContext = new AudioContext();
+
+const nodeDescriptionToNode = (nodeDescription: NodeDescription): AudioNode => {
+  const definition = COMPONENTS[nodeDescription.name];
+  const audioElement = definition.getAudioElement(audioContext);
+  const component = React.createElement(definition.component, {audioElement, audioContext});
+
+  return {
+    ...nodeDescription,
+    component,
+    inPlugs: definition.inPlugs,
+    outPlugs: definition.outPlugs,
+    audioElement,
+  };
+}
+
+const nodeToNodeDescription = (node: Node): NodeDescription => ({
+  name: node.name,
+  position: node.position,
+})
+
+interface AudioComponentDefinition<A> {
+  getAudioElement(audioContext: AudioContext): A,
+  component: React.ComponentType<{audioElement: A, audioContext: AudioContext}>;
+  inPlugs: Plug[];
+  outPlugs: Plug[];
+}
+
+interface ComponentDefinitions {
+  [index: string]: AudioComponentDefinition<any>;
+}
+
+const COMPONENTS: ComponentDefinitions = {
   'Oscillator': {
-      component: <Oscillator />,
+      component: Oscillator,
+      getAudioElement: audioContext => new OscillatorNode(audioContext),
       inPlugs: [],
       outPlugs: [
         {
@@ -97,7 +132,8 @@ const COMPONENTS = {
       ],
   },
   'Gain': {
-    component: <Gain />,
+    component: Gain,
+    getAudioElement: audioContext => new GainNode(audioContext),
     inPlugs: [
       {
         type: 'audio',
@@ -112,7 +148,8 @@ const COMPONENTS = {
     ],
   },
   'Output': {
-    component: <Output />,
+    component: Output,
+    getAudioElement: () => undefined,
     inPlugs: [
       {
         type: 'audio',
@@ -123,45 +160,50 @@ const COMPONENTS = {
   }
 };
 
+const initialNodeDescriptions = [
+  {
+    name: 'Oscillator',
+    position: {
+      top: 200, 
+      left: 400,
+    },
+  },
+  {
+    name: 'Gain',
+    position: {
+      top: 300,
+      left: 800,
+    }
+  },
+  {
+    name: 'Output',
+    position: {
+      top: 400,
+      left: 600,
+    }
+  }
+];
+
 function App() {
     const [edges, setEdges] = React.useState<Edge[]>(localStorage.getItem("EDGES") ? JSON.parse(localStorage.getItem('EDGES')!) : []);
 
     React.useEffect(() => {
       localStorage.setItem("EDGES", JSON.stringify(edges));
     }, [edges]);
-    
-    const [nodes, setNodes] = React.useState<Node[]>(localStorage.getItem("NODES") ? JSON.parse(localStorage.getItem('NODES')!) : [
-      {
-        name: 'Oscillator',
-        position: {
-          top: 200, 
-          left: 400,
-        },
-      },
-      {
-        name: 'Gain',
-        position: {
-          top: 300,
-          left: 800,
-        }
-      },
-      {
-        name: 'Output',
-        position: {
-          top: 400,
-          left: 600,
-        }
-      }
-    ]);
+
+    const [nodes, setNodes] = React.useState<Node[]>(
+      localStorage.getItem("NODES") ? 
+        JSON.parse(localStorage.getItem('NODES')!).map(nodeDescriptionToNode) : 
+        initialNodeDescriptions
+    );
 
     React.useEffect(() => {
-      localStorage.setItem("NODES", JSON.stringify(nodes));
+      localStorage.setItem("NODES", JSON.stringify(nodes.map(nodeToNodeDescription)));
     }, [nodes]);
   
     return (
       <div style={{height: '100%'}}>
         <ComponentGraphCanvas
-          componentDefinitions={COMPONENTS}
           nodes={nodes}
           onNodesChange={setNodes}
           edges={edges}

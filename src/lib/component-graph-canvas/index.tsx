@@ -1,11 +1,11 @@
 import React from "react";
 
-interface Plug {
+export interface Plug {
     type: string;
     name: string;
 }
 
-interface Position {
+export interface Position {
     top: number;
     left: number;
 }
@@ -13,16 +13,9 @@ interface Position {
 export interface Node {
     name: string;
     position: Position;
-}
-
-export interface ComponentDefinition {
     component: React.ReactNode;
     inPlugs: Plug[];
     outPlugs: Plug[];
-}
-
-export interface ComponentDefinitions {
-    [index: string]: ComponentDefinition;
 }
 
 export interface Edge {
@@ -33,7 +26,6 @@ export interface Edge {
 }
 
 export interface ComponentGraphCanvasProps {
-    componentDefinitions: ComponentDefinitions;
     nodes: Node[];
     edges: Edge[];
     onNodesChange?(newNodes: Node[]): void;
@@ -44,7 +36,7 @@ export function EdgeEnd() {
     return <div style={{border: '1px solid black', backgroundColor: 'lightgray', height: '1rem', width: '1rem'}}></div>
 }
 
-export function ComponentGraphCanvas({ nodes, edges, componentDefinitions, onNodesChange = () => {}, onEdgesChange = () => {} }: ComponentGraphCanvasProps) {
+export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, onEdgesChange = () => {} }: ComponentGraphCanvasProps) {
     // -----------------------------------------------------------------------------
     // NODE POSITIONS
 
@@ -163,7 +155,7 @@ export function ComponentGraphCanvas({ nodes, edges, componentDefinitions, onNod
     return <div onMouseUp={() => { handleDragStop(); handleCancelConnecting(); }} onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}>
         {nodes.map((node, i) => <Node
             key={i}
-            node={{...node, ...componentDefinitions[node.name]}} 
+            node={node} 
             position={positions[i]} 
             onDragStart={handleDragStart(i)} 
             onStartConnecting={handleStartConnecting(i)}
@@ -188,10 +180,8 @@ export function ComponentGraphCanvas({ nodes, edges, componentDefinitions, onNod
     </div>;
 }
 
-type ComponentGraphCanvasNodeNode = Node & ComponentDefinition; 
-
 interface NodeProps {
-    node: ComponentGraphCanvasNodeNode;
+    node: Node;
     position: Position;
     onDragStart(e: React.MouseEvent<HTMLDivElement>): void;
     onStartConnecting(plugIndex: number, position: Position): void;
