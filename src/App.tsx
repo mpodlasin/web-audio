@@ -83,15 +83,19 @@ interface NodeDescription {
   position: Position;
 }
 
-interface AudioNode extends Node {
-  audioElement: any;
+interface AudioComponentNode extends Node {
+  audioElement: AudioNode;
 }
 
 const audioContext = new AudioContext();
 
-const nodeDescriptionToNode = (nodeDescription: NodeDescription): AudioNode => {
+const nodeDescriptionToAudioElementMap = new Map<NodeDescription, AudioNode>();
+
+const nodeDescriptionToAudioNode = (nodeDescription: NodeDescription): AudioComponentNode => {
   const definition = COMPONENTS[nodeDescription.name];
-  const audioElement = definition.getAudioElement(audioContext);
+  const audioElement = nodeDescriptionToAudioElementMap.has(nodeDescription) ? 
+    nodeDescriptionToAudioElementMap.get(nodeDescription)! : 
+    definition.getAudioElement(audioContext);
   const component = React.createElement(definition.component, {audioElement, audioContext});
 
   return {
@@ -108,7 +112,7 @@ const nodeToNodeDescription = (node: Node): NodeDescription => ({
   position: node.position,
 })
 
-interface AudioComponentDefinition<A> {
+interface AudioComponentDefinition<A extends AudioNode> {
   getAudioElement(audioContext: AudioContext): A,
   component: React.ComponentType<{audioElement: A, audioContext: AudioContext}>;
   inPlugs: Plug[];
@@ -149,7 +153,7 @@ const COMPONENTS: ComponentDefinitions = {
   },
   'Output': {
     component: Output,
-    getAudioElement: () => undefined,
+    getAudioElement: audioContext => audioContext.destination,
     inPlugs: [
       {
         type: 'audio',
@@ -185,27 +189,47 @@ const initialNodeDescriptions = [
 ];
 
 function App() {
-    const [edges, setEdges] = React.useState<Edge[]>(localStorage.getItem("EDGES") ? JSON.parse(localStorage.getItem('EDGES')!) : []);
+    const [edges, setEdges] = React.useState<Edge[]>(
+      localStorage.getItem("EDGES") ? 
+      JSON.parse(localStorage.getItem('EDGES')!) : 
+      []
+    );
 
     React.useEffect(() => {
       localStorage.setItem("EDGES", JSON.stringify(edges));
     }, [edges]);
 
-    const [nodes, setNodes] = React.useState<Node[]>(
+    const [nodes, setNodes] = React.useState<AudioComponentNode[]>(
       localStorage.getItem("NODES") ? 
-        JSON.parse(localStorage.getItem('NODES')!).map(nodeDescriptionToNode) : 
-        initialNodeDescriptions
+        JSON.parse(localStorage.getItem('NODES')!).map(nodeDescriptionToAudioNode) : 
+        initialNodeDescriptions.map(nodeDescriptionToAudioNode)
     );
 
     React.useEffect(() => {
       localStorage.setItem("NODES", JSON.stringify(nodes.map(nodeToNodeDescription)));
     }, [nodes]);
+
+    React.useEffect(() => {
+      edges.forEach(edge => {
+        const inNode = nodes[edge.inNodeIndex];
+        const outNode = nodes[edge.outNodeIndex];
+
+        const inAudioElement = inNode.audioElement;
+        const outAudioElement = outNode.audioElement;
+
+        inAudioElement.connect(outAudioElement);
+      });
+    }, [nodes, edges]);
+
+    const handleNodesChange = (newNodes: Node[]) => {
+      setNodes(newNodes.map(nodeDescriptionToAudioNode))
+    }
   
     return (
       <div style={{height: '100%'}}>
         <ComponentGraphCanvas
           nodes={nodes}
-          onNodesChange={setNodes}
+          onNodesChange={handleNodesChange}
           edges={edges}
           onEdgesChange={setEdges}
         />
