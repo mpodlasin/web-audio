@@ -1,62 +1,7 @@
 import './App.css';
 import React from 'react';
-import { ComponentGraphCanvas, Node, Edge, Plug, Position } from './lib/component-graph-canvas';
-
-function Oscillator({ audioElement: oscillator, audioContext, }: { audioElement: OscillatorNode, audioContext: AudioContext, }) {
-  React.useEffect(() => {
-    oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
-  }, [audioContext.currentTime, oscillator]);
-
-  return <div>
-    <div>{oscillator.type}</div>
-  </div>;
-}
-
-function Gain({ audioElement: gain }: { audioElement: GainNode }) {
-  React.useEffect(() => {
-    gain.gain.value = 0;
-  }, [gain]);
-
-  const changeGain: React.FormEventHandler<HTMLInputElement> = (e) => {
-    gain.gain.value = e.currentTarget.valueAsNumber;
-  }
-
-  return <div>
-    <input type="range" min={0} max={1} step={0.01} defaultValue={0} onInput={changeGain} />
-    </div>;
-}
-
-function Output({ audioContext }: { audioContext: AudioContext }) {
-  const [audioContextState, setAudioContextState] = React.useState(audioContext.state);
-
-  const togglePlay = () => {
-    if (audioContextState === 'running') {
-      audioContext.suspend();
-    } else if (audioContextState === 'suspended') {
-      audioContext.resume();
-    }
-  };
-  
-  React.useEffect(() => {
-    const callback = () => {
-      setAudioContextState(audioContext.state);
-    };
-
-    audioContext.addEventListener('statechange', callback);
-
-    return () => {
-      audioContext.removeEventListener('statechange', callback);
-    }
-  }, [audioContext]);
-
-  return <div>
-    <div>Current state: {audioContextState}</div>
-      <button onClick={togglePlay}>
-      {audioContextState === 'running' ? 'Stop' : 'Play'}
-    </button>
-    </div>
-}
+import { ComponentGraphCanvas, Node, Edge, Position } from './lib/component-graph-canvas';
+import { COMPONENTS } from './lib/audio/components';
 
 interface CreationMenuProps {
   top: number;
@@ -110,59 +55,7 @@ const nodeDescriptionToAudioNode = (nodeDescription: NodeDescription): AudioComp
 const nodeToNodeDescription = (node: Node): NodeDescription => ({
   name: node.name,
   position: node.position,
-})
-
-interface AudioComponentDefinition<A extends AudioNode> {
-  getAudioElement(audioContext: AudioContext): A,
-  component: React.ComponentType<{audioElement: A, audioContext: AudioContext}>;
-  inPlugs: Plug[];
-  outPlugs: Plug[];
-}
-
-interface ComponentDefinitions {
-  [index: string]: AudioComponentDefinition<any>;
-}
-
-const COMPONENTS: ComponentDefinitions = {
-  'Oscillator': {
-      component: Oscillator,
-      getAudioElement: audioContext => new OscillatorNode(audioContext),
-      inPlugs: [],
-      outPlugs: [
-        {
-          type: 'audio',
-          name: 'Output'
-        }
-      ],
-  },
-  'Gain': {
-    component: Gain,
-    getAudioElement: audioContext => new GainNode(audioContext),
-    inPlugs: [
-      {
-        type: 'audio',
-        name: 'Input'
-      }
-    ],
-    outPlugs: [
-      {
-        type: 'audio',
-        name: 'Output'
-      }
-    ],
-  },
-  'Output': {
-    component: Output,
-    getAudioElement: audioContext => audioContext.destination,
-    inPlugs: [
-      {
-        type: 'audio',
-        name: 'Input'
-      }
-    ],
-    outPlugs: [],
-  }
-};
+});
 
 const initialNodeDescriptions = [
   {
