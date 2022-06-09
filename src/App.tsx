@@ -114,21 +114,6 @@ function App() {
       localStorage.setItem("NODES", JSON.stringify(nodes.map(nodeToNodeDescription)));
     }, [nodes]);
 
-    // React.useEffect(() => {
-    //   const oscillator = new OscillatorNode(audioContext);
-    //   const gain = new GainNode(audioContext);
-
-    //   oscillator.connect(gain);
-    //   gain.connect(audioContext.destination);
-
-    // });
-
-    React.useEffect(() => {
-      console.log(
-        [...nodeIdToAudioComponentNode.entries()],
-      );
-    });
-
     React.useEffect(() => {
       edges.forEach(edge => {
         const inNode = nodes[edge.inNodeIndex];
@@ -138,11 +123,6 @@ function App() {
         const outAudioElement = outNode.audioElement;
 
         inAudioElement.connect(outAudioElement);
-
-        console.log('CONNECTING');
-        console.log(inAudioElement);
-        console.log(outAudioElement);
-        console.log('---------------------');
       });
 
       return () => {
@@ -154,12 +134,6 @@ function App() {
           const outAudioElement = outNode.audioElement;
 
           inAudioElement.disconnect(outAudioElement);
-
-
-        console.log('DISCONNECTING');
-        console.log(inAudioElement);
-        console.log(outAudioElement);
-        console.log('---------------------');
         });
       };
     }, [nodes, edges]);

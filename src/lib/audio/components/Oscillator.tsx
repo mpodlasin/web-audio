@@ -4,6 +4,7 @@ export function Oscillator({ audioElement: oscillator, audioContext, }: { audioE
   React.useEffect(() => {
     oscillator.type = 'sine';
     oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+    oscillator.start();
   }, [audioContext.currentTime, oscillator]);
 
   return <div>
