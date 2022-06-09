@@ -1,11 +1,12 @@
 import React from 'react';
 
-export function Gain({ audioElement: gain }: { audioElement: GainNode }) {
+export function Gain({ audioElement: gain, audioContext }: { audioElement: GainNode, audioContext: AudioContext }) {
     React.useEffect(() => {
       gain.gain.value = 0;
     }, [gain]);
   
     const changeGain: React.FormEventHandler<HTMLInputElement> = (e) => {
+      gain.gain.setValueAtTime(e.currentTarget.valueAsNumber, audioContext.currentTime)
       gain.gain.value = e.currentTarget.valueAsNumber;
     }
   
