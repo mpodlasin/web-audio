@@ -11,6 +11,7 @@ export interface Position {
 }
 
 export interface Node {
+    id: string;
     name: string;
     position: Position;
     component: React.ReactNode;
@@ -169,7 +170,8 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
                 x2={createdConnection.outPosition.left} y2={createdConnection.outPosition.top} 
                 stroke="black" 
             />}
-            {edges.map(edge => plugPositions[edge.inNodeIndex][edge.inPlugIndex] && plugPositions[edge.outNodeIndex][edge.outPlugIndex] && <line 
+            {edges.map((edge, i) => plugPositions[edge.inNodeIndex][edge.inPlugIndex] && plugPositions[edge.outNodeIndex][edge.outPlugIndex] && <line
+                key={i}
                 x1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].left + positions[edge.inNodeIndex].left} 
                 y1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].top + positions[edge.inNodeIndex].top} 
                 x2={plugPositions[edge.outNodeIndex][edge.outPlugIndex].left + positions[edge.outNodeIndex].left} 
