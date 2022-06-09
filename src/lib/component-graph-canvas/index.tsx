@@ -127,12 +127,16 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
     const handleStopConnecting = (nodeIndex: number) => (plugIndex: number) => {
 
         if (createdConnection) {
-            onEdgesChange([...edges, {
+            const newConnection = {
                 inNodeIndex: createdConnection.inNodeIndex,
                 inPlugIndex: createdConnection.inPlugIndex,
                 outNodeIndex: nodeIndex,
                 outPlugIndex: plugIndex,
-            }]);
+            };
+
+            if (!edges.some(edge => edge.inNodeIndex === newConnection.inNodeIndex && edge.outNodeIndex === newConnection.outNodeIndex && edge.inPlugIndex === newConnection.inPlugIndex && edge.outPlugIndex === newConnection.outPlugIndex)) {
+                onEdgesChange([...edges, newConnection]);
+            }
 
             setCreatedConnection(undefined);
         }
