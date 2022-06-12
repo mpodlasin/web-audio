@@ -167,23 +167,53 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
             onStopConnecting={handleStopConnecting(i)}
             onPlugPositions={handlePlugPositions(i)}
         />)}
-        <svg style={{width: '100%', height: '100%', pointerEvents: 'none'}}>
+        <svg style={{width: '100%', height: '100%'}}>
             {createdConnection && <line 
                 x1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].left + positions[createdConnection.inNodeIndex].left} 
                 y1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].top + positions[createdConnection.inNodeIndex].top} 
                 x2={createdConnection.outPosition.left} y2={createdConnection.outPosition.top} 
                 stroke="black" 
             />}
-            {edges.map((edge, i) => plugPositions[edge.inNodeIndex][edge.inPlugIndex] && plugPositions[edge.outNodeIndex][edge.outPlugIndex] && <line
-                key={i}
+            {edges.map((edge, i) => <SVGEdge key={i} edge={edge} plugPositions={plugPositions} positions={positions} />)}
+        </svg>
+    </div>;
+}
+
+interface SVGEdgeProps {
+    edge: Edge;
+    plugPositions: Position[][];
+    positions: Position[];
+}
+
+const SVGEdge = ({ edge, plugPositions, positions }: SVGEdgeProps) => {
+    const [isHoveredOver, setIsHoveredOver] = React.useState(false);
+
+    if (!plugPositions[edge.inNodeIndex][edge.inPlugIndex] || !plugPositions[edge.outNodeIndex][edge.outPlugIndex]) {
+        return null;
+    }
+
+    return (
+        <>
+            <line
                 x1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].left + positions[edge.inNodeIndex].left} 
                 y1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].top + positions[edge.inNodeIndex].top} 
                 x2={plugPositions[edge.outNodeIndex][edge.outPlugIndex].left + positions[edge.outNodeIndex].left} 
                 y2={plugPositions[edge.outNodeIndex][edge.outPlugIndex].top + positions[edge.outNodeIndex].top} 
                 stroke="black"
-            />)}
-        </svg>
-    </div>;
+            />
+            <line
+                onMouseEnter={() => setIsHoveredOver(true)}
+                onMouseLeave={() => setIsHoveredOver(false)}
+                x1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].left + positions[edge.inNodeIndex].left} 
+                y1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].top + positions[edge.inNodeIndex].top} 
+                x2={plugPositions[edge.outNodeIndex][edge.outPlugIndex].left + positions[edge.outNodeIndex].left} 
+                y2={plugPositions[edge.outNodeIndex][edge.outPlugIndex].top + positions[edge.outNodeIndex].top} 
+                stroke="blue"
+                opacity={isHoveredOver ? 0.1 : 0}
+                strokeWidth={10}
+            />
+        </>
+    );
 }
 
 interface NodeProps {
@@ -225,11 +255,11 @@ const Node = ({ node, position, onDragStart, onStartConnecting, onStopConnecting
         <div ref={ref} style={{border: '1px solid gray', position: 'absolute', ...position, }}>
             <div onMouseDown={onDragStart} style={{padding: '5px 10px', borderBottom: '1px solid black', cursor: 'move'}}>{node.name}</div>
             <div style={{padding: '10px 10px'}}>
-                {node.inPlugs.map((_, i) => <NodePlug onPosition={handlePosition(i)} onStartConnecting={position => onStartConnecting(i, position)} onStopConnecting={position => onStopConnecting(i, position)} />)}
+                {node.inPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(i)} onStartConnecting={position => onStartConnecting(i, position)} onStopConnecting={position => onStopConnecting(i, position)} />)}
             </div>
             <div style={{cursor: 'initial', padding: 10}}>{node.component}</div>
             <div style={{padding: '10px 10px'}}>
-                {node.outPlugs.map((_, i) => <NodePlug onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
+                {node.outPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
             </div>
         </div>
     );
