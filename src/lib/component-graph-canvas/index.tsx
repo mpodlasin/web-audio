@@ -157,7 +157,27 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
         });
     };
 
-    return <div onMouseUp={() => { handleDragStop(); handleCancelConnecting(); }} onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}>
+    // --------------------------------------------------------------------------------------
+    // EDGE MENU
+
+    const [edgeMenu, setEdgeMenu] = React.useState<{position: Position, edge: Edge} | null>(null);
+
+    const handleOpenEdgeMenu = (edge: Edge, position: Position) => {
+        setEdgeMenu({edge, position});
+    };
+
+    const handleCloseEdgeMenu = () => {
+        setEdgeMenu(null);
+    }
+
+    const handleDeleteEdge = () => {
+        if (edgeMenu !== null) {
+            onEdgesChange(edges.filter(edge => edge !== edgeMenu.edge));
+            handleCloseEdgeMenu();
+        }
+    }
+
+    return <div onClick={() => { handleCloseEdgeMenu(); }} onMouseUp={() => { handleDragStop(); handleCancelConnecting(); }} onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}>
         {nodes.map((node, i) => <Node
             key={i}
             node={node} 
@@ -167,6 +187,8 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
             onStopConnecting={handleStopConnecting(i)}
             onPlugPositions={handlePlugPositions(i)}
         />)}
+        {edgeMenu && <EdgeMenu position={edgeMenu.position} onDeleteEdge={handleDeleteEdge} />
+        }
         <svg style={{width: '100%', height: '100%'}}>
             {createdConnection && <line 
                 x1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].left + positions[createdConnection.inNodeIndex].left} 
@@ -174,40 +196,66 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
                 x2={createdConnection.outPosition.left} y2={createdConnection.outPosition.top} 
                 stroke="black" 
             />}
-            {edges.map((edge, i) => <SVGEdge key={i} edge={edge} plugPositions={plugPositions} positions={positions} />)}
+            {edges.map((edge, i) => <SVGEdge key={i} onOpenEdgeMenu={handleOpenEdgeMenu} edge={edge} plugPositions={plugPositions} positions={positions} />)}
         </svg>
     </div>;
+}
+
+interface EdgeMenuProps {
+    position: Position;
+    onDeleteEdge(): void;
+}
+
+const EdgeMenu = ({ onDeleteEdge, position, }: EdgeMenuProps) => {
+    return (
+        <div style={{border: '1px solid black', position: 'absolute', ...position}}>
+            <button onClick={onDeleteEdge}>Delete</button>
+        </div>
+    );
 }
 
 interface SVGEdgeProps {
     edge: Edge;
     plugPositions: Position[][];
     positions: Position[];
+    onOpenEdgeMenu(edge: Edge, position: Position): void;
 }
 
-const SVGEdge = ({ edge, plugPositions, positions }: SVGEdgeProps) => {
+const SVGEdge = ({ edge, plugPositions, positions, onOpenEdgeMenu }: SVGEdgeProps) => {
     const [isHoveredOver, setIsHoveredOver] = React.useState(false);
 
     if (!plugPositions[edge.inNodeIndex][edge.inPlugIndex] || !plugPositions[edge.outNodeIndex][edge.outPlugIndex]) {
         return null;
     }
 
+    const handleRightClick = (e: React.MouseEvent<SVGLineElement>) => {
+        e.preventDefault();
+
+        onOpenEdgeMenu(edge, {top: e.clientY, left: e.clientX});
+    };
+
+    const x1 = plugPositions[edge.inNodeIndex][edge.inPlugIndex].left + positions[edge.inNodeIndex].left;
+    const y1 = plugPositions[edge.inNodeIndex][edge.inPlugIndex].top + positions[edge.inNodeIndex].top;
+    const x2 = plugPositions[edge.outNodeIndex][edge.outPlugIndex].left + positions[edge.outNodeIndex].left;
+    const y2 = plugPositions[edge.outNodeIndex][edge.outPlugIndex].top + positions[edge.outNodeIndex].top;
+
     return (
         <>
             <line
-                x1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].left + positions[edge.inNodeIndex].left} 
-                y1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].top + positions[edge.inNodeIndex].top} 
-                x2={plugPositions[edge.outNodeIndex][edge.outPlugIndex].left + positions[edge.outNodeIndex].left} 
-                y2={plugPositions[edge.outNodeIndex][edge.outPlugIndex].top + positions[edge.outNodeIndex].top} 
+                x1={x1} 
+                y1={y1} 
+                x2={x2} 
+                y2={y2} 
                 stroke="black"
             />
             <line
+                onContextMenu={handleRightClick}
                 onMouseEnter={() => setIsHoveredOver(true)}
                 onMouseLeave={() => setIsHoveredOver(false)}
-                x1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].left + positions[edge.inNodeIndex].left} 
-                y1={plugPositions[edge.inNodeIndex][edge.inPlugIndex].top + positions[edge.inNodeIndex].top} 
-                x2={plugPositions[edge.outNodeIndex][edge.outPlugIndex].left + positions[edge.outNodeIndex].left} 
-                y2={plugPositions[edge.outNodeIndex][edge.outPlugIndex].top + positions[edge.outNodeIndex].top} 
+                x1={x1} 
+                y1={y1} 
+                x2={x2} 
+                y2={y2}
                 stroke="blue"
                 opacity={isHoveredOver ? 0.1 : 0}
                 strokeWidth={10}
