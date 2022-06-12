@@ -1,30 +1,11 @@
 import React from "react";
+import { Edge, SVGEdge, EdgeMenu } from "./Edge";
+import { Node, NodeComponent } from "./Node";
+import { Position } from "./Position";
 
-export interface Plug {
-    type: string;
-    name: string;
-}
-
-export interface Position {
-    top: number;
-    left: number;
-}
-
-export interface Node {
-    id: string;
-    name: string;
-    position: Position;
-    component: React.ReactNode;
-    inPlugs: Plug[];
-    outPlugs: Plug[];
-}
-
-export interface Edge {
-    inNodeIndex: number,
-    inPlugIndex: number,
-    outNodeIndex: number,
-    outPlugIndex: number,
-}
+export { type Edge } from './Edge';
+export { type Node, type Plug } from './Node';
+export { type Position } from './Position';
 
 export interface ComponentGraphCanvasProps {
     nodes: Node[];
@@ -178,7 +159,7 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
     }
 
     return <div onClick={() => { handleCloseEdgeMenu(); }} onMouseUp={() => { handleDragStop(); handleCancelConnecting(); }} onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}>
-        {nodes.map((node, i) => <Node
+        {nodes.map((node, i) => <NodeComponent
             key={i}
             node={node} 
             position={positions[i]} 
@@ -199,149 +180,4 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
             {edges.map((edge, i) => <SVGEdge key={i} onOpenEdgeMenu={handleOpenEdgeMenu} edge={edge} plugPositions={plugPositions} positions={positions} />)}
         </svg>
     </div>;
-}
-
-interface EdgeMenuProps {
-    position: Position;
-    onDeleteEdge(): void;
-}
-
-const EdgeMenu = ({ onDeleteEdge, position, }: EdgeMenuProps) => {
-    return (
-        <div style={{border: '1px solid black', position: 'absolute', ...position}}>
-            <button onClick={onDeleteEdge}>Delete</button>
-        </div>
-    );
-}
-
-interface SVGEdgeProps {
-    edge: Edge;
-    plugPositions: Position[][];
-    positions: Position[];
-    onOpenEdgeMenu(edge: Edge, position: Position): void;
-}
-
-const SVGEdge = ({ edge, plugPositions, positions, onOpenEdgeMenu }: SVGEdgeProps) => {
-    const [isHoveredOver, setIsHoveredOver] = React.useState(false);
-
-    if (!plugPositions[edge.inNodeIndex][edge.inPlugIndex] || !plugPositions[edge.outNodeIndex][edge.outPlugIndex]) {
-        return null;
-    }
-
-    const handleRightClick = (e: React.MouseEvent<SVGLineElement>) => {
-        e.preventDefault();
-
-        onOpenEdgeMenu(edge, {top: e.clientY, left: e.clientX});
-    };
-
-    const x1 = plugPositions[edge.inNodeIndex][edge.inPlugIndex].left + positions[edge.inNodeIndex].left;
-    const y1 = plugPositions[edge.inNodeIndex][edge.inPlugIndex].top + positions[edge.inNodeIndex].top;
-    const x2 = plugPositions[edge.outNodeIndex][edge.outPlugIndex].left + positions[edge.outNodeIndex].left;
-    const y2 = plugPositions[edge.outNodeIndex][edge.outPlugIndex].top + positions[edge.outNodeIndex].top;
-
-    return (
-        <>
-            <line
-                x1={x1} 
-                y1={y1} 
-                x2={x2} 
-                y2={y2} 
-                stroke="black"
-            />
-            <line
-                onContextMenu={handleRightClick}
-                onMouseEnter={() => setIsHoveredOver(true)}
-                onMouseLeave={() => setIsHoveredOver(false)}
-                x1={x1} 
-                y1={y1} 
-                x2={x2} 
-                y2={y2}
-                stroke="blue"
-                opacity={isHoveredOver ? 0.1 : 0}
-                strokeWidth={10}
-            />
-        </>
-    );
-}
-
-interface NodeProps {
-    node: Node;
-    position: Position;
-    onDragStart(e: React.MouseEvent<HTMLDivElement>): void;
-    onStartConnecting(plugIndex: number, position: Position): void;
-    onStopConnecting(plugIndex: number, position: Position): void;
-    onPlugPositions(plugPositions: Position[]): void;
-}
-
-const Node = ({ node, position, onDragStart, onStartConnecting, onStopConnecting, onPlugPositions }: NodeProps) => {
-    const [plugPositions, setPlugPositions] = React.useState<Position[]>([]);
-
-    const ref = React.useRef<HTMLDivElement>(null);
-
-    const handlePosition = (i: number) => (plugPosition: Position) => {
-            setPlugPositions(plugPositions => {
-                const plugPositionsCopy = [...plugPositions];
-    
-                if (ref.current) {
-                    plugPositionsCopy[i] = {
-                        top: plugPosition.top - ref.current.getBoundingClientRect().top,
-                        left: plugPosition.left - ref.current.getBoundingClientRect().left,
-                    };
-                }
-    
-                return plugPositionsCopy;
-            });
-    };
-
-    React.useEffect(() => {
-        if (plugPositions.length === node.inPlugs.length + node.outPlugs.length) {
-            onPlugPositions(plugPositions);
-        }
-    }, [plugPositions, node.inPlugs.length, node.outPlugs.length]);
-
-    return (
-        <div ref={ref} style={{border: '1px solid gray', position: 'absolute', ...position, }}>
-            <div onMouseDown={onDragStart} style={{padding: '5px 10px', borderBottom: '1px solid black', cursor: 'move'}}>{node.name}</div>
-            <div style={{padding: '10px 10px'}}>
-                {node.inPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(i)} onStartConnecting={position => onStartConnecting(i, position)} onStopConnecting={position => onStopConnecting(i, position)} />)}
-            </div>
-            <div style={{cursor: 'initial', padding: 10}}>{node.component}</div>
-            <div style={{padding: '10px 10px'}}>
-                {node.outPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
-            </div>
-        </div>
-    );
-}
-
-interface NodePlugProps {
-    onStartConnecting(position: Position): void;
-    onStopConnecting(position: Position): void;
-    onPosition(position: Position): void;
-}
-
-const NodePlug = ({ onStartConnecting, onStopConnecting, onPosition }: NodePlugProps) => {
-    const [, setPosition] = React.useState<Position>({ top: 0, left: 0});
-
-    const ref = React.useRef<HTMLDivElement>(null);
-
-    React.useEffect(() => {
-        if(ref.current) {
-            const newPosition = {
-                top: ref.current.getBoundingClientRect().top + 7,
-                left: ref.current.getBoundingClientRect().left + 7,
-            };
-
-            onPosition(newPosition);
-            setPosition(newPosition);
-        }
-    }, []);
-
-    return (
-        <div 
-            ref={ref}
-            onMouseDown={e => onStartConnecting({top: e.clientY, left: e.clientX})} 
-            onMouseUp={e => onStopConnecting({top: e.clientY, left: e.clientX})} 
-            style={{ backgroundColor: 'lightgray', width: 14, height: 14, borderRadius: 15, border: '1px solid gray' }}
-            />
-    );
 }
