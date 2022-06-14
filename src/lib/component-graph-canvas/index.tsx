@@ -19,10 +19,13 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
     // -----------------------------------------------------------------------------
     // NODE POSITIONS
 
+    const [isDraggingNode, setIsDraggingNode] = React.useState(false);
     const [nodePositions, setNodePositions] = React.useState(nodes.map(node => node.position));
     const [internalElementPositions, setInternalElementPositions] = React.useState<(null | Position)[]>(nodes.map(() => null));
 
     const handleDragStart = (i: number): React.MouseEventHandler<HTMLDivElement> => e => {
+        setIsDraggingNode(true);
+
         const internalElementPosition = {
             top: e.clientY - e.currentTarget.getBoundingClientRect().top,
             left: e.clientX - e.currentTarget.getBoundingClientRect().left,
@@ -38,6 +41,7 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
     };
 
     const handleDragStop = () => {
+        setIsDraggingNode(false);
         setInternalElementPositions(nodes.map(() => null));
 
         onNodesChange(nodes.map((node, i) => ({
@@ -165,7 +169,7 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
     const [globalMenuPosition, setGlobalMenuPosition] = React.useState<Position | null>(null);
 
     const toggleGlobalMenu = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (globalMenuPosition === null) {
+        if (globalMenuPosition === null && !isDraggingNode) {
             setGlobalMenuPosition({
                 top: e.clientY,
                 left: e.clientX,
@@ -175,7 +179,11 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         }
     }
 
-    return <div onClick={(e) => { handleCloseEdgeMenu(); toggleGlobalMenu(e); }} onMouseUp={() => { handleDragStop(); handleCancelConnecting(); }} onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}>
+    return <div onClick={(e) => { handleCloseEdgeMenu() }} 
+                onMouseUp={(e) => { toggleGlobalMenu(e); handleDragStop(); handleCancelConnecting(); }} 
+                onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} 
+                style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}
+            >
         {nodes.map((node, i) => <NodeComponent
             key={i}
             node={node} 
