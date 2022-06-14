@@ -18,13 +18,14 @@ export interface Node {
 export interface NodeComponentProps {
     node: Node;
     position: Position;
+    onDelete(nodeToDelete: Node): void;
     onDragStart(e: React.MouseEvent<HTMLDivElement>): void;
     onStartConnecting(plugIndex: number, position: Position): void;
     onStopConnecting(plugIndex: number, position: Position): void;
     onPlugPositions(plugPositions: Position[]): void;
 }
 
-export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, onStopConnecting, onPlugPositions }: NodeComponentProps) => {
+export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, onStopConnecting, onPlugPositions, onDelete }: NodeComponentProps) => {
     const [plugPositions, setPlugPositions] = React.useState<Position[]>([]);
 
     const ref = React.useRef<HTMLDivElement>(null);
@@ -50,9 +51,16 @@ export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, 
         }
     }, [plugPositions, node.inPlugs.length, node.outPlugs.length]);
 
+    const handleDelete = () => {
+        onDelete(node);
+    };
+
     return (
         <div ref={ref} style={{border: '1px solid gray', position: 'absolute', ...position, }}>
-            <div onMouseDown={onDragStart} style={{padding: '5px 10px', borderBottom: '1px solid black', cursor: 'move'}}>{node.name}</div>
+            <div onMouseDown={onDragStart} style={{padding: '5px 10px', borderBottom: '1px solid black', cursor: 'move', display: 'flex', justifyContent: 'space-between'}}>
+                <span>{node.name}</span>
+                <button onClick={handleDelete}>X</button>
+            </div>
             <div style={{padding: '10px 10px'}}>
                 {node.inPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(i)} onStartConnecting={position => onStartConnecting(i, position)} onStopConnecting={position => onStopConnecting(i, position)} />)}
             </div>

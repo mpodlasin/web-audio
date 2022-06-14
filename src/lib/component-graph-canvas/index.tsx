@@ -67,6 +67,10 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         }
     };
 
+    const handleDeleteNode = (nodeToDelete: Node) => {
+        onNodesChange(nodes.filter(node => node !== nodeToDelete));
+    };
+
     // -----------------------------------------------------------------------------------
     // EDGE CONNECTIONS
 
@@ -176,6 +180,7 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
             key={i}
             node={node} 
             position={nodePositions[i]} 
+            onDelete={handleDeleteNode}
             onDragStart={handleDragStart(i)} 
             onStartConnecting={handleStartConnecting(i)}
             onStopConnecting={handleStopConnecting(i)}
