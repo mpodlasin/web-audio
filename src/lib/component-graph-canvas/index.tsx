@@ -15,10 +15,6 @@ export interface ComponentGraphCanvasProps {
     onEdgesChange?(newEdges: Edge[]): void;
 }
 
-export function EdgeEnd() {
-    return <div style={{border: '1px solid black', backgroundColor: 'lightgray', height: '1rem', width: '1rem'}}></div>
-}
-
 export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange = () => {}, onEdgesChange = () => {} }: ComponentGraphCanvasProps) {
     // -----------------------------------------------------------------------------
     // NODE POSITIONS
