@@ -8,6 +8,7 @@ export { type Node, type Plug } from './Node';
 export { type Position } from './Position';
 
 export interface ComponentGraphCanvasProps {
+    globalMenu: React.ReactNode;
     nodes: Node[];
     edges: Edge[];
     onNodesChange?(newNodes: Node[]): void;
@@ -18,11 +19,11 @@ export function EdgeEnd() {
     return <div style={{border: '1px solid black', backgroundColor: 'lightgray', height: '1rem', width: '1rem'}}></div>
 }
 
-export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, onEdgesChange = () => {} }: ComponentGraphCanvasProps) {
+export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange = () => {}, onEdgesChange = () => {} }: ComponentGraphCanvasProps) {
     // -----------------------------------------------------------------------------
     // NODE POSITIONS
 
-    const [positions, setPositions] = React.useState(nodes.map(node => node.position));
+    const [nodePositions, setNodePositions] = React.useState(nodes.map(node => node.position));
     const [internalElementPositions, setInternalElementPositions] = React.useState<(null | Position)[]>(nodes.map(() => null));
 
     const handleDragStart = (i: number): React.MouseEventHandler<HTMLDivElement> => e => {
@@ -45,7 +46,7 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
 
         onNodesChange(nodes.map((node, i) => ({
             ...node,
-            position: positions[i],
+            position: nodePositions[i],
         })))
     }
 
@@ -55,7 +56,7 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
 
             const draggedIndex = internalElementPositions.findIndex(internalElementPosition => internalElementPosition !== null);
 
-            setPositions(positions => {
+            setNodePositions(positions => {
                 const positionsCopy = [...positions];
 
                 const internalElementPosition = internalElementPositions[draggedIndex] || { top: 0, left: 0 };
@@ -158,26 +159,47 @@ export function ComponentGraphCanvas({ nodes, edges, onNodesChange = () => {}, o
         }
     }
 
-    return <div onClick={() => { handleCloseEdgeMenu(); }} onMouseUp={() => { handleDragStop(); handleCancelConnecting(); }} onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}>
+    // -------------------------------------------------------------------------------
+    // GLOBAL MENU 
+
+    const [globalMenuPosition, setGlobalMenuPosition] = React.useState<Position | null>(null);
+
+    const toggleGlobalMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (globalMenuPosition === null) {
+            setGlobalMenuPosition({
+                top: e.clientY,
+                left: e.clientX,
+            });            
+        } else {
+            setGlobalMenuPosition(null);
+        }
+    }
+
+    return <div onClick={(e) => { handleCloseEdgeMenu(); toggleGlobalMenu(e); }} onMouseUp={() => { handleDragStop(); handleCancelConnecting(); }} onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}>
         {nodes.map((node, i) => <NodeComponent
             key={i}
             node={node} 
-            position={positions[i]} 
+            position={nodePositions[i]} 
             onDragStart={handleDragStart(i)} 
             onStartConnecting={handleStartConnecting(i)}
             onStopConnecting={handleStopConnecting(i)}
             onPlugPositions={handlePlugPositions(i)}
         />)}
+        {globalMenuPosition && 
+            <div style={{border: '1px solid black', position: 'absolute', ...globalMenuPosition}}>
+                {globalMenu}
+            </div>
+        }
         {edgeMenu && <EdgeMenu position={edgeMenu.position} onDeleteEdge={handleDeleteEdge} />
         }
         <svg style={{width: '100%', height: '100%'}}>
             {createdConnection && <line 
-                x1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].left + positions[createdConnection.inNodeIndex].left} 
-                y1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].top + positions[createdConnection.inNodeIndex].top} 
+                x1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].left + nodePositions[createdConnection.inNodeIndex].left} 
+                y1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].top + nodePositions[createdConnection.inNodeIndex].top} 
                 x2={createdConnection.outPosition.left} y2={createdConnection.outPosition.top} 
                 stroke="black" 
             />}
-            {edges.map((edge, i) => <SVGEdge key={i} onOpenEdgeMenu={handleOpenEdgeMenu} edge={edge} plugPositions={plugPositions} positions={positions} />)}
+            {edges.map((edge, i) => <SVGEdge key={i} onOpenEdgeMenu={handleOpenEdgeMenu} edge={edge} plugPositions={plugPositions} positions={nodePositions} />)}
         </svg>
     </div>;
 }

@@ -5,23 +5,17 @@ import { COMPONENTS } from './lib/audio/components';
 import { v4 as uuidv4 } from 'uuid';
 
 interface CreationMenuProps {
-  top: number;
-  left: number;
   onCreate(nodeName: string): void;
 }
 
-function CreationMenu({ top, left, onCreate }: CreationMenuProps) {
-  const handleClick: React.MouseEventHandler<HTMLDivElement> = e => {
-    e.stopPropagation();
-  };
-
-  return <div onClick={handleClick} style={{border: '1px solid gray', position: 'absolute', top, left}}>
+function CreationMenu({ onCreate }: CreationMenuProps) {
+  return (
     <ul>
-      <li><button onClick={() => onCreate('oscillator')}>Oscilator</button></li>
-      <li><button onClick={() => onCreate('gain')}>Gain</button></li>
-      <li><button onClick={() => onCreate('output')}>Output</button></li>
+      <li><button onClick={() => onCreate('Oscillator')}>Oscilator</button></li>
+      <li><button onClick={() => onCreate('Gain')}>Gain</button></li>
+      <li><button onClick={() => onCreate('Output')}>Output</button></li>
     </ul>
-  </div>
+  );
 }
 
 interface NodeDescription {
@@ -141,10 +135,19 @@ function App() {
     const handleNodesChange = (newNodes: Node[]) => {
       setNodes(newNodes.map(nodeDescriptionToAudioNode))
     }
+
+    const handleCreateNode = (nodeName: string) => {
+      setNodes(nodes => [...nodes, nodeDescriptionToAudioNode({
+        id: uuidv4(),
+        name: nodeName,
+        position: {top: 100, left: 100},
+      })])
+    }
   
     return (
       <div style={{height: '100%'}}>
         <ComponentGraphCanvas
+          globalMenu={<CreationMenu onCreate={handleCreateNode} />}
           nodes={nodes}
           onNodesChange={handleNodesChange}
           edges={edges}
