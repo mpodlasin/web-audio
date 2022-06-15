@@ -26,9 +26,10 @@ export interface SVGEdgeProps {
     plugPositions: Position[][];
     positions: Position[];
     onOpenEdgeMenu(edge: Edge, position: Position): void;
+    onCloseEdgeMenu(): void;
 }
 
-export const SVGEdge = ({ edge, plugPositions, positions, onOpenEdgeMenu }: SVGEdgeProps) => {
+export const SVGEdge = ({ edge, plugPositions, positions, onOpenEdgeMenu, onCloseEdgeMenu }: SVGEdgeProps) => {
     const [isHoveredOver, setIsHoveredOver] = React.useState(false);
 
     if (!plugPositions[edge.inNodeIndex][edge.inPlugIndex] || !plugPositions[edge.outNodeIndex][edge.outPlugIndex]) {
@@ -41,6 +42,12 @@ export const SVGEdge = ({ edge, plugPositions, positions, onOpenEdgeMenu }: SVGE
         onOpenEdgeMenu(edge, {top: e.clientY, left: e.clientX});
     };
 
+    const handleClick = (e: React.MouseEvent<SVGLineElement>) => {
+        e.stopPropagation();
+
+        onCloseEdgeMenu();
+    };
+
     const x1 = plugPositions[edge.inNodeIndex][edge.inPlugIndex].left + positions[edge.inNodeIndex].left;
     const y1 = plugPositions[edge.inNodeIndex][edge.inPlugIndex].top + positions[edge.inNodeIndex].top;
     const x2 = plugPositions[edge.outNodeIndex][edge.outPlugIndex].left + positions[edge.outNodeIndex].left;
@@ -49,6 +56,7 @@ export const SVGEdge = ({ edge, plugPositions, positions, onOpenEdgeMenu }: SVGE
     return (
         <>
             <line
+                style={{pointerEvents: 'all'}}
                 x1={x1} 
                 y1={y1} 
                 x2={x2} 
@@ -56,6 +64,8 @@ export const SVGEdge = ({ edge, plugPositions, positions, onOpenEdgeMenu }: SVGE
                 stroke="black"
             />
             <line
+                style={{pointerEvents: 'all'}}
+                onClick={handleClick}
                 onContextMenu={handleRightClick}
                 onMouseEnter={() => setIsHoveredOver(true)}
                 onMouseLeave={() => setIsHoveredOver(false)}

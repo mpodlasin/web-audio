@@ -198,20 +198,20 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
             onPlugPositions={handlePlugPositions(i)}
         />)}
         {globalMenuPosition && 
-            <div style={{border: '1px solid black', position: 'absolute', ...globalMenuPosition}}>
+            <div style={{zIndex: 1, border: '1px solid black', backgroundColor: 'white', position: 'absolute', ...globalMenuPosition}}>
                 {globalMenu}
             </div>
         }
         {edgeMenu && <EdgeMenu position={edgeMenu.position} onDeleteEdge={handleDeleteEdge} />
         }
-        <svg style={{width: '100%', height: '100%', pointerEvents: 'none'}}>
+        <svg style={{position: 'absolute', top: 0, left: 0, height: '100%', width: '100%', pointerEvents: 'none'}}>
             {createdConnection && <line 
                 x1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].left + nodePositions[createdConnection.inNodeIndex].left} 
                 y1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].top + nodePositions[createdConnection.inNodeIndex].top} 
                 x2={createdConnection.outPosition.left} y2={createdConnection.outPosition.top} 
                 stroke="black" 
             />}
-            {edges.map((edge, i) => <SVGEdge key={i} onOpenEdgeMenu={handleOpenEdgeMenu} edge={edge} plugPositions={plugPositions} positions={nodePositions} />)}
+            {edges.map((edge, i) => <SVGEdge key={i} onOpenEdgeMenu={handleOpenEdgeMenu} onCloseEdgeMenu={closeEdgeMenu} edge={edge} plugPositions={plugPositions} positions={nodePositions} />)}
         </svg>
     </div>;
 }
