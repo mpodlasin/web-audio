@@ -56,7 +56,7 @@ export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, 
     };
 
     return (
-        <div ref={ref} style={{border: '1px solid gray', position: 'absolute', ...position, }}>
+        <div ref={ref} onClick={e => e.stopPropagation()} style={{border: '1px solid gray', position: 'absolute', ...position, }}>
             <div onMouseDown={onDragStart} style={{padding: '5px 10px', borderBottom: '1px solid black', cursor: 'move', display: 'flex', justifyContent: 'space-between'}}>
                 <span>{node.name}</span>
                 <button onClick={handleDelete}>X</button>

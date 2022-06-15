@@ -40,14 +40,17 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         });
     };
 
-    const handleDragStop = () => {
-        setIsDraggingNode(false);
-        setInternalElementPositions(nodes.map(() => null));
-
-        onNodesChange(nodes.map((node, i) => ({
-            ...node,
-            position: nodePositions[i],
-        })))
+    const handleDragStop = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (isDraggingNode) {
+            e.preventDefault();
+            setIsDraggingNode(false);
+            setInternalElementPositions(nodes.map(() => null));
+    
+            onNodesChange(nodes.map((node, i) => ({
+                ...node,
+                position: nodePositions[i],
+            })))  
+        }
     }
 
     const handleDrag: React.MouseEventHandler<HTMLDivElement> = e => {
@@ -152,14 +155,14 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         setEdgeMenu({edge, position});
     };
 
-    const handleCloseEdgeMenu = () => {
+    const closeEdgeMenu = () => {
         setEdgeMenu(null);
     }
 
     const handleDeleteEdge = () => {
         if (edgeMenu !== null) {
             onEdgesChange(edges.filter(edge => edge !== edgeMenu.edge));
-            handleCloseEdgeMenu();
+            closeEdgeMenu();
         }
     }
 
@@ -169,7 +172,7 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
     const [globalMenuPosition, setGlobalMenuPosition] = React.useState<Position | null>(null);
 
     const toggleGlobalMenu = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (globalMenuPosition === null && !isDraggingNode) {
+        if (globalMenuPosition === null) {
             setGlobalMenuPosition({
                 top: e.clientY,
                 left: e.clientX,
@@ -179,8 +182,8 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         }
     }
 
-    return <div onClick={(e) => { handleCloseEdgeMenu() }} 
-                onMouseUp={(e) => { toggleGlobalMenu(e); handleDragStop(); handleCancelConnecting(); }} 
+    return <div onClick={(e) => { closeEdgeMenu(); toggleGlobalMenu(e); }} 
+                onMouseUp={(e) => { handleDragStop(e); handleCancelConnecting(); }} 
                 onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} 
                 style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}
             >
@@ -201,7 +204,7 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         }
         {edgeMenu && <EdgeMenu position={edgeMenu.position} onDeleteEdge={handleDeleteEdge} />
         }
-        <svg style={{width: '100%', height: '100%'}}>
+        <svg style={{width: '100%', height: '100%', pointerEvents: 'none'}}>
             {createdConnection && <line 
                 x1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].left + nodePositions[createdConnection.inNodeIndex].left} 
                 y1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].top + nodePositions[createdConnection.inNodeIndex].top} 
