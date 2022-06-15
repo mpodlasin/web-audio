@@ -60,33 +60,6 @@ const nodeToNodeDescription = (node: Node): NodeDescription => ({
   position: node.position,
 });
 
-const initialNodeDescriptions = [
-  {
-    id: uuidv4(),
-    name: 'Oscillator',
-    position: {
-      top: 200, 
-      left: 400,
-    },
-  },
-  {
-    id: uuidv4(),
-    name: 'Gain',
-    position: {
-      top: 300,
-      left: 800,
-    }
-  },
-  {
-    id: uuidv4(),
-    name: 'Output',
-    position: {
-      top: 400,
-      left: 600,
-    }
-  }
-];
-
 function App() {
     const [edges, setEdges] = React.useState<Edge[]>(
       localStorage.getItem("EDGES") ? 
@@ -101,7 +74,7 @@ function App() {
     const [nodes, setNodes] = React.useState<AudioComponentNode[]>(
       localStorage.getItem("NODES") ? 
         JSON.parse(localStorage.getItem('NODES')!).map(nodeDescriptionToAudioNode) : 
-        initialNodeDescriptions.map(nodeDescriptionToAudioNode)
+        []
     );
 
     React.useEffect(() => {
