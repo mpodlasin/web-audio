@@ -3,9 +3,9 @@ import React from 'react';
 export function Oscillator({ audioElement: oscillator, audioContext, }: { audioElement: OscillatorNode, audioContext: AudioContext, }) {
   React.useEffect(() => {
     oscillator.type = 'sine';
-    oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+    oscillator.frequency.value = 440;
     oscillator.start();
-  }, [audioContext.currentTime, oscillator]);
+  }, [oscillator]);
 
     
   const changeFrequency: React.FormEventHandler<HTMLInputElement> = (e) => {
