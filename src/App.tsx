@@ -43,7 +43,7 @@ const nodeDescriptionToAudioNode = (nodeDescription: NodeDescription): AudioComp
 
     nodeIdToAudioElement.set(nodeDescription.id, audioElement);
   }
-  
+
   const component = React.createElement(definition.component, {audioElement, audioContext});
 
   const audioComponentNode = {
@@ -81,8 +81,6 @@ function App() {
     );
 
     React.useEffect(() => {
-      console.log('nodes changed, lets save them to local storage!!')
-      console.log('new nodes', nodes);
       localStorage.setItem("NODES", JSON.stringify(nodes.map(nodeToNodeDescription)));
     }, [nodes]);
 
@@ -111,8 +109,6 @@ function App() {
     }, [nodes, edges]);
 
     const handleNodesChange = (newNodes: Node[]) => {
-      console.log('setting nodes!!!!')
-      console.log(newNodes);
       setNodes(newNodes.map(nodeDescriptionToAudioNode))
     }
 
