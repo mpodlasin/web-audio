@@ -132,7 +132,9 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
     // ---------------------------------------------------------------------------------------
     // PLUG POSITIONS
 
-    const [plugPositions, setPlugPositions] = React.useState<{[nodeId: string]: Position[]}>({});
+    const [plugPositions, setPlugPositions] = React.useState<{[nodeId: string]: Position[]}>(
+        nodes.reduce((positions, node) => ({ ...positions, [node.id]: []}), {})
+    );
 
     const handlePlugPositions = (nodeId: string) => (newPlugPositions: Position[]) => {
         setPlugPositions(plugPositions => ({
