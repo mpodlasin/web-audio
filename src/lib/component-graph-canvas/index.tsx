@@ -1,5 +1,5 @@
 import React from "react";
-import { Edge, SVGEdge, EdgeMenu } from "./Edge";
+import { Edge, SVGEdge, EdgeMenu, CreatedSVGEdge } from "./Edge";
 import { Node, NodeComponent } from "./Node";
 import { Position } from "./Position";
 
@@ -15,62 +15,61 @@ export interface ComponentGraphCanvasProps {
     onEdgesChange?(newEdges: Edge[]): void;
 }
 
+const calculateNewNodePosition = (node: Node, draggedNode: {startMousePosition: Position, endMousePosition: Position, nodeId: string}) => ({
+    top: node.position.top + draggedNode.endMousePosition.top - draggedNode.startMousePosition.top,
+    left: node.position.left + draggedNode.endMousePosition.left - draggedNode.startMousePosition.left,
+});
+
 export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange = () => {}, onEdgesChange = () => {} }: ComponentGraphCanvasProps) {
     // -----------------------------------------------------------------------------
     // NODE POSITIONS
 
-    const [isDraggingNode, setIsDraggingNode] = React.useState(false);
-    const [nodePositions, setNodePositions] = React.useState(nodes.map(node => node.position));
-    const [internalElementPositions, setInternalElementPositions] = React.useState<(null | Position)[]>(nodes.map(() => null));
+    const [draggedNode, setDraggedNode] = React.useState<{startMousePosition: Position, endMousePosition: Position, nodeId: string} | null>(null);
 
-    const handleDragStart = (i: number): React.MouseEventHandler<HTMLDivElement> => e => {
-        setIsDraggingNode(true);
-
-        const internalElementPosition = {
-            top: e.clientY - e.currentTarget.getBoundingClientRect().top,
-            left: e.clientX - e.currentTarget.getBoundingClientRect().left,
-        };
-
-        setInternalElementPositions(internalElementPositions => {
-            const internalElementPositionsCopy = [...internalElementPositions];
-
-            internalElementPositionsCopy[i] = internalElementPosition;
-
-            return internalElementPositionsCopy;
+    const handleDragStart = (nodeId: string): React.MouseEventHandler<HTMLDivElement> => e => {
+        setDraggedNode({
+            nodeId,
+            startMousePosition: {
+                top: e.clientY,
+                left: e.clientX,
+            },
+            endMousePosition: {
+                top: e.clientY,
+                left: e.clientX
+            }
         });
     };
 
     const handleDragStop = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (isDraggingNode) {
+        if (draggedNode !== null) {
             e.preventDefault();
-            setIsDraggingNode(false);
-            setInternalElementPositions(nodes.map(() => null));
     
-            onNodesChange(nodes.map((node, i) => ({
-                ...node,
-                position: nodePositions[i],
-            })))  
+            onNodesChange(nodes.map(node => {
+                if (node.id !== draggedNode.nodeId) {
+                    return node;
+                }
+
+                return {
+                    ...node,
+                    position: calculateNewNodePosition(node, draggedNode),
+                }
+            }));
+
+            setDraggedNode(null);
         }
-    }
+    };
 
     const handleDrag: React.MouseEventHandler<HTMLDivElement> = e => {
-        if (internalElementPositions.some(internalElementPosition => internalElementPosition !== null)) {
+        if (draggedNode !== null) {
             e.preventDefault();
 
-            const draggedIndex = internalElementPositions.findIndex(internalElementPosition => internalElementPosition !== null);
-
-            setNodePositions(positions => {
-                const positionsCopy = [...positions];
-
-                const internalElementPosition = internalElementPositions[draggedIndex] || { top: 0, left: 0 };
-
-                positionsCopy[draggedIndex] = {
-                    top: e.clientY - internalElementPosition.top,
-                    left: e.clientX - internalElementPosition.left,
-                };
-
-                return positionsCopy;
-            });
+            setDraggedNode(draggedNode => ({
+                ...draggedNode!,
+                endMousePosition: {
+                    top: e.clientY,
+                    left: e.clientX
+                }
+            }));
         }
     };
 
@@ -82,15 +81,15 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
     // EDGE CONNECTIONS
 
     const [createdConnection, setCreatedConnection] = React.useState<{
-        inNodeIndex: number, 
+        inNodeId: string, 
         inPlugIndex: number,
         inPosition: Position;
         outPosition: Position;
     }>();
 
-    const handleStartConnecting = (nodeIndex: number) => (plugIndex: number, position: Position) => {
+    const handleStartConnecting = (nodeId: string) => (plugIndex: number, position: Position) => {
         setCreatedConnection({
-                inNodeIndex: nodeIndex,
+                inNodeId: nodeId,
                 inPlugIndex: plugIndex,
                 inPosition: position,
                 outPosition: position,
@@ -113,17 +112,16 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         setCreatedConnection(undefined);
     };
 
-    const handleStopConnecting = (nodeIndex: number) => (plugIndex: number) => {
-
+    const handleStopConnecting = (nodeId: string) => (plugIndex: number) => {
         if (createdConnection) {
             const newConnection = {
-                inNodeIndex: createdConnection.inNodeIndex,
+                inNodeId: createdConnection.inNodeId,
                 inPlugIndex: createdConnection.inPlugIndex,
-                outNodeIndex: nodeIndex,
+                outNodeId: nodeId,
                 outPlugIndex: plugIndex,
             };
 
-            if (!edges.some(edge => edge.inNodeIndex === newConnection.inNodeIndex && edge.outNodeIndex === newConnection.outNodeIndex && edge.inPlugIndex === newConnection.inPlugIndex && edge.outPlugIndex === newConnection.outPlugIndex)) {
+            if (!edges.some(edge => edge.inNodeId === newConnection.inNodeId && edge.outNodeId === newConnection.outNodeId && edge.inPlugIndex === newConnection.inPlugIndex && edge.outPlugIndex === newConnection.outPlugIndex)) {
                 onEdgesChange([...edges, newConnection]);
             }
 
@@ -134,16 +132,13 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
     // ---------------------------------------------------------------------------------------
     // PLUG POSITIONS
 
-    const [plugPositions, setPlugPositions] = React.useState<Position[][]>(nodes.map(() => []));
+    const [plugPositions, setPlugPositions] = React.useState<{[nodeId: string]: Position[]}>({});
 
-    const handlePlugPositions = (nodeIndex: number) => (newPlugPositions: Position[]) => {
-        setPlugPositions(plugPositions => {
-            const plugPositionsCopy = [...plugPositions];
-
-            plugPositionsCopy[nodeIndex] = newPlugPositions;
-
-            return plugPositionsCopy;
-        });
+    const handlePlugPositions = (nodeId: string) => (newPlugPositions: Position[]) => {
+        setPlugPositions(plugPositions => ({
+            ...plugPositions,
+            [nodeId]: newPlugPositions
+        }));
     };
 
     // --------------------------------------------------------------------------------------
@@ -182,20 +177,25 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         }
     }
 
+    const nodePositions = nodes.reduce((positions, node) => ({
+        ...positions,
+        [node.id]: draggedNode && draggedNode.nodeId === node.id ? calculateNewNodePosition(node, draggedNode) : node.position
+    }), {} as { [nodeId: string ]: Position});
+
     return <div onClick={(e) => { closeEdgeMenu(); toggleGlobalMenu(e); }} 
                 onMouseUp={(e) => { handleDragStop(e); handleCancelConnecting(); }} 
                 onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} 
                 style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}
             >
-        {nodes.map((node, i) => <NodeComponent
-            key={i}
+        {nodes.map(node => <NodeComponent
+            key={node.id}
             node={node} 
-            position={nodePositions[i]} 
+            position={nodePositions[node.id]}
             onDelete={handleDeleteNode}
-            onDragStart={handleDragStart(i)} 
-            onStartConnecting={handleStartConnecting(i)}
-            onStopConnecting={handleStopConnecting(i)}
-            onPlugPositions={handlePlugPositions(i)}
+            onDragStart={handleDragStart(node.id)} 
+            onStartConnecting={handleStartConnecting(node.id)}
+            onStopConnecting={handleStopConnecting(node.id)}
+            onPlugPositions={handlePlugPositions(node.id)}
         />)}
         {globalMenuPosition && 
             <div style={{zIndex: 1, border: '1px solid black', backgroundColor: 'white', position: 'absolute', ...globalMenuPosition}}>
@@ -205,13 +205,8 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         {edgeMenu && <EdgeMenu position={edgeMenu.position} onDeleteEdge={handleDeleteEdge} />
         }
         <svg style={{position: 'absolute', top: 0, left: 0, height: '100%', width: '100%', pointerEvents: 'none'}}>
-            {createdConnection && <line 
-                x1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].left + nodePositions[createdConnection.inNodeIndex].left} 
-                y1={plugPositions[createdConnection.inNodeIndex][createdConnection.inPlugIndex].top + nodePositions[createdConnection.inNodeIndex].top} 
-                x2={createdConnection.outPosition.left} y2={createdConnection.outPosition.top} 
-                stroke="black" 
-            />}
-            {edges.map((edge, i) => <SVGEdge key={i} onOpenEdgeMenu={handleOpenEdgeMenu} onCloseEdgeMenu={closeEdgeMenu} edge={edge} plugPositions={plugPositions} positions={nodePositions} />)}
+            {createdConnection && <CreatedSVGEdge nodePositions={nodePositions} plugPositions={plugPositions} createdConnection={createdConnection} />}
+            {edges.map((edge, i) => <SVGEdge key={i} onOpenEdgeMenu={handleOpenEdgeMenu} onCloseEdgeMenu={closeEdgeMenu} edge={edge} plugPositions={plugPositions} nodePositions={nodePositions} />)}
         </svg>
     </div>;
 }

@@ -86,8 +86,10 @@ function App() {
 
     React.useEffect(() => {
       edges.forEach(edge => {
-        const inNode = nodes[edge.inNodeIndex];
-        const outNode = nodes[edge.outNodeIndex];
+        const inNode = nodes.find(node => node.id === edge.inNodeId);
+        const outNode = nodes.find(node => node.id === edge.outNodeId);
+
+        if (inNode === undefined || outNode === undefined) return;
 
         const inAudioElement = inNode.audioElement;
         const outAudioElement = outNode.audioElement;
@@ -97,8 +99,10 @@ function App() {
 
       return () => {
         edges.forEach(edge => {
-          const inNode = nodes[edge.inNodeIndex];
-          const outNode = nodes[edge.outNodeIndex];
+          const inNode = nodes.find(node => node.id === edge.inNodeId);
+          const outNode = nodes.find(node => node.id === edge.outNodeId);
+  
+          if (inNode === undefined || outNode === undefined) return;
 
           const inAudioElement = inNode.audioElement;
           const outAudioElement = outNode.audioElement;
