@@ -56,7 +56,7 @@ export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, 
     };
 
     return (
-        <div ref={ref} onClick={e => e.stopPropagation()} style={{border: '1px solid gray', backgroundColor: 'white', position: 'absolute', ...position, }}>
+        <div ref={ref} style={{border: '1px solid gray', backgroundColor: 'white', position: 'absolute', ...position, }}>
             <div onMouseDown={onDragStart} style={{padding: '5px 10px', borderBottom: '1px solid black', cursor: 'move', display: 'flex', justifyContent: 'space-between'}}>
                 <span>{node.name}</span>
                 <button onClick={handleDelete}>X</button>
@@ -96,7 +96,7 @@ const NodePlug = ({ onStartConnecting, onStopConnecting, onPosition }: NodePlugP
     }, []);
 
     return (
-        <div 
+        <div
             ref={ref}
             onMouseDown={e => onStartConnecting({top: e.clientY, left: e.clientX})} 
             onMouseUp={e => onStopConnecting({top: e.clientY, left: e.clientX})} 

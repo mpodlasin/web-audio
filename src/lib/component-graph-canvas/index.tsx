@@ -166,10 +166,16 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
     // -------------------------------------------------------------------------------
     // GLOBAL MENU 
 
+    const containerRef = React.useRef<HTMLDivElement>(null);
+
     const [globalMenuPosition, setGlobalMenuPosition] = React.useState<Position | null>(null);
 
     const toggleGlobalMenu = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (globalMenuPosition === null) {
+        if(containerRef.current && e.target !== containerRef.current) {
+            return;
+        }
+
+        if (edgeMenu === null && globalMenuPosition === null) {
             setGlobalMenuPosition({
                 top: e.clientY,
                 left: e.clientX,
@@ -184,10 +190,11 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         [node.id]: draggedNode && draggedNode.nodeId === node.id ? calculateNewNodePosition(node, draggedNode) : node.position
     }), {} as { [nodeId: string ]: Position});
 
-    return <div onClick={(e) => { closeEdgeMenu(); toggleGlobalMenu(e); }} 
-                onMouseUp={(e) => { handleDragStop(e); handleCancelConnecting(); }} 
+    return <div onClick={() => { closeEdgeMenu(); }} 
+                onMouseUp={(e) => { handleDragStop(e); toggleGlobalMenu(e); handleCancelConnecting(); }} 
                 onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} 
                 style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}
+                ref={containerRef}
             >
         {nodes.map(node => <NodeComponent
             key={node.id}
