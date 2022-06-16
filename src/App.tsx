@@ -30,15 +30,20 @@ interface AudioComponentNode extends Node {
 
 const audioContext = new AudioContext();
 
-const nodeIdToAudioComponentNode = new Map<string, AudioComponentNode>();
+const nodeIdToAudioElement = new Map<string, AudioNode>(); 
 
 const nodeDescriptionToAudioNode = (nodeDescription: NodeDescription): AudioComponentNode => {
-  if (nodeIdToAudioComponentNode.has(nodeDescription.id)) {
-    return nodeIdToAudioComponentNode.get(nodeDescription.id)!;
-  }
-
   const definition = COMPONENTS[nodeDescription.name];
-  const audioElement = definition.getAudioElement(audioContext);
+
+  let audioElement: AudioNode;
+  if (nodeIdToAudioElement.has(nodeDescription.id)) {
+    audioElement = nodeIdToAudioElement.get(nodeDescription.id)!;
+  } else {
+    audioElement = definition.getAudioElement(audioContext);
+
+    nodeIdToAudioElement.set(nodeDescription.id, audioElement);
+  }
+  
   const component = React.createElement(definition.component, {audioElement, audioContext});
 
   const audioComponentNode = {
@@ -48,8 +53,6 @@ const nodeDescriptionToAudioNode = (nodeDescription: NodeDescription): AudioComp
     outPlugs: definition.outPlugs,
     audioElement,
   };
-
-  nodeIdToAudioComponentNode.set(audioComponentNode.id, audioComponentNode);
 
   return audioComponentNode;
 }
@@ -78,6 +81,8 @@ function App() {
     );
 
     React.useEffect(() => {
+      console.log('nodes changed, lets save them to local storage!!')
+      console.log('new nodes', nodes);
       localStorage.setItem("NODES", JSON.stringify(nodes.map(nodeToNodeDescription)));
     }, [nodes]);
 
@@ -106,6 +111,8 @@ function App() {
     }, [nodes, edges]);
 
     const handleNodesChange = (newNodes: Node[]) => {
+      console.log('setting nodes!!!!')
+      console.log(newNodes);
       setNodes(newNodes.map(nodeDescriptionToAudioNode))
     }
 
