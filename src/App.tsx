@@ -85,7 +85,7 @@ function App() {
     }, [nodes]);
 
     React.useEffect(() => {
-      edges.forEach(edge => {
+      const disconnectFunctions = edges.map(edge => {
         const inNode = nodes.find(node => node.id === edge.inNodeId);
         const outNode = nodes.find(node => node.id === edge.outNodeId);
 
@@ -94,26 +94,21 @@ function App() {
         const inPlug = inNode.outPlugs[edge.inPlugIndex - inNode.inPlugs.length];
         const outPlug = outNode.inPlugs[edge.outPlugIndex];
 
-        PLUGS[inPlug.type].possibleInputs[outPlug.type].connect(
+        const plugDefinition = PLUGS[inPlug.type]?.possibleInputs[outPlug.type];
+
+        if (plugDefinition === undefined) return;
+
+        return PLUGS[inPlug.type].possibleInputs[outPlug.type].connect(
           inNode,
           outNode,
         );
       });
 
       return () => {
-        edges.forEach(edge => {
-          const inNode = nodes.find(node => node.id === edge.inNodeId);
-          const outNode = nodes.find(node => node.id === edge.outNodeId);
-  
-          if (inNode === undefined || outNode === undefined) return;
-  
-          const inPlug = inNode.outPlugs[edge.inPlugIndex - inNode.inPlugs.length];
-          const outPlug = outNode.inPlugs[edge.outPlugIndex];
-
-          PLUGS[inPlug.type].possibleInputs[outPlug.type].disconnect(
-            inNode,
-            outNode,
-          );
+        disconnectFunctions.forEach(disconnect => {
+          if (disconnect !== undefined) {
+            disconnect();
+          }
         });
       };
     }, [nodes, edges]);

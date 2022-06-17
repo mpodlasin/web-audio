@@ -1,3 +1,4 @@
+import { Observable, Subject } from "rxjs";
 import { Plug } from "../../component-graph-canvas";
 import { Gain } from "./Gain";
 import { MidiInput } from "./MidiInput";
@@ -14,18 +15,15 @@ export interface AudioComponentDefinition<A extends AudioNode> {
 export interface ComponentDefinitions {
     [index: string]: AudioComponentDefinition<any>;
   }
-
 interface AudioPlug<A extends AudioNode> {
-  audioElement: A;
+  audioElement: A | Observable<number>;
 }
 
 interface PlugDefinitions {
   [type: string]: {
     possibleInputs: {
       [type: string]: {
-        connect<A extends AudioNode, B extends AudioNode>(a: AudioPlug<A>, b: AudioPlug<B>): void;
-
-        disconnect<A extends AudioNode, B extends AudioNode>(a: AudioPlug<A>, b: AudioPlug<B>): void;
+        connect<A extends AudioNode, B extends AudioNode>(a: AudioPlug<A>, b: AudioPlug<B>): undefined | (() => void);
       }
     }
   }
@@ -35,13 +33,36 @@ export const PLUGS: PlugDefinitions = {
   'audio': {
     possibleInputs: {
       'audio': {
-        connect<A extends AudioNode, B extends AudioNode>(a: AudioPlug<A>, b: AudioPlug<B>) {
-          a.audioElement.connect(b.audioElement);
-        },
+        connect(a: AudioPlug<AudioNode>, b: AudioPlug<AudioNode>) {
+          if (a.audioElement instanceof AudioNode && b.audioElement instanceof AudioNode) {
+            a.audioElement.connect(b.audioElement);
+          }
 
-        disconnect<A extends AudioNode, B extends AudioNode>(a: AudioPlug<A>, b: AudioPlug<B>) {
-          a.audioElement.disconnect(b.audioElement);
-        }
+          return () => {
+            if (a.audioElement instanceof AudioNode && b.audioElement instanceof AudioNode) {
+              a.audioElement.disconnect(b.audioElement);
+            }
+          }
+        },
+      }
+    }
+  },
+  'frequency': {
+    possibleInputs: {
+      'frequency': {
+        connect(a: AudioPlug<AudioNode>, b: AudioPlug<AudioNode>) {
+          if (b.audioElement instanceof OscillatorNode && a.audioElement instanceof Observable) {
+            const subscription = a.audioElement.subscribe(value => {
+              if (b.audioElement instanceof OscillatorNode) { // second check because typechecking gets picky
+                b.audioElement.frequency.value = value;
+              }
+            });
+
+            return () => {
+              subscription.unsubscribe();
+            }
+          }
+        },
       }
     }
   }
@@ -53,7 +74,7 @@ export const COMPONENTS: ComponentDefinitions = {
         getAudioElement: audioContext => new OscillatorNode(audioContext),
         inPlugs: [
           {
-            type: 'number',
+            type: 'frequency',
             name: 'Frequency'
           }
         ],
@@ -93,11 +114,11 @@ export const COMPONENTS: ComponentDefinitions = {
     },
     'MIDI Input': {
       component: MidiInput,
-      getAudioElement: () => undefined,
+      getAudioElement: () => new Subject<number>(),
       inPlugs: [],
       outPlugs: [
         {
-          type: 'number',
+          type: 'frequency',
           name: 'Frequency',
         }
       ],

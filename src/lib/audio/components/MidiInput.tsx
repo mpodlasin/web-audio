@@ -1,6 +1,7 @@
 import React from 'react';
+import { Observable, Subject } from 'rxjs';
 
-export const MidiInput = () => {
+export const MidiInput = ({ audioElement }: { audioElement: Subject<number>}) => {
     const [inputs, setInputs] = React.useState<WebMidi.MIDIInput[]>([]);
     const [chosenInputIndex] = React.useState(0);
 
@@ -19,6 +20,7 @@ export const MidiInput = () => {
         if (!chosenInput) return;
 
         const midiMessageHandler = (e: WebMidi.MIDIMessageEvent) => {
+            audioElement.next( 440 * Math.pow(2, (e.data[1] - 69) / 12));
             setLastMidiEvent(e.data);
         };
 
