@@ -1,5 +1,6 @@
 import { Plug } from "../../component-graph-canvas";
 import { Gain } from "./Gain";
+import { MidiInput } from "./MidiInput";
 import { Oscillator } from "./Oscillator";
 import { Output } from "./Output";
 
@@ -14,11 +15,48 @@ export interface ComponentDefinitions {
     [index: string]: AudioComponentDefinition<any>;
   }
 
+interface AudioPlug<A extends AudioNode> {
+  audioElement: A;
+}
+
+interface PlugDefinitions {
+  [type: string]: {
+    possibleInputs: {
+      [type: string]: {
+        connect<A extends AudioNode, B extends AudioNode>(a: AudioPlug<A>, b: AudioPlug<B>): void;
+
+        disconnect<A extends AudioNode, B extends AudioNode>(a: AudioPlug<A>, b: AudioPlug<B>): void;
+      }
+    }
+  }
+};
+
+export const PLUGS: PlugDefinitions = {
+  'audio': {
+    possibleInputs: {
+      'audio': {
+        connect<A extends AudioNode, B extends AudioNode>(a: AudioPlug<A>, b: AudioPlug<B>) {
+          a.audioElement.connect(b.audioElement);
+        },
+
+        disconnect<A extends AudioNode, B extends AudioNode>(a: AudioPlug<A>, b: AudioPlug<B>) {
+          a.audioElement.disconnect(b.audioElement);
+        }
+      }
+    }
+  }
+};
+
 export const COMPONENTS: ComponentDefinitions = {
     'Oscillator': {
         component: Oscillator,
         getAudioElement: audioContext => new OscillatorNode(audioContext),
-        inPlugs: [],
+        inPlugs: [
+          {
+            type: 'number',
+            name: 'Frequency'
+          }
+        ],
         outPlugs: [
           {
             type: 'audio',
@@ -52,5 +90,16 @@ export const COMPONENTS: ComponentDefinitions = {
         }
       ],
       outPlugs: [],
+    },
+    'MIDI Input': {
+      component: MidiInput,
+      getAudioElement: () => undefined,
+      inPlugs: [],
+      outPlugs: [
+        {
+          type: 'number',
+          name: 'Frequency',
+        }
+      ],
     }
   };

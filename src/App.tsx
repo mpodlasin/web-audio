@@ -1,7 +1,7 @@
 import './App.css';
 import React from 'react';
 import { ComponentGraphCanvas, Node, Edge, Position } from './lib/component-graph-canvas';
-import { COMPONENTS } from './lib/audio/components';
+import { COMPONENTS, PLUGS } from './lib/audio/components';
 import { v4 as uuidv4 } from 'uuid';
 
 interface CreationMenuProps {
@@ -11,9 +11,9 @@ interface CreationMenuProps {
 function CreationMenu({ onCreate }: CreationMenuProps) {
   return (
     <ul>
-      <li><button onClick={() => onCreate('Oscillator')}>Oscilator</button></li>
-      <li><button onClick={() => onCreate('Gain')}>Gain</button></li>
-      <li><button onClick={() => onCreate('Output')}>Output</button></li>
+      {Object.keys(COMPONENTS).map(name => (
+        <li><button onClick={() => onCreate(name)}>{name}</button></li>
+      ))}
     </ul>
   );
 }
@@ -91,10 +91,13 @@ function App() {
 
         if (inNode === undefined || outNode === undefined) return;
 
-        const inAudioElement = inNode.audioElement;
-        const outAudioElement = outNode.audioElement;
+        const inPlug = inNode.outPlugs[edge.inPlugIndex - inNode.inPlugs.length];
+        const outPlug = outNode.inPlugs[edge.outPlugIndex];
 
-        inAudioElement.connect(outAudioElement);
+        PLUGS[inPlug.type].possibleInputs[outPlug.type].connect(
+          inNode,
+          outNode,
+        );
       });
 
       return () => {
@@ -103,11 +106,14 @@ function App() {
           const outNode = nodes.find(node => node.id === edge.outNodeId);
   
           if (inNode === undefined || outNode === undefined) return;
+  
+          const inPlug = inNode.outPlugs[edge.inPlugIndex - inNode.inPlugs.length];
+          const outPlug = outNode.inPlugs[edge.outPlugIndex];
 
-          const inAudioElement = inNode.audioElement;
-          const outAudioElement = outNode.audioElement;
-
-          inAudioElement.disconnect(outAudioElement);
+          PLUGS[inPlug.type].possibleInputs[outPlug.type].disconnect(
+            inNode,
+            outNode,
+          );
         });
       };
     }, [nodes, edges]);
