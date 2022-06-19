@@ -5,67 +5,62 @@ import { MidiInput } from "./MidiInput";
 import { Oscillator } from "./Oscillator";
 import { Output } from "./Output";
 
-export interface AudioComponentDefinition<A extends AudioNode> {
+interface PlugWithAudioElement<A> extends Plug {
+  getAudioParameter(audioElement: A): AudioNode | AudioParam |  Observable<number>;
+}
+
+export interface AudioComponentDefinition<A extends (AudioNode | Observable<number>)> {
     getAudioElement(audioContext: AudioContext): A,
     component: React.ComponentType<{audioElement: A, audioContext: AudioContext}>;
-    inPlugs: Plug[];
-    outPlugs: Plug[];
+    inPlugs: PlugWithAudioElement<A>[];
+    outPlugs: PlugWithAudioElement<A>[];
   }
   
 export interface ComponentDefinitions {
     [index: string]: AudioComponentDefinition<any>;
-  }
-interface AudioPlug<A extends AudioNode> {
-  audioElement: A | Observable<number>;
 }
 
-interface PlugDefinitions {
-  [type: string]: {
-    possibleInputs: {
-      [type: string]: {
-        connect<A extends AudioNode, B extends AudioNode>(a: AudioPlug<A>, b: AudioPlug<B>): undefined | (() => void);
-      }
+// AudioNode -> AudioNode/AudioParam
+// a.connect(b);
+
+// Observable<number> -> AudioParam
+// a.subscribe(val => b.value = val);
+
+export interface AudioPlug extends Plug {
+  audioParameter: AudioNode | AudioParam |  Observable<number>;
+}
+
+export const connectPlugs = (a: AudioPlug, b: AudioPlug) => {
+  const firstAudioParameter = a.audioParameter;
+  const secondAudioParameter = b.audioParameter;
+
+  if (firstAudioParameter instanceof AudioNode && secondAudioParameter instanceof AudioNode) {
+    firstAudioParameter.connect(secondAudioParameter);
+
+    return () => {
+      firstAudioParameter.disconnect(secondAudioParameter);
     }
   }
-};
 
-export const PLUGS: PlugDefinitions = {
-  'audio': {
-    possibleInputs: {
-      'audio': {
-        connect(a: AudioPlug<AudioNode>, b: AudioPlug<AudioNode>) {
-          if (a.audioElement instanceof AudioNode && b.audioElement instanceof AudioNode) {
-            a.audioElement.connect(b.audioElement);
-          }
+  if (firstAudioParameter instanceof AudioNode && secondAudioParameter instanceof AudioParam) {
+    firstAudioParameter.connect(secondAudioParameter);
 
-          return () => {
-            if (a.audioElement instanceof AudioNode && b.audioElement instanceof AudioNode) {
-              a.audioElement.disconnect(b.audioElement);
-            }
-          }
-        },
-      }
-    }
-  },
-  'frequency': {
-    possibleInputs: {
-      'frequency': {
-        connect(a: AudioPlug<AudioNode>, b: AudioPlug<AudioNode>) {
-          if (b.audioElement instanceof OscillatorNode && a.audioElement instanceof Observable) {
-            const subscription = a.audioElement.subscribe(value => {
-              if (b.audioElement instanceof OscillatorNode) { // second check because typechecking gets picky
-                b.audioElement.frequency.value = value;
-              }
-            });
-
-            return () => {
-              subscription.unsubscribe();
-            }
-          }
-        },
-      }
+    return () => {
+      firstAudioParameter.disconnect(secondAudioParameter);
     }
   }
+
+  if (firstAudioParameter instanceof Observable && secondAudioParameter instanceof AudioParam) {
+    const subscription = firstAudioParameter.subscribe(value => {
+      secondAudioParameter.value = value;
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    }
+  }
+
+  throw new Error();
 };
 
 export const COMPONENTS: ComponentDefinitions = {
@@ -74,53 +69,59 @@ export const COMPONENTS: ComponentDefinitions = {
         getAudioElement: audioContext => new OscillatorNode(audioContext),
         inPlugs: [
           {
-            type: 'frequency',
-            name: 'Frequency'
+            type: 'number',
+            name: 'Frequency',
+            getAudioParameter: audioElement => audioElement.frequency,
           }
         ],
         outPlugs: [
           {
             type: 'audio',
-            name: 'Output'
+            name: 'Output',
+            getAudioParameter: audioElement => audioElement,
           }
         ],
-    },
+    } as AudioComponentDefinition<OscillatorNode>,
     'Gain': {
       component: Gain,
       getAudioElement: audioContext => new GainNode(audioContext),
       inPlugs: [
         {
           type: 'audio',
-          name: 'Input'
+          name: 'Input',
+          getAudioParameter: audioElement => audioElement,
         }
       ],
       outPlugs: [
         {
           type: 'audio',
-          name: 'Output'
+          name: 'Output',
+          getAudioParameter: audioElement => audioElement,
         }
       ],
-    },
+    } as AudioComponentDefinition<GainNode>,
     'Output': {
       component: Output,
       getAudioElement: audioContext => audioContext.destination,
       inPlugs: [
         {
           type: 'audio',
-          name: 'Input'
+          name: 'Input',
+          getAudioParameter: audioElement => audioElement,
         }
       ],
       outPlugs: [],
-    },
+    } as AudioComponentDefinition<AudioDestinationNode>,
     'MIDI Input': {
       component: MidiInput,
-      getAudioElement: () => new Subject<number>(),
+      getAudioElement: () => new Subject(),
       inPlugs: [],
       outPlugs: [
         {
-          type: 'frequency',
+          type: 'number',
           name: 'Frequency',
+          getAudioParameter: audioElement => audioElement,
         }
       ],
-    }
+    } as AudioComponentDefinition<Subject<number>>,
   };

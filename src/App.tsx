@@ -1,7 +1,7 @@
 import './App.css';
 import React from 'react';
 import { ComponentGraphCanvas, Node, Edge, Position } from './lib/component-graph-canvas';
-import { COMPONENTS, PLUGS } from './lib/audio/components';
+import { AudioPlug, COMPONENTS, connectPlugs } from './lib/audio/components';
 import { v4 as uuidv4 } from 'uuid';
 
 interface CreationMenuProps {
@@ -26,6 +26,8 @@ interface NodeDescription {
 
 interface AudioComponentNode extends Node {
   audioElement: AudioNode;
+  inPlugs: AudioPlug[];
+  outPlugs: AudioPlug[];
 }
 
 const audioContext = new AudioContext();
@@ -49,8 +51,14 @@ const nodeDescriptionToAudioNode = (nodeDescription: NodeDescription): AudioComp
   const audioComponentNode = {
     ...nodeDescription,
     component,
-    inPlugs: definition.inPlugs,
-    outPlugs: definition.outPlugs,
+    inPlugs: definition.inPlugs.map(plug => ({
+      ...plug,
+      audioParameter: plug.getAudioParameter(audioElement),
+    })),
+    outPlugs: definition.outPlugs.map(plug => ({
+      ...plug,
+      audioParameter: plug.getAudioParameter(audioElement),
+    })),
     audioElement,
   };
 
@@ -94,14 +102,11 @@ function App() {
         const inPlug = inNode.outPlugs[edge.inPlugIndex - inNode.inPlugs.length];
         const outPlug = outNode.inPlugs[edge.outPlugIndex];
 
-        const plugDefinition = PLUGS[inPlug.type]?.possibleInputs[outPlug.type];
-
-        if (plugDefinition === undefined) return;
-
-        return PLUGS[inPlug.type].possibleInputs[outPlug.type].connect(
-          inNode,
-          outNode,
-        );
+        try {
+          return connectPlugs(inPlug, outPlug);
+        } catch {
+          setEdges(edges => edges.filter(e => e !== edge));
+        }
       });
 
       return () => {
