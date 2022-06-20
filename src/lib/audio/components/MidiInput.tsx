@@ -29,7 +29,7 @@ export const MidiInput = ({ audioElement }: { audioElement: Subject<number>}) =>
         return () => {
             chosenInput.removeEventListener('midimessage', midiMessageHandler as (e: Event) => void);
         }
-    }, [chosenInput]);
+    }, [audioElement, chosenInput]);
 
     return (
         <div>

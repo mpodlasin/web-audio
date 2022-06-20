@@ -12,7 +12,7 @@ function CreationMenu({ onCreate }: CreationMenuProps) {
   return (
     <ul>
       {Object.keys(COMPONENTS).map(name => (
-        <li><button onClick={() => onCreate(name)}>{name}</button></li>
+        <li key={name}><button onClick={() => onCreate(name)}>{name}</button></li>
       ))}
     </ul>
   );
@@ -33,8 +33,7 @@ interface AudioComponentNode extends Node {
 const audioContext = new AudioContext();
 
 const nodeIdToAudioElement = new Map<string, AudioNode>(); 
-
-const nodeDescriptionToAudioNode = (nodeDescription: NodeDescription): AudioComponentNode => {
+const getAudioElementForNodeDescription = (nodeDescription: NodeDescription) => {
   const definition = COMPONENTS[nodeDescription.name];
 
   let audioElement: AudioNode;
@@ -46,7 +45,49 @@ const nodeDescriptionToAudioNode = (nodeDescription: NodeDescription): AudioComp
     nodeIdToAudioElement.set(nodeDescription.id, audioElement);
   }
 
-  const component = React.createElement(definition.component, {audioElement, audioContext});
+  return audioElement;
+}
+
+const nodeDescriptionToAudioNode = (
+  nodeDescription: NodeDescription, 
+  nodeDescriptions: NodeDescription[], 
+  edges: Edge[]
+): AudioComponentNode => {
+  const audioElement = getAudioElementForNodeDescription(nodeDescription);
+
+  const definition = COMPONENTS[nodeDescription.name];
+
+  const inPlugs = definition.inPlugs.reduce((inPlugs, inPlug, i) => {
+    const edgeComingToPlug = edges.find(
+      e => e.outNodeId === nodeDescription.id && e.outPlugIndex === i
+    );
+
+    if (edgeComingToPlug === undefined) return inPlugs;
+
+    const incomingNodeDescription = nodeDescriptions.find(n => n.id === edgeComingToPlug.inNodeId);
+
+    if (incomingNodeDescription === undefined) return inPlugs;
+
+    const incomingAudioElement = getAudioElementForNodeDescription(incomingNodeDescription);
+
+    const incomingNodeDefinition = COMPONENTS[incomingNodeDescription.name];
+
+    const incomingNodePlug = incomingNodeDefinition.outPlugs[edgeComingToPlug.inPlugIndex - incomingNodeDefinition.inPlugs.length];
+
+    return {
+      ...inPlugs,
+      [inPlug.name]: { 
+        ...inPlug,
+        audioParameter: incomingNodePlug.getAudioParameter(incomingAudioElement)
+      },
+    };
+  }, {} as {[name: string]: AudioPlug});
+
+  const component = React.createElement(definition.component, {
+    audioElement, 
+    audioContext, 
+    inPlugs,
+  });
 
   const audioComponentNode = {
     ...nodeDescription,
@@ -63,6 +104,10 @@ const nodeDescriptionToAudioNode = (nodeDescription: NodeDescription): AudioComp
   };
 
   return audioComponentNode;
+}
+
+const nodeDescriptionsToAudioNodes = (nodeDescriptions: NodeDescription[], edges: Edge[]): AudioComponentNode[] => {
+  return nodeDescriptions.map(nodeDescription => nodeDescriptionToAudioNode(nodeDescription, nodeDescriptions, edges))
 }
 
 const nodeToNodeDescription = (node: Node): NodeDescription => ({
@@ -84,8 +129,8 @@ function App() {
 
     const [nodes, setNodes] = React.useState<AudioComponentNode[]>(
       localStorage.getItem("NODES") ? 
-        JSON.parse(localStorage.getItem('NODES')!).map(nodeDescriptionToAudioNode) : 
-        []
+      nodeDescriptionsToAudioNodes(JSON.parse(localStorage.getItem('NODES')!), edges) : 
+      []
     );
 
     React.useEffect(() => {
@@ -93,33 +138,30 @@ function App() {
     }, [nodes]);
 
     React.useEffect(() => {
-      const disconnectFunctions = edges.map(edge => {
+      const disconnectFunctions = edges.flatMap(edge => {
         const inNode = nodes.find(node => node.id === edge.inNodeId);
         const outNode = nodes.find(node => node.id === edge.outNodeId);
 
-        if (inNode === undefined || outNode === undefined) return;
+        if (inNode === undefined || outNode === undefined) return [];
 
         const inPlug = inNode.outPlugs[edge.inPlugIndex - inNode.inPlugs.length];
         const outPlug = outNode.inPlugs[edge.outPlugIndex];
 
         try {
-          return connectPlugs(inPlug, outPlug);
+          return [connectPlugs(inPlug, outPlug)];
         } catch {
           setEdges(edges => edges.filter(e => e !== edge));
+          return [];
         }
       });
 
       return () => {
-        disconnectFunctions.forEach(disconnect => {
-          if (disconnect !== undefined) {
-            disconnect();
-          }
-        });
+        disconnectFunctions.forEach(disconnect => disconnect());
       };
     }, [nodes, edges]);
 
     const handleNodesChange = (newNodes: Node[]) => {
-      setNodes(newNodes.map(nodeDescriptionToAudioNode))
+      setNodes(nodeDescriptionsToAudioNodes(newNodes, edges))
     }
 
     const handleCreateNode = (nodeName: string) => {
@@ -127,7 +169,7 @@ function App() {
         id: uuidv4(),
         name: nodeName,
         position: {top: 100, left: 100},
-      })])
+      }, nodes, edges)])
     }
   
     return (

@@ -2,6 +2,7 @@ import { Observable, Subject } from "rxjs";
 import { Plug } from "../../component-graph-canvas";
 import { Gain } from "./Gain";
 import { MidiInput } from "./MidiInput";
+import { Number } from "./Number";
 import { Oscillator } from "./Oscillator";
 import { Output } from "./Output";
 
@@ -11,7 +12,7 @@ interface PlugWithAudioElement<A> extends Plug {
 
 export interface AudioComponentDefinition<A extends (AudioNode | Observable<number>)> {
     getAudioElement(audioContext: AudioContext): A,
-    component: React.ComponentType<{audioElement: A, audioContext: AudioContext}>;
+    component: React.ComponentType<{audioElement: A, audioContext: AudioContext, inPlugs: { [name: string]: AudioPlug}}>;
     inPlugs: PlugWithAudioElement<A>[];
     outPlugs: PlugWithAudioElement<A>[];
   }
@@ -124,4 +125,16 @@ export const COMPONENTS: ComponentDefinitions = {
         }
       ],
     } as AudioComponentDefinition<Subject<number>>,
+    'Number': {
+      component: Number,
+      getAudioElement: () => new Subject(),
+      inPlugs: [],
+      outPlugs: [
+        {
+          type: 'number',
+          name: 'Number',
+          getAudioParameter: audioElement => audioElement,
+        },
+      ]
+    }
   };

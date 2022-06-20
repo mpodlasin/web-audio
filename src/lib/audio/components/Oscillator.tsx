@@ -1,8 +1,21 @@
 import React from 'react';
+import { Observable } from 'rxjs';
 
 const OSCILLATOR_TYPES: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"];
 
-export function Oscillator({ audioElement: oscillator, audioContext, }: { audioElement: OscillatorNode, audioContext: AudioContext, }) {
+export interface OscillatorProps { 
+  audioElement: OscillatorNode, 
+  audioContext: AudioContext,
+  inPlugs: {
+    [name: string]: {
+      audioParameter: AudioNode | AudioParam | Observable<number>
+    } | undefined
+  } 
+}
+
+export function Oscillator({ audioElement: oscillator, audioContext, inPlugs }: OscillatorProps) {
+  const [frequency, setFrequency] = React.useState(440);
+
   React.useEffect(() => {
     oscillator.type = OSCILLATOR_TYPES[0];
     oscillator.frequency.value = 440;
@@ -14,8 +27,20 @@ export function Oscillator({ audioElement: oscillator, audioContext, }: { audioE
   }
 
   const changeFrequency: React.FormEventHandler<HTMLInputElement> = (e) => {
+    setFrequency(e.currentTarget.valueAsNumber);
     oscillator.frequency.setValueAtTime(e.currentTarget.valueAsNumber, audioContext.currentTime);
   };
+
+  React.useEffect(() => {
+    const frequencyPlug = inPlugs['Frequency'];
+    console.log(inPlugs);
+
+    if (frequencyPlug !== undefined && frequencyPlug.audioParameter instanceof Observable) {
+      const subscription = frequencyPlug.audioParameter.subscribe(setFrequency);
+
+      return () => subscription.unsubscribe();
+    }
+  }, [inPlugs]);
 
   return <div>
     <select onChange={handleOscillatorTypeClick}>
@@ -26,7 +51,7 @@ export function Oscillator({ audioElement: oscillator, audioContext, }: { audioE
       ))}
     </select>
     <div>
-    <input onChange={changeFrequency} type="range" min="0" max="1000" step="1" defaultValue={oscillator.frequency.value} />
+    <input value={frequency} onChange={changeFrequency} type="range" min="0" max="1000" step="1" />
     </div>
   </div>;
 }
