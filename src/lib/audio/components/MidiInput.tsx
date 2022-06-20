@@ -1,5 +1,5 @@
 import React from 'react';
-import { Observable, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 export const MidiInput = ({ audioElement }: { audioElement: Subject<number>}) => {
     const [inputs, setInputs] = React.useState<WebMidi.MIDIInput[]>([]);
