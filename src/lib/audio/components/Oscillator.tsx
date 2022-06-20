@@ -33,7 +33,6 @@ export function Oscillator({ audioElement: oscillator, audioContext, inPlugs }: 
 
   React.useEffect(() => {
     const frequencyPlug = inPlugs['Frequency'];
-    console.log(inPlugs);
 
     if (frequencyPlug !== undefined && frequencyPlug.audioParameter instanceof Observable) {
       const subscription = frequencyPlug.audioParameter.subscribe(setFrequency);
