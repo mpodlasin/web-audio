@@ -1,4 +1,24 @@
 import React from 'react';
+import { AudioComponentDefinition } from './AudioComponentDefinition';
+
+export const GainDefinition: AudioComponentDefinition<GainNode> = {
+  component: Gain,
+  getAudioElement: audioContext => new GainNode(audioContext),
+  inPlugs: [
+    {
+      type: 'audio',
+      name: 'Input',
+      getAudioParameter: audioElement => audioElement,
+    }
+  ],
+  outPlugs: [
+    {
+      type: 'audio',
+      name: 'Output',
+      getAudioParameter: audioElement => audioElement,
+    }
+  ],
+};
 
 export function Gain({ audioElement: gain, audioContext }: { audioElement: GainNode, audioContext: AudioContext }) {
     React.useEffect(() => {

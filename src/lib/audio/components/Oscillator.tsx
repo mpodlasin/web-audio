@@ -1,7 +1,27 @@
 import React from 'react';
 import { Observable } from 'rxjs';
+import { AudioComponentDefinition } from './AudioComponentDefinition';
 
 const OSCILLATOR_TYPES: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"];
+
+export const OscillatorDefinition: AudioComponentDefinition<OscillatorNode> = {
+  component: Oscillator,
+  getAudioElement: audioContext => new OscillatorNode(audioContext),
+  inPlugs: [
+    {
+      type: 'number',
+      name: 'Frequency',
+      getAudioParameter: audioElement => audioElement.frequency,
+    }
+  ],
+  outPlugs: [
+    {
+      type: 'audio',
+      name: 'Output',
+      getAudioParameter: audioElement => audioElement,
+    }
+  ],
+};
 
 export interface OscillatorProps { 
   audioElement: OscillatorNode, 

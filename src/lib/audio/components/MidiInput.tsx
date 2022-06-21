@@ -1,7 +1,21 @@
 import React from 'react';
 import { Subject } from 'rxjs';
+import { AudioComponentDefinition } from './AudioComponentDefinition';
 
-export const MidiInput = ({ audioElement }: { audioElement: Subject<number>}) => {
+export const MidiInputDefinition: AudioComponentDefinition<Subject<number>> = {
+    component: MidiInput,
+    getAudioElement: () => new Subject(),
+    inPlugs: [],
+    outPlugs: [
+      {
+        type: 'number',
+        name: 'Frequency',
+        getAudioParameter: audioElement => audioElement,
+      }
+    ],
+  }
+
+export function MidiInput({ audioElement }: { audioElement: Subject<number>}) {
     const [inputs, setInputs] = React.useState<WebMidi.MIDIInput[]>([]);
     const [chosenInputIndex] = React.useState(0);
 

@@ -1,4 +1,18 @@
 import React from 'react';
+import { AudioComponentDefinition } from './AudioComponentDefinition';
+
+export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode> = {
+  component: Output,
+  getAudioElement: audioContext => audioContext.destination,
+  inPlugs: [
+    {
+      type: 'audio',
+      name: 'Input',
+      getAudioParameter: audioElement => audioElement,
+    }
+  ],
+  outPlugs: [],
+};
 
 export function Output({ audioContext }: { audioContext: AudioContext }) {
     const [audioContextState, setAudioContextState] = React.useState(audioContext.state);
