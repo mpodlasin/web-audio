@@ -10,12 +10,10 @@ export const MultiplyDefinition: AudioComponentDefinition<Subject<number>> = {
         {
             type: 'number',
             name: 'Number A',
-            getAudioParameter: audioElement => undefined,
           },
           {
             type: 'number',
             name: 'Number B',
-            getAudioParameter: audioElement => undefined,
           },
     ],
     outPlugs: [

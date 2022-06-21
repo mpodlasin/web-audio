@@ -59,16 +59,18 @@ export const nodeDescriptionToAudioNode = (
       const incomingNodeDefinition = COMPONENTS[incomingNodeDescription.name];
   
       const incomingNodePlug = incomingNodeDefinition.outPlugs[edgeComingToPlug.inPlugIndex - incomingNodeDefinition.inPlugs.length];
-  
-      const incomingAudioParameter = incomingNodePlug.getAudioParameter(incomingAudioElement);
 
-      if (incomingAudioParameter === undefined) return inPlugs;
+      const getAudioParameterForIncomingNodePlug = incomingNodePlug.getAudioParameter;
+  
+      if (getAudioParameterForIncomingNodePlug === undefined) return inPlugs;
+
+      const incomingAudioParameter = getAudioParameterForIncomingNodePlug(incomingAudioElement);
 
       return {
         ...inPlugs,
         [inPlug.name]: { 
           ...inPlug,
-          audioParameter: incomingAudioParameter
+          audioParameter: incomingAudioParameter,
         },
       };
     }, {} as {[name: string]: AudioPlugWithAudioParameter});
@@ -84,11 +86,11 @@ export const nodeDescriptionToAudioNode = (
       component,
       inPlugs: definition.inPlugs.map(plug => ({
         ...plug,
-        audioParameter: plug.getAudioParameter(audioElement),
+        audioParameter: plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,
       })),
       outPlugs: definition.outPlugs.map(plug => ({
         ...plug,
-        audioParameter: plug.getAudioParameter(audioElement),
+        audioParameter:  plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,
       })),
       audioElement,
     };

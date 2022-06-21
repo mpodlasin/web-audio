@@ -16,5 +16,5 @@ export interface AudioComponentProps<A> {
 }
 
 export interface PlugDefinition<A> extends Plug {
-  getAudioParameter(audioElement: A): AudioNode | AudioParam |  Observable<number> | undefined;
+  getAudioParameter?(audioElement: A): AudioNode | AudioParam |  Observable<number>;
 }
