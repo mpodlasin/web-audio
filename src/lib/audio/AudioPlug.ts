@@ -1,9 +1,13 @@
-import { Observable } from "rxjs";
+import { Observable, Subject } from "rxjs";
 import { Plug } from "../component-graph-canvas";
 
 
 export interface AudioPlug extends Plug {
-    audioParameter: AudioNode | AudioParam |  Observable<number>;
+    audioParameter?: AudioNode | AudioParam |  Observable<number>;
+}
+
+export interface AudioPlugWithAudioParameter extends Plug {
+  audioParameter: AudioNode | AudioParam |  Observable<number>;
 }
   
 export const connectPlugs = (a: AudioPlug, b: AudioPlug) => {
@@ -34,6 +38,18 @@ export const connectPlugs = (a: AudioPlug, b: AudioPlug) => {
       return () => {
         subscription.unsubscribe();
       }
+    }
+
+    if (firstAudioParameter instanceof Observable && secondAudioParameter instanceof Subject) {
+      const subscription = firstAudioParameter.subscribe(secondAudioParameter);
+
+      return () => {
+        subscription.unsubscribe();
+      }
+    }
+
+    if (firstAudioParameter === undefined || secondAudioParameter === undefined) {
+      return () => {};
     }
   
     throw new Error();

@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 import { Plug } from "../../component-graph-canvas";
-import { AudioPlug } from "../AudioPlug";
+import { AudioPlug, AudioPlugWithAudioParameter } from "../AudioPlug";
 
 export interface AudioComponentDefinition<A extends (AudioNode | Observable<number>)> {
     getAudioElement(audioContext: AudioContext): A,
@@ -12,9 +12,9 @@ export interface AudioComponentDefinition<A extends (AudioNode | Observable<numb
 export interface AudioComponentProps<A> {
   audioElement: A, 
   audioContext: AudioContext, 
-  inPlugs: { [name: string]: AudioPlug}
+  inPlugs: { [name: string]: AudioPlugWithAudioParameter}
 }
 
 export interface PlugDefinition<A> extends Plug {
-  getAudioParameter(audioElement: A): AudioNode | AudioParam |  Observable<number>;
+  getAudioParameter(audioElement: A): AudioNode | AudioParam |  Observable<number> | undefined;
 }

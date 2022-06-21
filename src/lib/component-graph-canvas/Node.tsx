@@ -61,11 +61,11 @@ export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, 
                 <span>{node.name}</span>
                 <button onClick={handleDelete}>X</button>
             </div>
-            <div style={{padding: '10px 10px'}}>
+            <div style={{padding: '10px 10px', display: 'flex'}}>
                 {node.inPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(i)} onStartConnecting={position => onStartConnecting(i, position)} onStopConnecting={position => onStopConnecting(i, position)} />)}
             </div>
             <div style={{cursor: 'initial', padding: 10}}>{node.component}</div>
-            <div style={{padding: '10px 10px'}}>
+            <div style={{padding: '10px 10px', display: 'flex'}}>
                 {node.outPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
             </div>
         </div>
@@ -100,7 +100,7 @@ const NodePlug = ({ onStartConnecting, onStopConnecting, onPosition }: NodePlugP
             ref={ref}
             onMouseDown={e => onStartConnecting({top: e.clientY, left: e.clientX})} 
             onMouseUp={e => onStopConnecting({top: e.clientY, left: e.clientX})} 
-            style={{ backgroundColor: 'lightgray', width: 14, height: 14, borderRadius: 15, border: '1px solid gray' }}
+            style={{ marginRight: 5, backgroundColor: 'lightgray', width: 14, height: 14, borderRadius: 15, border: '1px solid gray' }}
             />
     );
 }

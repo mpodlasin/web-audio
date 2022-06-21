@@ -1,6 +1,6 @@
 import React from 'react';
 import { Edge, Position, Node } from "../component-graph-canvas";
-import { AudioPlug } from "./AudioPlug";
+import { AudioPlug, AudioPlugWithAudioParameter } from "./AudioPlug";
 import { COMPONENTS } from "./components";
 
 export interface NodeDescription {
@@ -60,14 +60,18 @@ export const nodeDescriptionToAudioNode = (
   
       const incomingNodePlug = incomingNodeDefinition.outPlugs[edgeComingToPlug.inPlugIndex - incomingNodeDefinition.inPlugs.length];
   
+      const incomingAudioParameter = incomingNodePlug.getAudioParameter(incomingAudioElement);
+
+      if (incomingAudioParameter === undefined) return inPlugs;
+
       return {
         ...inPlugs,
         [inPlug.name]: { 
           ...inPlug,
-          audioParameter: incomingNodePlug.getAudioParameter(incomingAudioElement)
+          audioParameter: incomingAudioParameter
         },
       };
-    }, {} as {[name: string]: AudioPlug});
+    }, {} as {[name: string]: AudioPlugWithAudioParameter});
   
     const component = React.createElement(definition.component, {
       audioElement, 

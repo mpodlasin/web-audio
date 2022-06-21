@@ -30,7 +30,7 @@ export interface OscillatorProps {
     [name: string]: {
       audioParameter: AudioNode | AudioParam | Observable<number>
     } | undefined
-  } 
+  }
 }
 
 export function Oscillator({ audioElement: oscillator, audioContext, inPlugs }: OscillatorProps) {
