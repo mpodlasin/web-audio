@@ -19,7 +19,7 @@ function App() {
 
     const [nodes, setNodes] = React.useState<AudioComponentNode[]>(
       localStorage.getItem("NODES") ? 
-      nodeDescriptionsToAudioNodes(JSON.parse(localStorage.getItem('NODES')!), edges) : 
+      nodeDescriptionsToAudioNodes(JSON.parse(localStorage.getItem('NODES')!), edges, true) : 
       []
     );
 

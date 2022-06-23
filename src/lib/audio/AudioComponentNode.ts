@@ -7,6 +7,7 @@ export interface NodeDescription {
     id: string;
     name: string;
     position: Position;
+    serializedData?: any;
   }
   
 export interface AudioComponentNode extends Node {
@@ -98,13 +99,42 @@ export const nodeDescriptionToAudioNode = (
     return audioComponentNode;
   }
   
-  export const nodeDescriptionsToAudioNodes = (nodeDescriptions: NodeDescription[], edges: Edge[]): AudioComponentNode[] => {
-    return nodeDescriptions.map(nodeDescription => nodeDescriptionToAudioNode(nodeDescription, nodeDescriptions, edges))
+  export const nodeDescriptionsToAudioNodes = (nodeDescriptions: NodeDescription[], edges: Edge[], deserializeDescriptionData = false): AudioComponentNode[] => {
+    const audioNodes = nodeDescriptions.map(nodeDescription => nodeDescriptionToAudioNode(nodeDescription, nodeDescriptions, edges));
+
+    if (deserializeDescriptionData) {
+      nodeDescriptions.forEach(deserializeData);
+    }
+
+    return audioNodes;
   }
   
-  export const nodeToNodeDescription = (node: Node): NodeDescription => ({
+  export const nodeToNodeDescription = (node: AudioComponentNode): NodeDescription => ({
     id: node.id,
     name: node.name,
     position: node.position,
+    serializedData: serializeData(node),
   });
+
+  const serializeData = (node: AudioComponentNode): any => {
+    const audioElement = node.audioElement;
+
+    if (audioElement instanceof OscillatorNode) {
+      return {
+        frequency: audioElement.frequency.value,
+      };
+    }
+
+    return {};
+  }
+
+  const deserializeData = (nodeDescription: NodeDescription): void => {
+    const serializedData = nodeDescription.serializedData;
+
+    const audioElement = getAudioElementForNodeDescription(nodeDescription);
+
+    if (audioElement instanceof OscillatorNode) {
+      audioElement.frequency.value = serializedData.frequency;
+    }
+  }
   

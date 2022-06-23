@@ -20,7 +20,12 @@ export const GainDefinition: AudioComponentDefinition<GainNode> = {
   ],
 };
 
-export function Gain({ audioElement: gain, audioContext }: { audioElement: GainNode, audioContext: AudioContext }) {
+export interface GainProps {
+  audioElement: GainNode;
+  audioContext: AudioContext;
+}
+
+export function Gain({ audioElement: gain, audioContext }: GainProps) {
     React.useEffect(() => {
       gain.gain.value = 0;
     }, [gain]);
