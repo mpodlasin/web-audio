@@ -1,6 +1,6 @@
 import { Observable } from "rxjs";
 import { Plug } from "../../component-graph-canvas";
-import { AudioPlug, AudioPlugWithAudioParameter } from "../AudioPlug";
+import { AudioPlugWithAudioParameter } from "../AudioPlug";
 
 export interface AudioComponentDefinition<A> {
     getAudioElement(audioContext: AudioContext): A,
