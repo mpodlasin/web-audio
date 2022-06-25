@@ -2,7 +2,7 @@ import { Observable } from "rxjs";
 import { Plug } from "../../component-graph-canvas";
 import { AudioPlug, AudioPlugWithAudioParameter } from "../AudioPlug";
 
-export interface AudioComponentDefinition<A extends (AudioNode | Observable<number>)> {
+export interface AudioComponentDefinition<A> {
     getAudioElement(audioContext: AudioContext): A,
     component: React.ComponentType<AudioComponentProps<A>>;
     inPlugs: PlugDefinition<A>[];
