@@ -6,6 +6,7 @@ import { AudioComponentDefinition } from './AudioComponentDefinition';
 export const MultiplyDefinition: AudioComponentDefinition<Subject<number>, void> = {
     component: Multiply,
     getAudioElement: () => new Subject(),
+    initialState: undefined,
     inPlugs: [
         {
             type: 'number',
@@ -46,7 +47,7 @@ export function Multiply({ audioElement, inPlugs }: MultiplyProps) {
         ).subscribe(audioElement);
 
         return () => subscription.unsubscribe();
-    }, [audioElement, inPlugs]);
+    }, [audioElement]);
 
     React.useEffect(() => {
         const subscription = audioElement.subscribe(setResult);

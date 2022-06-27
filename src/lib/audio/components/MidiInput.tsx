@@ -5,6 +5,7 @@ import { AudioComponentDefinition } from './AudioComponentDefinition';
 export const MidiInputDefinition: AudioComponentDefinition<Subject<number>, void> = {
     component: MidiInput,
     getAudioElement: () => new Subject(),
+    initialState: undefined,
     inPlugs: [],
     outPlugs: [
       {

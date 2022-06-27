@@ -4,6 +4,7 @@ import { AudioComponentDefinition } from './AudioComponentDefinition';
 export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode, void> = {
   component: Output,
   getAudioElement: audioContext => audioContext.destination,
+  initialState: undefined,
   inPlugs: [
     {
       type: 'audio',

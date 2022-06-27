@@ -6,13 +6,15 @@ const OSCILLATOR_TYPES: OscillatorType[] = ["sine", "square", "sawtooth", "trian
 
 export interface OscillatorState {
   frequency: number;
+  type: OscillatorType;
 }
 
 export const OscillatorDefinition: AudioComponentDefinition<OscillatorNode, OscillatorState> = {
   component: Oscillator,
   getAudioElement: audioContext => new OscillatorNode(audioContext),
   initialState: {
-    frequency: 440
+    frequency: 440,
+    type: OSCILLATOR_TYPES[0],
   },
   inPlugs: [
     {
@@ -44,13 +46,15 @@ export interface OscillatorProps {
 
 export function Oscillator({ audioElement: oscillator, audioContext, state, onStateChange, inPlugs }: OscillatorProps) {
   React.useEffect(() => {
-    oscillator.type = OSCILLATOR_TYPES[0];
-    oscillator.frequency.value = 440;
+    oscillator.type = state.type;
+    oscillator.frequency.value = state.frequency;
     oscillator.start();
   }, [oscillator]);
 
   const handleOscillatorTypeClick = (e: React.FormEvent<HTMLSelectElement>) => {
+    const currentTarget = e.currentTarget;
     oscillator.type = e.currentTarget.value as OscillatorType;
+    onStateChange(state => ({...state, type: currentTarget.value as OscillatorType}));
   }
 
   const changeFrequency: React.FormEventHandler<HTMLInputElement> = (e) => {

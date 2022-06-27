@@ -1,9 +1,16 @@
 import React from 'react';
 import { AudioComponentDefinition } from './AudioComponentDefinition';
 
-export const GainDefinition: AudioComponentDefinition<GainNode, void> = {
+export interface GainState {
+  gain: number;
+}
+
+export const GainDefinition: AudioComponentDefinition<GainNode, GainState> = {
   component: Gain,
   getAudioElement: audioContext => new GainNode(audioContext),
+  initialState: {
+    gain: 0,
+  },
   inPlugs: [
     {
       type: 'audio',
@@ -21,22 +28,23 @@ export const GainDefinition: AudioComponentDefinition<GainNode, void> = {
 };
 
 export interface GainProps {
+  state: GainState;
+  onStateChange: React.Dispatch<React.SetStateAction<GainState>>;
   audioElement: GainNode;
-  audioContext: AudioContext;
 }
 
-export function Gain({ audioElement: gain, audioContext }: GainProps) {
+export function Gain({ audioElement: gain, state, onStateChange }: GainProps) {
     React.useEffect(() => {
-      gain.gain.value = 0;
-    }, [gain]);
+      gain.gain.value = state.gain;
+    }, [gain, state.gain]);
   
     const changeGain: React.FormEventHandler<HTMLInputElement> = (e) => {
-      gain.gain.setValueAtTime(e.currentTarget.valueAsNumber, audioContext.currentTime)
-      gain.gain.value = e.currentTarget.valueAsNumber;
+      const currentTarget = e.currentTarget;
+      onStateChange(state => ({...state, gain: currentTarget.valueAsNumber}));
     }
   
     return <div>
-      <input type="range" min={0} max={1} step={0.01} defaultValue={0} onInput={changeGain} />
+      <input value={state.gain} type="range" min={0} max={1} step={0.01} onInput={changeGain} />
       </div>;
   }
 

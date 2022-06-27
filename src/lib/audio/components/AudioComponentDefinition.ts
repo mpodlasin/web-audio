@@ -6,7 +6,7 @@ import { AudioPlugWithAudioParameter } from "../AudioPlug";
 export interface AudioComponentDefinition<A, S> {
     getAudioElement(audioContext: AudioContext): A,
     component: React.ComponentType<AudioComponentProps<A, S>>;
-    initialState?: S;
+    initialState: S;
     inPlugs: PlugDefinition<A>[];
     outPlugs: PlugDefinition<A>[];
   }
