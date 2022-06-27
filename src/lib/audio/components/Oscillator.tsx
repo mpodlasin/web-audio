@@ -34,7 +34,7 @@ export interface OscillatorProps {
   audioElement: OscillatorNode, 
   audioContext: AudioContext,
   state: OscillatorState,
-  onStateChange: (newState: OscillatorState) => void,
+  onStateChange: React.Dispatch<React.SetStateAction<OscillatorState>>,
   inPlugs: {
     [name: string]: {
       audioParameter: AudioNode | AudioParam | Observable<number>
@@ -54,8 +54,9 @@ export function Oscillator({ audioElement: oscillator, audioContext, state, onSt
   }
 
   const changeFrequency: React.FormEventHandler<HTMLInputElement> = (e) => {
-    onStateChange({...state, frequency: e.currentTarget.valueAsNumber});
-    oscillator.frequency.setValueAtTime(e.currentTarget.valueAsNumber, audioContext.currentTime);
+    const currentTarget = e.currentTarget;
+    onStateChange(state => ({...state, frequency: currentTarget.valueAsNumber}));
+    oscillator.frequency.setValueAtTime(currentTarget.valueAsNumber, audioContext.currentTime);
   };
 
   React.useEffect(() => {
@@ -63,7 +64,7 @@ export function Oscillator({ audioElement: oscillator, audioContext, state, onSt
 
     if (frequencyPlug !== undefined && frequencyPlug.audioParameter instanceof Observable) {
       const subscription = frequencyPlug.audioParameter.subscribe(frequency => {
-        onStateChange({...state, frequency});
+        onStateChange(state => ({...state, frequency}));
       });
 
       return () => subscription.unsubscribe();

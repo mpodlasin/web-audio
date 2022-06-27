@@ -1,3 +1,4 @@
+import React from "react";
 import { Observable } from "rxjs";
 import { Plug } from "../../component-graph-canvas";
 import { AudioPlugWithAudioParameter } from "../AudioPlug";
@@ -15,7 +16,7 @@ export interface AudioComponentProps<A, S> {
   audioContext: AudioContext, 
   inPlugs: { [name: string]: AudioPlugWithAudioParameter}
   state: S,
-  onStateChange(newState: S): void,
+  onStateChange: React.Dispatch<React.SetStateAction<S>>;
 }
 
 export interface PlugDefinition<A> extends Plug {

@@ -34,13 +34,40 @@ const getAudioElementForNodeDescription = (nodeDescription: NodeDescription) => 
   
     return audioElement;
   }
+
+  export const nodeDescriptionsToAudioNodes = (
+    nodeDescriptions: NodeDescription[], 
+    edges: Edge[],
+    states: {[nodeId: string]: any},
+    setStates: React.Dispatch<React.SetStateAction<{[nodeId: string]: any}>>,
+  ): AudioComponentNode[] => {
+    const handleStateChange = (nodeId: string) => (setState: React.SetStateAction<any>) => {
+      if (setState instanceof Function) {
+        setStates(states => ({...states, [nodeId]: setState(states[nodeId])}))
+      } else {
+        setStates(states => ({...states, [nodeId]: setState}));
+      }
+    };
+
+    const audioNodes = nodeDescriptions.map(
+      nodeDescription => nodeDescriptionToAudioNode(
+        nodeDescription, 
+        nodeDescriptions, 
+        edges, 
+        states[nodeDescription.id],
+        handleStateChange(nodeDescription.id),
+      )
+    );
+
+    return audioNodes;
+  };
   
 const nodeDescriptionToAudioNode = <S>(
     nodeDescription: NodeDescription, 
     nodeDescriptions: NodeDescription[], 
     edges: Edge[],
     state: S | undefined,
-    setState: (newState: S) => void,
+    setState: React.Dispatch<React.SetStateAction<S>>,
   ): AudioComponentNode => {
     const audioElement = getAudioElementForNodeDescription(nodeDescription);
   
@@ -71,25 +98,6 @@ const nodeDescriptionToAudioNode = <S>(
     };
   
     return audioComponentNode;
-  }
-  
-  export const nodeDescriptionsToAudioNodes = (
-    nodeDescriptions: NodeDescription[], 
-    edges: Edge[],
-    states: {[nodeId: string]: any},
-    setStates: (newStates: {[nodeId: string]: any}) => void,
-  ): AudioComponentNode[] => {
-    const audioNodes = nodeDescriptions.map(
-      nodeDescription => nodeDescriptionToAudioNode(
-        nodeDescription, 
-        nodeDescriptions, 
-        edges, 
-        states[nodeDescription.id],
-        newState => setStates({...states, [nodeDescription.id]: newState})
-      )
-    );
-
-    return audioNodes;
   }
   
   export const nodeToNodeDescription = (node: Node): NodeDescription => ({
