@@ -2,12 +2,12 @@ import React from 'react';
 import { Edge, Position, Node } from "../component-graph-canvas";
 import { AudioPlug, AudioPlugWithAudioParameter } from "./AudioPlug";
 import { COMPONENTS } from "./components";
+import { AudioComponentDefinition } from './components/AudioComponentDefinition';
 
 export interface NodeDescription {
     id: string;
     name: string;
     position: Position;
-    serializedData?: any;
   }
   
 export interface AudioComponentNode extends Node {
@@ -35,16 +35,77 @@ const getAudioElementForNodeDescription = (nodeDescription: NodeDescription) => 
     return audioElement;
   }
   
-export const nodeDescriptionToAudioNode = (
+const nodeDescriptionToAudioNode = <S>(
     nodeDescription: NodeDescription, 
     nodeDescriptions: NodeDescription[], 
-    edges: Edge[]
+    edges: Edge[],
+    state: S | undefined,
+    setState: (newState: S) => void,
   ): AudioComponentNode => {
     const audioElement = getAudioElementForNodeDescription(nodeDescription);
   
-    const definition = COMPONENTS[nodeDescription.name];
+    const definition: AudioComponentDefinition<any, S> = COMPONENTS[nodeDescription.name];
+
+    const inPlugs = collectIncomingPlugsForNode(nodeDescription, nodeDescriptions, edges);
   
-    const inPlugs = definition.inPlugs.reduce((inPlugs, inPlug, i) => {
+    const component = React.createElement(definition.component, {
+      audioElement, 
+      audioContext: GLOBAL_AUDIO_CONTEXT, 
+      inPlugs,
+      state: state || definition.initialState!,
+      onStateChange: setState,
+    });
+  
+    const audioComponentNode = {
+      ...nodeDescription,
+      component,
+      inPlugs: definition.inPlugs.map(plug => ({
+        ...plug,
+        audioParameter: plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,
+      })),
+      outPlugs: definition.outPlugs.map(plug => ({
+        ...plug,
+        audioParameter:  plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,
+      })),
+      audioElement,
+    };
+  
+    return audioComponentNode;
+  }
+  
+  export const nodeDescriptionsToAudioNodes = (
+    nodeDescriptions: NodeDescription[], 
+    edges: Edge[],
+    states: {[nodeId: string]: any},
+    setStates: (newStates: {[nodeId: string]: any}) => void,
+  ): AudioComponentNode[] => {
+    const audioNodes = nodeDescriptions.map(
+      nodeDescription => nodeDescriptionToAudioNode(
+        nodeDescription, 
+        nodeDescriptions, 
+        edges, 
+        states[nodeDescription.id],
+        newState => setStates({...states, [nodeDescription.id]: newState})
+      )
+    );
+
+    return audioNodes;
+  }
+  
+  export const nodeToNodeDescription = (node: Node): NodeDescription => ({
+    id: node.id,
+    name: node.name,
+    position: node.position,
+  });
+
+  const collectIncomingPlugsForNode = (
+    nodeDescription: NodeDescription, 
+    nodeDescriptions: NodeDescription[], 
+    edges: Edge[]
+  ) => {
+    const definition = COMPONENTS[nodeDescription.name];
+
+    return definition.inPlugs.reduce((inPlugs, inPlug, i) => {
       const edgeComingToPlug = edges.find(
         e => e.outNodeId === nodeDescription.id && e.outPlugIndex === i
       );
@@ -75,66 +136,5 @@ export const nodeDescriptionToAudioNode = (
         },
       };
     }, {} as {[name: string]: AudioPlugWithAudioParameter});
-  
-    const component = React.createElement(definition.component, {
-      audioElement, 
-      audioContext: GLOBAL_AUDIO_CONTEXT, 
-      inPlugs,
-    });
-  
-    const audioComponentNode = {
-      ...nodeDescription,
-      component,
-      inPlugs: definition.inPlugs.map(plug => ({
-        ...plug,
-        audioParameter: plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,
-      })),
-      outPlugs: definition.outPlugs.map(plug => ({
-        ...plug,
-        audioParameter:  plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,
-      })),
-      audioElement,
-    };
-  
-    return audioComponentNode;
-  }
-  
-  export const nodeDescriptionsToAudioNodes = (nodeDescriptions: NodeDescription[], edges: Edge[], deserializeDescriptionData = false): AudioComponentNode[] => {
-    const audioNodes = nodeDescriptions.map(nodeDescription => nodeDescriptionToAudioNode(nodeDescription, nodeDescriptions, edges));
-
-    if (deserializeDescriptionData) {
-      nodeDescriptions.forEach(deserializeData);
-    }
-
-    return audioNodes;
-  }
-  
-  export const nodeToNodeDescription = (node: AudioComponentNode): NodeDescription => ({
-    id: node.id,
-    name: node.name,
-    position: node.position,
-    serializedData: serializeData(node),
-  });
-
-  const serializeData = (node: AudioComponentNode): any => {
-    const audioElement = node.audioElement;
-
-    if (audioElement instanceof OscillatorNode) {
-      return {
-        frequency: audioElement.frequency.value,
-      };
-    }
-
-    return {};
-  }
-
-  const deserializeData = (nodeDescription: NodeDescription): void => {
-    const serializedData = nodeDescription.serializedData;
-
-    const audioElement = getAudioElementForNodeDescription(nodeDescription);
-
-    if (audioElement instanceof OscillatorNode) {
-      audioElement.frequency.value = serializedData.frequency;
-    }
-  }
+  };
   

@@ -3,7 +3,7 @@ import { combineLatest, map, Observable, Subject } from 'rxjs';
 import { AudioPlug } from '../AudioPlug';
 import { AudioComponentDefinition } from './AudioComponentDefinition';
 
-export const MultiplyDefinition: AudioComponentDefinition<Subject<number>> = {
+export const MultiplyDefinition: AudioComponentDefinition<Subject<number>, void> = {
     component: Multiply,
     getAudioElement: () => new Subject(),
     inPlugs: [

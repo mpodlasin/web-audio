@@ -1,7 +1,7 @@
 import React from 'react';
 import { AudioComponentDefinition } from './AudioComponentDefinition';
 
-export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode> = {
+export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode, void> = {
   component: Output,
   getAudioElement: audioContext => audioContext.destination,
   inPlugs: [

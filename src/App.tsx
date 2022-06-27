@@ -3,10 +3,20 @@ import React from 'react';
 import { ComponentGraphCanvas, Node, Edge } from './lib/component-graph-canvas';
 import { connectPlugs } from './lib/audio/AudioPlug';
 import { v4 as uuidv4 } from 'uuid';
-import { AudioComponentNode, nodeDescriptionsToAudioNodes, nodeDescriptionToAudioNode, nodeToNodeDescription } from './lib/audio/AudioComponentNode';
+import { NodeDescription, nodeDescriptionsToAudioNodes, nodeToNodeDescription } from './lib/audio/AudioComponentNode';
 import { CreationMenu } from './components/CreationMenu';
 
 function App() {
+    const [nodeStates, setNodeStates] = React.useState<{[nodeId: string]: unknown}>(
+      localStorage.getItem("NODE_STATES") ? 
+      JSON.parse(localStorage.getItem('NODE_STATES')!) : 
+      {}
+    );
+
+    React.useEffect(() => {
+      localStorage.setItem("NODE_STATES", JSON.stringify(nodeStates));
+    }, [nodeStates]);
+
     const [edges, setEdges] = React.useState<Edge[]>(
       localStorage.getItem("EDGES") ? 
       JSON.parse(localStorage.getItem('EDGES')!) : 
@@ -17,15 +27,15 @@ function App() {
       localStorage.setItem("EDGES", JSON.stringify(edges));
     }, [edges]);
 
-    const [nodes, setNodes] = React.useState<AudioComponentNode[]>(
-      localStorage.getItem("NODES") ? 
-      nodeDescriptionsToAudioNodes(JSON.parse(localStorage.getItem('NODES')!), edges, true) : 
-      []
+    const [nodeDescriptions, setNodeDescriptions] = React.useState<NodeDescription[]>(
+      localStorage.getItem("NODES") ? JSON.parse(localStorage.getItem('NODES')!) : []
     );
 
     React.useEffect(() => {
-      localStorage.setItem("NODES", JSON.stringify(nodes.map(nodeToNodeDescription)));
-    }, [nodes]);
+      localStorage.setItem("NODES", JSON.stringify(nodeDescriptions));
+    }, [nodeDescriptions]);
+
+    const nodes = nodeDescriptionsToAudioNodes(nodeDescriptions, edges, nodeStates, setNodeStates);
 
     React.useEffect(() => {
       const disconnectFunctions = edges.flatMap(edge => {
@@ -51,15 +61,15 @@ function App() {
     }, [nodes, edges]);
 
     const handleNodesChange = (newNodes: Node[]) => {
-      setNodes(nodeDescriptionsToAudioNodes(newNodes, edges))
-    }
+      setNodeDescriptions(newNodes.map(nodeToNodeDescription))
+    };
 
     const handleCreateNode = (nodeName: string) => {
-      setNodes(nodes => [...nodes, nodeDescriptionToAudioNode({
+      setNodeDescriptions(nodeDescriptions => [...nodeDescriptions, {
         id: uuidv4(),
         name: nodeName,
         position: {top: 100, left: 100},
-      }, nodes, edges)])
+      }]);
     }
   
     return (

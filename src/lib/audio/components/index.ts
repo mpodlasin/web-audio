@@ -6,7 +6,7 @@ import { NumberDefinition } from "./Number";
 import { OscillatorDefinition } from "./Oscillator";
 import { OutputDefinition } from "./Output";
 export interface ComponentDefinitions {
-    [index: string]: AudioComponentDefinition<any>;
+    [index: string]: AudioComponentDefinition<any, any>;
   }
 
 export const COMPONENTS: ComponentDefinitions = {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Subject } from 'rxjs';
 import { AudioComponentDefinition } from './AudioComponentDefinition';
 
-export const MidiInputDefinition: AudioComponentDefinition<Subject<number>> = {
+export const MidiInputDefinition: AudioComponentDefinition<Subject<number>, void> = {
     component: MidiInput,
     getAudioElement: () => new Subject(),
     inPlugs: [],

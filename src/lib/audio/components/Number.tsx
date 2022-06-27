@@ -2,7 +2,7 @@ import React from 'react';
 import { Subject } from 'rxjs';
 import { AudioComponentDefinition } from './AudioComponentDefinition';
 
-export const NumberDefinition: AudioComponentDefinition<Subject<number>> = {
+export const NumberDefinition: AudioComponentDefinition<Subject<number>, void> = {
     component: Number,
     getAudioElement: () => new Subject(),
     inPlugs: [],

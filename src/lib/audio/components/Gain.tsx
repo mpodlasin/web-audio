@@ -1,7 +1,7 @@
 import React from 'react';
 import { AudioComponentDefinition } from './AudioComponentDefinition';
 
-export const GainDefinition: AudioComponentDefinition<GainNode> = {
+export const GainDefinition: AudioComponentDefinition<GainNode, void> = {
   component: Gain,
   getAudioElement: audioContext => new GainNode(audioContext),
   inPlugs: [
