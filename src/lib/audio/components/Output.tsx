@@ -1,5 +1,5 @@
 import React from 'react';
-import { AudioComponentDefinition } from './AudioComponentDefinition';
+import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode, void> = {
   component: Output,
@@ -14,6 +14,8 @@ export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode, vo
   ],
   outPlugs: [],
 };
+
+export type OutputProps = AudioComponentProps<AudioDestinationNode, void>;
 
 export function Output({ audioContext }: { audioContext: AudioContext }) {
     const [audioContextState, setAudioContextState] = React.useState(audioContext.state);

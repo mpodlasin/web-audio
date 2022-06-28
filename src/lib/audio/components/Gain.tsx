@@ -1,5 +1,5 @@
 import React from 'react';
-import { AudioComponentDefinition } from './AudioComponentDefinition';
+import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export interface GainState {
   gain: number;
@@ -27,11 +27,7 @@ export const GainDefinition: AudioComponentDefinition<GainNode, GainState> = {
   ],
 };
 
-export interface GainProps {
-  state: GainState;
-  onStateChange: React.Dispatch<React.SetStateAction<GainState>>;
-  audioElement: GainNode;
-}
+export type GainProps = AudioComponentProps<GainNode, GainState>;
 
 export function Gain({ audioElement: gain, state, onStateChange }: GainProps) {
     React.useEffect(() => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { AudioComponentDefinition } from './AudioComponentDefinition';
+import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 const OSCILLATOR_TYPES: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"];
 
@@ -30,17 +30,7 @@ export const OscillatorDefinition: AudioComponentDefinition<OscillatorNode, Osci
   ],
 };
 
-export interface OscillatorProps { 
-  audioElement: OscillatorNode, 
-  audioContext: AudioContext,
-  state: OscillatorState,
-  onStateChange: React.Dispatch<React.SetStateAction<OscillatorState>>,
-  inPlugs: {
-    [name: string]: {
-      value?: number,
-    }
-  }
-}
+export type OscillatorProps = AudioComponentProps<OscillatorNode, OscillatorState>;
 
 export function Oscillator({ audioElement: oscillator, state, onStateChange, inPlugs }: OscillatorProps) {
   React.useEffect(() => {

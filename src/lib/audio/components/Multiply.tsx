@@ -1,6 +1,6 @@
 import React from 'react';
 import { AudioPlug } from '../AudioPlug';
-import { AudioComponentDefinition } from './AudioComponentDefinition';
+import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export interface MultiplyState {
     result: number;
@@ -30,13 +30,7 @@ export const MultiplyDefinition: AudioComponentDefinition<void, MultiplyState> =
     ]
 };
 
-export interface MultiplyProps {
-    state: MultiplyState;
-    onStateChange: React.Dispatch<React.SetStateAction<MultiplyState>>;
-    inPlugs: {
-        [name: string]: AudioPlug;
-    }
-}
+export type MultiplyProps = AudioComponentProps<void, MultiplyState>;
 
 export function Multiply({ state, onStateChange, inPlugs }: MultiplyProps) {
 

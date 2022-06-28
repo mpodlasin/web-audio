@@ -1,5 +1,5 @@
 import React from 'react';
-import { AudioComponentDefinition } from './AudioComponentDefinition';
+import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 interface MidiInputState {
     frequency: number;
@@ -20,10 +20,7 @@ export const MidiInputDefinition: AudioComponentDefinition<void, MidiInputState>
     ],
   }
 
-export interface MidiInputProps {
-    state: MidiInputState;
-    onStateChange: React.Dispatch<React.SetStateAction<MidiInputState>>,
-}
+export type MidiInputProps = AudioComponentProps<void, MidiInputState>;
 
 export function MidiInput({ state, onStateChange }: MidiInputProps) {
     const [inputs, setInputs] = React.useState<WebMidi.MIDIInput[]>([]);

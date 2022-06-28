@@ -1,5 +1,5 @@
 import React from 'react';
-import { AudioComponentDefinition } from './AudioComponentDefinition';
+import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export interface NumberState {
     number: number;
@@ -20,10 +20,7 @@ export const NumberDefinition: AudioComponentDefinition<void, NumberState> = {
     ]
 };
 
-export interface NumberProps {
-    state: NumberState;
-    onStateChange: React.Dispatch<React.SetStateAction<NumberState>>,
-}
+export type NumberProps = AudioComponentProps<void, NumberState>;
 
 export function Number({ state, onStateChange }: NumberProps) {
     const [number, setNumber] = React.useState(`${state.number}`);
