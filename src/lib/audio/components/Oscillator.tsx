@@ -1,5 +1,4 @@
 import React from 'react';
-import { Observable } from 'rxjs';
 import { AudioComponentDefinition } from './AudioComponentDefinition';
 
 const OSCILLATOR_TYPES: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"];
@@ -38,7 +37,6 @@ export interface OscillatorProps {
   onStateChange: React.Dispatch<React.SetStateAction<OscillatorState>>,
   inPlugs: {
     [name: string]: {
-      audioParameter: AudioNode | AudioParam | Observable<number>,
       value?: number,
     }
   }

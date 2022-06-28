@@ -1,26 +1,35 @@
 import React from 'react';
-import { Subject } from 'rxjs';
 import { AudioComponentDefinition } from './AudioComponentDefinition';
 
-export const MidiInputDefinition: AudioComponentDefinition<Subject<number>, void> = {
+interface MidiInputState {
+    frequency: number;
+}
+
+export const MidiInputDefinition: AudioComponentDefinition<void, MidiInputState> = {
     component: MidiInput,
-    getAudioElement: () => new Subject(),
-    initialState: undefined,
+    initialState: {
+        frequency: 0,
+    },
     inPlugs: [],
     outPlugs: [
       {
         type: 'number',
         name: 'Frequency',
-        getAudioParameter: audioElement => audioElement,
+        getStateParameter: state => state.frequency,
       }
     ],
   }
 
-export function MidiInput({ audioElement }: { audioElement: Subject<number>}) {
+export interface MidiInputProps {
+    state: MidiInputState;
+    onStateChange: React.Dispatch<React.SetStateAction<MidiInputState>>,
+}
+
+export function MidiInput({ state, onStateChange }: MidiInputProps) {
     const [inputs, setInputs] = React.useState<WebMidi.MIDIInput[]>([]);
     const [chosenInputIndex] = React.useState(0);
 
-    const [lastMidiEvent, setLastMidiEvent] = React.useState<any>();
+    const [lastMidiEvent, setLastMidiEvent] = React.useState<Uint8Array>();
 
     const chosenInput = inputs[chosenInputIndex];
 
@@ -35,7 +44,7 @@ export function MidiInput({ audioElement }: { audioElement: Subject<number>}) {
         if (!chosenInput) return;
 
         const midiMessageHandler = (e: WebMidi.MIDIMessageEvent) => {
-            audioElement.next( 440 * Math.pow(2, (e.data[1] - 69) / 12));
+            onStateChange(state => ({...state, frequency: 440 * Math.pow(2, (e.data[1] - 69) / 12)}));
             setLastMidiEvent(e.data);
         };
 
@@ -44,7 +53,7 @@ export function MidiInput({ audioElement }: { audioElement: Subject<number>}) {
         return () => {
             chosenInput.removeEventListener('midimessage', midiMessageHandler as (e: Event) => void);
         }
-    }, [audioElement, chosenInput]);
+    }, [chosenInput]);
 
     return (
         <div>

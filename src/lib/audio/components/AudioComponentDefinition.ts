@@ -1,5 +1,4 @@
 import React from "react";
-import { Observable } from "rxjs";
 import { Plug } from "../../component-graph-canvas";
 import { AudioPlugWithAudioParameter } from "../AudioPlug";
 
@@ -20,6 +19,6 @@ export interface AudioComponentProps<A, S> {
 }
 
 export interface PlugDefinition<A, S> extends Plug {
-  getAudioParameter?(audioElement: A): AudioNode | AudioParam |  Observable<number>;
+  getAudioParameter?(audioElement: A): AudioNode | AudioParam;
   getStateParameter?(state: S): number;
 }
