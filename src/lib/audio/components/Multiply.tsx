@@ -1,12 +1,16 @@
 import React from 'react';
-import { combineLatest, map, Observable, Subject } from 'rxjs';
 import { AudioPlug } from '../AudioPlug';
 import { AudioComponentDefinition } from './AudioComponentDefinition';
 
-export const MultiplyDefinition: AudioComponentDefinition<Subject<number>, void> = {
+export interface MultiplyState {
+    result: number;
+}
+
+export const MultiplyDefinition: AudioComponentDefinition<void, MultiplyState> = {
     component: Multiply,
-    getAudioElement: () => new Subject(),
-    initialState: undefined,
+    initialState: {
+        result: 0,
+    },
     inPlugs: [
         {
             type: 'number',
@@ -21,41 +25,31 @@ export const MultiplyDefinition: AudioComponentDefinition<Subject<number>, void>
       {
         type: 'number',
         name: 'Number',
-        getAudioParameter: audioElement => audioElement,
+        getStateParameter: state => state.result,
       },
     ]
 };
 
 export interface MultiplyProps {
-    audioElement: Subject<number>,
+    state: MultiplyState;
+    onStateChange: React.Dispatch<React.SetStateAction<MultiplyState>>;
     inPlugs: {
         [name: string]: AudioPlug;
     }
 }
 
-export function Multiply({ audioElement, inPlugs }: MultiplyProps) {
-    const [result, setResult] = React.useState<number | null>(null);
-    React.useEffect(() => {
-        const numberA = inPlugs['Number A'];
-        const numberB = inPlugs['Number B'];
-
-        if (numberA === undefined || !(numberA.audioParameter instanceof Observable)) return;
-        if (numberB === undefined || !(numberB.audioParameter instanceof Observable)) return;
-
-        const subscription = combineLatest([numberA.audioParameter, numberB.audioParameter]).pipe(
-            map(([a, b]) => a * b)
-        ).subscribe(audioElement);
-
-        return () => subscription.unsubscribe();
-    }, [audioElement]);
+export function Multiply({ state, onStateChange, inPlugs }: MultiplyProps) {
 
     React.useEffect(() => {
-        const subscription = audioElement.subscribe(setResult);
+        const valueA = inPlugs['Number A'].value;
+        const valueB = inPlugs['Number B'].value;
 
-        return () => subscription.unsubscribe();
-    }, [audioElement]);
+        if (valueA && valueB) {
+            onStateChange(state = ({...state, result: valueA * valueB}));
+        }
+    }, [inPlugs['Number A'].value, inPlugs['Number B'].value]);
 
     return (
-        <div>{result}</div>
+        <div>{state.result}</div>
     );
 };

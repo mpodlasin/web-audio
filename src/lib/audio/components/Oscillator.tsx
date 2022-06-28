@@ -20,7 +20,6 @@ export const OscillatorDefinition: AudioComponentDefinition<OscillatorNode, Osci
     {
       type: 'number',
       name: 'Frequency',
-      getAudioParameter: audioElement => audioElement.frequency,
     }
   ],
   outPlugs: [
@@ -39,44 +38,42 @@ export interface OscillatorProps {
   onStateChange: React.Dispatch<React.SetStateAction<OscillatorState>>,
   inPlugs: {
     [name: string]: {
-      audioParameter: AudioNode | AudioParam | Observable<number>
-    } | undefined
+      audioParameter: AudioNode | AudioParam | Observable<number>,
+      value?: number,
+    }
   }
 }
 
-export function Oscillator({ audioElement: oscillator, audioContext, state, onStateChange, inPlugs }: OscillatorProps) {
+export function Oscillator({ audioElement: oscillator, state, onStateChange, inPlugs }: OscillatorProps) {
+  React.useEffect(() => {
+    oscillator.start();
+  }, [oscillator])
+  
   React.useEffect(() => {
     oscillator.type = state.type;
     oscillator.frequency.value = state.frequency;
-    oscillator.start();
-  }, [oscillator]);
+  }, [state.type, state.frequency]);
 
   const handleOscillatorTypeClick = (e: React.FormEvent<HTMLSelectElement>) => {
     const currentTarget = e.currentTarget;
-    oscillator.type = e.currentTarget.value as OscillatorType;
     onStateChange(state => ({...state, type: currentTarget.value as OscillatorType}));
   }
 
   const changeFrequency: React.FormEventHandler<HTMLInputElement> = (e) => {
     const currentTarget = e.currentTarget;
     onStateChange(state => ({...state, frequency: currentTarget.valueAsNumber}));
-    oscillator.frequency.setValueAtTime(currentTarget.valueAsNumber, audioContext.currentTime);
   };
 
   React.useEffect(() => {
-    const frequencyPlug = inPlugs['Frequency'];
+    const frequency = inPlugs['Frequency'].value;
 
-    if (frequencyPlug !== undefined && frequencyPlug.audioParameter instanceof Observable) {
-      const subscription = frequencyPlug.audioParameter.subscribe(frequency => {
-        onStateChange(state => ({...state, frequency}));
-      });
-
-      return () => subscription.unsubscribe();
+    if (frequency) {
+      onStateChange(state => ({...state, frequency}));
     }
-  }, [inPlugs]);
+  }, [inPlugs['Frequency'].value]);
 
   return <div>
-    <select onChange={handleOscillatorTypeClick}>
+    <select value={state.type} onChange={handleOscillatorTypeClick}>
       {OSCILLATOR_TYPES.map(oscillatorType => (
         <option key={oscillatorType} value={oscillatorType}>
           {oscillatorType}

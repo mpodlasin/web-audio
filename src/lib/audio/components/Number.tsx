@@ -1,14 +1,12 @@
 import React from 'react';
-import { Subject } from 'rxjs';
 import { AudioComponentDefinition } from './AudioComponentDefinition';
 
 export interface NumberState {
     number: number;
 }
 
-export const NumberDefinition: AudioComponentDefinition<Subject<number>, NumberState> = {
+export const NumberDefinition: AudioComponentDefinition<void, NumberState> = {
     component: Number,
-    getAudioElement: () => new Subject(),
     initialState: {
         number: 0
     },
@@ -17,18 +15,17 @@ export const NumberDefinition: AudioComponentDefinition<Subject<number>, NumberS
       {
         type: 'number',
         name: 'Number',
-        getAudioParameter: audioElement => audioElement,
+        getStateParameter: state => state.number,
       },
     ]
 };
 
 export interface NumberProps {
-    audioElement: Subject<number>
     state: NumberState;
     onStateChange: React.Dispatch<React.SetStateAction<NumberState>>,
 }
 
-export function Number({ audioElement, state, onStateChange }: NumberProps) {
+export function Number({ state, onStateChange }: NumberProps) {
     const [number, setNumber] = React.useState(`${state.number}`);
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -39,7 +36,6 @@ export function Number({ audioElement, state, onStateChange }: NumberProps) {
         
         if (!isNaN(valueAsNumber)) {
             onStateChange(state => ({...state, number: valueAsNumber}));
-            audioElement.next(valueAsNumber);
         }
     }
 

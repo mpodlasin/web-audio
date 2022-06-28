@@ -11,7 +11,7 @@ export interface NodeDescription {
   }
   
 export interface AudioComponentNode extends Node {
-    audioElement: AudioNode;
+    audioElement?: AudioNode;
     inPlugs: AudioPlug[];
     outPlugs: AudioPlug[];
 }
@@ -20,19 +20,20 @@ const GLOBAL_AUDIO_CONTEXT = new AudioContext();
 
 const nodeIdToAudioElement = new Map<string, AudioNode>();
 
-const getAudioElementForNodeDescription = (nodeDescription: NodeDescription) => {
+const getAudioElementForNodeDescription = (nodeDescription: NodeDescription): AudioNode | undefined => {
     const definition = COMPONENTS[nodeDescription.name];
   
-    let audioElement: AudioNode;
     if (nodeIdToAudioElement.has(nodeDescription.id)) {
-      audioElement = nodeIdToAudioElement.get(nodeDescription.id)!;
-    } else {
-      audioElement = definition.getAudioElement(GLOBAL_AUDIO_CONTEXT);
+      return nodeIdToAudioElement.get(nodeDescription.id)!;
+    } else if (definition.getAudioElement) {
+      const audioElement = definition.getAudioElement(GLOBAL_AUDIO_CONTEXT)!;
   
       nodeIdToAudioElement.set(nodeDescription.id, audioElement);
+
+      return audioElement;
     }
-  
-    return audioElement;
+
+    return undefined;
   }
 
   export const nodeDescriptionsToAudioNodes = (
@@ -56,6 +57,7 @@ const getAudioElementForNodeDescription = (nodeDescription: NodeDescription) => 
         edges, 
         states[nodeDescription.id],
         handleStateChange(nodeDescription.id),
+        states,
       )
     );
 
@@ -68,12 +70,13 @@ const nodeDescriptionToAudioNode = <S>(
     edges: Edge[],
     state: S | undefined,
     setState: React.Dispatch<React.SetStateAction<S>>,
+    nodeStates: {[nodeId: string]: any},
   ): AudioComponentNode => {
     const audioElement = getAudioElementForNodeDescription(nodeDescription);
   
     const definition: AudioComponentDefinition<any, S> = COMPONENTS[nodeDescription.name];
 
-    const inPlugs = collectIncomingPlugsForNode(nodeDescription, nodeDescriptions, edges);
+    const inPlugs = collectIncomingPlugsForNode(nodeDescription, nodeDescriptions, edges, nodeStates);
   
     const component = React.createElement(definition.component, {
       audioElement, 
@@ -109,7 +112,8 @@ const nodeDescriptionToAudioNode = <S>(
   const collectIncomingPlugsForNode = (
     nodeDescription: NodeDescription, 
     nodeDescriptions: NodeDescription[], 
-    edges: Edge[]
+    edges: Edge[],
+    nodeStates: {[nodeId: string]: any}
   ) => {
     const definition = COMPONENTS[nodeDescription.name];
 
@@ -131,7 +135,21 @@ const nodeDescriptionToAudioNode = <S>(
       const incomingNodePlug = incomingNodeDefinition.outPlugs[edgeComingToPlug.inPlugIndex - incomingNodeDefinition.inPlugs.length];
 
       const getAudioParameterForIncomingNodePlug = incomingNodePlug.getAudioParameter;
+      const getStateParameterForIncomingNodePlug = incomingNodePlug.getStateParameter;
   
+      if (getAudioParameterForIncomingNodePlug === undefined && getStateParameterForIncomingNodePlug !== undefined) {
+        const stateParameter = getStateParameterForIncomingNodePlug(nodeStates[incomingNodeDescription.id] || incomingNodeDefinition.initialState);
+
+        return {
+          ...inPlugs,
+          [inPlug.name]: {
+            ...inPlug,
+            audioParameter: null as any,
+            value: stateParameter,
+          }
+        }
+      }
+
       if (getAudioParameterForIncomingNodePlug === undefined) return inPlugs;
 
       const incomingAudioParameter = getAudioParameterForIncomingNodePlug(incomingAudioElement);
