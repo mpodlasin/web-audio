@@ -10,10 +10,14 @@ export interface AudioComponentDefinition<A, S> {
     outPlugs: PlugDefinition<A, S>[];
 }
 
+export interface AudioPlugValues {
+  [plugName: string]: { value: number };
+}
+
 export interface AudioComponentProps<A, S> {
   audioElement: A, 
   audioContext: AudioContext, 
-  inPlugs: { [name: string]: AudioPlug },
+  inPlugs: AudioPlugValues,
   state: S,
   onStateChange: React.Dispatch<React.SetStateAction<S>>;
 }

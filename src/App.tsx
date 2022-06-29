@@ -38,6 +38,7 @@ function App() {
     const nodes = nodeDescriptionsToAudioNodes(nodeDescriptions, edges, nodeStates, setNodeStates);
 
     React.useEffect(() => {
+      console.log('CONNECTING EDGES');
       const disconnectFunctions = edges.flatMap(edge => {
         const inNode = nodes.find(node => node.id === edge.inNodeId);
         const outNode = nodes.find(node => node.id === edge.outNodeId);
@@ -57,6 +58,7 @@ function App() {
 
       return () => {
         disconnectFunctions.forEach(disconnect => disconnect());
+        console.log('DISCONNECTING EDGES'); 
       };
     }, [nodes, edges]);
 

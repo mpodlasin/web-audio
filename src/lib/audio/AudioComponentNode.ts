@@ -2,7 +2,7 @@ import React from 'react';
 import { Edge, Position, Node } from "../component-graph-canvas";
 import { AudioPlug } from "./AudioPlug";
 import { COMPONENTS } from "./components";
-import { AudioComponentDefinition } from './components/AudioComponentDefinition';
+import { AudioComponentDefinition, AudioPlugValues } from './components/AudioComponentDefinition';
 
 export interface NodeDescription {
     id: string;
@@ -114,52 +114,36 @@ const nodeDescriptionToAudioNode = <S>(
     nodeDescriptions: NodeDescription[], 
     edges: Edge[],
     nodeStates: {[nodeId: string]: any}
-  ) => {
+  ): AudioPlugValues => {
+    const incomingPlugValues: AudioPlugValues = {};
+
     const definition = COMPONENTS[nodeDescription.name];
 
-    return definition.inPlugs.reduce((inPlugs, inPlug, i) => {
+    for (let inPlug of definition.inPlugs) {
+
       const edgeComingToPlug = edges.find(
-        e => e.outNodeId === nodeDescription.id && e.outPlugIndex === i
+        e => e.outNodeId === nodeDescription.id && e.outPlugIndex === definition.inPlugs.indexOf(inPlug)
       );
   
-      if (edgeComingToPlug === undefined) return inPlugs;
+      if (edgeComingToPlug === undefined) continue;
   
       const incomingNodeDescription = nodeDescriptions.find(n => n.id === edgeComingToPlug.inNodeId);
   
-      if (incomingNodeDescription === undefined) return inPlugs;
-  
-      const incomingAudioElement = getAudioElementForNodeDescription(incomingNodeDescription);
-  
+      if (incomingNodeDescription === undefined) continue;
+
       const incomingNodeDefinition = COMPONENTS[incomingNodeDescription.name];
   
       const incomingNodePlug = incomingNodeDefinition.outPlugs[edgeComingToPlug.inPlugIndex - incomingNodeDefinition.inPlugs.length];
 
-      const getAudioParameterForIncomingNodePlug = incomingNodePlug.getAudioParameter;
       const getStateParameterForIncomingNodePlug = incomingNodePlug.getStateParameter;
   
-      if (getAudioParameterForIncomingNodePlug === undefined && getStateParameterForIncomingNodePlug !== undefined) {
+      if (getStateParameterForIncomingNodePlug !== undefined) {
         const stateParameter = getStateParameterForIncomingNodePlug(nodeStates[incomingNodeDescription.id] || incomingNodeDefinition.initialState);
 
-        return {
-          ...inPlugs,
-          [inPlug.name]: {
-            ...inPlug,
-            value: stateParameter,
-          }
-        }
+        incomingPlugValues[inPlug.name] = { value: stateParameter };
       }
+    }
 
-      if (getAudioParameterForIncomingNodePlug === undefined) return inPlugs;
-
-      const incomingAudioParameter = getAudioParameterForIncomingNodePlug(incomingAudioElement);
-
-      return {
-        ...inPlugs,
-        [inPlug.name]: { 
-          ...inPlug,
-          audioParameter: incomingAudioParameter,
-        },
-      };
-    }, {} as {[name: string]: AudioPlug});
-  };
+    return incomingPlugValues;
+  }
   
