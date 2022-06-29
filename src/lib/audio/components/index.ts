@@ -1,4 +1,5 @@
 import { AudioComponentDefinition } from "./AudioComponentDefinition";
+import { FilterDefinition } from "./Filter";
 import { GainDefinition } from "./Gain";
 import { MidiInputDefinition } from "./MidiInput";
 import { MultiplyDefinition } from "./Multiply";
@@ -16,4 +17,5 @@ export const COMPONENTS: ComponentDefinitions = {
     'MIDI Input': MidiInputDefinition,
     'Number': NumberDefinition,
     'Multiply': MultiplyDefinition,
+    'Filter': FilterDefinition,
 };
