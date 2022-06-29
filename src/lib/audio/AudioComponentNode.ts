@@ -1,6 +1,6 @@
 import React from 'react';
 import { Edge, Position, Node } from "../component-graph-canvas";
-import { AudioPlug, AudioPlugWithAudioParameter } from "./AudioPlug";
+import { AudioPlug } from "./AudioPlug";
 import { COMPONENTS } from "./components";
 import { AudioComponentDefinition } from './components/AudioComponentDefinition';
 
@@ -144,7 +144,6 @@ const nodeDescriptionToAudioNode = <S>(
           ...inPlugs,
           [inPlug.name]: {
             ...inPlug,
-            audioParameter: null as any,
             value: stateParameter,
           }
         }
@@ -161,6 +160,6 @@ const nodeDescriptionToAudioNode = <S>(
           audioParameter: incomingAudioParameter,
         },
       };
-    }, {} as {[name: string]: AudioPlugWithAudioParameter});
+    }, {} as {[name: string]: AudioPlug});
   };
   

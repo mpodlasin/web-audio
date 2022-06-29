@@ -5,11 +5,6 @@ export interface AudioPlug extends Plug {
   audioParameter?: AudioNode | AudioParam;
   value?: number;
 }
-
-export interface AudioPlugWithAudioParameter extends Plug {
-  audioParameter: AudioNode | AudioParam;
-  value?: number;
-}
   
 export const connectPlugs = (a: AudioPlug, b: AudioPlug) => {
     const firstAudioParameter = a.audioParameter;

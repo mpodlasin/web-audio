@@ -1,6 +1,6 @@
 import React from "react";
 import { Plug } from "../../component-graph-canvas";
-import { AudioPlugWithAudioParameter } from "../AudioPlug";
+import { AudioPlug } from "../AudioPlug";
 
 export interface AudioComponentDefinition<A, S> {
     getAudioElement?(audioContext: AudioContext): A,
@@ -8,12 +8,12 @@ export interface AudioComponentDefinition<A, S> {
     initialState: S;
     inPlugs: PlugDefinition<A, S>[];
     outPlugs: PlugDefinition<A, S>[];
-  }
+}
 
 export interface AudioComponentProps<A, S> {
   audioElement: A, 
   audioContext: AudioContext, 
-  inPlugs: { [name: string]: AudioPlugWithAudioParameter}
+  inPlugs: { [name: string]: AudioPlug },
   state: S,
   onStateChange: React.Dispatch<React.SetStateAction<S>>;
 }
