@@ -5,6 +5,7 @@ import { connectPlugs } from './lib/audio/AudioPlug';
 import { v4 as uuidv4 } from 'uuid';
 import { addComponentsToAudioComponentNodes, NodeDescription, nodeDescriptionsToAudioNodes, nodeToNodeDescription } from './lib/audio/AudioComponentNode';
 import { CreationMenu } from './components/CreationMenu';
+import { COMPONENTS } from './lib/audio/components';
 
 function App() {
     const [edges, setEdges] = React.useState<Edge[]>(
@@ -53,7 +54,7 @@ function App() {
     const [nodeStates, setNodeStates] = React.useState<{[nodeId: string]: unknown}>(
       localStorage.getItem("NODE_STATES") ? 
       JSON.parse(localStorage.getItem('NODE_STATES')!) : 
-      {}
+      nodeDescriptions.reduce((states, nodeDescription) => ({...states, [nodeDescription.id]: COMPONENTS[nodeDescription.name].initialState}), {})
     );
 
     React.useEffect(() => {

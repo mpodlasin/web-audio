@@ -6,6 +6,7 @@ import { MultiplyDefinition } from "./Multiply";
 import { NumberDefinition } from "./Number";
 import { OscillatorDefinition } from "./Oscillator";
 import { OutputDefinition } from "./Output";
+import { SequencerDefinition } from "./Sequencer";
 export interface ComponentDefinitions {
     [index: string]: AudioComponentDefinition<any, any>;
   }
@@ -18,4 +19,5 @@ export const COMPONENTS: ComponentDefinitions = {
     'Number': NumberDefinition,
     'Multiply': MultiplyDefinition,
     'Filter': FilterDefinition,
+    'Sequencer': SequencerDefinition,
 };
