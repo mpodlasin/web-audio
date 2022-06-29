@@ -36,59 +36,71 @@ const getAudioElementForNodeDescription = (nodeDescription: NodeDescription): Au
     return undefined;
   }
 
-  export const nodeDescriptionsToAudioNodes = (
+  export const nodeDescriptionsToAudioNodes = (nodeDescriptions: NodeDescription[]): AudioComponentNode[] => {
+    return nodeDescriptions.map(nodeDescriptionToAudioNode);
+  };
+
+
+export const addComponentsToAudioComponentNodes = (
+  nodes: AudioComponentNode[],
+  edges: Edge[],
+  nodeStates: {[nodeId: string]: any},
+  setNodeStates: React.Dispatch<React.SetStateAction<{[nodeId: string]: any}>>,
+) => {
+  return nodes.map(node => addComponentToAudioComponentNode(
+    node,
+    nodes.map(nodeToNodeDescription),
+    edges,
+    nodeStates,
+    setNodeStates
+  ))
+}
+
+const addComponentToAudioComponentNode = <S>(
+    node: AudioComponentNode,
     nodeDescriptions: NodeDescription[], 
     edges: Edge[],
-    states: {[nodeId: string]: any},
-    setStates: React.Dispatch<React.SetStateAction<{[nodeId: string]: any}>>,
-  ): AudioComponentNode[] => {
-    const handleStateChange = (nodeId: string) => (setState: React.SetStateAction<any>) => {
-      if (setState instanceof Function) {
-        setStates(states => ({...states, [nodeId]: setState(states[nodeId])}))
-      } else {
-        setStates(states => ({...states, [nodeId]: setState}));
-      }
-    };
-
-    const audioNodes = nodeDescriptions.map(
-      nodeDescription => nodeDescriptionToAudioNode(
-        nodeDescription, 
-        nodeDescriptions, 
-        edges, 
-        states[nodeDescription.id],
-        handleStateChange(nodeDescription.id),
-        states,
-      )
+    nodeStates: {[nodeId: string]: any},
+    setNodeStates: React.Dispatch<React.SetStateAction<{[nodeId: string]: any}>>,
+  ): AudioComponentNode => {
+    const definition = COMPONENTS[node.name];
+    const inPlugs = collectIncomingPlugsForNode(
+      nodeToNodeDescription(node),
+      nodeDescriptions, 
+      edges,
+      nodeStates
     );
 
-    return audioNodes;
-  };
+    const onStateChange = (action: React.SetStateAction<S>) => {
+      if (action instanceof Function) {
+        setNodeStates(states => ({...states, [node.id]: action(states[node.id])}))
+      } else {
+        setNodeStates(states => ({...states, [node.id]: action}))
+      }
+    }
+
+    const component = React.createElement(definition.component, {
+      audioElement: node.audioElement,
+      audioContext: GLOBAL_AUDIO_CONTEXT,
+      inPlugs,
+      state: nodeStates[node.id],
+      onStateChange,
+    });
+
+    return {
+      ...node,
+      component
+    }
+  }
   
-const nodeDescriptionToAudioNode = <S>(
-    nodeDescription: NodeDescription, 
-    nodeDescriptions: NodeDescription[], 
-    edges: Edge[],
-    state: S | undefined,
-    setState: React.Dispatch<React.SetStateAction<S>>,
-    nodeStates: {[nodeId: string]: any},
-  ): AudioComponentNode => {
+const nodeDescriptionToAudioNode = <S>(nodeDescription: NodeDescription): AudioComponentNode => {
     const audioElement = getAudioElementForNodeDescription(nodeDescription);
   
     const definition: AudioComponentDefinition<any, S> = COMPONENTS[nodeDescription.name];
 
-    const inPlugs = collectIncomingPlugsForNode(nodeDescription, nodeDescriptions, edges, nodeStates);
-  
-    const component = React.createElement(definition.component, {
-      audioElement, 
-      audioContext: GLOBAL_AUDIO_CONTEXT, 
-      inPlugs,
-      state: state || definition.initialState!,
-      onStateChange: setState,
-    });
-  
     const audioComponentNode = {
       ...nodeDescription,
-      component,
+      component: React.createElement("div"),
       inPlugs: definition.inPlugs.map(plug => ({
         ...plug,
         audioParameter: plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,

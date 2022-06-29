@@ -3,20 +3,10 @@ import React from 'react';
 import { ComponentGraphCanvas, Node, Edge } from './lib/component-graph-canvas';
 import { connectPlugs } from './lib/audio/AudioPlug';
 import { v4 as uuidv4 } from 'uuid';
-import { NodeDescription, nodeDescriptionsToAudioNodes, nodeToNodeDescription } from './lib/audio/AudioComponentNode';
+import { addComponentsToAudioComponentNodes, NodeDescription, nodeDescriptionsToAudioNodes, nodeToNodeDescription } from './lib/audio/AudioComponentNode';
 import { CreationMenu } from './components/CreationMenu';
 
 function App() {
-    const [nodeStates, setNodeStates] = React.useState<{[nodeId: string]: unknown}>(
-      localStorage.getItem("NODE_STATES") ? 
-      JSON.parse(localStorage.getItem('NODE_STATES')!) : 
-      {}
-    );
-
-    React.useEffect(() => {
-      localStorage.setItem("NODE_STATES", JSON.stringify(nodeStates));
-    }, [nodeStates]);
-
     const [edges, setEdges] = React.useState<Edge[]>(
       localStorage.getItem("EDGES") ? 
       JSON.parse(localStorage.getItem('EDGES')!) : 
@@ -35,10 +25,9 @@ function App() {
       localStorage.setItem("NODES", JSON.stringify(nodeDescriptions));
     }, [nodeDescriptions]);
 
-    const nodes = nodeDescriptionsToAudioNodes(nodeDescriptions, edges, nodeStates, setNodeStates);
+    const nodes = React.useMemo(() => nodeDescriptionsToAudioNodes(nodeDescriptions), [nodeDescriptions]);
 
     React.useEffect(() => {
-      console.log('CONNECTING EDGES');
       const disconnectFunctions = edges.flatMap(edge => {
         const inNode = nodes.find(node => node.id === edge.inNodeId);
         const outNode = nodes.find(node => node.id === edge.outNodeId);
@@ -58,9 +47,25 @@ function App() {
 
       return () => {
         disconnectFunctions.forEach(disconnect => disconnect());
-        console.log('DISCONNECTING EDGES'); 
       };
     }, [nodes, edges]);
+
+    const [nodeStates, setNodeStates] = React.useState<{[nodeId: string]: unknown}>(
+      localStorage.getItem("NODE_STATES") ? 
+      JSON.parse(localStorage.getItem('NODE_STATES')!) : 
+      {}
+    );
+
+    React.useEffect(() => {
+      localStorage.setItem("NODE_STATES", JSON.stringify(nodeStates));
+    }, [nodeStates]);
+
+    const nodesWithComponents = addComponentsToAudioComponentNodes(
+      nodes, 
+      edges,
+      nodeStates,
+      setNodeStates,
+    );
 
     const handleNodesChange = (newNodes: Node[]) => {
       setNodeDescriptions(newNodes.map(nodeToNodeDescription))
@@ -78,7 +83,7 @@ function App() {
       <div style={{height: '100%'}}>
         <ComponentGraphCanvas
           globalMenu={<CreationMenu onCreate={handleCreateNode} />}
-          nodes={nodes}
+          nodes={nodesWithComponents}
           onNodesChange={handleNodesChange}
           edges={edges}
           onEdgesChange={setEdges}
