@@ -54,8 +54,10 @@ export function Sequencer({ state, onStateChange }: SequencerProps) {
 
         const id = setInterval(callback, 1000);
 
-        return () => clearInterval(id);
-    });
+        return () => { 
+            clearInterval(id);
+        };
+    }, []);
 
     React.useEffect(() => {
         onStateChange(state => {
@@ -76,8 +78,8 @@ export function Sequencer({ state, onStateChange }: SequencerProps) {
         <table>
             <tbody>
                 {NOTES.map(note => (
-                    <tr>{STEPS.map(step => (
-                        <td><input checked={state.sequenceMatrix[note - 1][step - 1]} onClick={handleCheckboxClick(note, step)} type="checkbox" /></td>
+                    <tr key={note}>{STEPS.map(step => (
+                        <td key={step}><input checked={state.sequenceMatrix[note - 1][step - 1]} onChange={handleCheckboxClick(note, step)} type="checkbox" /></td>
                     ))}</tr>
                 ))}
             </tbody>

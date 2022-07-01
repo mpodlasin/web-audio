@@ -132,6 +132,7 @@ const nodeDescriptionToAudioNode = <S>(nodeDescription: NodeDescription): AudioC
     const definition = COMPONENTS[nodeDescription.name];
 
     for (let inPlug of definition.inPlugs) {
+      incomingPlugValues[inPlug.name] = { value: undefined };
 
       const edgeComingToPlug = edges.find(
         e => e.outNodeId === nodeDescription.id && e.outPlugIndex === definition.inPlugs.indexOf(inPlug)

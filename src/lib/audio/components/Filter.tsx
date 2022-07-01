@@ -41,7 +41,7 @@ export function Filter({ audioElement: filter, state, onStateChange }: FilterPro
 
     const changeFrequency: React.FormEventHandler<HTMLInputElement> = (e) => {
         const currentTarget = e.currentTarget;
-        onStateChange(state => ({...state, frequency: currentTarget.valueAsNumber}));
+        onStateChange(state => ({...state, frequency: currentTarget.valueAsNumber})); 
       }
 
     const handleFilterTypeClick = (e: React.FormEvent<HTMLSelectElement>) => {

@@ -11,7 +11,7 @@ export interface AudioComponentDefinition<A, S> {
 }
 
 export interface AudioPlugValues {
-  [plugName: string]: { value: number };
+  [plugName: string]: { value?: number };
 }
 
 export interface AudioComponentProps<A, S> {
