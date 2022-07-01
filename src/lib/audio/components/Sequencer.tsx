@@ -22,7 +22,8 @@ export const SequencerDefinition: AudioComponentDefinition<void, SequencerState>
         name: 'Frequency',
         getStateParameter: state => state.frequency,
       },
-    ]
+    ],
+    color: 'lightblue',
 };
 
 export type SequencerProps = AudioComponentProps<void, SequencerState>;

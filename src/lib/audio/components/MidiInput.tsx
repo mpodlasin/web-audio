@@ -18,6 +18,7 @@ export const MidiInputDefinition: AudioComponentDefinition<void, MidiInputState>
         getStateParameter: state => state.frequency,
       }
     ],
+    color: 'lightgreen',
   }
 
 export type MidiInputProps = AudioComponentProps<void, MidiInputState>;

@@ -29,6 +29,7 @@ export const FilterDefinition: AudioComponentDefinition<BiquadFilterNode, Filter
       getAudioParameter: audioElement => audioElement,
     }
   ],
+  color: 'lightpink',
 };
 
 export type FilterProps = AudioComponentProps<BiquadFilterNode, FilterState>;

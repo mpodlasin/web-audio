@@ -110,6 +110,7 @@ const nodeDescriptionToAudioNode = <S>(nodeDescription: NodeDescription): AudioC
         audioParameter:  plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,
       })),
       audioElement,
+      headerColor: definition.color,
     };
   
     return audioComponentNode;

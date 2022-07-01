@@ -8,6 +8,7 @@ export interface AudioComponentDefinition<A, S> {
     initialState: S;
     inPlugs: PlugDefinition<A, S>[];
     outPlugs: PlugDefinition<A, S>[];
+    color: string;
 }
 
 export interface AudioPlugValues {

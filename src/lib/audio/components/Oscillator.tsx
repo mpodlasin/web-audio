@@ -28,6 +28,7 @@ export const OscillatorDefinition: AudioComponentDefinition<OscillatorNode, Osci
       getAudioParameter: audioElement => audioElement,
     }
   ],
+  color: 'lightyellow',
 };
 
 export type OscillatorProps = AudioComponentProps<OscillatorNode, OscillatorState>;

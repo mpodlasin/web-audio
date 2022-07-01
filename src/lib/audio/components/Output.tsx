@@ -13,6 +13,7 @@ export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode, vo
     }
   ],
   outPlugs: [],
+  color: 'lightseagreen',
 };
 
 export type OutputProps = AudioComponentProps<AudioDestinationNode, void>;

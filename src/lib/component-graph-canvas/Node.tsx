@@ -1,5 +1,6 @@
 import React from 'react';
 import { Position } from './Position';
+import css from './Node.module.css';
 
 export interface Plug {
     type: string;
@@ -13,6 +14,7 @@ export interface Node {
     component: React.ReactNode;
     inPlugs: Plug[];
     outPlugs: Plug[];
+    headerColor: string;
 }
 
 export interface NodeComponentProps {
@@ -56,17 +58,19 @@ export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, 
     };
 
     return (
-        <div ref={ref} style={{border: '1px solid gray', backgroundColor: 'white', position: 'absolute', ...position, }}>
-            <div onMouseDown={onDragStart} style={{padding: '5px 10px', borderBottom: '1px solid black', cursor: 'move', display: 'flex', justifyContent: 'space-between'}}>
+        <div ref={ref} style={{...position}} className={css.container}>
+            <div onMouseDown={onDragStart} className={css.header} style={{backgroundColor: node.headerColor}}>
                 <span>{node.name}</span>
-                <button onClick={handleDelete}>X</button>
+                <button className={css.closeButton} onClick={handleDelete}>X</button>
             </div>
-            <div style={{padding: '10px 10px', display: 'flex'}}>
-                {node.inPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(i)} onStartConnecting={position => onStartConnecting(i, position)} onStopConnecting={position => onStopConnecting(i, position)} />)}
-            </div>
-            <div style={{cursor: 'initial', padding: 10}}>{node.component}</div>
-            <div style={{padding: '10px 10px', display: 'flex'}}>
-                {node.outPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
+            <div className={css.contentWithPlugs}>
+                <div className={css.inputPlugs}>
+                    {node.inPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(i)} onStartConnecting={position => onStartConnecting(i, position)} onStopConnecting={position => onStopConnecting(i, position)} />)}
+                </div>
+                <div className={css.content}>{node.component}</div>
+                <div className={css.outputPlugs}>
+                    {node.outPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
+                </div>
             </div>
         </div>
     );
@@ -86,8 +90,8 @@ const NodePlug = ({ onStartConnecting, onStopConnecting, onPosition }: NodePlugP
     React.useEffect(() => {
         if(ref.current) {
             const newPosition = {
-                top: ref.current.getBoundingClientRect().top + 7,
-                left: ref.current.getBoundingClientRect().left + 7,
+                top: ref.current.getBoundingClientRect().top + 6,
+                left: ref.current.getBoundingClientRect().left + 6,
             };
 
             onPosition(newPosition);
@@ -99,8 +103,8 @@ const NodePlug = ({ onStartConnecting, onStopConnecting, onPosition }: NodePlugP
         <div
             ref={ref}
             onMouseDown={e => onStartConnecting({top: e.clientY, left: e.clientX})} 
-            onMouseUp={e => onStopConnecting({top: e.clientY, left: e.clientX})} 
-            style={{ marginRight: 5, backgroundColor: 'lightgray', width: 14, height: 14, borderRadius: 15, border: '1px solid gray' }}
+            onMouseUp={e => onStopConnecting({top: e.clientY, left: e.clientX})}
+            className={css.nodePlug}
             />
     );
 }

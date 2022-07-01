@@ -17,7 +17,8 @@ export const NumberDefinition: AudioComponentDefinition<void, NumberState> = {
         name: 'Number',
         getStateParameter: state => state.number,
       },
-    ]
+    ],
+    color: 'lightcoral',
 };
 
 export type NumberProps = AudioComponentProps<void, NumberState>;

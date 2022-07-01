@@ -27,7 +27,8 @@ export const MultiplyDefinition: AudioComponentDefinition<void, MultiplyState> =
         name: 'Number',
         getStateParameter: state => state.result,
       },
-    ]
+    ],
+    color: 'lightgreen',
 };
 
 export type MultiplyProps = AudioComponentProps<void, MultiplyState>;
@@ -44,6 +45,6 @@ export function Multiply({ state, onStateChange, inPlugs }: MultiplyProps) {
     }, [inPlugs['Number A'].value, inPlugs['Number B'].value]);
 
     return (
-        <div>{state.result}</div>
+        <div>{state.result.toFixed(2)}</div>
     );
 };

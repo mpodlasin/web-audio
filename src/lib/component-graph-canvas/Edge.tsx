@@ -61,7 +61,7 @@ export const SVGEdge = ({ edge, plugPositions, nodePositions, onOpenEdgeMenu, on
                 y1={y1} 
                 x2={x2} 
                 y2={y2} 
-                stroke="black"
+                stroke="gray"
             />
             <line
                 style={{pointerEvents: 'all'}}

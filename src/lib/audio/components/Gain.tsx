@@ -25,6 +25,7 @@ export const GainDefinition: AudioComponentDefinition<GainNode, GainState> = {
       getAudioParameter: audioElement => audioElement,
     }
   ],
+  color: 'lightgray',
 };
 
 export type GainProps = AudioComponentProps<GainNode, GainState>;
