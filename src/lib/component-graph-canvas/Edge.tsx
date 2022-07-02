@@ -64,7 +64,7 @@ export const SVGEdge = ({ edge, plugPositions, nodePositions, onOpenEdgeMenu, on
                 stroke="gray"
             />
             <line
-                style={{pointerEvents: 'all'}}
+                style={{pointerEvents: 'all', cursor: 'pointer'}}
                 onClick={handleClick}
                 onContextMenu={handleRightClick}
                 onMouseEnter={() => setIsHoveredOver(true)}
