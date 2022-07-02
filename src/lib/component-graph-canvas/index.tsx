@@ -215,7 +215,7 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         }
         {edgeMenu && <EdgeMenu position={edgeMenu.position} onDeleteEdge={handleDeleteEdge} />
         }
-        <svg style={{position: 'absolute', top: 0, left: 0, height: '100%', width: '100%', pointerEvents: 'none'}}>
+        <svg style={{zIndex: 100, position: 'absolute', top: 0, left: 0, height: '100%', width: '100%', pointerEvents: 'none'}}>
             {createdConnection && <CreatedSVGEdge nodePositions={nodePositions} plugPositions={plugPositions} createdConnection={createdConnection} />}
             {edges.map((edge, i) => <SVGEdge key={i} onOpenEdgeMenu={handleOpenEdgeMenu} onCloseEdgeMenu={closeEdgeMenu} edge={edge} plugPositions={plugPositions} nodePositions={nodePositions} />)}
         </svg>

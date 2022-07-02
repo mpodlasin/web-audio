@@ -4,7 +4,6 @@
     position: absolute;
     border: 1px solid #838383;
     border-radius: 10px;
-    overflow: hidden;
     -webkit-box-shadow: 5px 5px 17px -2px rgba(0,0,0,0.42); 
     box-shadow: 5px 5px 17px -2px rgba(0,0,0,0.42);
 }
@@ -13,6 +12,8 @@
     padding: 5px 8px 3px; 
     border-bottom: 1px solid #838383; 
     cursor: move;
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
 
     display: flex;
     justify-content: space-between;
@@ -40,8 +41,24 @@
     padding: 5px 0;
 }
 
-.inputPlugs {
+.inputPlugs, .outputPlugs {
     display: flex;
+}
+
+.nodePlugContainer {
+    width: 20px;
+    height: 20px;
+    position: relative;
+    margin-right: 5px;
+}
+
+.nodePlugWrapper {
+    border: 1px solid #838383;
+    border-radius: 10px;
+    display: flex;
+    padding: 2px;
+    position: absolute;
+    background-color: white;
 }
 
 .nodePlug {
@@ -51,4 +68,5 @@
     border-radius: 10px;
     border: 1px solid #838383;
     margin-right: 5px;
+    flex-shrink: 0;
 }

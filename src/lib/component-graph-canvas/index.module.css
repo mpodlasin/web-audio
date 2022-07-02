@@ -1,6 +1,6 @@
 .globalMenu {
     position: absolute;
-    z-index: 1;
+    z-index: 1000;
     border: 1px solid #838383;
     border-radius: 10px;
     overflow: hidden;
