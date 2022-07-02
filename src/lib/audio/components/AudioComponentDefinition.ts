@@ -23,7 +23,8 @@ export interface AudioComponentProps<A, S> {
   onStateChange: React.Dispatch<React.SetStateAction<S>>;
 }
 
-export interface PlugDefinition<A, S> extends Plug {
+export interface PlugDefinition<A, S> extends Omit<Plug, 'color'> {
+  type: string;
   getAudioParameter?(audioElement: A): AudioNode | AudioParam;
   getStateParameter?(state: S): number;
 }

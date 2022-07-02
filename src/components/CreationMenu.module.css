@@ -1,0 +1,18 @@
+.list {
+    list-style-type: none;
+    padding: 5px;
+    margin: 0;
+    background-color: white;
+}
+
+.button {
+    background-color: transparent;
+    border: 1px solid #838383;
+    border-radius: 5px;
+    margin-bottom: 3px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: lightcyan;
+}

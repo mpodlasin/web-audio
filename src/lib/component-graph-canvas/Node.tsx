@@ -3,7 +3,7 @@ import { Position } from './Position';
 import css from './Node.module.css';
 
 export interface Plug {
-    type: string;
+    color: string;
     name: string;
 }
 
@@ -65,11 +65,11 @@ export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, 
             </div>
             <div className={css.contentWithPlugs}>
                 <div className={css.inputPlugs}>
-                    {node.inPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(i)} onStartConnecting={position => onStartConnecting(i, position)} onStopConnecting={position => onStopConnecting(i, position)} />)}
+                    {node.inPlugs.map((plug, i) => <NodePlug key={i} color={plug.color} onPosition={handlePosition(i)} onStartConnecting={position => onStartConnecting(i, position)} onStopConnecting={position => onStopConnecting(i, position)} />)}
                 </div>
                 <div className={css.content}>{node.component}</div>
                 <div className={css.outputPlugs}>
-                    {node.outPlugs.map((_, i) => <NodePlug key={i} onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
+                    {node.outPlugs.map((plug, i) => <NodePlug key={i} color={plug.color} onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
                 </div>
             </div>
         </div>
@@ -80,9 +80,10 @@ interface NodePlugProps {
     onStartConnecting(position: Position): void;
     onStopConnecting(position: Position): void;
     onPosition(position: Position): void;
+    color: string;
 }
 
-const NodePlug = ({ onStartConnecting, onStopConnecting, onPosition }: NodePlugProps) => {
+const NodePlug = ({ onStartConnecting, onStopConnecting, onPosition, color }: NodePlugProps) => {
     const [, setPosition] = React.useState<Position>({ top: 0, left: 0});
 
     const ref = React.useRef<HTMLDivElement>(null);
@@ -105,6 +106,7 @@ const NodePlug = ({ onStartConnecting, onStopConnecting, onPosition }: NodePlugP
             onMouseDown={e => onStartConnecting({top: e.clientY, left: e.clientX})} 
             onMouseUp={e => onStopConnecting({top: e.clientY, left: e.clientX})}
             className={css.nodePlug}
+            style={{backgroundColor: color}}
             />
     );
 }

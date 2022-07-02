@@ -92,6 +92,11 @@ const addComponentToAudioComponentNode = <S>(
       component
     }
   }
+
+const PLUG_TYPE_TO_COLOR_MAP: {[type: string]: string} = {
+  'number': 'lightcyan',
+  'audio': 'lightblue',
+};
   
 const nodeDescriptionToAudioNode = <S>(nodeDescription: NodeDescription): AudioComponentNode => {
     const audioElement = getAudioElementForNodeDescription(nodeDescription);
@@ -104,10 +109,12 @@ const nodeDescriptionToAudioNode = <S>(nodeDescription: NodeDescription): AudioC
       inPlugs: definition.inPlugs.map(plug => ({
         ...plug,
         audioParameter: plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,
+        color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
       })),
       outPlugs: definition.outPlugs.map(plug => ({
         ...plug,
         audioParameter:  plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,
+        color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
       })),
       audioElement,
       headerColor: definition.color,

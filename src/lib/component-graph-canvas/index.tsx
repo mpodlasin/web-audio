@@ -3,6 +3,8 @@ import { Edge, SVGEdge, EdgeMenu, CreatedSVGEdge } from "./Edge";
 import { Node, NodeComponent } from "./Node";
 import { Position } from "./Position";
 
+import css from './index.module.css';
+
 export { type Edge } from './Edge';
 export { type Node, type Plug } from './Node';
 export { type Position } from './Position';
@@ -207,7 +209,7 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
             onPlugPositions={handlePlugPositions(node.id)}
         />)}
         {globalMenuPosition && 
-            <div style={{zIndex: 1, border: '1px solid black', backgroundColor: 'white', position: 'absolute', ...globalMenuPosition}}>
+            <div className={css.globalMenu} style={{...globalMenuPosition}}>
                 {globalMenu}
             </div>
         }
