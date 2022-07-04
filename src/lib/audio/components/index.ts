@@ -1,4 +1,5 @@
 import { AudioComponentDefinition } from "./AudioComponentDefinition";
+import { EnvelopeDefinition } from "./Envelope";
 import { FilterDefinition } from "./Filter";
 import { GainDefinition } from "./Gain";
 import { MidiInputDefinition } from "./MidiInput";
@@ -24,4 +25,5 @@ export const COMPONENTS: ComponentDefinitions = {
     'Sequencer': SequencerDefinition,
     'Ping': PingDefinition,
     'Random Number': RandomNumberDefinition,
+    'Envelope': EnvelopeDefinition,
 };
