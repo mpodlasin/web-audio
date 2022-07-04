@@ -11,29 +11,24 @@ export interface NodeDescription {
   }
   
 export interface AudioComponentNode extends Node {
-    audioElement?: AudioNode;
     inPlugs: AudioPlug[];
     outPlugs: AudioPlug[];
 }
 
-const GLOBAL_AUDIO_CONTEXT = new AudioContext();
+const NODE_ID_TO_MUTABLE_STATE = new Map<string, any>();
 
-const nodeIdToAudioElement = new Map<string, AudioNode>();
-
-const getAudioElementForNodeDescription = (nodeDescription: NodeDescription): AudioNode | undefined => {
-    const definition = COMPONENTS[nodeDescription.name];
+const getMutableStateForNodeDescription = <MutableState>(nodeDescription: NodeDescription): MutableState => {
+    const definition: AudioComponentDefinition<MutableState, any> = COMPONENTS[nodeDescription.name];
   
-    if (nodeIdToAudioElement.has(nodeDescription.id)) {
-      return nodeIdToAudioElement.get(nodeDescription.id)!;
-    } else if (definition.getAudioElement) {
-      const audioElement = definition.getAudioElement(GLOBAL_AUDIO_CONTEXT)!;
-  
-      nodeIdToAudioElement.set(nodeDescription.id, audioElement);
+    if (NODE_ID_TO_MUTABLE_STATE.has(nodeDescription.id)) {
+      return NODE_ID_TO_MUTABLE_STATE.get(nodeDescription.id)!;
+    } else {
+      const mutableState = definition.initializeMutableState();
+      
+      NODE_ID_TO_MUTABLE_STATE.set(nodeDescription.id, mutableState);
 
-      return audioElement;
+      return mutableState;
     }
-
-    return undefined;
   }
 
   export const nodeDescriptionsToAudioNodes = (nodeDescriptions: NodeDescription[]): AudioComponentNode[] => {
@@ -56,7 +51,7 @@ export const addComponentsToAudioComponentNodes = (
   ))
 }
 
-const addComponentToAudioComponentNode = <S>(
+const addComponentToAudioComponentNode = <MutableState, SerializableState>(
     node: AudioComponentNode,
     nodeDescriptions: NodeDescription[], 
     edges: Edge[],
@@ -71,7 +66,7 @@ const addComponentToAudioComponentNode = <S>(
       nodeStates
     );
 
-    const onStateChange = (action: React.SetStateAction<S>) => {
+    const onStateChange = (action: React.SetStateAction<SerializableState>) => {
       if (action instanceof Function) {
         setNodeStates(states => ({...states, [node.id]: action(states[node.id])}))
       } else {
@@ -79,12 +74,13 @@ const addComponentToAudioComponentNode = <S>(
       }
     }
 
+    const mutableState = getMutableStateForNodeDescription<MutableState>(nodeToNodeDescription(node));
+
     const component = React.createElement(definition.component, {
-      audioElement: node.audioElement,
-      audioContext: GLOBAL_AUDIO_CONTEXT,
+      mutableState,
+      serializableState: nodeStates[node.id],
+      onSerializableStateChange: onStateChange,
       inPlugs,
-      state: nodeStates[node.id],
-      onStateChange,
     });
 
     return {
@@ -98,25 +94,27 @@ const PLUG_TYPE_TO_COLOR_MAP: {[type: string]: string} = {
   'audio': 'lightblue',
 };
   
-const nodeDescriptionToAudioNode = <S>(nodeDescription: NodeDescription): AudioComponentNode => {
-    const audioElement = getAudioElementForNodeDescription(nodeDescription);
+const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
+  nodeDescription: NodeDescription,
+  serializableState: SerializableState,
+  ): AudioComponentNode => {
+    const mutableState = getMutableStateForNodeDescription<MutableState>(nodeDescription);
   
-    const definition: AudioComponentDefinition<any, S> = COMPONENTS[nodeDescription.name];
+    const definition: AudioComponentDefinition<MutableState, SerializableState> = COMPONENTS[nodeDescription.name];
 
     const audioComponentNode = {
       ...nodeDescription,
       component: React.createElement("div"),
       inPlugs: definition.inPlugs.map(plug => ({
         ...plug,
-        audioParameter: plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,
+        audioParameter: plug.type === 'audio' && plug.getParameter ?  plug.getParameter(mutableState, serializableState) : undefined,
         color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
       })),
       outPlugs: definition.outPlugs.map(plug => ({
         ...plug,
-        audioParameter:  plug.getAudioParameter !== undefined ?  plug.getAudioParameter(audioElement) : undefined,
+        audioParameter: plug.type === 'audio' && plug.getParameter ?  plug.getParameter(mutableState, serializableState) : undefined,
         color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
       })),
-      audioElement,
       headerColor: definition.color,
     };
   
@@ -135,13 +133,14 @@ const nodeDescriptionToAudioNode = <S>(nodeDescription: NodeDescription): AudioC
     edges: Edge[],
     nodeStates: {[nodeId: string]: any}
   ): AudioPlugValues => {
-    const incomingPlugValues: AudioPlugValues = {};
+    const incomingPlugValues: AudioPlugValues = {
+      number: {},
+      ping: {},
+    };
 
     const definition = COMPONENTS[nodeDescription.name];
 
     for (let inPlug of definition.inPlugs) {
-      incomingPlugValues[inPlug.name] = { value: undefined };
-
       const edgeComingToPlug = edges.find(
         e => e.outNodeId === nodeDescription.id && e.outPlugIndex === definition.inPlugs.indexOf(inPlug)
       );
@@ -156,12 +155,20 @@ const nodeDescriptionToAudioNode = <S>(nodeDescription: NodeDescription): AudioC
   
       const incomingNodePlug = incomingNodeDefinition.outPlugs[edgeComingToPlug.inPlugIndex - incomingNodeDefinition.inPlugs.length];
 
-      const getStateParameterForIncomingNodePlug = incomingNodePlug.getStateParameter;
-  
-      if (getStateParameterForIncomingNodePlug !== undefined) {
-        const stateParameter = getStateParameterForIncomingNodePlug(nodeStates[incomingNodeDescription.id] || incomingNodeDefinition.initialState);
+      if (incomingNodePlug.type === 'ping') {
+        incomingPlugValues.ping[inPlug.name] = incomingNodePlug.getParameter ? incomingNodePlug.getParameter(
+          getMutableStateForNodeDescription(incomingNodeDescription), 
+          nodeStates[incomingNodeDescription.id]
+        ) : undefined;
+      } else if (incomingNodePlug.type === 'number') {
+        const parameter = incomingNodePlug.getParameter ? incomingNodePlug.getParameter(
+          getMutableStateForNodeDescription(incomingNodeDescription), 
+          nodeStates[incomingNodeDescription.id]
+        ) : undefined;
 
-        incomingPlugValues[inPlug.name] = { value: stateParameter };
+        if (parameter && !(parameter instanceof AudioParam)) {
+          incomingPlugValues.number[inPlug.name] = parameter;
+        }
       }
     }
 

@@ -8,7 +8,8 @@ export interface MultiplyState {
 
 export const MultiplyDefinition: AudioComponentDefinition<void, MultiplyState> = {
     component: Multiply,
-    initialState: {
+    initializeMutableState: () => undefined,
+    initialSerializableState: {
         result: 0,
     },
     inPlugs: [
@@ -25,7 +26,7 @@ export const MultiplyDefinition: AudioComponentDefinition<void, MultiplyState> =
       {
         type: 'number',
         name: 'Number',
-        getStateParameter: state => state.result,
+        getParameter: (_, state) => state.result,
       },
     ],
     color: 'lightgreen',
@@ -33,16 +34,16 @@ export const MultiplyDefinition: AudioComponentDefinition<void, MultiplyState> =
 
 export type MultiplyProps = AudioComponentProps<void, MultiplyState>;
 
-export function Multiply({ state, onStateChange, inPlugs }: MultiplyProps) {
+export function Multiply({ serializableState: state, onSerializableStateChange: onStateChange, inPlugs }: MultiplyProps) {
 
     React.useEffect(() => {
-        const valueA = inPlugs['Number A'].value;
-        const valueB = inPlugs['Number B'].value;
-
+        const valueA = inPlugs.number['Number A'];
+        const valueB = inPlugs.number['Number B'];
+        
         if (valueA && valueB) {
             onStateChange(state = ({...state, result: valueA * valueB}));
         }
-    }, [inPlugs['Number A'].value, inPlugs['Number B'].value]);
+    }, [inPlugs.number['Number A'], inPlugs.number['Number B']]);
 
     return (
         <div>{state.result.toFixed(2)}</div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 const OSCILLATOR_TYPES: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"];
@@ -10,8 +11,8 @@ export interface OscillatorState {
 
 export const OscillatorDefinition: AudioComponentDefinition<OscillatorNode, OscillatorState> = {
   component: Oscillator,
-  getAudioElement: audioContext => new OscillatorNode(audioContext),
-  initialState: {
+  initializeMutableState: () => new OscillatorNode(GLOBAL_AUDIO_CONTEXT),
+  initialSerializableState: {
     frequency: 440,
     type: OSCILLATOR_TYPES[0],
   },
@@ -19,13 +20,14 @@ export const OscillatorDefinition: AudioComponentDefinition<OscillatorNode, Osci
     {
       type: 'number',
       name: 'Frequency',
+      getParameter: oscillatorNode => oscillatorNode.frequency,
     }
   ],
   outPlugs: [
     {
       type: 'audio',
       name: 'Output',
-      getAudioParameter: audioElement => audioElement,
+      getParameter: oscillatorNode => oscillatorNode,
     }
   ],
   color: 'lightyellow',
@@ -33,7 +35,7 @@ export const OscillatorDefinition: AudioComponentDefinition<OscillatorNode, Osci
 
 export type OscillatorProps = AudioComponentProps<OscillatorNode, OscillatorState>;
 
-export function Oscillator({ audioElement: oscillator, state, onStateChange, inPlugs }: OscillatorProps) {
+export function Oscillator({ mutableState: oscillator, serializableState: state, onSerializableStateChange: onStateChange, inPlugs }: OscillatorProps) {
   React.useEffect(() => {
     oscillator.start();
   }, [oscillator])
@@ -54,12 +56,12 @@ export function Oscillator({ audioElement: oscillator, state, onStateChange, inP
   };
 
   React.useEffect(() => {
-    const frequency = inPlugs['Frequency'].value;
+    const frequency = inPlugs.number['Frequency'];
 
     if (frequency) {
       onStateChange(state => ({...state, frequency}));
     }
-  }, [inPlugs['Frequency'].value]);
+  }, [inPlugs.number['Frequency']]);
 
   return <div>
     <select value={state.type} onChange={handleOscillatorTypeClick}>

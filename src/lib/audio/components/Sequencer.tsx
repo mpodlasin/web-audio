@@ -12,17 +12,18 @@ export interface SequencerState {
 
 export const SequencerDefinition: AudioComponentDefinition<void, SequencerState> = {
     component: Sequencer,
-    initialState: {
+    initialSerializableState: {
         tempo: 120,
         frequency: 0,
         sequenceMatrix: NOTES.map(() => STEPS.map(() => false)),
     },
+    initializeMutableState: () => undefined,
     inPlugs: [],
     outPlugs: [
       {
         type: 'number',
         name: 'Frequency',
-        getStateParameter: state => state.frequency,
+        getParameter: (_, state) => state.frequency,
       },
     ],
     color: 'lightblue',
@@ -30,12 +31,12 @@ export const SequencerDefinition: AudioComponentDefinition<void, SequencerState>
 
 export type SequencerProps = AudioComponentProps<void, SequencerState>;
 
-export function Sequencer({ state, onStateChange }: SequencerProps) {
+export function Sequencer({ serializableState, onSerializableStateChange }: SequencerProps) {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [stepClock, setStepClock] = React.useState(0);
 
     const handleCheckboxClick = (note: number, step: number) => () => {
-        onStateChange(state => {
+        onSerializableStateChange(state => {
             const sequenceMatrixCopy = state.sequenceMatrix.map(row => row.map(col => col));
 
             const newSequenceMatrixValue = !sequenceMatrixCopy[note - 1][step - 1];
@@ -65,16 +66,16 @@ export function Sequencer({ state, onStateChange }: SequencerProps) {
         };
 
         if (isPlaying) {
-            const id = setInterval(callback, 60_000 / state.tempo);
+            const id = setInterval(callback, 60_000 / serializableState.tempo);
 
             return () => { 
                 clearInterval(id);
             };
         }
-    }, [isPlaying, state.tempo]);
+    }, [isPlaying, serializableState.tempo]);
 
     React.useEffect(() => {
-        onStateChange(state => {
+        onSerializableStateChange(state => {
             const sequenceMatrixIndex = state.sequenceMatrix.findIndex(note => note[stepClock] === true);
 
             if (sequenceMatrixIndex === -1) return state;
@@ -91,7 +92,7 @@ export function Sequencer({ state, onStateChange }: SequencerProps) {
 
     const handleChangeTempo = (e: React.FormEvent<HTMLInputElement>) => {
         const currentTarget = e.currentTarget;
-        onStateChange(state => ({...state, tempo: currentTarget.valueAsNumber}))
+        onSerializableStateChange(state => ({...state, tempo: currentTarget.valueAsNumber}))
     };
 
     const toggleIsPlaying = () => {
@@ -102,7 +103,7 @@ export function Sequencer({ state, onStateChange }: SequencerProps) {
         <div>
         <button onClick={toggleIsPlaying}>{isPlaying ? 'Stop' : 'Play'}</button>
         <div>
-            <input type="number" value={state.tempo} onChange={handleChangeTempo} />
+            <input type="number" value={serializableState.tempo} onChange={handleChangeTempo} />
         </div>
         <table>
             <tbody>
@@ -111,7 +112,7 @@ export function Sequencer({ state, onStateChange }: SequencerProps) {
                 </tr>
                 {NOTES.map(note => (
                     <tr key={note}>{STEPS.map(step => (
-                        <td key={step}><input checked={state.sequenceMatrix[note - 1][step - 1]} onChange={handleCheckboxClick(note, step)} type="checkbox" /></td>
+                        <td key={step}><input checked={serializableState.sequenceMatrix[note - 1][step - 1]} onChange={handleCheckboxClick(note, step)} type="checkbox" /></td>
                     ))}</tr>
                 ))}
             </tbody>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 const BIQUAD_FILTER_TYPES: BiquadFilterType[] = ['lowpass', 'highpass', 'bandpass'];
@@ -10,8 +11,8 @@ export interface FilterState {
 
 export const FilterDefinition: AudioComponentDefinition<BiquadFilterNode, FilterState> = {
   component: Filter,
-  getAudioElement: audioContext => new BiquadFilterNode(audioContext),
-  initialState: {
+  initializeMutableState: () => new BiquadFilterNode(GLOBAL_AUDIO_CONTEXT),
+  initialSerializableState: {
     frequency: 0,
     type: BIQUAD_FILTER_TYPES[0],
   },
@@ -19,14 +20,14 @@ export const FilterDefinition: AudioComponentDefinition<BiquadFilterNode, Filter
     {
       type: 'audio',
       name: 'Input',
-      getAudioParameter: audioElement => audioElement,
+      getParameter: filterNode => filterNode,
     }
   ],
   outPlugs: [
     {
       type: 'audio',
       name: 'Output',
-      getAudioParameter: audioElement => audioElement,
+      getParameter: filterNode => filterNode,
     }
   ],
   color: 'lightpink',
@@ -34,7 +35,7 @@ export const FilterDefinition: AudioComponentDefinition<BiquadFilterNode, Filter
 
 export type FilterProps = AudioComponentProps<BiquadFilterNode, FilterState>;
 
-export function Filter({ audioElement: filter, state, onStateChange }: FilterProps) {
+export function Filter({ mutableState: filter, serializableState: state, onSerializableStateChange: onStateChange }: FilterProps) {
     React.useEffect(() => {
         filter.frequency.value = state.frequency;
         filter.type = state.type;

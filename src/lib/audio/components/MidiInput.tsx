@@ -7,7 +7,8 @@ interface MidiInputState {
 
 export const MidiInputDefinition: AudioComponentDefinition<void, MidiInputState> = {
     component: MidiInput,
-    initialState: {
+    initializeMutableState: () => undefined,
+    initialSerializableState: {
         frequency: 0,
     },
     inPlugs: [],
@@ -15,7 +16,7 @@ export const MidiInputDefinition: AudioComponentDefinition<void, MidiInputState>
       {
         type: 'number',
         name: 'Frequency',
-        getStateParameter: state => state.frequency,
+        getParameter: (_, state) => state.frequency,
       }
     ],
     color: 'lightgreen',
@@ -23,7 +24,7 @@ export const MidiInputDefinition: AudioComponentDefinition<void, MidiInputState>
 
 export type MidiInputProps = AudioComponentProps<void, MidiInputState>;
 
-export function MidiInput({ state, onStateChange }: MidiInputProps) {
+export function MidiInput({ serializableState: state, onSerializableStateChange: onStateChange }: MidiInputProps) {
     const [inputs, setInputs] = React.useState<WebMidi.MIDIInput[]>([]);
     const [chosenInputIndex] = React.useState(0);
 

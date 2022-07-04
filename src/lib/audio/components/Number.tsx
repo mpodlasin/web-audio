@@ -7,7 +7,8 @@ export interface NumberState {
 
 export const NumberDefinition: AudioComponentDefinition<void, NumberState> = {
     component: Number,
-    initialState: {
+    initializeMutableState: () => undefined,
+    initialSerializableState: {
         number: 0
     },
     inPlugs: [],
@@ -15,7 +16,7 @@ export const NumberDefinition: AudioComponentDefinition<void, NumberState> = {
       {
         type: 'number',
         name: 'Number',
-        getStateParameter: state => state.number,
+        getParameter: (_, state) => state.number,
       },
     ],
     color: 'lightcoral',
@@ -23,7 +24,7 @@ export const NumberDefinition: AudioComponentDefinition<void, NumberState> = {
 
 export type NumberProps = AudioComponentProps<void, NumberState>;
 
-export function Number({ state, onStateChange }: NumberProps) {
+export function Number({ serializableState: state, onSerializableStateChange: onStateChange }: NumberProps) {
     const [number, setNumber] = React.useState(`${state.number}`);
 
     const handleChange = (e: React.FormEvent<HTMLInputElement>) => {

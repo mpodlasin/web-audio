@@ -1,15 +1,16 @@
 import React from 'react';
+import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode, void> = {
   component: Output,
-  getAudioElement: audioContext => audioContext.destination,
-  initialState: undefined,
+  initializeMutableState: () => GLOBAL_AUDIO_CONTEXT.destination,
+  initialSerializableState: undefined,
   inPlugs: [
     {
       type: 'audio',
       name: 'Input',
-      getAudioParameter: audioElement => audioElement,
+      getParameter: audioDestinationNode => audioDestinationNode,
     }
   ],
   outPlugs: [],
@@ -18,28 +19,28 @@ export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode, vo
 
 export type OutputProps = AudioComponentProps<AudioDestinationNode, void>;
 
-export function Output({ audioContext }: { audioContext: AudioContext }) {
-    const [audioContextState, setAudioContextState] = React.useState(audioContext.state);
+export function Output(_: OutputProps) {
+    const [audioContextState, setAudioContextState] = React.useState(GLOBAL_AUDIO_CONTEXT.state);
   
     const togglePlay = () => {
       if (audioContextState === 'running') {
-        audioContext.suspend();
+        GLOBAL_AUDIO_CONTEXT.suspend();
       } else if (audioContextState === 'suspended') {
-        audioContext.resume();
+        GLOBAL_AUDIO_CONTEXT.resume();
       }
     };
     
     React.useEffect(() => {
       const callback = () => {
-        setAudioContextState(audioContext.state);
+        setAudioContextState(GLOBAL_AUDIO_CONTEXT.state);
       };
   
-      audioContext.addEventListener('statechange', callback);
+      GLOBAL_AUDIO_CONTEXT.addEventListener('statechange', callback);
   
       return () => {
-        audioContext.removeEventListener('statechange', callback);
+        GLOBAL_AUDIO_CONTEXT.removeEventListener('statechange', callback);
       }
-    }, [audioContext]);
+    }, [GLOBAL_AUDIO_CONTEXT]);
   
     return <div>
       <div>Current state: {audioContextState}</div>

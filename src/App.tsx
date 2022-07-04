@@ -54,7 +54,7 @@ function App() {
     const [nodeStates, setNodeStates] = React.useState<{[nodeId: string]: unknown}>(
       localStorage.getItem("NODE_STATES") ? 
       JSON.parse(localStorage.getItem('NODE_STATES')!) : 
-      nodeDescriptions.reduce((states, nodeDescription) => ({...states, [nodeDescription.id]: COMPONENTS[nodeDescription.name].initialState}), {})
+      nodeDescriptions.reduce((states, nodeDescription) => ({...states, [nodeDescription.id]: COMPONENTS[nodeDescription.name].initialSerializableState}), {})
     );
 
     React.useEffect(() => {

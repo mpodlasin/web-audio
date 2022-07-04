@@ -1,4 +1,5 @@
 import React from 'react';
+import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export interface GainState {
@@ -7,22 +8,22 @@ export interface GainState {
 
 export const GainDefinition: AudioComponentDefinition<GainNode, GainState> = {
   component: Gain,
-  getAudioElement: audioContext => new GainNode(audioContext),
-  initialState: {
+  initializeMutableState: () => new GainNode(GLOBAL_AUDIO_CONTEXT),
+  initialSerializableState: {
     gain: 0,
   },
   inPlugs: [
     {
       type: 'audio',
       name: 'Input',
-      getAudioParameter: audioElement => audioElement,
+      getParameter: gainNode => gainNode,
     }
   ],
   outPlugs: [
     {
       type: 'audio',
       name: 'Output',
-      getAudioParameter: audioElement => audioElement,
+      getParameter: gainNode => gainNode,
     }
   ],
   color: 'lightgray',
@@ -30,7 +31,7 @@ export const GainDefinition: AudioComponentDefinition<GainNode, GainState> = {
 
 export type GainProps = AudioComponentProps<GainNode, GainState>;
 
-export function Gain({ audioElement: gain, state, onStateChange }: GainProps) {
+export function Gain({ mutableState: gain, serializableState: state, onSerializableStateChange: onStateChange }: GainProps) {
     React.useEffect(() => {
       gain.gain.value = state.gain;
     }, [gain, state.gain]);

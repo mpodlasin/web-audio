@@ -1,30 +1,48 @@
 import React from "react";
 import { Plug } from "../../component-graph-canvas";
-import { AudioPlug } from "../AudioPlug";
+import { Observable } from 'rxjs';
 
-export interface AudioComponentDefinition<A, S> {
-    getAudioElement?(audioContext: AudioContext): A,
-    component: React.ComponentType<AudioComponentProps<A, S>>;
-    initialState: S;
-    inPlugs: PlugDefinition<A, S>[];
-    outPlugs: PlugDefinition<A, S>[];
+export interface AudioComponentDefinition<MutableState, SerializableState> {
+    component: React.ComponentType<AudioComponentProps<MutableState, SerializableState>>;
+    initialSerializableState: SerializableState;
+    initializeMutableState(): MutableState;
+    inPlugs: PlugDefinition<MutableState, SerializableState>[];
+    outPlugs: PlugDefinition<MutableState, SerializableState>[];
     color: string;
 }
 
 export interface AudioPlugValues {
-  [plugName: string]: { value?: number };
+  number: {
+    [plugName: string]: number | undefined
+  },
+  ping: {
+    [plugName: string]: Observable<void> | undefined
+  },
 }
 
-export interface AudioComponentProps<A, S> {
-  audioElement: A, 
-  audioContext: AudioContext, 
+export interface AudioComponentProps<MutableState, SerializableState> {
+  mutableState: MutableState;
+  serializableState: SerializableState;
+  onSerializableStateChange: React.Dispatch<React.SetStateAction<SerializableState>>;
   inPlugs: AudioPlugValues,
-  state: S,
-  onStateChange: React.Dispatch<React.SetStateAction<S>>;
 }
 
-export interface PlugDefinition<A, S> extends Omit<Plug, 'color'> {
-  type: string;
-  getAudioParameter?(audioElement: A): AudioNode | AudioParam;
-  getStateParameter?(state: S): number;
+export type PlugDefinition<A, S> = NumberPlugDefinition<A, S> | AudioPlugDefinition<A, S> | PingPlugDefinition<A, S>;
+
+export interface NumberPlugDefinition<MutableState, SerializableState> {
+  name: string;
+  type: 'number',
+  getParameter?(mutableState: MutableState, serializableState: SerializableState): number | AudioParam;
+}
+
+export interface AudioPlugDefinition<MutableState, SerializableState> {
+  name: string;
+  type: 'audio',
+  getParameter?(mutableState: MutableState, serializableState: SerializableState): AudioNode;
+}
+
+export interface PingPlugDefinition<MutableState, SerializableState> {
+  name: string;
+  type: 'ping';
+  getParameter?(mutableState: MutableState, serializableState: SerializableState): Observable<void>,
 }

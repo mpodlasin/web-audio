@@ -2,7 +2,7 @@ import { Plug } from "../component-graph-canvas";
 
 
 export interface AudioPlug extends Plug {
-  audioParameter?: AudioNode | AudioParam;
+  audioParameter: AudioNode | AudioParam | undefined;
 }
   
 export const connectPlugs = (a: AudioPlug, b: AudioPlug) => {
