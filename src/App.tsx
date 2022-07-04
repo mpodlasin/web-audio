@@ -73,11 +73,17 @@ function App() {
     };
 
     const handleCreateNode = (nodeName: string) => {
+      const id = uuidv4();
+      const definition = COMPONENTS[nodeName];
       setNodeDescriptions(nodeDescriptions => [...nodeDescriptions, {
-        id: uuidv4(),
+        id,
         name: nodeName,
         position: {top: 100, left: 100},
       }]);
+      setNodeStates(nodeStates => ({
+        ...nodeStates,
+        [id]: definition.initialSerializableState,
+      }))
     }
   
     return (
