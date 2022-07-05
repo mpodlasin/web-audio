@@ -1,6 +1,5 @@
 import React from "react";
-import { Plug } from "../../component-graph-canvas";
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 export interface AudioComponentDefinition<MutableState, SerializableState> {
     component: React.ComponentType<AudioComponentProps<MutableState, SerializableState>>;
@@ -44,5 +43,5 @@ export interface AudioPlugDefinition<MutableState, SerializableState> {
 export interface PingPlugDefinition<MutableState, SerializableState> {
   name: string;
   type: 'ping';
-  getParameter?(mutableState: MutableState, serializableState: SerializableState): Observable<void>,
+  getParameter?(mutableState: MutableState, serializableState: SerializableState): Subject<void>,
 }

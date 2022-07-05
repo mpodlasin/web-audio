@@ -1,8 +1,8 @@
 import React from 'react';
 import { Edge, Position, Node } from "../component-graph-canvas";
-import { AudioPlug } from "./AudioPlug";
+import { AudioPlug, NumberPlug, PingPlug, PlugWithValue } from "./AudioPlug";
 import { COMPONENTS } from "./components";
-import { AudioComponentDefinition, AudioPlugValues } from './components/AudioComponentDefinition';
+import { AudioComponentDefinition, AudioPlugDefinition, AudioPlugValues, NumberPlugDefinition, PingPlugDefinition, PlugDefinition } from './components/AudioComponentDefinition';
 
 export interface NodeDescription {
     id: string;
@@ -11,8 +11,8 @@ export interface NodeDescription {
   }
   
 export interface AudioComponentNode extends Node {
-    inPlugs: AudioPlug[];
-    outPlugs: AudioPlug[];
+    inPlugs: PlugWithValue[];
+    outPlugs: PlugWithValue[];
 }
 
 const NODE_ID_TO_MUTABLE_STATE = new Map<string, any>();
@@ -102,23 +102,38 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
   
     const definition: AudioComponentDefinition<MutableState, SerializableState> = COMPONENTS[nodeDescription.name];
 
-    const audioComponentNode = {
+    const audioComponentNode: AudioComponentNode = {
       ...nodeDescription,
       component: React.createElement("div"),
-      inPlugs: definition.inPlugs.map(plug => ({
-        ...plug,
-        audioParameter: plug.type === 'audio' && plug.getParameter ?  plug.getParameter(mutableState, serializableState) : undefined,
-        color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
-      })),
-      outPlugs: definition.outPlugs.map(plug => ({
-        ...plug,
-        audioParameter: plug.type === 'audio' && plug.getParameter ?  plug.getParameter(mutableState, serializableState) : undefined,
-        color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
-      })),
+      inPlugs: definition.inPlugs.map(plug => plugDefinitionToPlugWithValue(plug, mutableState, serializableState)),
+      outPlugs: definition.outPlugs.map(plug => plugDefinitionToPlugWithValue(plug, mutableState, serializableState)),
       headerColor: definition.color,
     };
   
     return audioComponentNode;
+  }
+
+
+  function plugDefinitionToPlugWithValue<MutableState, SerializableState>(plug: PlugDefinition<MutableState, SerializableState>, mutableState: MutableState, serializableState: SerializableState): PlugWithValue {
+    if (plug.type === 'audio') {
+      return {
+        ...plug,
+        value: plug.getParameter ? plug.getParameter(mutableState, serializableState) : undefined,
+        color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
+      }
+    }
+    if (plug.type === 'number') {
+      return {
+        ...plug,
+        value: plug.getParameter ? plug.getParameter(mutableState, serializableState) : undefined,
+        color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
+      }
+    }
+      return {
+        ...plug,
+        value: plug.getParameter ? plug.getParameter(mutableState, serializableState) : undefined,
+        color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
+      };
   }
   
   export const nodeToNodeDescription = (node: Node): NodeDescription => ({

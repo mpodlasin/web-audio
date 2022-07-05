@@ -1,11 +1,11 @@
 import './App.css';
 import React from 'react';
 import { ComponentGraphCanvas, Node, Edge } from './lib/component-graph-canvas';
-import { connectPlugs } from './lib/audio/AudioPlug';
 import { v4 as uuidv4 } from 'uuid';
 import { addComponentsToAudioComponentNodes, NodeDescription, nodeDescriptionsToAudioNodes, nodeToNodeDescription } from './lib/audio/AudioComponentNode';
 import { CreationMenu } from './components/CreationMenu';
 import { COMPONENTS } from './lib/audio/components';
+import { connectPlugsWithValues } from './lib/audio/AudioPlug';
 
 function App() {
     const [edges, setEdges] = React.useState<Edge[]>(
@@ -39,7 +39,7 @@ function App() {
         const outPlug = outNode.inPlugs[edge.outPlugIndex];
 
         try {
-          return [connectPlugs(inPlug, outPlug)];
+          return [connectPlugsWithValues(inPlug, outPlug)];
         } catch {
           setEdges(edges => edges.filter(e => e !== edge));
           return [];
