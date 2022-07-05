@@ -1,8 +1,8 @@
 import React from 'react';
 import { Edge, Position, Node } from "../component-graph-canvas";
-import { AudioPlug, NumberPlug, PingPlug, PlugWithValue } from "./AudioPlug";
+import { PlugWithValue } from "./AudioPlug";
 import { COMPONENTS } from "./components";
-import { AudioComponentDefinition, AudioPlugDefinition, AudioPlugValues, NumberPlugDefinition, PingPlugDefinition, PlugDefinition } from './components/AudioComponentDefinition';
+import { AudioComponentDefinition, AudioPlugValues, InPlugDefinition, OutPlugDefinition } from './components/AudioComponentDefinition';
 
 export interface NodeDescription {
     id: string;
@@ -105,8 +105,8 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
     const audioComponentNode: AudioComponentNode = {
       ...nodeDescription,
       component: React.createElement("div"),
-      inPlugs: definition.inPlugs.map(plug => plugDefinitionToPlugWithValue(plug, mutableState, serializableState)),
-      outPlugs: definition.outPlugs.map(plug => plugDefinitionToPlugWithValue(plug, mutableState, serializableState)),
+      inPlugs: definition.inPlugs.map(plug => inPlugDefinitionToPlugWithValue(plug, mutableState, serializableState)),
+      outPlugs: definition.outPlugs.map(plug => outPlugDefinitionToPlugWithValue(plug, mutableState, serializableState)),
       headerColor: definition.color,
     };
   
@@ -114,7 +114,30 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
   }
 
 
-  function plugDefinitionToPlugWithValue<MutableState, SerializableState>(plug: PlugDefinition<MutableState, SerializableState>, mutableState: MutableState, serializableState: SerializableState): PlugWithValue {
+  function inPlugDefinitionToPlugWithValue<MutableState, SerializableState>(plug: InPlugDefinition<MutableState, SerializableState>, mutableState: MutableState, serializableState: SerializableState): PlugWithValue {
+    if (plug.type === 'audio') {
+      return {
+        ...plug,
+        value: plug.getParameter ? plug.getParameter(mutableState, serializableState) : undefined,
+        color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
+      }
+    }
+    if (plug.type === 'number') {
+      return {
+        ...plug,
+        value: plug.getParameter ? plug.getParameter(mutableState, serializableState) : undefined,
+        color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
+      }
+    }
+      return {
+        ...plug,
+        value: undefined,
+        color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
+      };
+  }
+
+
+  function outPlugDefinitionToPlugWithValue<MutableState, SerializableState>(plug: OutPlugDefinition<MutableState, SerializableState>, mutableState: MutableState, serializableState: SerializableState): PlugWithValue {
     if (plug.type === 'audio') {
       return {
         ...plug,
@@ -181,7 +204,7 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
           nodeStates[incomingNodeDescription.id]
         ) : undefined;
 
-        if (parameter && !(parameter instanceof AudioParam)) {
+        if (parameter) {
           incomingPlugValues.number[inPlug.name] = parameter;
         }
       }

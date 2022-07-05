@@ -1,5 +1,4 @@
 import React from 'react';
-import { Subject } from 'rxjs';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export interface RandomNumberState {
@@ -8,7 +7,7 @@ export interface RandomNumberState {
 
 export const RandomNumberDefinition: AudioComponentDefinition<void, RandomNumberState> = {
     component: RandomNumber,
-    initializeMutableState: () => new Subject(),
+    initializeMutableState: () => undefined,
     initialSerializableState: {
         randomNumber: 0
     },

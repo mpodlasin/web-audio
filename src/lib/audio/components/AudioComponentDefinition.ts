@@ -5,8 +5,8 @@ export interface AudioComponentDefinition<MutableState, SerializableState> {
     component: React.ComponentType<AudioComponentProps<MutableState, SerializableState>>;
     initialSerializableState: SerializableState;
     initializeMutableState(): MutableState;
-    inPlugs: PlugDefinition<MutableState, SerializableState>[];
-    outPlugs: PlugDefinition<MutableState, SerializableState>[];
+    inPlugs: InPlugDefinition<MutableState, SerializableState>[];
+    outPlugs: OutPlugDefinition<MutableState, SerializableState>[];
     color: string;
 }
 
@@ -26,22 +26,41 @@ export interface AudioComponentProps<MutableState, SerializableState> {
   inPlugs: AudioPlugValues,
 }
 
-export type PlugDefinition<A, S> = NumberPlugDefinition<A, S> | AudioPlugDefinition<A, S> | PingPlugDefinition<A, S>;
+export type InPlugDefinition<A, S> = NumberInPlugDefinition<A, S> | AudioInPlugDefinition<A, S> | PingInPlugDefinition<A, S>;
 
-export interface NumberPlugDefinition<MutableState, SerializableState> {
+export interface NumberInPlugDefinition<MutableState, SerializableState> {
   name: string;
   type: 'number',
-  getParameter?(mutableState: MutableState, serializableState: SerializableState): number | AudioParam;
+  getParameter?(mutableState: MutableState, serializableState: SerializableState): AudioParam;
 }
 
-export interface AudioPlugDefinition<MutableState, SerializableState> {
+export interface AudioInPlugDefinition<MutableState, SerializableState> {
   name: string;
   type: 'audio',
-  getParameter?(mutableState: MutableState, serializableState: SerializableState): AudioNode;
+  getParameter(mutableState: MutableState, serializableState: SerializableState): AudioNode;
 }
 
-export interface PingPlugDefinition<MutableState, SerializableState> {
+export interface PingInPlugDefinition<MutableState, SerializableState> {
   name: string;
   type: 'ping';
-  getParameter?(mutableState: MutableState, serializableState: SerializableState): Subject<void>,
+}
+
+export type OutPlugDefinition<A, S> = NumberOutPlugDefinition<A, S> | AudioOutPlugDefinition<A, S> | PingOutPlugDefinition<A, S>;
+
+export interface NumberOutPlugDefinition<MutableState, SerializableState> {
+  name: string;
+  type: 'number',
+  getParameter(mutableState: MutableState, serializableState: SerializableState): number;
+}
+
+export interface AudioOutPlugDefinition<MutableState, SerializableState> {
+  name: string;
+  type: 'audio',
+  getParameter(mutableState: MutableState, serializableState: SerializableState): AudioNode;
+}
+
+export interface PingOutPlugDefinition<MutableState, SerializableState> {
+  name: string;
+  type: 'ping';
+  getParameter(mutableState: MutableState, serializableState: SerializableState): Subject<void>,
 }
