@@ -1,8 +1,8 @@
 import React from 'react';
+import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export interface EnvelopeState {
-    gain: number;
     attack: number;
     delay: number;
     sustain: number;
@@ -13,7 +13,6 @@ export const EnvelopeDefinition: AudioComponentDefinition<void, EnvelopeState> =
     component: Envelope,
     initializeMutableState: () => undefined,
     initialSerializableState: {
-        gain: 0,
         attack: 0,
         delay: 0,
         sustain: 0,
@@ -29,7 +28,6 @@ export const EnvelopeDefinition: AudioComponentDefinition<void, EnvelopeState> =
       {
         type: 'number',
         name: 'Gain',
-        getParameter: (_, state) => state.gain,
       },
     ],
     color: 'lightcoral',
@@ -37,27 +35,23 @@ export const EnvelopeDefinition: AudioComponentDefinition<void, EnvelopeState> =
 
 export type EnvelopeProps = AudioComponentProps<void, EnvelopeState>;
 
-export function Envelope({ serializableState: state, onSerializableStateChange: onStateChange, inPlugs }: EnvelopeProps) {
+export function Envelope({ serializableState: state, onSerializableStateChange: onStateChange, inPlugs, outPlugs }: EnvelopeProps) {
     React.useEffect(() => {
-        const ping = inPlugs.ping['Ping'];
+        const ping = inPlugs.ping['Ping'].value;
+        const gain = outPlugs.number['Gain'].value;
 
-        if (ping) {
+        if (ping && gain) {
             const subscription = ping.subscribe(() => {
-                let counter = 0;
-                const id = setInterval(() => {
-                    counter += 10;
+                const currentTime = GLOBAL_AUDIO_CONTEXT.currentTime;
 
-                    onStateChange(state => ({...state, gain: Math.random()}))
-
-                    if (counter > state.attack + state.release) {
-                        clearInterval(id);
-                    }
-                }, 10);
+                gain.setValueAtTime(0, currentTime);
+                gain.linearRampToValueAtTime(0.05, currentTime + (state.attack / 1000));
+                gain.linearRampToValueAtTime(0, currentTime + (state.attack / 1000) + (state.release / 1000));
             });
 
             return () => subscription.unsubscribe();
         }
-    }, [inPlugs.ping['Ping']]);
+    }, [inPlugs.ping['Ping'].value, outPlugs.number['Gain'].value]);
 
     const changeAttack = (e: React.FormEvent<HTMLInputElement>) => {
         const currentTarget = e.currentTarget;
@@ -97,7 +91,6 @@ export function Envelope({ serializableState: state, onSerializableStateChange: 
                 <label>Release</label>
                 <input type="range" value={state.release} onChange={changeRelease} min={0} max={10_000} />
             </div>
-            <div>{state.gain}</div>
         </div>
     )
 };

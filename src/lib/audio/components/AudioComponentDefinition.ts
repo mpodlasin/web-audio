@@ -12,16 +12,16 @@ export interface AudioComponentDefinition<MutableState, SerializableState> {
 
 export interface InAudioPlugValues {
   number: {
-    [plugName: string]: number | undefined
+    [plugName: string]: { value: number | undefined, connected: boolean }
   },
   ping: {
-    [plugName: string]: Observable<void> | undefined
+    [plugName: string]: { value: Observable<void> | undefined, connected: boolean }
   },
 }
 
 export interface OutAudioPlugValues {
   number: {
-    [plugName: string]: AudioParam | undefined;
+    [plugName: string]: { value: AudioParam | undefined, connected: boolean }
   }
 }
 

@@ -31,7 +31,7 @@ export type RandomNumberProps = AudioComponentProps<void, RandomNumberState>;
 
 export function RandomNumber({ serializableState: state, onSerializableStateChange: onStateChange, inPlugs }: RandomNumberProps) {
     React.useEffect(() => {
-        const ping = inPlugs.ping['Ping'];
+        const ping = inPlugs.ping['Ping'].value;
 
         if (ping) {
             const subscription = ping.subscribe(() => {
@@ -40,7 +40,7 @@ export function RandomNumber({ serializableState: state, onSerializableStateChan
 
             return () => subscription.unsubscribe();
         }
-    }, [inPlugs.ping['Ping']]);
+    }, [inPlugs.ping['Ping'].value]);
 
     return (
         <div>

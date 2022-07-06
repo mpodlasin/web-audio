@@ -56,12 +56,12 @@ export function Oscillator({ mutableState: oscillator, serializableState: state,
   };
 
   React.useEffect(() => {
-    const frequency = inPlugs.number['Frequency'];
+    const frequency = inPlugs.number['Frequency'].value;
 
     if (frequency) {
       onStateChange(state => ({...state, frequency}));
     }
-  }, [inPlugs.number['Frequency']]);
+  }, [inPlugs.number['Frequency'].value]);
 
   return <div>
     <select value={state.type} onChange={handleOscillatorTypeClick}>

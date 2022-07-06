@@ -187,6 +187,19 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
     const definition = COMPONENTS[nodeDescription.name];
 
     for (let inPlug of definition.inPlugs) {
+      if (inPlug.type === 'number') {
+        incomingPlugValues.number[inPlug.name] = {
+          value: undefined,
+          connected: false
+        }
+      }
+      if (inPlug.type === 'ping') {
+        incomingPlugValues.ping[inPlug.name] = {
+          value: undefined,
+          connected: false
+        }
+      }
+
       // TODO: find -> filter
       const edgeComingToPlug = edges.find(
         e => e.outNodeId === nodeDescription.id && e.outPlugIndex === definition.inPlugs.indexOf(inPlug)
@@ -203,18 +216,23 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
       const incomingNodePlug = incomingNodeDefinition.outPlugs[edgeComingToPlug.inPlugIndex - incomingNodeDefinition.inPlugs.length];
 
       if (incomingNodePlug.type === 'ping') {
-        incomingPlugValues.ping[inPlug.name] = incomingNodePlug.getParameter ? incomingNodePlug.getParameter(
+        const value = incomingNodePlug.getParameter ? incomingNodePlug.getParameter(
           getMutableStateForNodeDescription(incomingNodeDescription), 
           nodeStates[incomingNodeDescription.id]
         ) : undefined;
+        incomingPlugValues.ping[inPlug.name] = {
+          value,
+          connected: true,
+        }
       } else if (incomingNodePlug.type === 'number') {
-        const parameter = incomingNodePlug.getParameter ? incomingNodePlug.getParameter(
+        const value = incomingNodePlug.getParameter ? incomingNodePlug.getParameter(
           getMutableStateForNodeDescription(incomingNodeDescription), 
           nodeStates[incomingNodeDescription.id]
         ) : undefined;
 
-        if (parameter) {
-          incomingPlugValues.number[inPlug.name] = parameter;
+        incomingPlugValues.number[inPlug.name] = {
+          value,
+          connected: true,
         }
       }
     }
@@ -235,9 +253,17 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
     const definition = COMPONENTS[nodeDescription.name];
 
     for (let outPlug of definition.outPlugs) {
+
+      if (outPlug.type === 'number') {
+        outgoingPlugValues.number[outPlug.name] = {
+          value: undefined,
+          connected: false
+        };
+      }
+
       // TODO: find -> filter
       const edgeGoingFromPlug = edges.find(edge => 
-        edge.inNodeId === nodeDescription.id && edge.outPlugIndex === definition.outPlugs.indexOf(outPlug)
+        edge.inNodeId === nodeDescription.id && edge.inPlugIndex === definition.outPlugs.indexOf(outPlug) + definition.inPlugs.length
       );
 
       if (edgeGoingFromPlug === undefined) continue;
@@ -251,10 +277,14 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
       const outgoingNodePlug = outgoingNodeDefinition.inPlugs[edgeGoingFromPlug.outPlugIndex];
 
       if (outgoingNodePlug.type === 'number') {
-        outgoingPlugValues.number[outPlug.name] = outgoingNodePlug.getParameter ? outgoingNodePlug.getParameter(
+        const value = outgoingNodePlug.getParameter ? outgoingNodePlug.getParameter(
           getMutableStateForNodeDescription(outgoingNodeDescription),
           nodeStates[outgoingNodeDescription.id],
         ) : undefined;
+        outgoingPlugValues.number[outPlug.name] = { 
+          value,
+          connected: true,
+        };
       }
     }
 

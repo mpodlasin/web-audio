@@ -38,7 +38,7 @@ export function Sequencer({ serializableState, onSerializableStateChange, outPlu
     const [isPlaying, setIsPlaying] = React.useState(false);
 
     React.useEffect(() => {
-        const frequency = outPlugs.number['Frequency'];
+        const frequency = outPlugs.number['Frequency'].value;
 
         if (frequency && isPlaying) {
             let nextNoteTime = GLOBAL_AUDIO_CONTEXT.currentTime;
@@ -62,7 +62,7 @@ export function Sequencer({ serializableState, onSerializableStateChange, outPlu
 
             return () => clearInterval(id);
         }
-    }, [outPlugs.number['Frequency'], serializableState.tempo, isPlaying]);
+    }, [outPlugs.number['Frequency'].value, serializableState.tempo, isPlaying]);
 
     const handleCheckboxClick = (note: number, step: number) => () => {
         onSerializableStateChange(state => {

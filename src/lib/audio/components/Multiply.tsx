@@ -37,8 +37,8 @@ export type MultiplyProps = AudioComponentProps<void, MultiplyState>;
 export function Multiply({ serializableState: state, onSerializableStateChange: onStateChange, inPlugs }: MultiplyProps) {
 
     React.useEffect(() => {
-        const valueA = inPlugs.number['Number A'];
-        const valueB = inPlugs.number['Number B'];
+        const valueA = inPlugs.number['Number A'].value;
+        const valueB = inPlugs.number['Number B'].value;
         
         if (valueA && valueB) {
             onStateChange(state = ({...state, result: valueA * valueB}));
