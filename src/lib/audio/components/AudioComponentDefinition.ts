@@ -57,7 +57,7 @@ export type OutPlugDefinition<A, S> = NumberOutPlugDefinition<A, S> | AudioOutPl
 export interface NumberOutPlugDefinition<MutableState, SerializableState> {
   name: string;
   type: 'number',
-  getParameter(mutableState: MutableState, serializableState: SerializableState): number;
+  getParameter?(mutableState: MutableState, serializableState: SerializableState): number;
 }
 
 export interface AudioOutPlugDefinition<MutableState, SerializableState> {
