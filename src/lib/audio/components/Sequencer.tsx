@@ -5,7 +5,7 @@ import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentD
 const NOTES = [1, 2, 3, 4, 5, 6, 7, 8];
 const STEPS = [1, 2, 3, 4, 5, 6, 7, 8];
 
-const MIDI_MAP = [27, 29, 30, 32, 34, 35, 37, 39];
+const MIDI_MAP = [39, 41, 42, 44, 46, 47, 49, 51];
 
 export interface SequencerState {
     tempo: number;
@@ -44,13 +44,7 @@ export function Sequencer({ serializableState, onSerializableStateChange, outPlu
             let nextNoteTime = GLOBAL_AUDIO_CONTEXT.currentTime;
             let step = 0;
             const id = setInterval(() => {
-                console.log('setInterval triggered');
-                console.log('nextNoteTime', nextNoteTime);
-                console.log('noteNumber', step);
-                console.log('current time + lookahead', GLOBAL_AUDIO_CONTEXT.currentTime + LOOKAHEAD);
-
-                while (nextNoteTime < GLOBAL_AUDIO_CONTEXT.currentTime + LOOKAHEAD) {
-                    console.log('while executed');
+                while (nextNoteTime < GLOBAL_AUDIO_CONTEXT.currentTime + (LOOKAHEAD / 100)) {
                     frequency.setValueAtTime(
                         440 * Math.pow(2, (MIDI_MAP[step] - 69) / 12), 
                         nextNoteTime
@@ -62,13 +56,13 @@ export function Sequencer({ serializableState, onSerializableStateChange, outPlu
                         step++;
                     }
 
-                    nextNoteTime = nextNoteTime + 1;
+                    nextNoteTime = nextNoteTime + (((60_000 / serializableState.tempo) / 100) / 8);
                 }
             }, CLOCK_TRIGGER);
 
             return () => clearInterval(id);
         }
-    }, [outPlugs.number['Frequency'], isPlaying]);
+    }, [outPlugs.number['Frequency'], serializableState.tempo, isPlaying]);
 
     const handleCheckboxClick = (note: number, step: number) => () => {
         onSerializableStateChange(state => {
