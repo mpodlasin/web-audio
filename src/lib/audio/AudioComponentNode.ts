@@ -2,7 +2,7 @@ import React from 'react';
 import { Edge, Position, Node } from "../component-graph-canvas";
 import { PlugWithValue } from "./AudioPlug";
 import { COMPONENTS } from "./components";
-import { AudioComponentDefinition, AudioPlugValues, InPlugDefinition, OutPlugDefinition } from './components/AudioComponentDefinition';
+import { AudioComponentDefinition, InAudioPlugValues, InPlugDefinition, OutAudioPlugValues, OutPlugDefinition } from './components/AudioComponentDefinition';
 
 export interface NodeDescription {
     id: string;
@@ -66,6 +66,13 @@ const addComponentToAudioComponentNode = <MutableState, SerializableState>(
       nodeStates
     );
 
+    const outPlugs = collectOutgoingPlugsForNode(
+      nodeToNodeDescription(node),
+      nodeDescriptions, 
+      edges,
+      nodeStates
+    );
+
     const onStateChange = (action: React.SetStateAction<SerializableState>) => {
       if (action instanceof Function) {
         setNodeStates(states => ({...states, [node.id]: action(states[node.id])}))
@@ -81,6 +88,7 @@ const addComponentToAudioComponentNode = <MutableState, SerializableState>(
       serializableState: nodeStates[node.id],
       onSerializableStateChange: onStateChange,
       inPlugs,
+      outPlugs,
     });
 
     return {
@@ -170,8 +178,8 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
     nodeDescriptions: NodeDescription[], 
     edges: Edge[],
     nodeStates: {[nodeId: string]: any}
-  ): AudioPlugValues => {
-    const incomingPlugValues: AudioPlugValues = {
+  ): InAudioPlugValues => {
+    const incomingPlugValues: InAudioPlugValues = {
       number: {},
       ping: {},
     };
@@ -179,6 +187,7 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
     const definition = COMPONENTS[nodeDescription.name];
 
     for (let inPlug of definition.inPlugs) {
+      // TODO: find -> filter
       const edgeComingToPlug = edges.find(
         e => e.outNodeId === nodeDescription.id && e.outPlugIndex === definition.inPlugs.indexOf(inPlug)
       );
@@ -211,5 +220,44 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
     }
 
     return incomingPlugValues;
+  }
+
+  const collectOutgoingPlugsForNode = (
+    nodeDescription: NodeDescription, 
+    nodeDescriptions: NodeDescription[], 
+    edges: Edge[],
+    nodeStates: {[nodeId: string]: any}
+  ): OutAudioPlugValues => {
+    const outgoingPlugValues: OutAudioPlugValues = {
+      number: {}
+    };
+
+    const definition = COMPONENTS[nodeDescription.name];
+
+    for (let outPlug of definition.outPlugs) {
+      // TODO: find -> filter
+      const edgeGoingFromPlug = edges.find(edge => 
+        edge.inNodeId === nodeDescription.id && edge.outPlugIndex === definition.outPlugs.indexOf(outPlug)
+      );
+
+      if (edgeGoingFromPlug === undefined) continue;
+
+      const outgoingNodeDescription = nodeDescriptions.find(node => node.id === edgeGoingFromPlug.outNodeId);
+
+      if (outgoingNodeDescription === undefined) continue;
+
+      const outgoingNodeDefinition = COMPONENTS[outgoingNodeDescription.name];
+
+      const outgoingNodePlug = outgoingNodeDefinition.inPlugs[edgeGoingFromPlug.outPlugIndex];
+
+      if (outgoingNodePlug.type === 'number') {
+        outgoingPlugValues.number[outPlug.name] = outgoingNodePlug.getParameter ? outgoingNodePlug.getParameter(
+          getMutableStateForNodeDescription(outgoingNodeDescription),
+          nodeStates[outgoingNodeDescription.id],
+        ) : undefined;
+      }
+    }
+
+    return outgoingPlugValues;
   }
   

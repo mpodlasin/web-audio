@@ -10,7 +10,7 @@ export interface AudioComponentDefinition<MutableState, SerializableState> {
     color: string;
 }
 
-export interface AudioPlugValues {
+export interface InAudioPlugValues {
   number: {
     [plugName: string]: number | undefined
   },
@@ -19,11 +19,18 @@ export interface AudioPlugValues {
   },
 }
 
+export interface OutAudioPlugValues {
+  number: {
+    [plugName: string]: AudioParam | undefined;
+  }
+}
+
 export interface AudioComponentProps<MutableState, SerializableState> {
   mutableState: MutableState;
   serializableState: SerializableState;
   onSerializableStateChange: React.Dispatch<React.SetStateAction<SerializableState>>;
-  inPlugs: AudioPlugValues,
+  inPlugs: InAudioPlugValues,
+  outPlugs: OutAudioPlugValues;
 }
 
 export type InPlugDefinition<A, S> = NumberInPlugDefinition<A, S> | AudioInPlugDefinition<A, S> | PingInPlugDefinition<A, S>;
