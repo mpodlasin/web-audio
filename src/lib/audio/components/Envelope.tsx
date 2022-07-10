@@ -1,5 +1,6 @@
 import React from 'react';
 import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
+import { EnvelopedAudioParam } from '../nodes/EnvelopedAudioParam';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export interface EnvelopeState {
@@ -9,9 +10,9 @@ export interface EnvelopeState {
     release: number;
 }
 
-export const EnvelopeDefinition: AudioComponentDefinition<void, EnvelopeState> = {
+export const EnvelopeDefinition: AudioComponentDefinition<EnvelopedAudioParam, EnvelopeState> = {
     component: Envelope,
-    initializeMutableState: () => undefined,
+    initializeMutableState: () => new EnvelopedAudioParam({ attack: 300 }),
     initialSerializableState: {
         attack: 0,
         delay: 0,
@@ -22,6 +23,7 @@ export const EnvelopeDefinition: AudioComponentDefinition<void, EnvelopeState> =
         {
             type: 'ping',
             name: 'Ping',
+            getParameter: envelopedAudioParam => envelopedAudioParam as any as AudioParam,
         }
     ],
     outPlugs: [
@@ -33,9 +35,17 @@ export const EnvelopeDefinition: AudioComponentDefinition<void, EnvelopeState> =
     color: 'lightcoral',
 };
 
-export type EnvelopeProps = AudioComponentProps<void, EnvelopeState>;
+export type EnvelopeProps = AudioComponentProps<EnvelopedAudioParam, EnvelopeState>;
 
-export function Envelope({ serializableState: state, onSerializableStateChange: onStateChange, inPlugs, outPlugs }: EnvelopeProps) {
+export function Envelope({ mutableState: envelopedNode, serializableState: state, onSerializableStateChange: onStateChange, inPlugs, outPlugs }: EnvelopeProps) {
+    React.useEffect(() => {
+        const gain = outPlugs.number['Gain'].value;
+
+        if (gain) {
+            envelopedNode.baseAudioParameter = gain;
+        }
+    }, [outPlugs.number['Gain'].value, envelopedNode]);
+
     React.useEffect(() => {
         const ping = inPlugs.ping['Ping'].value;
         const gain = outPlugs.number['Gain'].value;

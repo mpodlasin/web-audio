@@ -23,6 +23,9 @@ export interface OutAudioPlugValues {
   number: {
     [plugName: string]: { value: AudioParam | undefined, connected: boolean }
   }
+  ping: {
+    [plugName: string]: { value: AudioParam | undefined, connected: boolean }
+  }
 }
 
 export interface AudioComponentProps<MutableState, SerializableState> {
@@ -50,6 +53,7 @@ export interface AudioInPlugDefinition<MutableState, SerializableState> {
 export interface PingInPlugDefinition<MutableState, SerializableState> {
   name: string;
   type: 'ping';
+  getParameter?(mutableState: MutableState, serializableState: SerializableState): AudioParam;
 }
 
 export type OutPlugDefinition<A, S> = NumberOutPlugDefinition<A, S> | AudioOutPlugDefinition<A, S> | PingOutPlugDefinition<A, S>;

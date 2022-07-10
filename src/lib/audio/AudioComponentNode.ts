@@ -247,7 +247,8 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
     nodeStates: {[nodeId: string]: any}
   ): OutAudioPlugValues => {
     const outgoingPlugValues: OutAudioPlugValues = {
-      number: {}
+      number: {},
+      ping: {}
     };
 
     const definition = COMPONENTS[nodeDescription.name];
@@ -256,6 +257,11 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
 
       if (outPlug.type === 'number') {
         outgoingPlugValues.number[outPlug.name] = {
+          value: undefined,
+          connected: false
+        };
+      } else if (outPlug.type === 'ping') {
+        outgoingPlugValues.ping[outPlug.name] = {
           value: undefined,
           connected: false
         };
@@ -282,6 +288,15 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
           nodeStates[outgoingNodeDescription.id],
         ) : undefined;
         outgoingPlugValues.number[outPlug.name] = { 
+          value,
+          connected: true,
+        };
+      } else if (outgoingNodePlug.type === 'ping') {
+        const value = outgoingNodePlug.getParameter ? outgoingNodePlug.getParameter(
+          getMutableStateForNodeDescription(outgoingNodeDescription),
+          nodeStates[outgoingNodeDescription.id],
+        ) : undefined;
+        outgoingPlugValues.ping[outPlug.name] = { 
           value,
           connected: true,
         };
