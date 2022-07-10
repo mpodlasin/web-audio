@@ -21,6 +21,11 @@ export const FilterDefinition: AudioComponentDefinition<BiquadFilterNode, Filter
       type: 'audio',
       name: 'Input',
       getParameter: filterNode => filterNode,
+    },
+    {
+      type: 'number',
+      name: 'Frequency',
+      getParameter: filterNode => filterNode.frequency,
     }
   ],
   outPlugs: [
@@ -35,11 +40,16 @@ export const FilterDefinition: AudioComponentDefinition<BiquadFilterNode, Filter
 
 export type FilterProps = AudioComponentProps<BiquadFilterNode, FilterState>;
 
-export function Filter({ mutableState: filter, serializableState: state, onSerializableStateChange: onStateChange }: FilterProps) {
+export function Filter({ mutableState: filter, serializableState: state, onSerializableStateChange: onStateChange, inPlugs }: FilterProps) {
     React.useEffect(() => {
-        filter.frequency.value = state.frequency;
+        const connected = inPlugs.number['Frequency'].connected;
+
+        if (!connected) {
+          filter.frequency.value = state.frequency;
+        }
+        
         filter.type = state.type;
-    }, [filter, state.frequency, state.type]);
+    }, [filter, state.frequency, state.type, inPlugs.number['Frequency'].connected]);
 
     const changeFrequency: React.FormEventHandler<HTMLInputElement> = (e) => {
         const currentTarget = e.currentTarget;
