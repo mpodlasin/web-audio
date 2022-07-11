@@ -1,8 +1,10 @@
 import React from 'react';
-import { Edge, Position, Node } from "../component-graph-canvas";
+import { Edge, Position, Node, Plug } from "../component-graph-canvas";
 import { PlugWithValue } from "./AudioPlug";
 import { COMPONENTS } from "./components";
 import { AudioComponentDefinition, InPlugDefinition, OutAudioPlugValues, OutPlugDefinition } from './components/AudioComponentDefinition';
+import { AggregatedPing } from './nodes/AggregatedPing';
+import { Ping } from './nodes/Ping';
 
 export interface NodeDescription {
     id: string;
@@ -191,7 +193,43 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
           value: undefined,
           connected: false
         };
+
+        const edgesGoingFromPlug = edges.filter(edge => 
+          edge.inNodeId === nodeDescription.id && edge.inPlugIndex === definition.outPlugs.indexOf(outPlug) + definition.inPlugs.length
+        );
+  
+        const result = edgesGoingFromPlug.flatMap(edgeGoingFromPlug => {
+          if (edgeGoingFromPlug === undefined) return [];
+  
+          const outgoingNodeDescription = nodeDescriptions.find(node => node.id === edgeGoingFromPlug.outNodeId);
+    
+          if (outgoingNodeDescription === undefined) return [];
+    
+          const outgoingNodeDefinition = COMPONENTS[outgoingNodeDescription.name];
+    
+          const outgoingNodePlug = outgoingNodeDefinition.inPlugs[edgeGoingFromPlug.outPlugIndex];
+    
+          if (outgoingNodePlug.type === 'ping') {
+            const value = outgoingNodePlug.getParameter ? outgoingNodePlug.getParameter(
+              getMutableStateForNodeDescription(outgoingNodeDescription),
+              nodeStates[outgoingNodeDescription.id],
+            ) : undefined;
+            return value ? [value] : [];
+          }
+  
+          return [];
+        });
+
+        if (result.length > 0) {
+          outgoingPlugValues.ping[outPlug.name] = {
+            value: new AggregatedPing(result),
+            connected: false
+          };
+        }
+
+        continue;
       }
+
 
       // TODO: find -> filter
       const edgeGoingFromPlug = edges.find(edge => 

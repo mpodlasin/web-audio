@@ -1,5 +1,6 @@
 import React from 'react';
 import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
+import { Ping } from '../nodes/Ping';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 const NOTES = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -7,19 +8,38 @@ const STEPS = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const MIDI_MAP = [39, 41, 42, 44, 46, 47, 49, 51];
 
+class SequencerPing implements Ping {
+    public onStart: (time: number) => void = () => {};
+    public onStop: (time: number) => void = () => {};
+
+    start(time: number): void {
+        this.onStart(time);
+    }
+
+    stop(time: number): void {
+        this.onStop(time);
+    }
+}
+
 export interface SequencerState {
     tempo: number;
     sequenceMatrix: boolean[][];
 }
 
-export const SequencerDefinition: AudioComponentDefinition<void, SequencerState> = {
+export const SequencerDefinition: AudioComponentDefinition<SequencerPing, SequencerState> = {
     component: Sequencer,
     initialSerializableState: {
         tempo: 120,
         sequenceMatrix: NOTES.map(() => STEPS.map(() => false)),
     },
-    initializeMutableState: () => undefined,
-    inPlugs: [],
+    initializeMutableState: () => new SequencerPing(),
+    inPlugs: [
+        {
+            type: 'ping',
+            name: 'Start/Stop',
+            getParameter: sequencerPing => sequencerPing,
+        }
+    ],
     outPlugs: [
       {
         type: 'number',
@@ -33,21 +53,33 @@ export const SequencerDefinition: AudioComponentDefinition<void, SequencerState>
     color: 'lightblue',
 };
 
-export type SequencerProps = AudioComponentProps<void, SequencerState>;
+export type SequencerProps = AudioComponentProps<SequencerPing, SequencerState>;
 
 const LOOKAHEAD = 100;
 const CLOCK_TRIGGER = 25;
 
-export function Sequencer({ serializableState, onSerializableStateChange, outPlugs }: SequencerProps) {
+export function Sequencer({ mutableState: sequencerPing, serializableState, onSerializableStateChange, outPlugs }: SequencerProps) {
     const [isPlaying, setIsPlaying] = React.useState(false);
+    const [startTime, setStartTime] = React.useState(0);
 
     const ping = outPlugs.ping['Ping'].value;
+
+    React.useEffect(() => {
+        sequencerPing.onStart = time => {
+            setStartTime(time);
+            setIsPlaying(true);
+        };
+
+        sequencerPing.onStop = () => {
+            setIsPlaying(false);
+        };
+    }, [sequencerPing]);
 
     React.useEffect(() => {
         const frequency = outPlugs.number['Frequency'].value;
 
         if (frequency && isPlaying) {
-            let nextNoteTime = GLOBAL_AUDIO_CONTEXT.currentTime;
+            let nextNoteTime = startTime;
             let step = 0;
             const id = setInterval(() => {
                 while (nextNoteTime < GLOBAL_AUDIO_CONTEXT.currentTime + (LOOKAHEAD / 100)) {

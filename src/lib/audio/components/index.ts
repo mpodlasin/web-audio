@@ -6,7 +6,7 @@ import { MidiInputDefinition } from "./MidiInput";
 import { NumberDefinition } from "./Number";
 import { OscillatorDefinition } from "./Oscillator";
 import { OutputDefinition } from "./Output";
-import { PingDefinition } from "./Ping";
+import { ButtonDefinition } from "./Button";
 import { SequencerDefinition } from "./Sequencer";
 export interface ComponentDefinitions {
     [index: string]: AudioComponentDefinition<any, any>;
@@ -20,6 +20,6 @@ export const COMPONENTS: ComponentDefinitions = {
     'Number': NumberDefinition,
     'Filter': FilterDefinition,
     'Sequencer': SequencerDefinition,
-    'Ping': PingDefinition,
+    'Button': ButtonDefinition,
     'Envelope': EnvelopeDefinition,
 };
