@@ -32,7 +32,7 @@ export const connectPlugsWithValues = (a: PlugWithValue, b: PlugWithValue) => {
     return connectSubjectToSubject(a.value, b.value);
   }
 
-  if (a.type === 'ping' && b.type === 'ping' && a.value) {
+  if (a.type === 'ping' && b.type === 'ping') {
     return () => {};
   }
 

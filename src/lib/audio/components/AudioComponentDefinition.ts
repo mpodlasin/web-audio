@@ -74,5 +74,5 @@ export interface AudioOutPlugDefinition<MutableState, SerializableState> {
 export interface PingOutPlugDefinition<MutableState, SerializableState> {
   name: string;
   type: 'ping';
-  getParameter(mutableState: MutableState, serializableState: SerializableState): Subject<void>,
+  getParameter?(mutableState: MutableState, serializableState: SerializableState): Subject<void>,
 }

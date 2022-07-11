@@ -69,7 +69,7 @@ export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, 
                 </div>
                 <div className={css.content}>{node.component}</div>
                 <div className={css.outputPlugs}>
-                    {node.outPlugs.map((plug, i) => <NodePlug key={i} zIndex={node.inPlugs.length - i} plug={plug} onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
+                    {node.outPlugs.map((plug, i) => <NodePlug key={i} zIndex={node.outPlugs.length - i} plug={plug} onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
                 </div>
             </div>
         </div>

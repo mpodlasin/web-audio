@@ -25,6 +25,10 @@ export const SequencerDefinition: AudioComponentDefinition<void, SequencerState>
         type: 'number',
         name: 'Frequency',
       },
+      {
+        type: 'ping',
+        name: 'Ping',
+      }
     ],
     color: 'lightblue',
 };
@@ -37,6 +41,8 @@ const CLOCK_TRIGGER = 25;
 export function Sequencer({ serializableState, onSerializableStateChange, outPlugs }: SequencerProps) {
     const [isPlaying, setIsPlaying] = React.useState(false);
 
+    const ping = outPlugs.ping['Ping'].value;
+
     React.useEffect(() => {
         const frequency = outPlugs.number['Frequency'].value;
 
@@ -45,6 +51,9 @@ export function Sequencer({ serializableState, onSerializableStateChange, outPlu
             let step = 0;
             const id = setInterval(() => {
                 while (nextNoteTime < GLOBAL_AUDIO_CONTEXT.currentTime + (LOOKAHEAD / 100)) {
+                    const nextNextNoteTime = nextNoteTime + (((60_000 / serializableState.tempo) / 100) / 8);
+                    if (ping) ping.start(nextNoteTime);
+                    if (ping) ping.stop(nextNextNoteTime);
                     frequency.setValueAtTime(
                         440 * Math.pow(2, (MIDI_MAP[step] - 69) / 12), 
                         nextNoteTime
@@ -56,7 +65,7 @@ export function Sequencer({ serializableState, onSerializableStateChange, outPlu
                         step++;
                     }
 
-                    nextNoteTime = nextNoteTime + (((60_000 / serializableState.tempo) / 100) / 8);
+                    nextNoteTime = nextNextNoteTime;
                 }
             }, CLOCK_TRIGGER);
 
