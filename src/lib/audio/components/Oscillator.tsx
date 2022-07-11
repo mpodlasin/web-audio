@@ -35,7 +35,7 @@ export const OscillatorDefinition: AudioComponentDefinition<OscillatorNode, Osci
 
 export type OscillatorProps = AudioComponentProps<OscillatorNode, OscillatorState>;
 
-export function Oscillator({ mutableState: oscillator, serializableState: state, onSerializableStateChange: onStateChange, inPlugs }: OscillatorProps) {
+export function Oscillator({ mutableState: oscillator, serializableState: state, onSerializableStateChange: onStateChange }: OscillatorProps) {
   React.useEffect(() => {
     oscillator.start();
   }, [oscillator])
@@ -54,14 +54,6 @@ export function Oscillator({ mutableState: oscillator, serializableState: state,
     const currentTarget = e.currentTarget;
     onStateChange(state => ({...state, frequency: currentTarget.valueAsNumber}));
   };
-
-  React.useEffect(() => {
-    const frequency = inPlugs.number['Frequency'].value;
-
-    if (frequency) {
-      onStateChange(state => ({...state, frequency}));
-    }
-  }, [inPlugs.number['Frequency'].value]);
 
   return <div>
     <select value={state.type} onChange={handleOscillatorTypeClick}>

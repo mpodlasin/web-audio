@@ -11,15 +11,6 @@ export interface AudioComponentDefinition<MutableState, SerializableState> {
     color: string;
 }
 
-export interface InAudioPlugValues {
-  number: {
-    [plugName: string]: { value: number | undefined, connected: boolean }
-  },
-  ping: {
-    [plugName: string]: { value: Observable<void> | undefined, connected: boolean }
-  },
-}
-
 export interface OutAudioPlugValues {
   number: {
     [plugName: string]: { value: AudioParam | undefined, connected: boolean }
@@ -33,7 +24,6 @@ export interface AudioComponentProps<MutableState, SerializableState> {
   mutableState: MutableState;
   serializableState: SerializableState;
   onSerializableStateChange: React.Dispatch<React.SetStateAction<SerializableState>>;
-  inPlugs: InAudioPlugValues,
   outPlugs: OutAudioPlugValues;
 }
 

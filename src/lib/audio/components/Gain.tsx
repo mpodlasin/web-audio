@@ -36,12 +36,10 @@ export const GainDefinition: AudioComponentDefinition<GainNode, GainState> = {
 
 export type GainProps = AudioComponentProps<GainNode, GainState>;
 
-export function Gain({ mutableState: gain, serializableState: state, onSerializableStateChange: onStateChange, inPlugs }: GainProps) {
+export function Gain({ mutableState: gain, serializableState: state, onSerializableStateChange: onStateChange }: GainProps) {
   React.useEffect(() => {
-    if (!inPlugs.number['Gain'].connected) {
       gain.gain.value = state.gain;
-    }
-    }, [gain, state.gain, inPlugs.number['Gain'].connected]);
+    }, [gain, state.gain]);
   
     const changeGain: React.FormEventHandler<HTMLInputElement> = (e) => {
       const currentTarget = e.currentTarget;

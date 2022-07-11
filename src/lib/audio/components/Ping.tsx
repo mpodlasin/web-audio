@@ -1,31 +1,26 @@
-import React from 'react';
-import { Subject } from 'rxjs';
 import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
-export const PingDefinition: AudioComponentDefinition<Subject<void>, void> = {
+export const PingDefinition: AudioComponentDefinition<void, void> = {
     component: Ping,
-    initializeMutableState: () => new Subject(),
+    initializeMutableState: () => undefined,
     initialSerializableState: undefined,
     inPlugs: [],
     outPlugs: [
       {
         type: 'ping',
         name: 'Ping',
-        getParameter: audioElement => audioElement,
       },
     ],
     color: 'lightcoral',
 };
 
-export type PingProps = AudioComponentProps<Subject<void>, void>;
+export type PingProps = AudioComponentProps<void, void>;
 
-export function Ping({ mutableState: ping, outPlugs }: PingProps) {
+export function Ping({ outPlugs }: PingProps) {
     const audioParamPing = outPlugs.ping['Ping'].value;
 
-    const handleMouseDown = () => {
-        ping.next();
-
+    const handleMouseDown = () => { 
         if (audioParamPing) {
             audioParamPing.start(GLOBAL_AUDIO_CONTEXT.currentTime);
         }

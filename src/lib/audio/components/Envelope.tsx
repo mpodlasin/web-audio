@@ -36,7 +36,7 @@ export const EnvelopeDefinition: AudioComponentDefinition<EnvelopedAudioParamPin
 
 export type EnvelopeProps = AudioComponentProps<EnvelopedAudioParamPing, EnvelopeState>;
 
-export function Envelope({ mutableState: envelopedNode, serializableState: state, onSerializableStateChange: onStateChange, inPlugs, outPlugs }: EnvelopeProps) {
+export function Envelope({ mutableState: envelopedNode, serializableState: state, onSerializableStateChange: onStateChange, outPlugs }: EnvelopeProps) {
     React.useEffect(() => {
         const gain = outPlugs.number['Gain'].value;
 
