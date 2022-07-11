@@ -1,6 +1,5 @@
 import React from 'react';
-import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
-import { Ping } from '../nodes/Ping';
+import { EnvelopedAudioParamPing } from '../nodes/EnvelopedAudioParamPing';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export interface EnvelopeState {
@@ -10,9 +9,9 @@ export interface EnvelopeState {
     release: number;
 }
 
-export const EnvelopeDefinition: AudioComponentDefinition<Ping, EnvelopeState> = {
+export const EnvelopeDefinition: AudioComponentDefinition<EnvelopedAudioParamPing, EnvelopeState> = {
     component: Envelope,
-    initializeMutableState: () => new Ping({ attack: 0, release: 0 }),
+    initializeMutableState: () => new EnvelopedAudioParamPing({ attack: 0, release: 0 }),
     initialSerializableState: {
         attack: 0,
         delay: 0,
@@ -35,7 +34,7 @@ export const EnvelopeDefinition: AudioComponentDefinition<Ping, EnvelopeState> =
     color: 'lightcoral',
 };
 
-export type EnvelopeProps = AudioComponentProps<Ping, EnvelopeState>;
+export type EnvelopeProps = AudioComponentProps<EnvelopedAudioParamPing, EnvelopeState>;
 
 export function Envelope({ mutableState: envelopedNode, serializableState: state, onSerializableStateChange: onStateChange, inPlugs, outPlugs }: EnvelopeProps) {
     React.useEffect(() => {
