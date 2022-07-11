@@ -54,8 +54,11 @@ export function Sequencer({ serializableState, onSerializableStateChange, outPlu
                     const nextNextNoteTime = nextNoteTime + (((60_000 / serializableState.tempo) / 100) / 8);
                     if (ping) ping.start(nextNoteTime);
                     if (ping) ping.stop(nextNextNoteTime);
+
+                    const noteToPlay = serializableState.sequenceMatrix.findIndex(row => row[step] === true);
+
                     frequency.setValueAtTime(
-                        440 * Math.pow(2, (MIDI_MAP[step] - 69) / 12), 
+                        440 * Math.pow(2, (MIDI_MAP[noteToPlay] - 69) / 12), 
                         nextNoteTime
                     );
 
