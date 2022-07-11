@@ -1,4 +1,5 @@
 import React from 'react';
+import { AggregatedPing } from '../nodes/AggregatedPing';
 import { EnvelopedAudioParamPing } from '../nodes/EnvelopedAudioParamPing';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
@@ -9,9 +10,12 @@ export interface EnvelopeState {
     release: number;
 }
 
-export const EnvelopeDefinition: AudioComponentDefinition<EnvelopedAudioParamPing, EnvelopeState> = {
+export const EnvelopeDefinition: AudioComponentDefinition<AggregatedPing, EnvelopeState> = {
     component: Envelope,
-    initializeMutableState: () => new EnvelopedAudioParamPing({ attack: 0, release: 0 }),
+    initializeMutableState: () => new AggregatedPing([
+        new EnvelopedAudioParamPing({ attack: 0, release: 0, maxValue: 1, minValue: 0 }),
+        new EnvelopedAudioParamPing({ attack: 0, release: 0, maxValue: 2000, minValue: 0 }),
+    ]),
     initialSerializableState: {
         attack: 0,
         delay: 0,
@@ -30,25 +34,45 @@ export const EnvelopeDefinition: AudioComponentDefinition<EnvelopedAudioParamPin
         type: 'number',
         name: 'Gain',
       },
+      {
+        type: 'number',
+        name: 'Frequency',
+      }
     ],
     color: 'lightcoral',
 };
 
-export type EnvelopeProps = AudioComponentProps<EnvelopedAudioParamPing, EnvelopeState>;
+export type EnvelopeProps = AudioComponentProps<AggregatedPing, EnvelopeState>;
 
-export function Envelope({ mutableState: envelopedNode, serializableState: state, onSerializableStateChange: onStateChange, outPlugs }: EnvelopeProps) {
+export function Envelope({ mutableState: ping, serializableState: state, onSerializableStateChange: onStateChange, outPlugs }: EnvelopeProps) {
+    const envelopedGainNode = ping.pings[0] as EnvelopedAudioParamPing;
+    const envelopedFrequencyNode = ping.pings[1] as EnvelopedAudioParamPing;
+    
     React.useEffect(() => {
         const gain = outPlugs.number['Gain'].value;
 
         if (gain) {
-            envelopedNode.baseAudioParameter = gain;
+            envelopedGainNode.baseAudioParameter = gain;
         }
-    }, [outPlugs.number['Gain'].value, envelopedNode]);
+    }, [outPlugs.number['Gain'].value, envelopedGainNode]);
 
     React.useEffect(() => {
-        envelopedNode.options.attack = state.attack;
-        envelopedNode.options.release = state.release;
-    }, [envelopedNode, state.attack, state.release]);
+        envelopedGainNode.options.attack = state.attack;
+        envelopedGainNode.options.release = state.release;
+    }, [envelopedGainNode, state.attack, state.release]);
+
+    React.useEffect(() => {
+        const frequency = outPlugs.number['Frequency'].value;
+
+        if (frequency) {
+            envelopedFrequencyNode.baseAudioParameter = frequency;
+        }
+    }, [outPlugs.number['Frequency'].value, envelopedFrequencyNode]);
+
+    React.useEffect(() => {
+        envelopedFrequencyNode.options.attack = state.attack;
+        envelopedFrequencyNode.options.release = state.release;
+    }, [envelopedGainNode, state.attack, state.release]);
 
     const changeAttack = (e: React.FormEvent<HTMLInputElement>) => {
         const currentTarget = e.currentTarget;

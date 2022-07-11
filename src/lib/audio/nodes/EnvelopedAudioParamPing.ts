@@ -3,6 +3,8 @@ import { Ping } from "./Ping";
 export interface EnvelopedAudioParamPingOptions {
     attack: number;
     release: number;
+    minValue: number;
+    maxValue: number;
 }
 
 export class EnvelopedAudioParamPing implements Ping {
@@ -14,10 +16,10 @@ export class EnvelopedAudioParamPing implements Ping {
     start(time: number) {
         if (this.baseAudioParameter === undefined) return;
 
-        this.baseAudioParameter.setValueAtTime(0, time);
+        this.baseAudioParameter.setValueAtTime(this.options.minValue, time);
 
         this.baseAudioParameter.linearRampToValueAtTime(
-            1, 
+            this.options.maxValue, 
             time + (this.options.attack / 1000)
         );
     }
@@ -26,7 +28,7 @@ export class EnvelopedAudioParamPing implements Ping {
         if (this.baseAudioParameter === undefined) return;
 
         this.baseAudioParameter.linearRampToValueAtTime(
-            0,
+            this.options.minValue,
             time + (this.options.release / 1000)
         );
     }
