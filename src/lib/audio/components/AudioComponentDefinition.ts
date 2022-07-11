@@ -1,5 +1,6 @@
 import React from "react";
 import { Observable, Subject } from 'rxjs';
+import { Ping } from "../nodes/Ping";
 
 export interface AudioComponentDefinition<MutableState, SerializableState> {
     component: React.ComponentType<AudioComponentProps<MutableState, SerializableState>>;
@@ -24,7 +25,7 @@ export interface OutAudioPlugValues {
     [plugName: string]: { value: AudioParam | undefined, connected: boolean }
   }
   ping: {
-    [plugName: string]: { value: AudioParam | undefined, connected: boolean }
+    [plugName: string]: { value: Ping | undefined, connected: boolean }
   }
 }
 
@@ -53,7 +54,7 @@ export interface AudioInPlugDefinition<MutableState, SerializableState> {
 export interface PingInPlugDefinition<MutableState, SerializableState> {
   name: string;
   type: 'ping';
-  getParameter?(mutableState: MutableState, serializableState: SerializableState): AudioParam;
+  getParameter?(mutableState: MutableState, serializableState: SerializableState): Ping;
 }
 
 export type OutPlugDefinition<A, S> = NumberOutPlugDefinition<A, S> | AudioOutPlugDefinition<A, S> | PingOutPlugDefinition<A, S>;

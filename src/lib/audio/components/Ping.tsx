@@ -27,13 +27,14 @@ export function Ping({ mutableState: ping, outPlugs }: PingProps) {
         ping.next();
 
         if (audioParamPing) {
-            audioParamPing.setValueAtTime(1, GLOBAL_AUDIO_CONTEXT.currentTime);
+            audioParamPing.start(GLOBAL_AUDIO_CONTEXT.currentTime);
         }
     }
 
     const handleMouseUp = () => {
+
         if (audioParamPing) {
-            audioParamPing.setValueAtTime(0, GLOBAL_AUDIO_CONTEXT.currentTime);
+            audioParamPing.stop(GLOBAL_AUDIO_CONTEXT.currentTime);
         }
     };
 

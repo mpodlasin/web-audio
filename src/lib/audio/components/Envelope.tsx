@@ -1,6 +1,6 @@
 import React from 'react';
 import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
-import { EnvelopedAudioParam } from '../nodes/EnvelopedAudioParam';
+import { Ping } from '../nodes/Ping';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export interface EnvelopeState {
@@ -10,9 +10,9 @@ export interface EnvelopeState {
     release: number;
 }
 
-export const EnvelopeDefinition: AudioComponentDefinition<EnvelopedAudioParam, EnvelopeState> = {
+export const EnvelopeDefinition: AudioComponentDefinition<Ping, EnvelopeState> = {
     component: Envelope,
-    initializeMutableState: () => new EnvelopedAudioParam({ attack: 300 }),
+    initializeMutableState: () => new Ping({ attack: 0, release: 0 }),
     initialSerializableState: {
         attack: 0,
         delay: 0,
@@ -23,7 +23,7 @@ export const EnvelopeDefinition: AudioComponentDefinition<EnvelopedAudioParam, E
         {
             type: 'ping',
             name: 'Ping',
-            getParameter: envelopedAudioParam => envelopedAudioParam as any as AudioParam,
+            getParameter: envelopedAudioParam => envelopedAudioParam,
         }
     ],
     outPlugs: [
@@ -35,7 +35,7 @@ export const EnvelopeDefinition: AudioComponentDefinition<EnvelopedAudioParam, E
     color: 'lightcoral',
 };
 
-export type EnvelopeProps = AudioComponentProps<EnvelopedAudioParam, EnvelopeState>;
+export type EnvelopeProps = AudioComponentProps<Ping, EnvelopeState>;
 
 export function Envelope({ mutableState: envelopedNode, serializableState: state, onSerializableStateChange: onStateChange, inPlugs, outPlugs }: EnvelopeProps) {
     React.useEffect(() => {
@@ -47,21 +47,9 @@ export function Envelope({ mutableState: envelopedNode, serializableState: state
     }, [outPlugs.number['Gain'].value, envelopedNode]);
 
     React.useEffect(() => {
-        const ping = inPlugs.ping['Ping'].value;
-        const gain = outPlugs.number['Gain'].value;
-
-        if (ping && gain) {
-            const subscription = ping.subscribe(() => {
-                const currentTime = GLOBAL_AUDIO_CONTEXT.currentTime;
-
-                gain.setValueAtTime(0, currentTime);
-                gain.linearRampToValueAtTime(0.05, currentTime + (state.attack / 1000));
-                gain.linearRampToValueAtTime(0, currentTime + (state.attack / 1000) + (state.release / 1000));
-            });
-
-            return () => subscription.unsubscribe();
-        }
-    }, [inPlugs.ping['Ping'].value, outPlugs.number['Gain'].value]);
+        envelopedNode.options.attack = state.attack;
+        envelopedNode.options.release = state.release;
+    }, [envelopedNode, state.attack, state.release]);
 
     const changeAttack = (e: React.FormEvent<HTMLInputElement>) => {
         const currentTarget = e.currentTarget;
@@ -101,6 +89,7 @@ export function Envelope({ mutableState: envelopedNode, serializableState: state
                 <label>Release</label>
                 <input type="range" value={state.release} onChange={changeRelease} min={0} max={10_000} />
             </div>
+            <div>A: {state.attack}ms, R: {state.release}ms</div>
         </div>
     )
 };
