@@ -4,6 +4,7 @@ import { Node, NodeComponent } from "./Node";
 import { Position } from "./Position";
 
 import css from './index.module.css';
+import { PlugPositions } from "./PlugPositions";
 
 export { type Edge } from './Edge';
 export { type Node, type Plug } from './Node';
@@ -84,15 +85,15 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
 
     const [createdConnection, setCreatedConnection] = React.useState<{
         inNodeId: string, 
-        inPlugIndex: number,
+        inPlugName: string,
         inPosition: Position;
         outPosition: Position;
     }>();
 
-    const handleStartConnecting = (nodeId: string) => (plugIndex: number, position: Position) => {
+    const handleStartConnecting = (nodeId: string) => (plugName: string, position: Position) => {
         setCreatedConnection({
                 inNodeId: nodeId,
-                inPlugIndex: plugIndex,
+                inPlugName: plugName,
                 inPosition: position,
                 outPosition: position,
             });
@@ -114,16 +115,16 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         setCreatedConnection(undefined);
     };
 
-    const handleStopConnecting = (nodeId: string) => (plugIndex: number) => {
+    const handleStopConnecting = (nodeId: string) => (plugName: string) => {
         if (createdConnection) {
             const newConnection = {
                 inNodeId: createdConnection.inNodeId,
-                inPlugIndex: createdConnection.inPlugIndex,
+                inPlugName: createdConnection.inPlugName,
                 outNodeId: nodeId,
-                outPlugIndex: plugIndex,
+                outPlugName: plugName,
             };
 
-            if (!edges.some(edge => edge.inNodeId === newConnection.inNodeId && edge.outNodeId === newConnection.outNodeId && edge.inPlugIndex === newConnection.inPlugIndex && edge.outPlugIndex === newConnection.outPlugIndex)) {
+            if (!edges.some(edge => edge.inNodeId === newConnection.inNodeId && edge.outNodeId === newConnection.outNodeId && edge.inPlugName === newConnection.inPlugName && edge.outPlugName === newConnection.outPlugName)) {
                 onEdgesChange([...edges, newConnection]);
             }
 
@@ -134,11 +135,11 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
     // ---------------------------------------------------------------------------------------
     // PLUG POSITIONS
 
-    const [plugPositions, setPlugPositions] = React.useState<{[nodeId: string]: Position[]}>(
-        nodes.reduce((positions, node) => ({ ...positions, [node.id]: []}), {})
+    const [plugPositions, setPlugPositions] = React.useState<{[nodeId: string]: PlugPositions}>(
+        nodes.reduce((positions, node) => ({ ...positions, [node.id]: {}}), {})
     );
-
-    const handlePlugPositions = (nodeId: string) => (newPlugPositions: Position[]) => {
+    
+    const handlePlugPositions = (nodeId: string) => (newPlugPositions: PlugPositions) => {
         setPlugPositions(plugPositions => ({
             ...plugPositions,
             [nodeId]: newPlugPositions

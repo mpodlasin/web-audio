@@ -11,13 +11,12 @@ export const ButtonDefinition: AudioComponentDefinition<void, ButtonState> = {
     initialSerializableState: {
         on: false,
     },
-    inPlugs: [],
-    outPlugs: [
-      {
-        type: 'ping',
-        name: 'Ping',
-      },
-    ],
+    inPlugs: {},
+    outPlugs: {
+        'Ping': {
+            type: 'ping',
+        }
+    },
     color: 'lightcoral',
 };
 

@@ -16,20 +16,18 @@ export const OscillatorDefinition: AudioComponentDefinition<OscillatorNode, Osci
     frequency: 440,
     type: OSCILLATOR_TYPES[0],
   },
-  inPlugs: [
-    {
+  inPlugs: {
+    'Frequency': {
       type: 'number',
-      name: 'Frequency',
       getParameter: oscillatorNode => oscillatorNode.frequency,
     }
-  ],
-  outPlugs: [
-    {
+  },
+  outPlugs: {
+    'Output': {
       type: 'audio',
-      name: 'Output',
       getParameter: oscillatorNode => oscillatorNode,
     }
-  ],
+  },
   color: 'lightyellow',
 };
 

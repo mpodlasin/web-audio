@@ -1,6 +1,7 @@
 import React from 'react';
 import { Position } from './Position';
 import css from './Node.module.css';
+import { PlugPositions } from './PlugPositions';
 
 export interface Plug {
     color: string;
@@ -22,22 +23,22 @@ export interface NodeComponentProps {
     position: Position;
     onDelete(nodeToDelete: Node): void;
     onDragStart(e: React.MouseEvent<HTMLDivElement>): void;
-    onStartConnecting(plugIndex: number, position: Position): void;
-    onStopConnecting(plugIndex: number, position: Position): void;
-    onPlugPositions(plugPositions: Position[]): void;
+    onStartConnecting(plugName: string, position: Position): void;
+    onStopConnecting(plugName: string, position: Position): void;
+    onPlugPositions(plugPositions: PlugPositions): void;
 }
 
 export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, onStopConnecting, onPlugPositions, onDelete }: NodeComponentProps) => {
-    const [plugPositions, setPlugPositions] = React.useState<Position[]>([]);
+    const [plugPositions, setPlugPositions] = React.useState<{[plugName: string]: Position}>({});
 
     const ref = React.useRef<HTMLDivElement>(null);
 
-    const handlePosition = (i: number) => (plugPosition: Position) => {
+    const handlePosition = (plugName: string) => (plugPosition: Position) => {
             setPlugPositions(plugPositions => {
-                const plugPositionsCopy = [...plugPositions];
+                const plugPositionsCopy = {...plugPositions};
     
                 if (ref.current) {
-                    plugPositionsCopy[i] = {
+                    plugPositionsCopy[plugName] = {
                         top: plugPosition.top - ref.current.getBoundingClientRect().top,
                         left: plugPosition.left - ref.current.getBoundingClientRect().left,
                     };
@@ -48,7 +49,7 @@ export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, 
     };
 
     React.useEffect(() => {
-        if (plugPositions.length === node.inPlugs.length + node.outPlugs.length) {
+        if (Object.keys(plugPositions).length === node.inPlugs.length + node.outPlugs.length) {
             onPlugPositions(plugPositions);
         }
     }, [plugPositions, node.inPlugs.length, node.outPlugs.length]);
@@ -65,11 +66,11 @@ export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, 
             </div>
             <div className={css.contentWithPlugs}>
                 <div className={css.inputPlugs}>
-                    {node.inPlugs.map((plug, i) => <NodePlug key={i} zIndex={node.inPlugs.length - i} plug={plug} onPosition={handlePosition(i)} onStartConnecting={position => onStartConnecting(i, position)} onStopConnecting={position => onStopConnecting(i, position)} />)}
+                    {node.inPlugs.map((plug, i) => <NodePlug key={plug.name} zIndex={node.inPlugs.length - i} plug={plug} onPosition={handlePosition(plug.name)} onStartConnecting={position => onStartConnecting(plug.name, position)} onStopConnecting={position => onStopConnecting(plug.name, position)} />)}
                 </div>
                 <div className={css.content}>{node.component}</div>
                 <div className={css.outputPlugs}>
-                    {node.outPlugs.map((plug, i) => <NodePlug key={i} zIndex={node.outPlugs.length - i} plug={plug} onPosition={handlePosition(node.inPlugs.length + i)} onStartConnecting={position => onStartConnecting(node.inPlugs.length + i, position)} onStopConnecting={position => onStopConnecting(node.inPlugs.length + i, position)} />)}
+                    {node.outPlugs.map((plug, i) => <NodePlug key={plug.name} zIndex={node.outPlugs.length - i} plug={plug} onPosition={handlePosition(plug.name)} onStartConnecting={position => onStartConnecting(plug.name, position)} onStopConnecting={position => onStopConnecting(plug.name, position)} />)}
                 </div>
             </div>
         </div>

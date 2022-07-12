@@ -20,23 +20,20 @@ export const SequencerDefinition: AudioComponentDefinition<CallbackPing, Sequenc
         sequenceMatrix: NOTES.map(() => STEPS.map(() => false)),
     },
     initializeMutableState: () => new CallbackPing(),
-    inPlugs: [
-        {
+    inPlugs: {
+        'Start/Stop': {
             type: 'ping',
-            name: 'Start/Stop',
             getParameter: sequencerPing => sequencerPing,
         }
-    ],
-    outPlugs: [
-      {
-        type: 'number',
-        name: 'Frequency',
-      },
-      {
-        type: 'ping',
-        name: 'Ping',
-      }
-    ],
+    },
+    outPlugs: {
+        'Frequency': {
+            type: 'number',
+        },
+        'Ping': {
+            type: 'ping',
+        }
+    },
     color: 'lightblue',
 };
 

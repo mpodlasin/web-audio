@@ -11,14 +11,13 @@ export const MidiInputDefinition: AudioComponentDefinition<void, MidiInputState>
     initialSerializableState: {
         frequency: 0,
     },
-    inPlugs: [],
-    outPlugs: [
-      {
-        type: 'number',
-        name: 'Frequency',
-        getParameter: (_, state) => state.frequency,
-      }
-    ],
+    inPlugs: {},
+    outPlugs: {
+        'Frequency': {
+            type: 'number',
+            getParameter: (_, state) => state.frequency,
+        }
+    },
     color: 'lightgreen',
   }
 

@@ -22,23 +22,20 @@ export const EnvelopeDefinition: AudioComponentDefinition<AggregatedPing, Envelo
         sustain: 0,
         release: 0,
     },
-    inPlugs: [
-        {
+    inPlugs: {
+        'Ping': {
             type: 'ping',
-            name: 'Ping',
             getParameter: envelopedAudioParam => envelopedAudioParam,
         }
-    ],
-    outPlugs: [
-      {
-        type: 'number',
-        name: 'Gain',
-      },
-      {
-        type: 'number',
-        name: 'Frequency',
-      }
-    ],
+    },
+    outPlugs: {
+        'Gain': {
+            type: 'number',
+        },
+        'Frequency': {
+            type: 'number'
+        }
+    },
     color: 'lightcoral',
 };
 

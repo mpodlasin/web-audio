@@ -6,14 +6,13 @@ export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode, vo
   component: Output,
   initializeMutableState: () => GLOBAL_AUDIO_CONTEXT.destination,
   initialSerializableState: undefined,
-  inPlugs: [
-    {
+  inPlugs: {
+    'Input': {
       type: 'audio',
-      name: 'Input',
       getParameter: audioDestinationNode => audioDestinationNode,
     }
-  ],
-  outPlugs: [],
+  },
+  outPlugs: {},
   color: 'lightseagreen',
 };
 

@@ -12,25 +12,22 @@ export const GainDefinition: AudioComponentDefinition<GainNode, GainState> = {
   initialSerializableState: {
     gain: 0,
   },
-  inPlugs: [
-    {
+  inPlugs: {
+    'Input': {
       type: 'audio',
-      name: 'Input',
       getParameter: gainNode => gainNode,
     },
-    {
+    'Gain': {
       type: 'number',
-      name: 'Gain',
       getParameter: gainNode => gainNode.gain,
-    }
-  ],
-  outPlugs: [
-    {
+    },
+  },
+  outPlugs: {
+    'Output': {
       type: 'audio',
-      name: 'Output',
       getParameter: gainNode => gainNode,
     }
-  ],
+  },
   color: 'lightgray',
 };
 

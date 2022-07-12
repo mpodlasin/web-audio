@@ -1,11 +1,12 @@
 import React from 'react';
+import { PlugPositions } from './PlugPositions';
 import { Position } from "./Position";
 
 export interface Edge {
     inNodeId: string,
-    inPlugIndex: number,
+    inPlugName: string,
     outNodeId: string,
-    outPlugIndex: number,
+    outPlugName: string,
 }
 
 export interface EdgeMenuProps {
@@ -23,7 +24,7 @@ export const EdgeMenu = ({ onDeleteEdge, position, }: EdgeMenuProps) => {
 
 export interface SVGEdgeProps {
     edge: Edge;
-    plugPositions: {[nodeId: string]: Position[]};
+    plugPositions: {[nodeId: string]: { [plugName: string]: Position }};
     nodePositions: {[nodeId: string]: Position};
     onOpenEdgeMenu(edge: Edge, position: Position): void;
     onCloseEdgeMenu(): void;
@@ -32,7 +33,7 @@ export interface SVGEdgeProps {
 export const SVGEdge = ({ edge, plugPositions, nodePositions, onOpenEdgeMenu, onCloseEdgeMenu }: SVGEdgeProps) => {
     const [isHoveredOver, setIsHoveredOver] = React.useState(false);
 
-    if (!plugPositions[edge.inNodeId][edge.inPlugIndex] || !plugPositions[edge.outNodeId][edge.outPlugIndex]) {
+    if (!plugPositions[edge.inNodeId][edge.inPlugName] || !plugPositions[edge.outNodeId][edge.outPlugName]) {
         return null;
     }
 
@@ -48,10 +49,10 @@ export const SVGEdge = ({ edge, plugPositions, nodePositions, onOpenEdgeMenu, on
         onCloseEdgeMenu();
     };
 
-    const x1 = plugPositions[edge.inNodeId][edge.inPlugIndex].left + nodePositions[edge.inNodeId].left;
-    const y1 = plugPositions[edge.inNodeId][edge.inPlugIndex].top + nodePositions[edge.inNodeId].top;
-    const x2 = plugPositions[edge.outNodeId][edge.outPlugIndex].left + nodePositions[edge.outNodeId].left;
-    const y2 = plugPositions[edge.outNodeId][edge.outPlugIndex].top + nodePositions[edge.outNodeId].top;
+    const x1 = plugPositions[edge.inNodeId][edge.inPlugName].left + nodePositions[edge.inNodeId].left;
+    const y1 = plugPositions[edge.inNodeId][edge.inPlugName].top + nodePositions[edge.inNodeId].top;
+    const x2 = plugPositions[edge.outNodeId][edge.outPlugName].left + nodePositions[edge.outNodeId].left;
+    const y2 = plugPositions[edge.outNodeId][edge.outPlugName].top + nodePositions[edge.outNodeId].top;
 
     return (
         <>
@@ -81,23 +82,25 @@ export const SVGEdge = ({ edge, plugPositions, nodePositions, onOpenEdgeMenu, on
     );
 }
 
-interface CreatedSVGEdgeProps {
-    plugPositions: {[nodeId: string]: Position[]};
+export interface CreatedConnection {
+    inNodeId: string, 
+    inPlugName: string,
+    inPosition: Position;
+    outPosition: Position;
+}
+
+export interface CreatedSVGEdgeProps {
+    plugPositions: {[nodeId: string]: PlugPositions};
     nodePositions: {[nodeId: string]: Position};
-    createdConnection: {
-        inNodeId: string, 
-        inPlugIndex: number,
-        inPosition: Position;
-        outPosition: Position;
-    }
+    createdConnection: CreatedConnection;
 }
 
 
 export const CreatedSVGEdge = ({nodePositions, plugPositions, createdConnection}: CreatedSVGEdgeProps) => {
     return (
         <line 
-                x1={plugPositions[createdConnection.inNodeId][createdConnection.inPlugIndex].left + nodePositions[createdConnection.inNodeId].left} 
-                y1={plugPositions[createdConnection.inNodeId][createdConnection.inPlugIndex].top + nodePositions[createdConnection.inNodeId].top} 
+                x1={plugPositions[createdConnection.inNodeId][createdConnection.inPlugName].left + nodePositions[createdConnection.inNodeId].left} 
+                y1={plugPositions[createdConnection.inNodeId][createdConnection.inPlugName].top + nodePositions[createdConnection.inNodeId].top} 
                 x2={createdConnection.outPosition.left} y2={createdConnection.outPosition.top} 
                 stroke="black" 
             />

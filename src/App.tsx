@@ -35,8 +35,10 @@ function App() {
 
         if (inNode === undefined || outNode === undefined) return [];
 
-        const inPlug = inNode.outPlugs[edge.inPlugIndex - inNode.inPlugs.length];
-        const outPlug = outNode.inPlugs[edge.outPlugIndex];
+        const inPlug = inNode.outPlugs.find(plug => plug.name === edge.inPlugName);
+        const outPlug = outNode.inPlugs.find(plug => plug.name === edge.outPlugName);
+
+        if (inPlug === undefined || outPlug === undefined) return [];
 
         try {
           return [connectPlugsWithValues(inPlug, outPlug)];

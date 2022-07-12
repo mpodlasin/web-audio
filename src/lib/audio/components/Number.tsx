@@ -11,14 +11,13 @@ export const NumberDefinition: AudioComponentDefinition<void, NumberState> = {
     initialSerializableState: {
         number: 0
     },
-    inPlugs: [],
-    outPlugs: [
-      {
-        type: 'number',
-        name: 'Number',
-        getParameter: (_, state) => state.number,
-      },
-    ],
+    inPlugs: {},
+    outPlugs: {
+        'Number': {
+            type: 'number',
+            getParameter: (_, state) => state.number,
+        }
+    },
     color: 'lightcoral',
 };
 

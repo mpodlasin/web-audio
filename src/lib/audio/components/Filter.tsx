@@ -16,25 +16,22 @@ export const FilterDefinition: AudioComponentDefinition<BiquadFilterNode, Filter
     frequency: 0,
     type: BIQUAD_FILTER_TYPES[0],
   },
-  inPlugs: [
-    {
+  inPlugs: {
+    'Input': {
       type: 'audio',
-      name: 'Input',
       getParameter: filterNode => filterNode,
     },
-    {
+    'Frequency': {
       type: 'number',
-      name: 'Frequency',
       getParameter: filterNode => filterNode.frequency,
     }
-  ],
-  outPlugs: [
-    {
+  },
+  outPlugs: {
+    'Output': {
       type: 'audio',
-      name: 'Output',
       getParameter: filterNode => filterNode,
     }
-  ],
+  },
   color: 'lightpink',
 };
 
