@@ -1,6 +1,6 @@
 import React from 'react';
 import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
-import { Ping } from '../nodes/Ping';
+import { CallbackPing } from '../nodes/CallbackPing';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 const NOTES = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -8,31 +8,18 @@ const STEPS = [1, 2, 3, 4, 5, 6, 7, 8];
 
 const MIDI_MAP = [39, 41, 42, 44, 46, 47, 49, 51];
 
-class SequencerPing implements Ping {
-    public onStart: (time: number) => void = () => {};
-    public onStop: (time: number) => void = () => {};
-
-    start(time: number): void {
-        this.onStart(time);
-    }
-
-    stop(time: number): void {
-        this.onStop(time);
-    }
-}
-
 export interface SequencerState {
     tempo: number;
     sequenceMatrix: boolean[][];
 }
 
-export const SequencerDefinition: AudioComponentDefinition<SequencerPing, SequencerState> = {
+export const SequencerDefinition: AudioComponentDefinition<CallbackPing, SequencerState> = {
     component: Sequencer,
     initialSerializableState: {
         tempo: 120,
         sequenceMatrix: NOTES.map(() => STEPS.map(() => false)),
     },
-    initializeMutableState: () => new SequencerPing(),
+    initializeMutableState: () => new CallbackPing(),
     inPlugs: [
         {
             type: 'ping',
@@ -53,7 +40,7 @@ export const SequencerDefinition: AudioComponentDefinition<SequencerPing, Sequen
     color: 'lightblue',
 };
 
-export type SequencerProps = AudioComponentProps<SequencerPing, SequencerState>;
+export type SequencerProps = AudioComponentProps<CallbackPing, SequencerState>;
 
 const LOOKAHEAD = 100;
 const CLOCK_TRIGGER = 25;
