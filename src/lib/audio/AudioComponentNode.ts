@@ -3,6 +3,7 @@ import { Edge, Position, Node } from "../component-graph-canvas";
 import { PlugWithValue } from "./AudioPlug";
 import { ComponentDefinitions, COMPONENTS } from "./components";
 import { AudioComponentDefinition, InPlugDefinition, OutAudioPlugValues, OutPlugDefinition } from './components/AudioComponentDefinition';
+import { AggregatedAudioParam } from './nodes/AggregatedAudioParam';
 import { AggregatedPing } from './nodes/AggregatedPing';
 
 export interface NodeDescription {
@@ -188,20 +189,58 @@ export const injectableCollectOutgoingPlugsForNode = (componentDefinitions: Comp
 
   for (let [outPlugName, outPlug] of Object.entries(definition.outPlugs)) {
 
+    const edgesGoingFromPlug = edges.filter(edge => 
+      edge.inNodeId === nodeDescription.id && edge.inPlugName === outPlugName
+    );
+
     if (outPlug.type === 'number') {
       outgoingPlugValues.number[outPlugName] = {
         value: undefined,
         connected: false
       };
+
+      const result = edgesGoingFromPlug.flatMap(edgeGoingFromPlug => {
+        if (edgeGoingFromPlug === undefined) return [];
+
+        const outgoingNodeDescription = nodeDescriptions.find(node => node.id === edgeGoingFromPlug.outNodeId);
+  
+        if (outgoingNodeDescription === undefined) return [];
+  
+        const outgoingNodeDefinition = componentDefinitions[outgoingNodeDescription.name];
+  
+        const outgoingNodePlug = outgoingNodeDefinition.inPlugs[edgeGoingFromPlug.outPlugName];
+  
+        if (outgoingNodePlug.type === 'number') {
+          const value = outgoingNodePlug.getParameter ? outgoingNodePlug.getParameter(
+            getMutableStateForNodeDescription(outgoingNodeDescription, componentDefinitions),
+            nodeStates[outgoingNodeDescription.id],
+          ) : undefined;
+          return value ? [value] : [];
+        }
+
+        return [];
+      });
+
+      if (result.length > 1) {
+        outgoingPlugValues.number[outPlugName] = {
+          value: new AggregatedAudioParam(result),
+          connected: true
+        };
+      }
+
+      if (result.length === 1) {
+        outgoingPlugValues.number[outPlugName] = {
+          value: result[0],
+          connected: true
+        };
+      }
+
+      continue;
     } else if (outPlug.type === 'ping') {
       outgoingPlugValues.ping[outPlugName] = {
         value: undefined,
         connected: false
       };
-
-      const edgesGoingFromPlug = edges.filter(edge => 
-        edge.inNodeId === nodeDescription.id && edge.inPlugName === outPlugName
-      );
 
       const result = edgesGoingFromPlug.flatMap(edgeGoingFromPlug => {
         if (edgeGoingFromPlug === undefined) return [];
@@ -233,43 +272,6 @@ export const injectableCollectOutgoingPlugsForNode = (componentDefinitions: Comp
       }
 
       continue;
-    }
-
-
-    // TODO: find -> filter
-    const edgeGoingFromPlug = edges.find(edge => 
-      edge.inNodeId === nodeDescription.id && 
-      edge.inPlugName === outPlugName
-    );
-
-    if (edgeGoingFromPlug === undefined) continue;
-
-    const outgoingNodeDescription = nodeDescriptions.find(node => node.id === edgeGoingFromPlug.outNodeId);
-
-    if (outgoingNodeDescription === undefined) continue;
-
-    const outgoingNodeDefinition = componentDefinitions[outgoingNodeDescription.name];
-
-    const outgoingNodePlug = outgoingNodeDefinition.inPlugs[edgeGoingFromPlug.outPlugName];
-
-    if (outgoingNodePlug.type === 'number') {
-      const value = outgoingNodePlug.getParameter ? outgoingNodePlug.getParameter(
-        getMutableStateForNodeDescription(outgoingNodeDescription, componentDefinitions),
-        nodeStates[outgoingNodeDescription.id],
-      ) : undefined;
-      outgoingPlugValues.number[outPlugName] = { 
-        value,
-        connected: true,
-      };
-    } else if (outgoingNodePlug.type === 'ping') {
-      const value = outgoingNodePlug.getParameter ? outgoingNodePlug.getParameter(
-        getMutableStateForNodeDescription(outgoingNodeDescription, componentDefinitions),
-        nodeStates[outgoingNodeDescription.id],
-      ) : undefined;
-      outgoingPlugValues.ping[outPlugName] = { 
-        value,
-        connected: true,
-      };
     }
   }
 

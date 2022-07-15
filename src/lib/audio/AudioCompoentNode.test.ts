@@ -1,6 +1,7 @@
 import React from 'react';
 import { injectableCollectOutgoingPlugsForNode } from './AudioComponentNode';
 import { AggregatedPing } from './nodes/AggregatedPing';
+import { AggregatedAudioParam } from './nodes/AggregatedAudioParam';
 import { Ping } from './nodes/Ping';
 
 class FrequencyStub {}
@@ -168,6 +169,46 @@ describe('AudioComponentNode', () => {
             expect(result.ping['Ping'].connected).toBe(true);
             expect(result.ping['Ping'].value).toBeInstanceOf(AggregatedPing);
             expect((result.ping['Ping'].value as AggregatedPing).pings).toHaveLength(2);
+        });
+        
+        it('works when there are two edges to number plugs', () => {
+            const result = collectOutgoingPlugsForNode(
+                {
+                    name: 'Sequencer',
+                    id: '123',
+                    position: {top: 0, left: 0},
+                },
+                [
+                    {
+                        name: 'Oscillator',
+                        id: '456',
+                        position: {top: 0, left: 0},
+                    },
+                    {
+                        name: 'Oscillator',
+                        id: '789',
+                        position: {top: 0, left: 0},
+                    }
+                ],
+                [
+                    {
+                        inNodeId: '123',
+                        inPlugName: 'Frequency',
+                        outNodeId: '456',
+                        outPlugName: 'Frequency',
+                    },
+                    {
+                        inNodeId: '123',
+                        inPlugName: 'Frequency',
+                        outNodeId: '789',
+                        outPlugName: 'Frequency',
+                    },
+                ],
+                {}
+            );
+    
+            expect(result.number['Frequency'].connected).toBe(true);
+            expect(result.number['Frequency'].value).toBeInstanceOf(AggregatedAudioParam);
         });
     });
 });
