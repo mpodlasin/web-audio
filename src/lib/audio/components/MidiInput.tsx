@@ -1,29 +1,23 @@
 import React from 'react';
+import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
-interface MidiInputState {
-    frequency: number;
-}
-
-export const MidiInputDefinition: AudioComponentDefinition<void, MidiInputState> = {
+export const MidiInputDefinition: AudioComponentDefinition<void, void> = {
     component: MidiInput,
     initializeMutableState: () => undefined,
-    initialSerializableState: {
-        frequency: 0,
-    },
+    initialSerializableState: undefined,
     inPlugs: {},
     outPlugs: {
         'Frequency': {
             type: 'number',
-            getParameter: (_, state) => state.frequency,
         }
     },
     color: 'lightgreen',
   }
 
-export type MidiInputProps = AudioComponentProps<void, MidiInputState>;
+export type MidiInputProps = AudioComponentProps<void, void>;
 
-export function MidiInput({ serializableState: state, onSerializableStateChange: onStateChange }: MidiInputProps) {
+export function MidiInput({ onSerializableStateChange: onStateChange, outPlugs }: MidiInputProps) {
     const [inputs, setInputs] = React.useState<WebMidi.MIDIInput[]>([]);
     const [chosenInputIndex] = React.useState(0);
 
@@ -41,8 +35,15 @@ export function MidiInput({ serializableState: state, onSerializableStateChange:
     React.useEffect(() => {
         if (!chosenInput) return;
 
+        const frequency = outPlugs.number['Frequency'].value;
+
+        if (!frequency) return;
+
         const midiMessageHandler = (e: WebMidi.MIDIMessageEvent) => {
-            onStateChange(state => ({...state, frequency: 440 * Math.pow(2, (e.data[1] - 69) / 12)}));
+            const frequencyValue = 440 * Math.pow(2, (e.data[1] - 69) / 12);
+
+            frequency.setValueAtTime(frequencyValue, GLOBAL_AUDIO_CONTEXT.currentTime);
+            
             setLastMidiEvent(e.data);
         };
 

@@ -47,16 +47,14 @@ export interface PingInPlugDefinition<MutableState, SerializableState> {
 export type OutPlugDefinition<A, S> = NumberOutPlugDefinition<A, S> | AudioOutPlugDefinition<A, S> | PingOutPlugDefinition<A, S>;
 
 export interface NumberOutPlugDefinition<MutableState, SerializableState> {
-  type: 'number',
-  getParameter?(mutableState: MutableState, serializableState: SerializableState): number;
+  type: 'number';
 }
 
 export interface AudioOutPlugDefinition<MutableState, SerializableState> {
-  type: 'audio',
+  type: 'audio';
   getParameter(mutableState: MutableState, serializableState: SerializableState): AudioNode;
 }
 
 export interface PingOutPlugDefinition<MutableState, SerializableState> {
   type: 'ping';
-  getParameter?(mutableState: MutableState, serializableState: SerializableState): Subject<void>,
 }

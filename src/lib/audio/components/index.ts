@@ -3,7 +3,6 @@ import { EnvelopeDefinition } from "./Envelope";
 import { FilterDefinition } from "./Filter";
 import { GainDefinition } from "./Gain";
 import { MidiInputDefinition } from "./MidiInput";
-import { NumberDefinition } from "./Number";
 import { OscillatorDefinition } from "./Oscillator";
 import { OutputDefinition } from "./Output";
 import { ButtonDefinition } from "./Button";
@@ -18,7 +17,6 @@ export const COMPONENTS: ComponentDefinitions = {
     'Gain': GainDefinition,
     'Output': OutputDefinition,
     'MIDI Input': MidiInputDefinition,
-    'Number': NumberDefinition,
     'Filter': FilterDefinition,
     'Sequencer': SequencerDefinition,
     'Button': ButtonDefinition,

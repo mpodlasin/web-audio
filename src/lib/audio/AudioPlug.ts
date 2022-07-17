@@ -9,12 +9,11 @@ export interface AudioPlug extends Plug {
 
 export interface PingPlug extends Plug {
   type: 'ping',
-  value?: Subject<void>,
 }
 
 export interface NumberPlug extends Plug {
   type: 'number',
-  value?: number | AudioParam;
+  value?: AudioParam;
 }
 
 export type PlugWithValue = AudioPlug | PingPlug | NumberPlug;
@@ -24,12 +23,8 @@ export const connectPlugsWithValues = (a: PlugWithValue, b: PlugWithValue) => {
     return connectAudioNodeToAudioNode(a.value, b.value);
   }
 
-  if (a.type === 'audio' && b.type === 'number' && a.value && b.value && b.value instanceof AudioParam) {
+  if (a.type === 'audio' && b.type === 'number' && a.value && b.value) {
     return connectAudioNodeToAudioParam(a.value, b.value);
-  }
-
-  if (a.type === 'ping' && b.type === 'ping' && a.value && b.value) {
-    return connectSubjectToSubject(a.value, b.value);
   }
 
   if (a.type === 'ping' && b.type === 'ping') {
@@ -53,10 +48,4 @@ const connectAudioNodeToAudioParam = (a: AudioNode, b: AudioParam) => {
   a.connect(b);
   
   return () => a.disconnect(b);
-}
-
-const connectSubjectToSubject = (a: Subject<void>, b: Subject<void>) => {
-  const subscription = a.subscribe(b);
-
-  return () => subscription.unsubscribe();
 }

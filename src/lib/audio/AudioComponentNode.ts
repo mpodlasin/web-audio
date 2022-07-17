@@ -137,7 +137,6 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
       return {
         ...plug,
         name: plugName,
-        value: undefined,
         color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
       };
   }
@@ -156,14 +155,13 @@ const nodeDescriptionToAudioNode = <MutableState, SerializableState>(
       return {
         ...plug,
         name: plugName,
-        value: plug.getParameter ? plug.getParameter(mutableState, serializableState) : undefined,
+        value: undefined,
         color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
       }
     }
       return {
         ...plug,
         name: plugName,
-        value: plug.getParameter ? plug.getParameter(mutableState, serializableState) : undefined,
         color: PLUG_TYPE_TO_COLOR_MAP[plug.type],
       };
   }
