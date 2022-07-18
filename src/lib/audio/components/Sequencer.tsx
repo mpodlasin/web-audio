@@ -1,5 +1,4 @@
 import React from 'react';
-import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { CallbackPing } from '../nodes/CallbackPing';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
@@ -42,7 +41,7 @@ export type SequencerProps = AudioComponentProps<CallbackPing, SequencerState>;
 const LOOKAHEAD = 100;
 const CLOCK_TRIGGER = 25;
 
-export function Sequencer({ mutableState: sequencerPing, serializableState, onSerializableStateChange, outPlugs }: SequencerProps) {
+export function Sequencer({ mutableState: sequencerPing, serializableState, onSerializableStateChange, outPlugs, applicationContext }: SequencerProps) {
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [startTime, setStartTime] = React.useState(0);
 
@@ -62,21 +61,24 @@ export function Sequencer({ mutableState: sequencerPing, serializableState, onSe
     React.useEffect(() => {
         const frequency = outPlugs.number['Frequency'].value;
 
-        if (frequency && isPlaying) {
+        if (frequency !== undefined && isPlaying) {
             let nextNoteTime = startTime;
             let step = 0;
+
             const id = setInterval(() => {
-                while (nextNoteTime < GLOBAL_AUDIO_CONTEXT.currentTime + (LOOKAHEAD / 100)) {
+                while (nextNoteTime < applicationContext.globalAudioContext.currentTime + (LOOKAHEAD / 1000)) {
                     const nextNextNoteTime = nextNoteTime + (((60_000 / serializableState.tempo) / 100) / 8);
                     if (ping) ping.start(nextNoteTime);
                     if (ping) ping.stop(nextNextNoteTime);
 
                     const noteToPlay = serializableState.sequenceMatrix.findIndex(row => row[step] === true);
 
-                    frequency.setValueAtTime(
-                        440 * Math.pow(2, (MIDI_MAP[noteToPlay] - 69) / 12), 
-                        nextNoteTime
-                    );
+                    if (noteToPlay !== -1) {
+                        frequency.setValueAtTime(
+                            440 * Math.pow(2, (MIDI_MAP[noteToPlay] - 69) / 12), 
+                            nextNoteTime
+                        );
+                    }
 
                     if (step >= 7) {
                         step = 0;
@@ -135,7 +137,14 @@ export function Sequencer({ mutableState: sequencerPing, serializableState, onSe
                 </tr> */}
                 {NOTES.map(note => (
                     <tr key={note}>{STEPS.map(step => (
-                        <td key={step}><input checked={serializableState.sequenceMatrix[note - 1][step - 1]} onChange={handleCheckboxClick(note, step)} type="checkbox" /></td>
+                        <td key={step}>
+                            <input
+                            aria-label={`Step ${step - 1}, note ${note - 1}`}
+                            checked={serializableState.sequenceMatrix[note - 1][step - 1]} 
+                            onChange={handleCheckboxClick(note, step)} 
+                            type="checkbox" 
+                            />
+                        </td>
                     ))}</tr>
                 ))}
             </tbody>

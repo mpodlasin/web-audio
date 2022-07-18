@@ -1,11 +1,14 @@
 import React from "react";
-import { Subject } from 'rxjs';
 import { Ping } from "../nodes/Ping";
+
+export interface ApplicationContext {
+  globalAudioContext: AudioContext;
+}
 
 export interface AudioComponentDefinition<MutableState, SerializableState> {
     component: React.ComponentType<AudioComponentProps<MutableState, SerializableState>>;
     initialSerializableState: SerializableState;
-    initializeMutableState(): MutableState;
+    initializeMutableState(context: ApplicationContext): MutableState;
     inPlugs: { [name: string]: InPlugDefinition<MutableState, SerializableState> };
     outPlugs: { [name: string]: OutPlugDefinition<MutableState, SerializableState> };
     color: string;
@@ -25,6 +28,7 @@ export interface AudioComponentProps<MutableState, SerializableState> {
   serializableState: SerializableState;
   onSerializableStateChange: React.Dispatch<React.SetStateAction<SerializableState>>;
   outPlugs: OutAudioPlugValues;
+  applicationContext: ApplicationContext;
 }
 
 export type InPlugDefinition<A, S> = NumberInPlugDefinition<A, S> | AudioInPlugDefinition<A, S> | PingInPlugDefinition<A, S>;

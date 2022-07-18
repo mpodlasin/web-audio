@@ -1,5 +1,6 @@
 import React from 'react';
 import { Edge, Position, Node } from "../component-graph-canvas";
+import { GLOBAL_AUDIO_CONTEXT } from './audioContext';
 import { PlugWithValue } from "./AudioPlug";
 import { ComponentDefinitions, COMPONENTS } from "./components";
 import { AudioComponentDefinition, InPlugDefinition, OutAudioPlugValues, OutPlugDefinition } from './components/AudioComponentDefinition';
@@ -25,7 +26,7 @@ const getMutableStateForNodeDescription = <MutableState>(nodeDescription: NodeDe
     if (NODE_ID_TO_MUTABLE_STATE.has(nodeDescription.id)) {
       return NODE_ID_TO_MUTABLE_STATE.get(nodeDescription.id)!;
     } else {
-      const mutableState = definition.initializeMutableState();
+      const mutableState = definition.initializeMutableState({ globalAudioContext: GLOBAL_AUDIO_CONTEXT });
       
       NODE_ID_TO_MUTABLE_STATE.set(nodeDescription.id, mutableState);
 
@@ -84,6 +85,7 @@ const addComponentToAudioComponentNode = <MutableState, SerializableState>(
       serializableState: nodeStates[node.id],
       onSerializableStateChange: onStateChange,
       outPlugs,
+      applicationContext: { globalAudioContext: GLOBAL_AUDIO_CONTEXT },
     });
 
     return {
