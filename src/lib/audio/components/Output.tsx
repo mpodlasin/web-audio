@@ -39,7 +39,7 @@ export function Output(_: OutputProps) {
       return () => {
         GLOBAL_AUDIO_CONTEXT.removeEventListener('statechange', callback);
       }
-    }, [GLOBAL_AUDIO_CONTEXT]);
+    }, []);
   
     return <div>
       <div>Current state: {audioContextState}</div>

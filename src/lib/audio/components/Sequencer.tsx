@@ -10,11 +10,13 @@ const MIDI_MAP = [39, 41, 42, 44, 46, 47, 49, 51];
 export interface SequencerState {
     tempo: number;
     sequenceMatrix: boolean[][];
+    octave: number;
 }
 
 export const SequencerDefinition: AudioComponentDefinition<CallbackPing, SequencerState> = {
     component: Sequencer,
     initialSerializableState: {
+        octave: 0,
         tempo: 120,
         sequenceMatrix: NOTES.map(() => STEPS.map(() => false)),
     },
@@ -45,6 +47,7 @@ export function Sequencer({ mutableState: sequencerPing, serializableState, onSe
     const [startTime, setStartTime] = React.useState(0);
 
     const ping = outPlugs.ping['Ping'].value;
+    const frequency = outPlugs.number['Frequency'].value;
 
     React.useEffect(() => {
         sequencerPing.onStart = time => {
@@ -58,8 +61,6 @@ export function Sequencer({ mutableState: sequencerPing, serializableState, onSe
     }, [sequencerPing]);
 
     React.useEffect(() => {
-        const frequency = outPlugs.number['Frequency'].value;
-
         if (isPlaying) {
             let nextNoteTime = startTime;
             let step = 0;
@@ -67,16 +68,16 @@ export function Sequencer({ mutableState: sequencerPing, serializableState, onSe
             const id = setInterval(() => {
                 while (nextNoteTime < applicationContext.globalAudioContext.currentTime + (applicationContext.lookahead / 1000)) {
                     const nextNextNoteTime = nextNoteTime + (((60_000 / serializableState.tempo) / 1000) / 2);
-                    if (ping) ping.start(nextNoteTime);
-                    if (ping) ping.stop(nextNextNoteTime);
 
                     const noteToPlay = serializableState.sequenceMatrix.findIndex(row => row[step] === true);
 
                     if (noteToPlay !== -1) {
                         if (frequency) frequency.setValueAtTime(
-                            440 * Math.pow(2, (MIDI_MAP[noteToPlay] - 69) / 12), 
+                            440 * Math.pow(2, ((MIDI_MAP[noteToPlay] + (serializableState.octave * 12)) - 69) / 12), 
                             nextNoteTime
                         );
+                        if (ping) ping.start(nextNoteTime);
+                        if (ping) ping.stop(nextNextNoteTime);
                     }
 
                     if (step >= 7) {
@@ -91,7 +92,7 @@ export function Sequencer({ mutableState: sequencerPing, serializableState, onSe
 
             return () => clearInterval(id);
         }
-    }, [outPlugs.number['Frequency'].value, serializableState.tempo, isPlaying]);
+    }, [frequency, ping, serializableState.tempo, isPlaying]);
 
     const handleCheckboxClick = (note: number, step: number) => () => {
         onSerializableStateChange(state => {
@@ -123,9 +124,21 @@ export function Sequencer({ mutableState: sequencerPing, serializableState, onSe
         setIsPlaying(isPlaying => !isPlaying);
     }
 
+    const handleOctaveChange = (e: React.FormEvent<HTMLSelectElement>) => {
+        const currentTarget = e.currentTarget;
+        onSerializableStateChange(state => ({...state, octave: parseInt(currentTarget.value, 10)}))
+    };
+
     return (
         <div>
         <button onClick={toggleIsPlaying}>{isPlaying ? 'Stop' : 'Play'}</button>
+        <div>
+            <select value={serializableState.octave} onChange={handleOctaveChange}>
+                {[-2, -1, 0, 1, 2].map(octave => 
+                    <option key={octave} value={octave}>{octave}</option>
+                )}
+            </select>
+        </div>
         <div>
             <input type="number" value={serializableState.tempo} onChange={handleChangeTempo} />
         </div>
