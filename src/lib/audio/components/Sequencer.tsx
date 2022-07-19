@@ -60,7 +60,7 @@ export function Sequencer({ mutableState: sequencerPing, serializableState, onSe
     React.useEffect(() => {
         const frequency = outPlugs.number['Frequency'].value;
 
-        if (frequency !== undefined && isPlaying) {
+        if (isPlaying) {
             let nextNoteTime = startTime;
             let step = 0;
 
@@ -73,7 +73,7 @@ export function Sequencer({ mutableState: sequencerPing, serializableState, onSe
                     const noteToPlay = serializableState.sequenceMatrix.findIndex(row => row[step] === true);
 
                     if (noteToPlay !== -1) {
-                        frequency.setValueAtTime(
+                        if (frequency) frequency.setValueAtTime(
                             440 * Math.pow(2, (MIDI_MAP[noteToPlay] - 69) / 12), 
                             nextNoteTime
                         );
