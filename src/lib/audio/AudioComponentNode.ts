@@ -1,6 +1,5 @@
 import React from 'react';
 import { Edge, Position, Node } from "../component-graph-canvas";
-import { GLOBAL_AUDIO_CONTEXT } from './audioContext';
 import { PlugWithValue } from "./AudioPlug";
 import { ComponentDefinitions, COMPONENTS } from "./components";
 import { ApplicationContext, AudioComponentDefinition, InPlugDefinition, OutAudioPlugValues, OutPlugDefinition } from './components/AudioComponentDefinition';
@@ -21,7 +20,7 @@ export interface AudioComponentNode extends Node {
 const NODE_ID_TO_MUTABLE_STATE = new Map<string, any>();
 
 const applicationContext: ApplicationContext = {
-  globalAudioContext: GLOBAL_AUDIO_CONTEXT,
+  globalAudioContext: new AudioContext(),
   lookahead: 100,
 }
 

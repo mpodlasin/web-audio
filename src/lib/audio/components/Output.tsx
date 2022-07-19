@@ -1,10 +1,9 @@
 import React from 'react';
-import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode, void> = {
   component: Output,
-  initializeMutableState: () => GLOBAL_AUDIO_CONTEXT.destination,
+  initializeMutableState: ({ globalAudioContext }) => globalAudioContext.destination,
   initialSerializableState: undefined,
   inPlugs: {
     'Input': {
@@ -18,26 +17,26 @@ export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode, vo
 
 export type OutputProps = AudioComponentProps<AudioDestinationNode, void>;
 
-export function Output(_: OutputProps) {
-    const [audioContextState, setAudioContextState] = React.useState(GLOBAL_AUDIO_CONTEXT.state);
+export function Output({ applicationContext }: OutputProps) {
+    const [audioContextState, setAudioContextState] = React.useState(applicationContext.globalAudioContext.state);
   
     const togglePlay = () => {
       if (audioContextState === 'running') {
-        GLOBAL_AUDIO_CONTEXT.suspend();
+        applicationContext.globalAudioContext.suspend();
       } else if (audioContextState === 'suspended') {
-        GLOBAL_AUDIO_CONTEXT.resume();
+        applicationContext.globalAudioContext.resume();
       }
     };
     
     React.useEffect(() => {
       const callback = () => {
-        setAudioContextState(GLOBAL_AUDIO_CONTEXT.state);
+        setAudioContextState(applicationContext.globalAudioContext.state);
       };
   
-      GLOBAL_AUDIO_CONTEXT.addEventListener('statechange', callback);
+      applicationContext.globalAudioContext.addEventListener('statechange', callback);
   
       return () => {
-        GLOBAL_AUDIO_CONTEXT.removeEventListener('statechange', callback);
+        applicationContext.globalAudioContext.removeEventListener('statechange', callback);
       }
     }, []);
   

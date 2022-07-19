@@ -1,5 +1,4 @@
 import React from 'react';
-import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export const MidiInputDefinition: AudioComponentDefinition<void, void> = {
@@ -17,7 +16,7 @@ export const MidiInputDefinition: AudioComponentDefinition<void, void> = {
 
 export type MidiInputProps = AudioComponentProps<void, void>;
 
-export function MidiInput({ onSerializableStateChange: onStateChange, outPlugs }: MidiInputProps) {
+export function MidiInput({ outPlugs, applicationContext }: MidiInputProps) {
     const [inputs, setInputs] = React.useState<WebMidi.MIDIInput[]>([]);
     const [chosenInputIndex] = React.useState(0);
 
@@ -42,7 +41,7 @@ export function MidiInput({ onSerializableStateChange: onStateChange, outPlugs }
         const midiMessageHandler = (e: WebMidi.MIDIMessageEvent) => {
             const frequencyValue = 440 * Math.pow(2, (e.data[1] - 69) / 12);
 
-            frequency.setValueAtTime(frequencyValue, GLOBAL_AUDIO_CONTEXT.currentTime);
+            frequency.setValueAtTime(frequencyValue, applicationContext.globalAudioContext.currentTime);
             
             setLastMidiEvent(e.data);
         };

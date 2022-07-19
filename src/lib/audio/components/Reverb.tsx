@@ -1,11 +1,10 @@
-import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 import { impulseResponse } from '../impulseResponse';
 import React from 'react';
 
 export const ReverbDefinition: AudioComponentDefinition<ConvolverNode, void> = {
   component: Reverb,
-  initializeMutableState: () => new ConvolverNode(GLOBAL_AUDIO_CONTEXT),
+  initializeMutableState: ({ globalAudioContext }) => new ConvolverNode(globalAudioContext),
   initialSerializableState: undefined,
   inPlugs: {
     'Input': {
@@ -34,9 +33,9 @@ function base64ToArrayBuffer(base64: string) {
     return bytes.buffer;
 }
 
-export function Reverb({ mutableState: reverbNode }: ReverbProps) {
+export function Reverb({ mutableState: reverbNode, applicationContext }: ReverbProps) {
     React.useEffect(() => {
-        GLOBAL_AUDIO_CONTEXT.decodeAudioData(base64ToArrayBuffer(impulseResponse))
+        applicationContext.globalAudioContext.decodeAudioData(base64ToArrayBuffer(impulseResponse))
             .then(buffer => {
                 reverbNode.buffer = buffer;
             });

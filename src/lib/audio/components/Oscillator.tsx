@@ -1,5 +1,4 @@
 import React from 'react';
-import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 const OSCILLATOR_TYPES: OscillatorType[] = ["sine", "square", "sawtooth", "triangle"];
@@ -11,7 +10,7 @@ export interface OscillatorState {
 
 export const OscillatorDefinition: AudioComponentDefinition<OscillatorNode, OscillatorState> = {
   component: Oscillator,
-  initializeMutableState: () => new OscillatorNode(GLOBAL_AUDIO_CONTEXT),
+  initializeMutableState: ({ globalAudioContext }) => new OscillatorNode(globalAudioContext),
   initialSerializableState: {
     frequency: 440,
     type: OSCILLATOR_TYPES[0],

@@ -1,5 +1,4 @@
 import React from 'react';
-import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 const BIQUAD_FILTER_TYPES: BiquadFilterType[] = ['lowpass', 'highpass', 'bandpass'];
@@ -11,7 +10,7 @@ export interface FilterState {
 
 export const FilterDefinition: AudioComponentDefinition<BiquadFilterNode, FilterState> = {
   component: Filter,
-  initializeMutableState: () => new BiquadFilterNode(GLOBAL_AUDIO_CONTEXT),
+  initializeMutableState: ({ globalAudioContext }) => new BiquadFilterNode(globalAudioContext),
   initialSerializableState: {
     frequency: 0,
     type: BIQUAD_FILTER_TYPES[0],

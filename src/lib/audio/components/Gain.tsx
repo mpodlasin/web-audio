@@ -1,5 +1,4 @@
 import React from 'react';
-import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export interface GainState {
@@ -8,7 +7,7 @@ export interface GainState {
 
 export const GainDefinition: AudioComponentDefinition<GainNode, GainState> = {
   component: Gain,
-  initializeMutableState: () => new GainNode(GLOBAL_AUDIO_CONTEXT),
+  initializeMutableState: ({ globalAudioContext }) => new GainNode(globalAudioContext),
   initialSerializableState: {
     gain: 0,
   },

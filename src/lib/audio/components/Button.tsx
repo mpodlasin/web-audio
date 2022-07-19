@@ -1,4 +1,3 @@
-import { GLOBAL_AUDIO_CONTEXT } from '../audioContext';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
 export interface ButtonState {
@@ -22,7 +21,7 @@ export const ButtonDefinition: AudioComponentDefinition<void, ButtonState> = {
 
 export type ButtonProps = AudioComponentProps<void, ButtonState>;
 
-export function Button({ outPlugs, serializableState: state, onSerializableStateChange: onStateChange }: ButtonProps) {
+export function Button({ outPlugs, serializableState: state, onSerializableStateChange: onStateChange, applicationContext }: ButtonProps) {
     const audioParamPing = outPlugs.ping['Ping'].value;
 
     const handleClick = () => {
@@ -32,15 +31,15 @@ export function Button({ outPlugs, serializableState: state, onSerializableState
         if (!audioParamPing) return;
 
         if (!isOn) {
-            audioParamPing.start(GLOBAL_AUDIO_CONTEXT.currentTime);
+            audioParamPing.start(applicationContext.globalAudioContext.currentTime);
         } else {
-            audioParamPing.stop(GLOBAL_AUDIO_CONTEXT.currentTime);
+            audioParamPing.stop(applicationContext.globalAudioContext.currentTime);
         }
     }
 
     return (
         <div>
-            <button onClick={handleClick}>{state.on ? 'On' : 'Off'}</button>
+            <button onClick={handleClick}>{state.on ? 'Off' : 'On'}</button>
         </div>
     )
 };
