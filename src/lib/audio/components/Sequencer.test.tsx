@@ -119,14 +119,14 @@ describe('Sequencer', () => {
 
         /* Those notes should be played */
         screen.getByLabelText('Step 0, note 0').click();
-        screen.getByLabelText('Step 1, note 0').click();
-        screen.getByLabelText('Step 2, note 0').click();
-        screen.getByLabelText('Step 3, note 0').click();
+        screen.getByLabelText('Step 1, note 1').click();
+        screen.getByLabelText('Step 2, note 2').click();
+        screen.getByLabelText('Step 3, note 3').click();
         /* Those should not (lookahead to small) */
-        screen.getByLabelText('Step 4, note 0').click();
-        screen.getByLabelText('Step 5, note 0').click();
-        screen.getByLabelText('Step 6, note 0').click();
-        screen.getByLabelText('Step 7, note 0').click();
+        screen.getByLabelText('Step 4, note 4').click();
+        screen.getByLabelText('Step 5, note 5').click();
+        screen.getByLabelText('Step 6, note 6').click();
+        screen.getByLabelText('Step 7, note 7').click();
 
         const playButton = screen.getByText('Play');
         playButton.click();
@@ -135,8 +135,8 @@ describe('Sequencer', () => {
 
         expect(frequencyStub.setValueAtTime).toHaveBeenCalledTimes(4);
         expect(frequencyStub.setValueAtTime.mock.calls[0]).toEqual([77.78174593052022, 0]);
-        expect(frequencyStub.setValueAtTime.mock.calls[1]).toEqual([77.78174593052022, 0.25]);
-        expect(frequencyStub.setValueAtTime.mock.calls[2]).toEqual([77.78174593052022, 0.5]);
-        expect(frequencyStub.setValueAtTime.mock.calls[3]).toEqual([77.78174593052022, 0.75]);
+        expect(frequencyStub.setValueAtTime.mock.calls[1]).toEqual([87.30705785825097, 0.25]);
+        expect(frequencyStub.setValueAtTime.mock.calls[2]).toEqual([92.49860567790861, 0.5]);
+        expect(frequencyStub.setValueAtTime.mock.calls[3]).toEqual([103.82617439498628, 0.75]);
     });
 });
