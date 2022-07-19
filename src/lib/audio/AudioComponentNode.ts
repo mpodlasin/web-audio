@@ -3,7 +3,7 @@ import { Edge, Position, Node } from "../component-graph-canvas";
 import { GLOBAL_AUDIO_CONTEXT } from './audioContext';
 import { PlugWithValue } from "./AudioPlug";
 import { ComponentDefinitions, COMPONENTS } from "./components";
-import { AudioComponentDefinition, InPlugDefinition, OutAudioPlugValues, OutPlugDefinition } from './components/AudioComponentDefinition';
+import { ApplicationContext, AudioComponentDefinition, InPlugDefinition, OutAudioPlugValues, OutPlugDefinition } from './components/AudioComponentDefinition';
 import { AggregatedAudioParam } from './nodes/AggregatedAudioParam';
 import { AggregatedPing } from './nodes/AggregatedPing';
 
@@ -20,13 +20,18 @@ export interface AudioComponentNode extends Node {
 
 const NODE_ID_TO_MUTABLE_STATE = new Map<string, any>();
 
+const applicationContext: ApplicationContext = {
+  globalAudioContext: GLOBAL_AUDIO_CONTEXT,
+  lookahead: 100,
+}
+
 const getMutableStateForNodeDescription = <MutableState>(nodeDescription: NodeDescription, componentDefinitions: ComponentDefinitions): MutableState => {
     const definition: AudioComponentDefinition<MutableState, any> = componentDefinitions[nodeDescription.name];
   
     if (NODE_ID_TO_MUTABLE_STATE.has(nodeDescription.id)) {
       return NODE_ID_TO_MUTABLE_STATE.get(nodeDescription.id)!;
     } else {
-      const mutableState = definition.initializeMutableState({ globalAudioContext: GLOBAL_AUDIO_CONTEXT });
+      const mutableState = definition.initializeMutableState(applicationContext);
       
       NODE_ID_TO_MUTABLE_STATE.set(nodeDescription.id, mutableState);
 
@@ -85,7 +90,7 @@ const addComponentToAudioComponentNode = <MutableState, SerializableState>(
       serializableState: nodeStates[node.id],
       onSerializableStateChange: onStateChange,
       outPlugs,
-      applicationContext: { globalAudioContext: GLOBAL_AUDIO_CONTEXT },
+      applicationContext,
     });
 
     return {

@@ -3,6 +3,7 @@ import { Ping } from "../nodes/Ping";
 
 export interface ApplicationContext {
   globalAudioContext: AudioContext;
+  lookahead: number;
 }
 
 export interface AudioComponentDefinition<MutableState, SerializableState> {

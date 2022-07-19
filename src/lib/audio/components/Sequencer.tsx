@@ -38,7 +38,6 @@ export const SequencerDefinition: AudioComponentDefinition<CallbackPing, Sequenc
 
 export type SequencerProps = AudioComponentProps<CallbackPing, SequencerState>;
 
-const LOOKAHEAD = 100;
 const CLOCK_TRIGGER = 25;
 
 export function Sequencer({ mutableState: sequencerPing, serializableState, onSerializableStateChange, outPlugs, applicationContext }: SequencerProps) {
@@ -66,8 +65,8 @@ export function Sequencer({ mutableState: sequencerPing, serializableState, onSe
             let step = 0;
 
             const id = setInterval(() => {
-                while (nextNoteTime < applicationContext.globalAudioContext.currentTime + (LOOKAHEAD / 1000)) {
-                    const nextNextNoteTime = nextNoteTime + (((60_000 / serializableState.tempo) / 100) / 8);
+                while (nextNoteTime < applicationContext.globalAudioContext.currentTime + (applicationContext.lookahead / 1000)) {
+                    const nextNextNoteTime = nextNoteTime + (((60_000 / serializableState.tempo) / 1000) / 2);
                     if (ping) ping.start(nextNoteTime);
                     if (ping) ping.stop(nextNextNoteTime);
 
