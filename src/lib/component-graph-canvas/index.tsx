@@ -25,11 +25,59 @@ const calculateNewNodePosition = (node: Node, draggedNode: {startMousePosition: 
 
 export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange = () => {}, onEdgesChange = () => {} }: ComponentGraphCanvasProps) {
     // -----------------------------------------------------------------------------
+    // BACKGROUND POSITION 
+
+    const [backgroundPosition, setBackgroundPosition] = React.useState<Position>({
+        top: 0,
+        left: 0,
+    });
+    const [draggedBackgroundMousePosition, setDraggedBackgroundMousePosiiton] = React.useState<{startMousePosition: Position, endMousePosition: Position} | null>(null);
+
+    const displayedBackgroundPosition = draggedBackgroundMousePosition === null ? backgroundPosition : {
+        top: backgroundPosition.top - (draggedBackgroundMousePosition.startMousePosition.top - draggedBackgroundMousePosition.endMousePosition.top),
+        left: backgroundPosition.left - (draggedBackgroundMousePosition.startMousePosition.left - draggedBackgroundMousePosition.endMousePosition.left),
+    };
+
+    const startBackgroundPositionDrag = (e: React.MouseEvent<HTMLDivElement>) => {
+        setDraggedBackgroundMousePosiiton({
+            startMousePosition: {
+                top: e.clientY,
+                left: e.clientX,
+            },
+            endMousePosition: {
+                top: e.clientY,
+                left: e.clientX,
+            }
+        })
+    }
+
+    const onBackgroundPositionDrag = (e: React.MouseEvent<HTMLDivElement>) => {
+        setDraggedBackgroundMousePosiiton(position => (position !== null ? {
+            ...position,
+            endMousePosition: {
+                top: e.clientY,
+                left: e.clientX,
+            }
+        } : null));
+    }
+
+    const stopBackgroundPositionDrag = () => {
+        if (draggedBackgroundMousePosition) {
+            setBackgroundPosition(position => ({
+                top: position.top - (draggedBackgroundMousePosition.startMousePosition.top - draggedBackgroundMousePosition.endMousePosition.top),
+                left: position.left - (draggedBackgroundMousePosition.startMousePosition.left - draggedBackgroundMousePosition.endMousePosition.left),
+            }))
+            setDraggedBackgroundMousePosiiton(null);
+        }
+    }
+
+    // -----------------------------------------------------------------------------
     // NODE POSITIONS
 
     const [draggedNode, setDraggedNode] = React.useState<{startMousePosition: Position, endMousePosition: Position, nodeId: string} | null>(null);
 
     const handleDragStart = (nodeId: string): React.MouseEventHandler<HTMLDivElement> => e => {
+        e.stopPropagation();
         setDraggedNode({
             nodeId,
             startMousePosition: {
@@ -174,6 +222,7 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
     const [globalMenuPosition, setGlobalMenuPosition] = React.useState<Position | null>(null);
 
     const toggleGlobalMenu = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.preventDefault();
         if(containerRef.current && e.target !== containerRef.current) {
             return;
         }
@@ -188,14 +237,27 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         }
     }
 
+    const closeGlobalMenu = () => {
+        setGlobalMenuPosition(null);
+    }
+
+    const addPositions = (positionA: Position, positionB: Position): Position => {
+        return {
+            top: positionA.top + positionB.top,
+            left: positionA.left + positionB.left,
+        }
+    }
+
     const nodePositions = nodes.reduce((positions, node) => ({
         ...positions,
-        [node.id]: draggedNode && draggedNode.nodeId === node.id ? calculateNewNodePosition(node, draggedNode) : node.position
+        [node.id]: addPositions(draggedNode && draggedNode.nodeId === node.id ? calculateNewNodePosition(node, draggedNode) : node.position, displayedBackgroundPosition)
     }), {} as { [nodeId: string ]: Position});
 
     return <div onClick={() => { closeEdgeMenu(); }} 
-                onMouseUp={(e) => { handleDragStop(e); toggleGlobalMenu(e); handleCancelConnecting(); }} 
-                onMouseMove={e => { handleDrag(e); handleConnectingDrag(e); }} 
+                onMouseDown={(e) => { startBackgroundPositionDrag(e); closeGlobalMenu(); }}
+                onMouseUp={(e) => { handleDragStop(e); handleCancelConnecting(); stopBackgroundPositionDrag(); }} 
+                onContextMenu={toggleGlobalMenu}
+                onMouseMove={e => { e.preventDefault(); handleDrag(e); handleConnectingDrag(e); onBackgroundPositionDrag(e); }}
                 style={{position: 'relative', border: '1px solid red', height: '100%', boxSizing: 'border-box'}}
                 ref={containerRef}
             >

@@ -108,7 +108,7 @@ const NodePlug = ({ onStartConnecting, onStopConnecting, onPosition, plug, zInde
         <div style={{borderColor: !isHoveredOver ? 'transparent' : undefined}} className={css.nodePlugWrapper}>
             <div
                 ref={ref}
-                onMouseDown={e => onStartConnecting({top: e.clientY, left: e.clientX})} 
+                onMouseDown={e => { e.stopPropagation(); onStartConnecting({top: e.clientY, left: e.clientX}); }} 
                 onMouseUp={e => onStopConnecting({top: e.clientY, left: e.clientX})}
                 className={css.nodePlug}
                 style={{backgroundColor: plug.color}}
