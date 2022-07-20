@@ -45,14 +45,14 @@ export function Graph({ mutableState: analyserNode }: GraphProps) {
         };
     }, []);
 
-    const mappedData = data ? Array.from(data).map(datum => ({value: (datum - 128) / 256})) : [];
+    const mappedData = data ? Array.from(data).map(datum => ({value: (datum - 128) / 128})) : [];
 
     return (
-        <>{data && <LineChart width={400} height={200} data={mappedData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+        <div style={{width: 400}}>{data && <LineChart width={400} height={200} data={mappedData} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <YAxis domain={[-1, 1]} />
             <Line type="monotone" dataKey="value" stroke="green" strokeWidth={2} />
-        </LineChart>}</>
+        </LineChart>}</div>
     );
 }
 
