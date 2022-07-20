@@ -1,6 +1,12 @@
 import React from 'react';
 import { AudioComponentDefinition, AudioComponentProps } from './AudioComponentDefinition';
 
+const READABLE_AUDIO_CONTEXT_STATE: {[P in AudioContextState]: string} = {
+  'suspended': 'Suspended',
+  'closed': 'Closed',
+  'running': 'Running',
+};
+
 export const OutputDefinition: AudioComponentDefinition<AudioDestinationNode, void> = {
   component: Output,
   initializeMutableState: ({ globalAudioContext }) => globalAudioContext.destination,
@@ -39,9 +45,21 @@ export function Output({ applicationContext }: OutputProps) {
         applicationContext.globalAudioContext.removeEventListener('statechange', callback);
       }
     }, []);
+
+    React.useEffect(() => {
+      const handler = (e: KeyboardEvent) => {
+        if (e.key === ' ') {
+          togglePlay();
+        }
+      };
+
+      window.addEventListener('keypress', handler);
+
+      return () => window.removeEventListener('keypress', handler);
+    });
   
     return <div>
-      <div>Current state: {audioContextState}</div>
+      <div>{READABLE_AUDIO_CONTEXT_STATE[audioContextState]}</div>
         <button onClick={togglePlay}>
         {audioContextState === 'running' ? 'Stop' : 'Play'}
       </button>
