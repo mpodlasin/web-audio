@@ -8,6 +8,7 @@ import { OutputDefinition } from "./Output";
 import { ButtonDefinition } from "./Button";
 import { SequencerDefinition } from "./Sequencer";
 import { ReverbDefinition } from "./Reverb";
+import { GraphDefinition } from "./Graph";
 export interface ComponentDefinitions {
     [index: string]: AudioComponentDefinition<any, any>;
   }
@@ -22,4 +23,5 @@ export const COMPONENTS: ComponentDefinitions = {
     'Button': ButtonDefinition,
     'Envelope': EnvelopeDefinition,
     'Reverb': ReverbDefinition,
+    'Graph': GraphDefinition,
 };
