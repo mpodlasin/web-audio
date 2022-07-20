@@ -10,8 +10,13 @@ export { type Edge } from './Edge';
 export { type Node, type Plug } from './Node';
 export { type Position } from './Position';
 
+export interface GlobalMenuProps {
+    onClose(): void;
+    position: Position;
+}
+
 export interface ComponentGraphCanvasProps {
-    globalMenu: React.ReactNode;
+    globalMenu: (props: GlobalMenuProps) => React.ReactNode;
     nodes: Node[];
     edges: Edge[];
     onNodesChange?(newNodes: Node[]): void;
@@ -248,6 +253,13 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         }
     }
 
+    const substractPositions = (positionA: Position, positionB: Position): Position => {
+        return {
+            top: positionA.top - positionB.top,
+            left: positionA.left - positionB.left,
+        };
+    }
+
     const nodePositions = nodes.reduce((positions, node) => ({
         ...positions,
         [node.id]: addPositions(draggedNode && draggedNode.nodeId === node.id ? calculateNewNodePosition(node, draggedNode) : node.position, displayedBackgroundPosition)
@@ -273,7 +285,7 @@ export function ComponentGraphCanvas({ globalMenu, nodes, edges, onNodesChange =
         />)}
         {globalMenuPosition && 
             <div className={css.globalMenu} style={{...globalMenuPosition}}>
-                {globalMenu}
+                {globalMenu({ position: substractPositions(globalMenuPosition, backgroundPosition), onClose: closeGlobalMenu })}
             </div>
         }
         {edgeMenu && <EdgeMenu position={edgeMenu.position} onDeleteEdge={handleDeleteEdge} />

@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import { ComponentGraphCanvas, Node, Edge } from './lib/component-graph-canvas';
+import { ComponentGraphCanvas, Node, Edge, Position } from './lib/component-graph-canvas';
 import { v4 as uuidv4 } from 'uuid';
 import { addComponentsToAudioComponentNodes, NodeDescription, nodeDescriptionsToAudioNodes, nodeToNodeDescription } from './lib/audio/AudioComponentNode';
 import { CreationMenu } from './components/CreationMenu';
@@ -74,13 +74,14 @@ function App() {
       setNodeDescriptions(newNodes.map(nodeToNodeDescription))
     };
 
-    const handleCreateNode = (nodeName: string) => {
+    const handleCreateNode = (position: Position, nodeName: string) => {
+      console.log('blabla');
       const id = uuidv4();
       const definition = COMPONENTS[nodeName];
       setNodeDescriptions(nodeDescriptions => [...nodeDescriptions, {
         id,
         name: nodeName,
-        position: {top: 100, left: 100},
+        position,
       }]);
       setNodeStates(nodeStates => ({
         ...nodeStates,
@@ -91,7 +92,7 @@ function App() {
     return (
       <div style={{height: '100%'}}>
         <ComponentGraphCanvas
-          globalMenu={<CreationMenu onCreate={handleCreateNode} />}
+          globalMenu={({ position, onClose }) => <CreationMenu onCreate={(name) => { handleCreateNode(position, name); onClose(); }} />}
           nodes={nodesWithComponents}
           onNodesChange={handleNodesChange}
           edges={edges}

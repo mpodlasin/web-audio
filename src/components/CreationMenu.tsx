@@ -7,7 +7,7 @@ export interface CreationMenuProps {
   
 export function CreationMenu({ onCreate }: CreationMenuProps) {
     return (
-      <ul className={css.list}>
+      <ul onMouseDown={e => e.stopPropagation()} className={css.list}>
         {Object.keys(COMPONENTS).map(name => (
           <li key={name}><button className={css.button} onClick={() => onCreate(name)}>{name}</button></li>
         ))}

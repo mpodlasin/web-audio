@@ -64,7 +64,7 @@ export const NodeComponent = ({ node, position, onDragStart, onStartConnecting, 
                 <span>{node.name}</span>
                 <button className={css.closeButton} onClick={handleDelete}>X</button>
             </div>
-            <div className={css.contentWithPlugs}>
+            <div onMouseMove={e => e.stopPropagation()} className={css.contentWithPlugs}>
                 <div className={css.inputPlugs}>
                     {node.inPlugs.map((plug, i) => <NodePlug key={plug.name} zIndex={node.inPlugs.length - i} plug={plug} onPosition={handlePosition(plug.name)} onStartConnecting={position => onStartConnecting(plug.name, position)} onStopConnecting={position => onStopConnecting(plug.name, position)} />)}
                 </div>
