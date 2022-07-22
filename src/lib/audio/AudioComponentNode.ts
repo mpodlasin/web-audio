@@ -85,6 +85,7 @@ const addComponentToAudioComponentNode = <MutableState, SerializableState>(
     const mutableState = getMutableStateForNodeDescription<MutableState>(nodeToNodeDescription(node), COMPONENTS);
 
     const component = React.createElement(definition.component, {
+      key: node.id,
       mutableState,
       serializableState: nodeStates[node.id],
       onSerializableStateChange: onStateChange,

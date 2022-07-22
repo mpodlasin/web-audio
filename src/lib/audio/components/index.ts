@@ -9,19 +9,28 @@ import { ButtonDefinition } from "./Button";
 import { SequencerDefinition } from "./Sequencer";
 import { ReverbDefinition } from "./Reverb";
 import { GraphDefinition } from "./Graph";
+import React from "react";
+import { memoComparer } from "../../react/memoComparer";
 export interface ComponentDefinitions {
     [index: string]: AudioComponentDefinition<any, any>;
   }
 
+export const memoizeComponentInDefinition = <MutableState, SerializableState>(
+  definition: AudioComponentDefinition<MutableState, SerializableState>
+  ): AudioComponentDefinition<MutableState, SerializableState> => ({
+    ...definition,
+    component: React.memo(definition.component, memoComparer)
+  });
+
 export const COMPONENTS: ComponentDefinitions = {
-    'Oscillator': OscillatorDefinition,
-    'Gain': GainDefinition,
-    'Output': OutputDefinition,
-    'MIDI Input': MidiInputDefinition,
-    'Filter': FilterDefinition,
-    'Sequencer': SequencerDefinition,
-    'Button': ButtonDefinition,
-    'Envelope': EnvelopeDefinition,
-    'Reverb': ReverbDefinition,
-    'Graph': GraphDefinition,
+    'Oscillator': memoizeComponentInDefinition(OscillatorDefinition),
+    'Gain': memoizeComponentInDefinition(GainDefinition),
+    'Output': memoizeComponentInDefinition(OutputDefinition),
+    'MIDI Input': memoizeComponentInDefinition(MidiInputDefinition),
+    'Filter': memoizeComponentInDefinition(FilterDefinition),
+    'Sequencer': memoizeComponentInDefinition(SequencerDefinition),
+    'Button': memoizeComponentInDefinition(ButtonDefinition),
+    'Envelope': memoizeComponentInDefinition(EnvelopeDefinition),
+    'Reverb': memoizeComponentInDefinition(ReverbDefinition),
+    'Graph': memoizeComponentInDefinition(GraphDefinition),
 };
