@@ -95,11 +95,11 @@ export function Envelope({ mutableState: ping, serializableState: state, onSeria
         <div>
             <div>
                 <label>Attack</label>
-                <input type="range" value={state.attack} onChange={changeAttack} min={0} max={10_000} />
+                <input type="range" value={state.attack} onChange={changeAttack} min={0} max={1_000} />
             </div>
             <div>
                 <label>Delay</label>
-                <input type="range" value={state.delay} onChange={changeDelay} min={0} max={10_000} />
+                <input type="range" value={state.delay} onChange={changeDelay} min={0} max={1_000} />
             </div>
             <div>
                 <label>Sustain</label>
@@ -107,7 +107,7 @@ export function Envelope({ mutableState: ping, serializableState: state, onSeria
             </div>
             <div>
                 <label>Release</label>
-                <input type="range" value={state.release} onChange={changeRelease} min={0} max={10_000} />
+                <input type="range" value={state.release} onChange={changeRelease} min={0} max={1_000} />
             </div>
             <div>A: {state.attack}ms, R: {state.release}ms</div>
         </div>

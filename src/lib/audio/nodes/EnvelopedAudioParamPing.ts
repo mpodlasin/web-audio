@@ -26,6 +26,8 @@ export class EnvelopedAudioParamPing implements Ping {
 
     stop(time: number) {
         if (this.baseAudioParameter === undefined) return;
+        
+        this.baseAudioParameter.cancelAndHoldAtTime(time);
 
         this.baseAudioParameter.linearRampToValueAtTime(
             this.options.minValue,
