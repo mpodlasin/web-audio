@@ -1,274 +1,135 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { globalContext } from './GlobalContext';
 
-export type SerializedAudioCanvas = SerializedAudioGraph[];
+/* SERIALIZED */
 
-export interface SerializedAudioGraph {
-	id: string;
-}
-
-export interface AudioNodeWithInputs {
-	id: string;
-	type: string;
-	audioNode: AudioNode;
-	inputs: AudioNodeWithInputs[];
-	parameterInputs: {
-		[parameterName: string]: AudioNodeWithInputs[];
-	};
-}
-
-export interface AudioNodeDatabase {
-	[id: string]: AudioNode;
-}
-
-export interface AudioElements {
-	[id: string]: AudioElement;
-}
-
-export type AudioElement = SerializedOscillator | SerializedGain | SerializedDestination;
-
-export type AudioElementWithInputs = SerializedGain | SerializedDestination;
-
-export function isAudioElementWithInputs(
-	audioElement: AudioElement
-): audioElement is AudioElementWithInputs {
-	return audioElement.type === 'gain' || audioElement.type === 'destination';
-}
-
-export type SerializedAudioParam = number | { inputs: SerializedAudioGraph[] };
-
-export interface SerializedAudioNode<T extends string, P extends string> {
-	type: T;
-	parameters: {
-		[parameterName in P]: SerializedAudioParam;
-	};
-}
-
-export interface SerializedAudioNodeWithInputs<T extends string, P extends string>
-	extends SerializedAudioNode<T, P> {
-	inputs: SerializedAudioGraph[];
-}
-
-export type SerializedOscillator = SerializedAudioNode<'oscillator', 'frequency'> & {
-	oscillatorType: OscillatorType;
+export type SerializedAudioElements = {
+	[key: string]: SerializedAudioElement<string, string>;
 };
 
-export type SerializedGain = SerializedAudioNodeWithInputs<'gain', 'gain'>;
+export type SerializedAudioElementsWithIds = {
+	[key: string]: SerializedAudioElementWithId<string, string>;
+};
 
-export type SerializedDestination = SerializedAudioNodeWithInputs<'destination', never>;
+export type SerializedAudioElement<T extends string, P extends string> = {
+	type: T;
+	inputs?: string[];
+	parameters?: {
+		[key in P]: SerializedAudioParameter;
+	};
+};
+
+export type SerializedAudioElementWithId<
+	T extends string,
+	P extends string
+> = SerializedAudioElement<T, P> & {
+	id: string;
+};
+
+export type SerializedAudioParameter = number | string[]; /* value or ids of connected inputs */
+
+export type SerializedOscillatorNode = SerializedAudioElement<'oscillator', 'frequency' | 'detune'>;
+
+export type SerializedGainNode = SerializedAudioElement<'gain', 'gain'>;
+
+/* WEB AUDIO API */
+
+export type AudioNodeDatabase = {
+	[key: string]: AudioNode;
+};
+
+/* FUNCTIONS */
 
 export function createAudioCanvas(
-	serializedAudioCanvas: SerializedAudioCanvas,
-	audioElements: AudioElements,
+	audioElements: SerializedAudioElements,
 	audioNodeDatabase: AudioNodeDatabase
-): AudioNodeWithInputs[] {
-	return serializedAudioCanvas.map((serializedAudioGraph) =>
-		createAudioGraph(serializedAudioGraph, audioElements, audioNodeDatabase)
-	);
-}
+): void {
+	const audioElementsWithIds = addIdsToAudioElements(audioElements);
 
-function createParameterInputs<P extends string>(
-	audioNode: any,
-	audioElement: SerializedAudioNode<any, P>,
-	paramterName: P,
-	audioElements: AudioElements,
-	audioNodeDatabase: AudioNodeDatabase
-): AudioNodeWithInputs[] {
-	const parameter = audioElement.parameters[paramterName];
-
-	if (typeof parameter === 'number') {
-		return [];
-	}
-	const oscillatorNodeInputs = createAudioCanvas(
-		parameter.inputs,
-		audioElements,
-		audioNodeDatabase
-	);
-	oscillatorNodeInputs.forEach((input) => {
-		input.audioNode.connect(audioNode[paramterName]);
-	});
-	return oscillatorNodeInputs;
-}
-
-export function createAudioGraph(
-	serializedAudioGraph: SerializedAudioGraph,
-	audioElements: AudioElements,
-	audioNodeDatabase: AudioNodeDatabase
-): AudioNodeWithInputs {
-	const audioElement = audioElements[serializedAudioGraph.id];
-
-	if (!audioElement) {
-		throw new Error(`Audio element with id ${serializedAudioGraph.id} not found`);
+	for (const id in audioElementsWithIds) {
+		audioNodeDatabase[id] = createAudioNode(audioElements[id]);
 	}
 
-	let audioNode: AudioNode | undefined;
-	const parameterInputs: {
-		[parameterName: string]: AudioNodeWithInputs[];
-	} = {};
+	for (const id in audioElementsWithIds) {
+		const audioElementA = audioElementsWithIds[id];
 
-	if (audioNodeDatabase[serializedAudioGraph.id]) {
-		audioNode = audioNodeDatabase[serializedAudioGraph.id];
-	} else {
-		switch (audioElement.type) {
-			case 'oscillator':
-				audioNode = createOscillator(audioElement);
-				parameterInputs.frequency = createParameterInputs(
-					audioNode,
-					audioElement,
-					'frequency',
-					audioElements,
-					audioNodeDatabase
-				);
-				break;
-			case 'gain':
-				audioNode = createGain(audioElement);
-				parameterInputs.gain = createParameterInputs(
-					audioNode,
-					audioElement,
-					'gain',
-					audioElements,
-					audioNodeDatabase
-				);
-				break;
-			case 'destination':
-				audioNode = createDestination();
-				break;
+		if (audioElementA.inputs) {
+			for (const inputId of audioElementA.inputs) {
+				const audioElementB = audioElementsWithIds[inputId];
+
+				connectAudioElements(audioElementB, audioElementA, audioNodeDatabase);
+			}
 		}
-
-		audioNodeDatabase[serializedAudioGraph.id] = audioNode;
 	}
 
-	if (audioNode === undefined) {
-		throw new Error(`Audio node with id ${serializedAudioGraph.id} could not be created`);
+	for (const id in audioElementsWithIds) {
+		const audioElement = audioElementsWithIds[id];
+
+		if (audioElement.parameters) {
+			for (const parameterName in audioElement.parameters) {
+				const parameterValue = audioElement.parameters[parameterName];
+
+				if (Array.isArray(parameterValue)) {
+					for (const inputId of parameterValue) {
+						const audioElementB = audioElementsWithIds[inputId];
+
+						connectAudioElementToParameter(
+							audioElementB,
+							audioElement,
+							parameterName,
+							audioNodeDatabase
+						);
+					}
+				} else {
+					(audioNodeDatabase[id] as any)[parameterName].value = parameterValue;
+				}
+			}
+		}
 	}
-
-	const inputs = isAudioElementWithInputs(audioElement)
-		? createAudioCanvas(audioElement.inputs, audioElements, audioNodeDatabase)
-		: [];
-
-	for (const input of inputs) {
-		input.audioNode.connect(audioNode);
-	}
-
-	const audioNodeWithInputs: AudioNodeWithInputs = {
-		id: serializedAudioGraph.id,
-		type: audioElement.type,
-		audioNode,
-		inputs,
-		parameterInputs
-	};
-
-	return audioNodeWithInputs;
 }
 
-function createOscillator(serializedOscillator: SerializedOscillator): OscillatorNode {
-	const oscillatorNode = globalContext.createOscillator();
-	oscillatorNode.type = serializedOscillator.oscillatorType;
-	if (typeof serializedOscillator.parameters.frequency === 'number') {
-		oscillatorNode.frequency.value = serializedOscillator.parameters.frequency;
-	}
-	return oscillatorNode;
+function connectAudioElementToParameter(
+	audioElementA: SerializedAudioElementWithId<string, string>,
+	audioElementB: SerializedAudioElementWithId<string, string>,
+	parameterName: string,
+	audioNodeDatabase: AudioNodeDatabase
+): void {
+	const audioNodeA = audioNodeDatabase[audioElementA.id];
+	const audioNodeB = audioNodeDatabase[audioElementB.id];
+
+	audioNodeA.connect((audioNodeB as any)[parameterName]);
 }
 
-function createGain(serializedGain: SerializedGain): GainNode {
-	const gainNode = globalContext.createGain();
-	if (typeof serializedGain.parameters.gain === 'number') {
-		gainNode.gain.value = serializedGain.parameters.gain;
-	}
-	return gainNode;
+function connectAudioElements(
+	audioElementA: SerializedAudioElementWithId<string, string>,
+	audioElementB: SerializedAudioElementWithId<string, string>,
+	audioNodeDatabase: AudioNodeDatabase
+): void {
+	const audioNodeA = audioNodeDatabase[audioElementA.id];
+	const audioNodeB = audioNodeDatabase[audioElementB.id];
+
+	audioNodeA.connect(audioNodeB);
 }
 
-function createDestination(): AudioDestinationNode {
-	return globalContext.destination;
-}
-
-export function updateAudioCanvas(
-	updatedSerializedAudioCanvas: SerializedAudioCanvas,
-	updatedAudioElements: AudioElements,
-	audioNodeDatabase: AudioNodeDatabase,
-	audioNodesWithInputs: AudioNodeWithInputs[]
-): AudioNodeWithInputs[] {
-	return updatedSerializedAudioCanvas.map((updatedSerializedAudioGraph, index) =>
-		updateAudioGraph(
-			updatedSerializedAudioGraph,
-			updatedAudioElements,
-			audioNodeDatabase,
-			audioNodesWithInputs[index]
-		)
-	);
-}
-
-export function updateAudioGraph(
-	updatedSerializedAudioGraph: SerializedAudioGraph,
-	updatedAudioElements: AudioElements,
-	audioNodeDatabase: AudioNodeDatabase,
-	audioNodeWithInputs?: AudioNodeWithInputs
-): AudioNodeWithInputs {
-	const updatedAudioElement = updatedAudioElements[updatedSerializedAudioGraph.id];
-
-	if (!updatedAudioElement) {
-		throw new Error(`Audio element with id ${updatedSerializedAudioGraph.id} not found`);
-	}
-
-	if (!audioNodeWithInputs || updatedAudioElement.type !== audioNodeWithInputs.type) {
-		return createAudioGraph(updatedSerializedAudioGraph, updatedAudioElements, audioNodeDatabase);
-	}
-
-	switch (updatedAudioElement.type) {
+function createAudioNode(audioElement: SerializedAudioElement<string, string>): AudioNode {
+	switch (audioElement.type) {
 		case 'oscillator':
-			updateOscillator(updatedAudioElement, audioNodeWithInputs.audioNode as OscillatorNode);
-			break;
+			return globalContext.createOscillator();
 		case 'gain':
-			updateGain(updatedAudioElement, audioNodeWithInputs.audioNode as GainNode);
-			break;
-		case 'destination':
-			updateDestination();
-			break;
+			return globalContext.createGain();
+		default:
+			throw new Error(`Unknown audio element type: ${audioElement.type}`);
 	}
-
-	const updatedInputs = isAudioElementWithInputs(updatedAudioElement)
-		? updateAudioCanvas(
-				updatedAudioElement.inputs,
-				updatedAudioElements,
-				audioNodeDatabase,
-				audioNodeWithInputs.inputs
-		  )
-		: [];
-
-	for (const input of updatedInputs) {
-		input.audioNode.connect(audioNodeWithInputs.audioNode);
-	}
-
-	for (const input of audioNodeWithInputs.inputs) {
-		if (!updatedInputs.includes(input)) {
-			input.audioNode.disconnect(audioNodeWithInputs.audioNode);
-		}
-	}
-
-	return {
-		...audioNodeWithInputs,
-		inputs: updatedInputs
-	};
 }
 
-function updateOscillator(
-	serializedOscillator: SerializedOscillator,
-	oscillatorNode: OscillatorNode
-): OscillatorNode {
-	oscillatorNode.type = serializedOscillator.oscillatorType;
-	if (typeof serializedOscillator.parameters.frequency === 'number') {
-		oscillatorNode.frequency.value = serializedOscillator.parameters.frequency;
-	}
-	return oscillatorNode;
-}
+function addIdsToAudioElements(
+	audioElements: SerializedAudioElements
+): SerializedAudioElementsWithIds {
+	const audioElementsWithIds: SerializedAudioElementsWithIds = {};
 
-function updateGain(serializedGain: SerializedGain, gainNode: GainNode): GainNode {
-	if (typeof serializedGain.parameters.gain === 'number') {
-		gainNode.gain.value = serializedGain.parameters.gain;
+	for (const id in audioElements) {
+		audioElementsWithIds[id] = { ...audioElements[id], id };
 	}
-	return gainNode;
-}
 
-function updateDestination(): AudioDestinationNode {
-	return globalContext.destination;
+	return audioElementsWithIds;
 }
