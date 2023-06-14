@@ -67,37 +67,36 @@ export function createAudioCanvas(
 
 		if (audioElement.parameters) {
 			for (const parameterName in audioElement.parameters) {
-				const parameterValue = audioElement.parameters[parameterName];
-
-				if (Array.isArray(parameterValue)) {
-					for (const inputId of parameterValue) {
-						const audioElementB = audioElementsWithIds[inputId];
-
-						connectAudioElementToParameter(
-							audioElementB,
-							audioElement,
-							parameterName,
-							audioNodeDatabase
-						);
-					}
-				} else {
-					(audioNodeDatabase[id] as any)[parameterName].value = parameterValue;
-				}
+				connectAudioElementsToParameter(
+					audioElement,
+					audioElementsWithIds,
+					parameterName,
+					audioNodeDatabase
+				);
 			}
 		}
 	}
 }
 
-function connectAudioElementToParameter(
+function connectAudioElementsToParameter(
 	audioElementA: SerializedAudioElementWithId<string, string>,
-	audioElementB: SerializedAudioElementWithId<string, string>,
+	audioElementsWithIds: SerializedAudioElementsWithIds,
 	parameterName: string,
 	audioNodeDatabase: AudioNodeDatabase
 ): void {
 	const audioNodeA = audioNodeDatabase[audioElementA.id];
-	const audioNodeB = audioNodeDatabase[audioElementB.id];
+	const parameterValue = audioElementA.parameters?.[parameterName];
 
-	audioNodeA.connect((audioNodeB as any)[parameterName]);
+	if (Array.isArray(parameterValue)) {
+		for (const inputId of parameterValue) {
+			const audioElementB = audioElementsWithIds[inputId];
+			const audioNodeB = audioNodeDatabase[audioElementB.id];
+
+			audioNodeB.connect((audioNodeA as any)[parameterName]);
+		}
+	} else if (typeof parameterValue === 'number') {
+		(audioNodeA as any)[parameterName].value = parameterValue;
+	}
 }
 
 function connectAudioElements(
