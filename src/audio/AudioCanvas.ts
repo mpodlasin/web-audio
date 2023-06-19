@@ -99,6 +99,16 @@ function connectAudioElementsToParameter(
 	}
 }
 
+export function playAudioCanvas(audioNodeDatabase: AudioNodeDatabase): void {
+	for (const id in audioNodeDatabase) {
+		const audioNode = audioNodeDatabase[id];
+
+		if (audioNode instanceof AudioScheduledSourceNode) {
+			audioNode.start();
+		}
+	}
+}
+
 function connectAudioElements(
 	audioElementA: SerializedAudioElementWithId<string, string>,
 	audioElementB: SerializedAudioElementWithId<string, string>,
@@ -116,6 +126,8 @@ function createAudioNode(audioElement: SerializedAudioElement<string, string>): 
 			return globalContext.createOscillator();
 		case 'gain':
 			return globalContext.createGain();
+		case 'destination':
+			return globalContext.destination;
 		default:
 			throw new Error(`Unknown audio element type: ${audioElement.type}`);
 	}
