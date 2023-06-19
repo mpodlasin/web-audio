@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { globalContext } from './GlobalContext';
 
 /* SERIALIZED */
@@ -28,11 +27,11 @@ export type SerializedAudioElementWithId<
 
 export type SerializedAudioParameter = number | string[]; /* value or ids of connected inputs */
 
-export type SerializedOscillatorNode = SerializedAudioElement<'oscillator', 'frequency' | 'detune'>;
+export type SerializedOscillatorNode = SerializedAudioElement<'oscillator', 'frequency' | 'detune'> & {
+	oscillatorType: OscillatorType;
+}
 
 export type SerializedGainNode = SerializedAudioElement<'gain', 'gain'>;
-
-/* WEB AUDIO API */
 
 export type AudioNodeDatabase = {
 	[key: string]: AudioNode;
@@ -46,25 +45,30 @@ export function createAudioCanvas(
 ): void {
 	const audioElementsWithIds = addIdsToAudioElements(audioElements);
 
-	for (const id in audioElementsWithIds) {
-		audioNodeDatabase[id] = createAudioNode(audioElements[id]);
-	}
+	Object.entries(audioElementsWithIds).forEach(([id, audioElement]) => {
+		const createdAudioNode = createAudioNode(audioElement);
 
-	for (const id in audioElementsWithIds) {
-		const audioElementA = audioElementsWithIds[id];
+		if (createdAudioNode !== null) {
+			audioNodeDatabase[id] = createdAudioNode;
+		}
+	});
+
+	Object.values(audioElementsWithIds).forEach((audioElementA) => {
 
 		if (audioElementA.inputs) {
 			for (const inputId of audioElementA.inputs) {
 				const audioElementB = audioElementsWithIds[inputId];
 
+				if (audioElementB === undefined) {
+					throw new Error(`Audio element with id ${inputId} not found`);
+				}
+
 				connectAudioElements(audioElementB, audioElementA, audioNodeDatabase);
 			}
 		}
-	}
+	});
 
-	for (const id in audioElementsWithIds) {
-		const audioElement = audioElementsWithIds[id];
-
+	Object.values(audioElementsWithIds).forEach((audioElement) => {
 		if (audioElement.parameters) {
 			for (const parameterName in audioElement.parameters) {
 				connectAudioElementsToParameter(
@@ -75,7 +79,17 @@ export function createAudioCanvas(
 				);
 			}
 		}
-	}
+	})
+
+	Object.entries(audioElementsWithIds).forEach(([id, audioElement]) => {
+		if (isSerializedOscillatorNode(audioElement)) {
+			const audioNode = audioNodeDatabase[id] as OscillatorNode;
+
+			if (audioNode !== undefined) {
+				audioNode.type = audioElement.oscillatorType;
+			}
+		}
+	});
 }
 
 function connectAudioElementsToParameter(
@@ -90,12 +104,19 @@ function connectAudioElementsToParameter(
 	if (Array.isArray(parameterValue)) {
 		for (const inputId of parameterValue) {
 			const audioElementB = audioElementsWithIds[inputId];
+
+			if (audioElementB === undefined) {
+				throw new Error(`Audio element with id ${inputId} not found`);
+			}
+
 			const audioNodeB = audioNodeDatabase[audioElementB.id];
 
-			audioNodeB.connect((audioNodeA as any)[parameterName]);
+			if (audioNodeA !== undefined && audioNodeB !== undefined) {
+				audioNodeB.connect(accessParameter(audioNodeA, parameterName));
+			}
 		}
-	} else if (typeof parameterValue === 'number') {
-		(audioNodeA as any)[parameterName].value = parameterValue;
+	} else if (typeof parameterValue === 'number' && audioNodeA !== undefined) {
+		accessParameter(audioNodeA, parameterName).value = parameterValue;
 	}
 }
 
@@ -117,10 +138,12 @@ function connectAudioElements(
 	const audioNodeA = audioNodeDatabase[audioElementA.id];
 	const audioNodeB = audioNodeDatabase[audioElementB.id];
 
-	audioNodeA.connect(audioNodeB);
+	if (audioNodeA !== undefined && audioNodeB !== undefined) {
+		audioNodeA.connect(audioNodeB);
+	}
 }
 
-function createAudioNode(audioElement: SerializedAudioElement<string, string>): AudioNode {
+function createAudioNode(audioElement: SerializedAudioElement<string, string>): AudioNode | null {
 	switch (audioElement.type) {
 		case 'oscillator':
 			return globalContext.createOscillator();
@@ -129,7 +152,7 @@ function createAudioNode(audioElement: SerializedAudioElement<string, string>): 
 		case 'destination':
 			return globalContext.destination;
 		default:
-			throw new Error(`Unknown audio element type: ${audioElement.type}`);
+			return null;
 	}
 }
 
@@ -138,9 +161,42 @@ function addIdsToAudioElements(
 ): SerializedAudioElementsWithIds {
 	const audioElementsWithIds: SerializedAudioElementsWithIds = {};
 
-	for (const id in audioElements) {
-		audioElementsWithIds[id] = { ...audioElements[id], id };
-	}
+	Object.entries(audioElements).forEach(([id, audioElement]) => {
+		audioElementsWithIds[id] = { ...audioElement, id };
+	});
 
 	return audioElementsWithIds;
+}
+
+function accessParameter(
+	audioNode: AudioNode,
+	parameterName: string
+): AudioParam {
+	if (audioNode instanceof OscillatorNode) {
+		if (parameterName === 'frequency') {
+			return audioNode.frequency;
+		}
+
+		if (parameterName === 'detune') {
+			return audioNode.detune;
+		}
+
+		throw new Error(`Parameter ${parameterName} not found on OscillatorNode`);
+	}
+
+	if (audioNode instanceof GainNode) {
+		if (parameterName === 'gain') {
+			return audioNode.gain;
+		}
+
+		throw new Error(`Parameter ${parameterName} not found on GainNode`);
+	}
+
+	throw new Error(`Parameter ${parameterName} not found on AudioNode`);
+}
+
+function isSerializedOscillatorNode(
+	serializedAudioElement: SerializedAudioElement<string, string>
+): serializedAudioElement is SerializedOscillatorNode {
+	return serializedAudioElement.type === 'oscillator';
 }

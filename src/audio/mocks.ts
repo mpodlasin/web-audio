@@ -50,3 +50,13 @@ Object.defineProperty(window, 'AudioContext', {
 	writable: true,
 	value: jest.fn(() => audioContextMock)
 });
+
+Object.defineProperty(window, 'OscillatorNode', {
+	writable: true,
+	value: OscillatorNodeMock
+});
+
+Object.defineProperty(window, 'GainNode', {
+	writable: true,
+	value: GainNodeMock
+});
