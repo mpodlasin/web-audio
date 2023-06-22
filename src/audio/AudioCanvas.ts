@@ -33,8 +33,93 @@ export type SerializedOscillatorNode = SerializedAudioElement<'oscillator', 'fre
 
 export type SerializedGainNode = SerializedAudioElement<'gain', 'gain'>;
 
+/* Initialized */
+
+export interface CustomAudioNode {
+	connect(destination: CustomAudioNode | AudioParam): void;
+	disconnect(desination: CustomAudioNode | AudioParam): void;
+}
+
+export interface CustomAudioScheduledSourceNode extends CustomAudioNode {
+	start(): void;
+	stop(): void;
+}
+
+export interface CustomAudioNodeWithWebApiNode<T extends AudioNode = AudioNode> extends CustomAudioNode {
+	readonly webApiNode: T;
+}
+
+export function isCustomAudioNodeWithWebApiNode(
+	customAudioNode: CustomAudioNode
+): customAudioNode is CustomAudioNodeWithWebApiNode {
+	return 'webApiNode' in customAudioNode;
+}
+
+export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode> implements CustomAudioNodeWithWebApiNode<T> {
+	readonly webApiNode: T;
+	private desinations: CustomAudioNode[] = [];
+
+	constructor(webApiNode: T) {
+		this.webApiNode = webApiNode;
+	}
+
+	connect(destination: CustomAudioNode | AudioParam): void {
+		if (destination instanceof AudioParam) {
+			this.webApiNode.connect(destination);
+			return;
+		}
+
+		if (isCustomAudioNodeWithWebApiNode(destination)) {
+			this.webApiNode.connect(destination.webApiNode);
+		}
+
+		this.desinations.push(destination);
+	}
+
+	disconnect(destination: CustomAudioNode | AudioParam): void {
+		if (destination instanceof AudioParam) {
+			this.webApiNode.disconnect(destination);
+			return;
+		}
+
+		if (isCustomAudioNodeWithWebApiNode(destination)) {
+			this.webApiNode.disconnect(destination.webApiNode);
+		}
+
+		this.desinations = this.desinations.filter((d) => d !== destination);
+	}
+}
+
+export class CustomAudioNodeWithWebApiAudioScheduledSourceNode<T extends AudioScheduledSourceNode> extends GenericCustomAudioNodeWithWebApiNode<T> implements CustomAudioScheduledSourceNode {
+	start(): void {
+		this.webApiNode.start();
+	}
+
+	stop(): void {
+		this.webApiNode.stop();
+	}
+}
+
+export class CustomOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
+	constructor() {
+		super(globalContext.createOscillator());
+	}
+}
+
+export class CustomGainNode extends GenericCustomAudioNodeWithWebApiNode<GainNode> {
+	constructor() {
+		super(globalContext.createGain());
+	}
+}
+
+export class DestinationNode extends GenericCustomAudioNodeWithWebApiNode<AudioDestinationNode> {
+	constructor() {
+		super(globalContext.destination);
+	}
+}
+
 export type AudioNodeDatabase = {
-	[key: string]: AudioNode;
+	[key: string]: CustomAudioNode;
 };
 
 /* FUNCTIONS */
@@ -46,7 +131,7 @@ export function createAudioCanvas(
 	const audioElementsWithIds = addIdsToAudioElements(audioElements);
 
 	Object.entries(audioElementsWithIds).forEach(([id, audioElement]) => {
-		const createdAudioNode = createAudioNode(audioElement);
+		const createdAudioNode = createCustomAudioNode(audioElement);
 
 		if (createdAudioNode !== null) {
 			audioNodeDatabase[id] = createdAudioNode;
@@ -83,10 +168,10 @@ export function createAudioCanvas(
 
 	Object.entries(audioElementsWithIds).forEach(([id, audioElement]) => {
 		if (isSerializedOscillatorNode(audioElement)) {
-			const audioNode = audioNodeDatabase[id] as OscillatorNode;
+			const audioNode = audioNodeDatabase[id] as CustomOscillatorNode;
 
 			if (audioNode !== undefined) {
-				audioNode.type = audioElement.oscillatorType;
+				audioNode.webApiNode.type = audioElement.oscillatorType;
 			}
 		}
 	});
@@ -143,14 +228,16 @@ function connectAudioElements(
 	}
 }
 
-function createAudioNode(audioElement: SerializedAudioElement<string, string>): AudioNode | null {
+function createCustomAudioNode(
+	audioElement: SerializedAudioElement<string, string>
+): CustomAudioNode | null {
 	switch (audioElement.type) {
 		case 'oscillator':
-			return globalContext.createOscillator();
+			return new CustomOscillatorNode();
 		case 'gain':
-			return globalContext.createGain();
+			return new CustomGainNode();
 		case 'destination':
-			return globalContext.destination;
+			return new DestinationNode();
 		default:
 			return null;
 	}
@@ -169,30 +256,26 @@ function addIdsToAudioElements(
 }
 
 function accessParameter(
-	audioNode: AudioNode,
+	audioNode: CustomAudioNode,
 	parameterName: string
 ): AudioParam {
-	if (audioNode instanceof OscillatorNode) {
-		if (parameterName === 'frequency') {
-			return audioNode.frequency;
+	if (audioNode instanceof CustomOscillatorNode) {
+		switch (parameterName) {
+			case 'frequency':
+				return audioNode.webApiNode.frequency;
+			case 'detune':
+				return audioNode.webApiNode.detune;
 		}
-
-		if (parameterName === 'detune') {
-			return audioNode.detune;
-		}
-
-		throw new Error(`Parameter ${parameterName} not found on OscillatorNode`);
 	}
 
-	if (audioNode instanceof GainNode) {
-		if (parameterName === 'gain') {
-			return audioNode.gain;
+	if (audioNode instanceof CustomGainNode) {
+		switch (parameterName) {
+			case 'gain':
+				return audioNode.webApiNode.gain;
 		}
-
-		throw new Error(`Parameter ${parameterName} not found on GainNode`);
 	}
 
-	throw new Error(`Parameter ${parameterName} not found on AudioNode`);
+	throw new Error(`Parameter ${parameterName} not found`);
 }
 
 function isSerializedOscillatorNode(

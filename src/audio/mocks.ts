@@ -1,11 +1,17 @@
 /* mocks for web audio api */
 
+export class AudioParamMock {
+	public value: number;
+
+	constructor() {
+		this.value = 0;
+	}
+}
+
 export class OscillatorNodeMock {
 	public connect: jest.Mock;
 	public disconnect: jest.Mock;
-	public frequency: {
-		value: number;
-	};
+	public frequency: AudioParamMock;
 	public type: OscillatorType;
 	public start: jest.Mock;
 	public stop: jest.Mock;
@@ -13,9 +19,7 @@ export class OscillatorNodeMock {
 	constructor() {
 		this.connect = jest.fn();
 		this.disconnect = jest.fn();
-		this.frequency = {
-			value: 0
-		};
+		this.frequency = new AudioParamMock();
 		this.type = 'sine';
 		this.start = jest.fn();
 		this.stop = jest.fn();
@@ -24,15 +28,11 @@ export class OscillatorNodeMock {
 
 export class GainNodeMock {
 	public connect: jest.Mock;
-	public gain: {
-		value: number;
-	};
+	public gain: AudioParamMock;
 
 	constructor() {
 		this.connect = jest.fn();
-		this.gain = {
-			value: 0
-		};
+		this.gain = new AudioParamMock();
 	}
 }
 
@@ -60,3 +60,10 @@ Object.defineProperty(window, 'GainNode', {
 	writable: true,
 	value: GainNodeMock
 });
+
+Object.defineProperty(window, 'AudioParam', {
+	writable: true,
+	value: AudioParamMock
+});
+
+
