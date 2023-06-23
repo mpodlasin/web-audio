@@ -12,7 +12,8 @@ describe('AudioCanvas', () => {
 				'1': {
 					type: 'oscillator' as const,
 					parameters: {
-						frequency: 333
+						frequency: 333,
+						detune: 0,
 					},
 					oscillatorType: 'square' as const
 				}
@@ -33,6 +34,7 @@ describe('AudioCanvas', () => {
 					type: 'oscillator' as const,
 					parameters: {
 						frequency: 333,
+						detune: 0,
 					},
 					oscillatorType: 'square' as const
 				},
@@ -61,14 +63,16 @@ describe('AudioCanvas', () => {
 				'1': {
 					type: 'oscillator' as const,
 					parameters: {
-						frequency: ['2']
+						frequency: ['2'],
+						detune: 0,
 					},
 					oscillatorType: 'square' as const
 				},
 				'2': {
 					type: 'oscillator' as const,
 					parameters: {
-						frequency: 30
+						frequency: 30,
+						detune: 0,
 					},
 					oscillatorType: 'sine' as const
 				}
@@ -93,25 +97,23 @@ describe('AudioCanvas', () => {
 		const audioElements = {
 			'1': {
 				type: 'trigger' as const,
-				parameters: {
-					tempoInBpm: 120,
-				},
+				parameters: {},
+				tempoInBpm: 120,
 			},
 			'2': {
 				type: 'envelope' as const,
 				inputs: ['1'],
-				parameters: {
-					attack: 0.1,
-					decay: 0.1,
-					sustain: 0.5,
-					release: 0.1,
-				},
+				parameters: {},
+				attack: 0.1,
+				decay: 0.1,
+				sustain: 0.5,
+				release: 0.1,
 			},
 			'3': {
 				type: 'oscillator' as const,
-				inputs: ['2'],
 				parameters: {
 					frequency: 440,
+					detune: 0,
 				},
 				oscillatorType: 'sine' as const
 			},	

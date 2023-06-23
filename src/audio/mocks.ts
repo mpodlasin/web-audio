@@ -12,6 +12,7 @@ export class OscillatorNodeMock {
 	public connect: jest.Mock;
 	public disconnect: jest.Mock;
 	public frequency: AudioParamMock;
+	public detune: AudioParamMock;
 	public type: OscillatorType;
 	public start: jest.Mock;
 	public stop: jest.Mock;
@@ -20,6 +21,7 @@ export class OscillatorNodeMock {
 		this.connect = jest.fn();
 		this.disconnect = jest.fn();
 		this.frequency = new AudioParamMock();
+		this.detune = new AudioParamMock();
 		this.type = 'sine';
 		this.start = jest.fn();
 		this.stop = jest.fn();

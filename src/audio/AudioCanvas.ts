@@ -3,7 +3,7 @@ import { globalContext } from './GlobalContext';
 /* SERIALIZED */
 
 export type SerializedAudioElements = {
-	[key: string]: SerializedAudioElement<string, string>;
+	[key: string]: AllowedSerializedAudioElements;
 };
 
 export type SerializedAudioElementsWithIds = {
@@ -33,6 +33,27 @@ export type SerializedOscillatorNode = SerializedAudioElement<'oscillator', 'fre
 
 export type SerializedGainNode = SerializedAudioElement<'gain', 'gain'>;
 
+export type SerializedDestinationNode = SerializedAudioElement<'destination', never>;
+
+export type SerializedTriggerNode = SerializedAudioElement<'trigger', never> & {
+	tempoInBpm: number;
+}
+
+export type SerializedEnvelopeNode = SerializedAudioElement<'envelope', never> & {
+	attack: number;
+	decay: number;
+	sustain: number;
+	release: number;
+}
+
+export type AllowedSerializedAudioElements =
+	| SerializedOscillatorNode	
+	| SerializedGainNode
+	| SerializedDestinationNode
+	| SerializedTriggerNode
+	| SerializedEnvelopeNode;
+
+
 /* Initialized */
 
 export interface CustomAudioNode {
@@ -43,6 +64,12 @@ export interface CustomAudioNode {
 export interface CustomAudioScheduledSourceNode extends CustomAudioNode {
 	start(): void;
 	stop(): void;
+}
+
+export function isCustomAudioScheduledSourceNode(
+	customAudioNode: CustomAudioNode
+): customAudioNode is CustomAudioScheduledSourceNode {
+	return 'start' in customAudioNode && 'stop' in customAudioNode;
 }
 
 export interface CustomAudioNodeWithWebApiNode<T extends AudioNode = AudioNode> extends CustomAudioNode {
@@ -117,6 +144,95 @@ export class DestinationNode extends GenericCustomAudioNodeWithWebApiNode<AudioD
 		super(globalContext.destination);
 	}
 }
+
+export type Destination = CustomAudioNode | AudioParam;
+
+export class EnvelopeNode implements CustomAudioNode, CustomAudioScheduledSourceNode {
+	private destinations: Destination[] = [];
+
+	constructor(
+		private readonly attack: number,
+		private readonly decay: number,
+		private readonly sustain: number,
+		private readonly release: number
+	) {}
+
+	connect(destination: CustomAudioNode | AudioParam): void {
+		if (!(destination instanceof AudioParam)) {
+			throw new Error('EnvelopeNode can only connect to AudioParams');
+		}
+		
+		this.destinations.push(destination);
+	}
+
+	disconnect(destination: CustomAudioNode | AudioParam): void {
+		this.destinations = this.destinations.filter((d) => d !== destination);
+	}
+
+	start(): void {
+		const now = globalContext.currentTime;
+
+		this.destinations.forEach((destination) => {
+			if (destination instanceof AudioParam) {
+				destination.cancelScheduledValues(now);
+				destination.setValueAtTime(0, now);
+				destination.linearRampToValueAtTime(1, now + this.attack);
+				destination.linearRampToValueAtTime(this.sustain, now + this.attack + this.decay);
+			}
+		});
+	}
+
+	stop(): void {
+		const now = globalContext.currentTime;
+
+		this.destinations.forEach((destination) => {
+			if (destination instanceof AudioParam) {
+				destination.cancelScheduledValues(now);
+				destination.linearRampToValueAtTime(0, now + this.release);
+			}
+		});
+	}
+}
+
+export class TriggerNode implements CustomAudioNode, CustomAudioScheduledSourceNode {
+	private destinations: Destination[] = [];
+	private setIntervalId: number | null = null;
+
+	constructor(
+		private tempoInBPM: number,
+	) {}
+
+	connect(destination: CustomAudioNode | AudioParam): void {
+		this.destinations.push(destination);
+	}
+
+	disconnect(destination: CustomAudioNode | AudioParam): void {
+		this.destinations = this.destinations.filter((d) => d !== destination);
+	}
+
+	start(): void {
+		this.setIntervalId = window.setInterval(() => {
+			this.destinations.forEach((destination) => {
+				if (destination instanceof AudioParam) {
+					return 
+				}
+
+				if (isCustomAudioScheduledSourceNode(destination)) {
+					destination.start();
+					destination.stop();
+				}
+			});
+		}, 60 / this.tempoInBPM * 1000);
+	}
+
+	stop(): void {
+		if (this.setIntervalId !== null) {
+			window.clearInterval(this.setIntervalId);
+			this.setIntervalId = null;
+		}
+	}
+}	
+
 
 export type AudioNodeDatabase = {
 	[key: string]: CustomAudioNode;
@@ -238,6 +354,10 @@ function createCustomAudioNode(
 			return new CustomGainNode();
 		case 'destination':
 			return new DestinationNode();
+		case 'trigger':
+			return new TriggerNode(0);
+		case 'envelope':
+			return new EnvelopeNode(0, 0, 0, 0);
 		default:
 			return null;
 	}

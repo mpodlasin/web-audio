@@ -3,8 +3,10 @@ import type { SerializedAudioElements } from "../audio/AudioCanvas";
 export const oscillatorGainDestination: SerializedAudioElements = {
     '1': {
         type: 'oscillator',
+        oscillatorType: 'sine',
         parameters: {
-            frequency: 440
+            frequency: 440,
+            detune: 0,
         },
     },
     '2': {
