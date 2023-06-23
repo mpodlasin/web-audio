@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import './mocks';
-import { createAudioCanvas, type AudioNodeDatabase, CustomOscillatorNode, CustomGainNode } from './AudioCanvas';
+import { createAudioCanvas, type AudioNodeDatabase, CustomOscillatorNode, CustomGainNode, DestinationNode } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
 describe('AudioCanvas', () => {
@@ -91,6 +91,42 @@ describe('AudioCanvas', () => {
 			expect((audioNodeDatabase['2'] as CustomOscillatorNode).webApiNode.frequency.value).toBe(30);
 			expect((audioNodeDatabase['2'] as CustomOscillatorNode).webApiNode.type).toBe('sine');
 		});
+	});
+
+	it('returns oscillator connected to gain connected to destination', () => {
+		const audioElements = {
+			'1': {
+				type: 'oscillator' as const,
+				parameters: {
+					frequency: 333,
+					detune: 0,
+				},
+				oscillatorType: 'square' as const
+			},
+			'2': {
+				type: 'gain' as const,
+				inputs: ['1'],
+				parameters: {
+					gain: 0.5
+				}
+			},
+			'3': {
+				type: 'destination' as const,
+				inputs: ['2'],
+			}
+		};
+		const audioNodeDatabase: AudioNodeDatabase = {};
+
+		createAudioCanvas(audioElements, audioNodeDatabase);
+
+		expect(audioNodeDatabase['1']).toBeDefined();
+		expect(audioNodeDatabase['2']).toBeDefined();
+		expect(audioNodeDatabase['3']).toBeDefined();
+		expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.connect).toHaveBeenCalledWith((audioNodeDatabase['2'] as CustomGainNode).webApiNode);
+		expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.connect).toHaveBeenCalledWith((audioNodeDatabase['3'] as DestinationNode).webApiNode);
+		expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
+		expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.type).toBe('square');
+		expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.frequency.value).toBe(333);
 	});
 
 	it('returns 120bpm trigger connected to envelope connected to oscillator', () => {
