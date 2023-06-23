@@ -325,7 +325,11 @@ export function playAudioCanvas(audioNodeDatabase: AudioNodeDatabase): void {
 	for (const id in audioNodeDatabase) {
 		const audioNode = audioNodeDatabase[id];
 
-		if (audioNode instanceof AudioScheduledSourceNode) {
+		if (audioNode === undefined) {
+			throw new Error(`Audio node with id ${id} not found`);
+		}
+
+		if (isCustomAudioScheduledSourceNode(audioNode)) {
 			audioNode.start();
 		}
 	}
