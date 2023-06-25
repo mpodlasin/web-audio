@@ -171,11 +171,8 @@ export class EnvelopeNode implements CustomAudioNode, CustomAudioScheduledSource
 	}
 
 	start(when: number = globalContext.currentTime): void {
-
-		console.log('envelope start')
 		this.destinations.forEach((destination) => {
 			if (destination instanceof AudioParam) {
-				console.log(destination)
 				destination.cancelScheduledValues(when);
 				destination.setValueAtTime(0, when);
 				destination.linearRampToValueAtTime(1, when + this.attack);
@@ -185,7 +182,6 @@ export class EnvelopeNode implements CustomAudioNode, CustomAudioScheduledSource
 	}
 
 	stop(when: number = globalContext.currentTime): void {
-		console.log('envelope stop')
 		this.destinations.forEach((destination) => {
 			if (destination instanceof AudioParam) {
 				destination.cancelScheduledValues(when);
@@ -227,7 +223,6 @@ export class TriggerNode implements CustomAudioNode, CustomAudioScheduledSourceN
 
 				if (isCustomAudioScheduledSourceNode(destination)) {	
 					while (this.playedTime < globalContext.currentTime + lookAheadInSeconds) {
-						console.log(this.tempoInBPM)
 						destination.start(this.playedTime);
 						destination.stop(this.playedTime + sampleLengthInSeconds);
 						this.playedTime += tempoInSeconds;
