@@ -1,4 +1,5 @@
 import { globalContext } from './GlobalContext';
+import { settings } from './settings';
 
 /* SERIALIZED */
 
@@ -62,8 +63,8 @@ export interface CustomAudioNode {
 }
 
 export interface CustomAudioScheduledSourceNode extends CustomAudioNode {
-	start(): void;
-	stop(): void;
+	start(when?: number): void;
+	stop(when?: number): void;
 }
 
 export function isCustomAudioScheduledSourceNode(
@@ -118,12 +119,12 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode> implement
 }
 
 export class CustomAudioNodeWithWebApiAudioScheduledSourceNode<T extends AudioScheduledSourceNode> extends GenericCustomAudioNodeWithWebApiNode<T> implements CustomAudioScheduledSourceNode {
-	start(): void {
-		this.webApiNode.start();
+	start(when?: number): void {
+		this.webApiNode.start(when);
 	}
 
-	stop(): void {
-		this.webApiNode.stop();
+	stop(when?: number): void {
+		this.webApiNode.stop(when);
 	}
 }
 
@@ -169,26 +170,26 @@ export class EnvelopeNode implements CustomAudioNode, CustomAudioScheduledSource
 		this.destinations = this.destinations.filter((d) => d !== destination);
 	}
 
-	start(): void {
-		const now = globalContext.currentTime;
+	start(when: number = globalContext.currentTime): void {
 
+		console.log('envelope start')
 		this.destinations.forEach((destination) => {
 			if (destination instanceof AudioParam) {
-				destination.cancelScheduledValues(now);
-				destination.setValueAtTime(0, now);
-				destination.linearRampToValueAtTime(1, now + this.attack);
-				destination.linearRampToValueAtTime(this.sustain, now + this.attack + this.decay);
+				console.log(destination)
+				destination.cancelScheduledValues(when);
+				destination.setValueAtTime(0, when);
+				destination.linearRampToValueAtTime(1, when + this.attack);
+				destination.linearRampToValueAtTime(this.sustain, when + this.attack + this.decay);
 			}
 		});
 	}
 
-	stop(): void {
-		const now = globalContext.currentTime;
-
+	stop(when: number = globalContext.currentTime): void {
+		console.log('envelope stop')
 		this.destinations.forEach((destination) => {
 			if (destination instanceof AudioParam) {
-				destination.cancelScheduledValues(now);
-				destination.linearRampToValueAtTime(0, now + this.release);
+				destination.cancelScheduledValues(when);
+				destination.linearRampToValueAtTime(0, when + this.release);
 			}
 		});
 	}
@@ -197,6 +198,7 @@ export class EnvelopeNode implements CustomAudioNode, CustomAudioScheduledSource
 export class TriggerNode implements CustomAudioNode, CustomAudioScheduledSourceNode {
 	private destinations: Destination[] = [];
 	private setIntervalId: number | null = null;
+	private playedTime = 0;
 
 	constructor(
 		private tempoInBPM: number,
@@ -210,22 +212,32 @@ export class TriggerNode implements CustomAudioNode, CustomAudioScheduledSourceN
 		this.destinations = this.destinations.filter((d) => d !== destination);
 	}
 
-	start(): void {
+	start(when: number = globalContext.currentTime): void {
+		this.playedTime = when;
+		const tempoInSeconds = 60 / this.tempoInBPM;
+		const lookAheadInSeconds = settings.lookAheadInSeconds;
+		const sampling = settings.sampling;
+		const sampleLengthInSeconds = 1 / sampling;
+
 		this.setIntervalId = window.setInterval(() => {
 			this.destinations.forEach((destination) => {
 				if (destination instanceof AudioParam) {
 					return 
 				}
 
-				if (isCustomAudioScheduledSourceNode(destination)) {
-					destination.start();
-					destination.stop();
+				if (isCustomAudioScheduledSourceNode(destination)) {	
+					while (this.playedTime < globalContext.currentTime + lookAheadInSeconds) {
+						console.log(this.tempoInBPM)
+						destination.start(this.playedTime);
+						destination.stop(this.playedTime + sampleLengthInSeconds);
+						this.playedTime += tempoInSeconds;
+					}
 				}
 			});
-		}, 60 / this.tempoInBPM * 1000);
+		}, settings.updateIntervalInMiliseconds);
 	}
 
-	stop(): void {
+	stop(when: number = globalContext.currentTime): void {
 		if (this.setIntervalId !== null) {
 			window.clearInterval(this.setIntervalId);
 			this.setIntervalId = null;
@@ -359,9 +371,11 @@ function createCustomAudioNode(
 		case 'destination':
 			return new DestinationNode();
 		case 'trigger':
-			return new TriggerNode(0);
-		case 'envelope':
-			return new EnvelopeNode(0, 0, 0, 0);
+			return new TriggerNode((audioElement as SerializedTriggerNode).tempoInBpm);
+		case 'envelope': {
+			const envelopeNode = audioElement as SerializedEnvelopeNode;
+			return new EnvelopeNode(envelopeNode.attack, envelopeNode.decay, envelopeNode.sustain, envelopeNode.release);
+		}
 		default:
 			return null;
 	}

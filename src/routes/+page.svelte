@@ -3,7 +3,7 @@
 	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination'
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
 
-	let chosenExample = 'oscillator-gain-destination'
+	let chosenExample = 'trigger-envelope-oscillator-gain-destination'
 
 	let text: string;
 	$: if (chosenExample === 'oscillator-gain-destination') {
