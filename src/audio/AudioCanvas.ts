@@ -13,7 +13,7 @@ export type SerializedAudioElementsWithIds = {
 
 export type SerializedAudioElement<T extends string, P extends string> = {
 	type: T;
-	inputs?: string[];
+	inputs?: Inputs;
 	parameters?: {
 		[key in P]: SerializedAudioParameter;
 	};
@@ -26,7 +26,9 @@ export type SerializedAudioElementWithId<
 	id: string;
 };
 
-export type SerializedAudioParameter = number | string[]; /* value or ids of connected inputs */
+export type Inputs = string[] | { id: string, output: string }[];
+
+export type SerializedAudioParameter = number | Inputs
 
 export type SerializedOscillatorNode = SerializedAudioElement<'oscillator', 'frequency' | 'detune'> & {
 	oscillatorType: OscillatorType;
@@ -38,6 +40,18 @@ export type SerializedDestinationNode = SerializedAudioElement<'destination', ne
 
 export type SerializedTriggerNode = SerializedAudioElement<'trigger', never> & {
 	tempoInBpm: number;
+}
+
+export type SerializedSequencerNode = SerializedAudioElement<'sequencer', never> & {
+	tempoInBpm: number;
+	notes: SerializedSequencerNote[];
+	loopLength: number;
+}
+
+export type SerializedSequencerNote = {
+	note: string;
+	time: number;
+	duration: number;
 }
 
 export type SerializedEnvelopeNode = SerializedAudioElement<'envelope', never> & {
@@ -52,14 +66,15 @@ export type AllowedSerializedAudioElements =
 	| SerializedGainNode
 	| SerializedDestinationNode
 	| SerializedTriggerNode
-	| SerializedEnvelopeNode;
+	| SerializedEnvelopeNode
+	| SerializedSequencerNode;
 
 
 /* Initialized */
 
 export interface CustomAudioNode {
-	connect(destination: CustomAudioNode | AudioParam): void;
-	disconnect(desination: CustomAudioNode | AudioParam): void;
+	connect(destination: CustomAudioNode | AudioParam, output?: string): void;
+	disconnect(desination: CustomAudioNode | AudioParam, output?: string): void;
 }
 
 export interface CustomAudioScheduledSourceNode extends CustomAudioNode {
@@ -245,6 +260,100 @@ export type AudioNodeDatabase = {
 	[key: string]: CustomAudioNode;
 };
 
+export class SequencerNode {
+	private frequencyDestinations: Destination[] = [];
+	private triggerDestinations: Destination[] = [];
+	private setIntervalId: number | null = null;
+	private playedTime = 0;
+
+	constructor(
+		private tempoInBPM: number,
+		private notes: SerializedSequencerNote[],
+		private loopLength: number
+	) {}
+
+	connect(destination: CustomAudioNode | AudioParam, output: 'frequency' | 'trigger'): void {
+		if (output === 'frequency') {
+			this.frequencyDestinations.push(destination);
+		} else {
+			this.triggerDestinations.push(destination);
+		}
+	}
+
+	disconnect(destination: CustomAudioNode | AudioParam, output: 'frequency' | 'trigger'): void {
+		if (output === 'frequency') {
+			this.frequencyDestinations = this.frequencyDestinations.filter((d) => d !== destination);
+		} else {
+			this.triggerDestinations = this.triggerDestinations.filter((d) => d !== destination);
+		}
+	}
+
+	start(when: number = globalContext.currentTime): void {
+		const lookAheadInSeconds = settings.lookAheadInSeconds;
+		const updateIntervalInMiliseconds = settings.updateIntervalInMiliseconds;
+		const startTime = when;
+		this.playedTime = when;
+		const tempoInSeconds = 60 / this.tempoInBPM;
+
+		const notesWithPlayTimeRelativeToStartTime = this.notes.map((note) => {
+			const noteLengthInBeats = note.duration;
+			const noteLengthInSeconds = noteLengthInBeats * tempoInSeconds;
+
+			const noteStartTimeInBeats = note.time;
+			const noteStartTimeInSeconds = noteStartTimeInBeats * tempoInSeconds;
+
+			const noteString = note.note; /* for example A4 */
+			const frequency = noteStringToFrequency(noteString);
+
+			return {
+				playTimeInSecondsRelativeToStartTime: startTime + noteStartTimeInSeconds,
+				durationInSeconds: noteLengthInSeconds,
+				frequency,
+			}
+		});
+
+		this.setIntervalId = window.setInterval(() => {
+			const currentTime = globalContext.currentTime;
+
+			const notesToPlay = notesWithPlayTimeRelativeToStartTime.filter((note) => {
+				return this.playedTime <= note.playTimeInSecondsRelativeToStartTime && note.playTimeInSecondsRelativeToStartTime < currentTime + lookAheadInSeconds;
+			});
+
+			this.triggerDestinations.forEach((destination) => {
+				if (destination instanceof AudioParam) {
+					return 
+				}
+
+				if (isCustomAudioScheduledSourceNode(destination)) {
+					notesToPlay.forEach((note) => {
+						console.log('play', note)
+						destination.start(note.playTimeInSecondsRelativeToStartTime);
+						destination.stop(note.playTimeInSecondsRelativeToStartTime + note.durationInSeconds);
+					});
+
+					this.playedTime = currentTime + lookAheadInSeconds;
+				}
+			});
+
+			this.frequencyDestinations.forEach((destination) => {
+				if (destination instanceof AudioParam) {
+					notesToPlay.forEach((note) => {
+						console.log('set', note)
+						destination.setValueAtTime(note.frequency, note.playTimeInSecondsRelativeToStartTime);
+					});
+				}
+			});
+		}, updateIntervalInMiliseconds);
+	}
+
+	stop(when: number = globalContext.currentTime): void {
+		if (this.setIntervalId !== null) {
+			window.clearInterval(this.setIntervalId);
+			this.setIntervalId = null;
+		}
+	}
+}
+
 /* FUNCTIONS */
 
 export function createAudioCanvas(
@@ -264,14 +373,17 @@ export function createAudioCanvas(
 	Object.values(audioElementsWithIds).forEach((audioElementA) => {
 
 		if (audioElementA.inputs) {
-			for (const inputId of audioElementA.inputs) {
+			for (const input of audioElementA.inputs) {
+				const inputId = typeof input === 'string' ? input : input.id;
+				const output = typeof input === 'string' ? undefined : input.output;
+
 				const audioElementB = audioElementsWithIds[inputId];
 
 				if (audioElementB === undefined) {
 					throw new Error(`Audio element with id ${inputId} not found`);
 				}
 
-				connectAudioElements(audioElementB, audioElementA, audioNodeDatabase);
+				connectAudioElements(audioElementB, audioElementA, audioNodeDatabase, output);
 			}
 		}
 	});
@@ -310,7 +422,8 @@ function connectAudioElementsToParameter(
 	const parameterValue = audioElementA.parameters?.[parameterName];
 
 	if (Array.isArray(parameterValue)) {
-		for (const inputId of parameterValue) {
+		for (const input of parameterValue) {
+			const inputId = typeof input === 'string' ? input : input.id;
 			const audioElementB = audioElementsWithIds[inputId];
 
 			if (audioElementB === undefined) {
@@ -345,13 +458,14 @@ export function playAudioCanvas(audioNodeDatabase: AudioNodeDatabase): void {
 function connectAudioElements(
 	audioElementA: SerializedAudioElementWithId<string, string>,
 	audioElementB: SerializedAudioElementWithId<string, string>,
-	audioNodeDatabase: AudioNodeDatabase
+	audioNodeDatabase: AudioNodeDatabase,
+	output?: string
 ): void {
 	const audioNodeA = audioNodeDatabase[audioElementA.id];
 	const audioNodeB = audioNodeDatabase[audioElementB.id];
 
 	if (audioNodeA !== undefined && audioNodeB !== undefined) {
-		audioNodeA.connect(audioNodeB);
+		audioNodeA.connect(audioNodeB, output);
 	}
 }
 
@@ -370,6 +484,14 @@ function createCustomAudioNode(
 		case 'envelope': {
 			const envelopeNode = audioElement as SerializedEnvelopeNode;
 			return new EnvelopeNode(envelopeNode.attack, envelopeNode.decay, envelopeNode.sustain, envelopeNode.release);
+		}
+		case 'sequencer': {
+			const sequencerNode = audioElement as SerializedSequencerNode;
+			return new SequencerNode(
+				sequencerNode.tempoInBpm,
+				sequencerNode.notes,
+				sequencerNode.loopLength,
+			);
 		}
 		default:
 			return null;
@@ -415,4 +537,27 @@ function isSerializedOscillatorNode(
 	serializedAudioElement: SerializedAudioElement<string, string>
 ): serializedAudioElement is SerializedOscillatorNode {
 	return serializedAudioElement.type === 'oscillator';
+}
+
+function noteStringToFrequency(noteString: string): number {
+	const note = noteString.split('');
+	const octave = Number(note.pop());
+	const noteName = note.join('');
+
+	return noteFrequencies[noteName] * Math.pow(2, octave);
+}
+
+const noteFrequencies = {
+	C: 16.35,
+	'C#': 17.32,
+	D: 18.35,
+	'D#': 19.45,
+	E: 20.60,
+	F: 21.83,
+	'F#': 23.12,
+	G: 24.50,
+	'G#': 25.96,
+	A: 27.50,
+	'A#': 29.14,
+	B: 30.87,
 }

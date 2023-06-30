@@ -2,14 +2,17 @@
 	import { createAudioCanvas, type AudioNodeDatabase, playAudioCanvas } from '../audio/AudioCanvas';
 	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination'
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
+	import { sequencerEnvelopeOscillatorGainDestination } from '../examples/sequencer-envelope-oscillator-gain-destination'
 
-	let chosenExample = 'trigger-envelope-oscillator-gain-destination'
+	let chosenExample = 'sequencer-envelope-oscillator-gain-destination'
 
 	let text: string;
 	$: if (chosenExample === 'oscillator-gain-destination') {
 		text = JSON.stringify(oscillatorGainDestination, null, 2);
 	} else if (chosenExample === 'trigger-envelope-oscillator-gain-destination') {
 		text = JSON.stringify(triggerEnvelopeOscillatorGainDestination, null, 2);
+	} else if (chosenExample === 'sequencer-envelope-oscillator-gain-destination') {
+		text = JSON.stringify(sequencerEnvelopeOscillatorGainDestination, null, 2);
 	}
 
 	let audioNodeDatabase: AudioNodeDatabase = {};
@@ -20,6 +23,8 @@
 			exampleObject = oscillatorGainDestination;
 		} else if (chosenExample === 'trigger-envelope-oscillator-gain-destination') {
 			exampleObject = triggerEnvelopeOscillatorGainDestination;
+		} else if (chosenExample === 'sequencer-envelope-oscillator-gain-destination') {
+			exampleObject = sequencerEnvelopeOscillatorGainDestination;
 		}
 
 		audioNodeDatabase = {};
@@ -39,6 +44,7 @@
 		<select id="example" bind:value={chosenExample}>
 			<option value="oscillator-gain-destination">Oscillator Gain Destination</option>
 			<option value="trigger-envelope-oscillator-gain-destination">Trigger Envelope Oscillator Gain Destination</option>
+			<option value="sequencer-envelope-oscillator-gain-destination">Sequencer Envelope Oscillator Gain Destination</option>
 		</select>
 	</div>
 	<div>

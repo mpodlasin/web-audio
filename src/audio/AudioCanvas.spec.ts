@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import './mocks';
-import { createAudioCanvas, type AudioNodeDatabase, CustomOscillatorNode, CustomGainNode, DestinationNode } from './AudioCanvas';
+import { createAudioCanvas, type AudioNodeDatabase, CustomOscillatorNode, CustomGainNode, DestinationNode, SequencerNode } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
 describe('AudioCanvas', () => {
@@ -129,16 +129,23 @@ describe('AudioCanvas', () => {
 		expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.frequency.value).toBe(333);
 	});
 
-	it('returns 120bpm trigger connected to envelope connected to oscillator', () => {
+	it('returns sequencer connected to envelope connected to oscillator', () => {
 		const audioElements = {
 			'1': {
-				type: 'trigger' as const,
+				type: 'sequencer' as const,
 				parameters: {},
-				tempoInBpm: 120,
+				tempoInBpm: 80,
+				notes: [
+					{ time: 0, duration: 1, note: 'A3' },
+					{ time: 1, duration: 1, note: 'C3' },
+					{ time: 2, duration: 1, note: 'E3' },
+					{ time: 3, duration: 1, note: 'F3' },
+				],
+				loopLength: 4,
 			},
 			'2': {
 				type: 'envelope' as const,
-				inputs: ['1'],
+				inputs: [{ id: '1', output: 'trigger'}], 
 				parameters: {},
 				attack: 0.1,
 				decay: 0.1,
@@ -148,7 +155,7 @@ describe('AudioCanvas', () => {
 			'3': {
 				type: 'oscillator' as const,
 				parameters: {
-					frequency: 440,
+					frequency: [{id: '1', output: 'frequency'}],
 					detune: 0,
 				},
 				oscillatorType: 'sine' as const
@@ -168,5 +175,11 @@ describe('AudioCanvas', () => {
 		const audioNodeDatabase: AudioNodeDatabase = {};
 
 		createAudioCanvas(audioElements, audioNodeDatabase);
+
+		expect(audioNodeDatabase['1']).toBeDefined();
+		expect(audioNodeDatabase['2']).toBeDefined();
+		expect(audioNodeDatabase['3']).toBeDefined();
+		expect(audioNodeDatabase['4']).toBeDefined();
+		expect(audioNodeDatabase['5']).toBeDefined();
 	});
 });
