@@ -326,7 +326,6 @@ export class SequencerNode {
 
 				if (isCustomAudioScheduledSourceNode(destination)) {
 					notesToPlay.forEach((note) => {
-						console.log('play', note)
 						destination.start(note.playTimeInSecondsRelativeToStartTime);
 						destination.stop(note.playTimeInSecondsRelativeToStartTime + note.durationInSeconds);
 					});
@@ -338,7 +337,6 @@ export class SequencerNode {
 			this.frequencyDestinations.forEach((destination) => {
 				if (destination instanceof AudioParam) {
 					notesToPlay.forEach((note) => {
-						console.log('set', note)
 						destination.setValueAtTime(note.frequency, note.playTimeInSecondsRelativeToStartTime);
 					});
 				}
@@ -424,6 +422,7 @@ function connectAudioElementsToParameter(
 	if (Array.isArray(parameterValue)) {
 		for (const input of parameterValue) {
 			const inputId = typeof input === 'string' ? input : input.id;
+			const output = typeof input === 'string' ? undefined : input.output;
 			const audioElementB = audioElementsWithIds[inputId];
 
 			if (audioElementB === undefined) {
@@ -433,7 +432,7 @@ function connectAudioElementsToParameter(
 			const audioNodeB = audioNodeDatabase[audioElementB.id];
 
 			if (audioNodeA !== undefined && audioNodeB !== undefined) {
-				audioNodeB.connect(accessParameter(audioNodeA, parameterName));
+				audioNodeB.connect(accessParameter(audioNodeA, parameterName), output);
 			}
 		}
 	} else if (typeof parameterValue === 'number' && audioNodeA !== undefined) {
@@ -543,11 +542,12 @@ function noteStringToFrequency(noteString: string): number {
 	const note = noteString.split('');
 	const octave = Number(note.pop());
 	const noteName = note.join('');
+	const frequency = noteFrequencies[noteName] ?? 0
 
-	return noteFrequencies[noteName] * Math.pow(2, octave);
+	return frequency * Math.pow(2, octave);
 }
 
-const noteFrequencies = {
+const noteFrequencies: Record<string, number> = {
 	C: 16.35,
 	'C#': 17.32,
 	D: 18.35,

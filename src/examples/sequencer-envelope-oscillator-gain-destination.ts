@@ -25,10 +25,10 @@ export const sequencerEnvelopeOscillatorGainDestination: SerializedAudioElements
     '3': {
         type: 'oscillator' as const,
         parameters: {
-            frequency: [{ id: '1', output: 'trigger'}], 
+            frequency: [{ id: '1', output: 'frequency'}], 
             detune: 0,
         },
-        oscillatorType: 'sine' as const
+        oscillatorType: 'sawtooth' as const
     },	
     '4': {
         type: 'gain' as const,
