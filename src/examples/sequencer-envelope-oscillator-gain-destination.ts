@@ -15,7 +15,7 @@ export const sequencerEnvelopeOscillatorGainDestination: SerializedAudioElements
     },
     '2': {
         type: 'envelope' as const,
-        inputs: ['1'],
+        inputs: [{ id: '1', output: 'trigger'}],
         parameters: {},
         attack: 0,
         decay: 0,

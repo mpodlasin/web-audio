@@ -48,6 +48,8 @@ export type SerializedSequencerNode = SerializedAudioElement<'sequencer', never>
 	loopLength: number;
 }
 
+export type SerializedMidiNode = SerializedAudioElement<'midi', never>
+
 export type SerializedSequencerNote = {
 	note: string;
 	time: number;
@@ -67,7 +69,8 @@ export type AllowedSerializedAudioElements =
 	| SerializedDestinationNode
 	| SerializedTriggerNode
 	| SerializedEnvelopeNode
-	| SerializedSequencerNode;
+	| SerializedSequencerNode
+	| SerializedMidiNode;
 
 
 /* Initialized */
@@ -302,7 +305,7 @@ export class SequencerNode {
 			const noteStartTimeInBeats = note.time;
 			const noteStartTimeInSeconds = noteStartTimeInBeats * tempoInSeconds;
 
-			const noteString = note.note; /* for example A4 */
+			const noteString = note.note;
 			const frequency = noteStringToFrequency(noteString);
 
 			return {
@@ -350,6 +353,74 @@ export class SequencerNode {
 			this.setIntervalId = null;
 		}
 	}
+}
+
+export class MidiNode {
+	private frequencyDestinations: Destination[] = [];
+	private triggerDestinations: Destination[] = [];
+	private midiAccess: MIDIAccess | null = null;
+
+
+	connect(destination: CustomAudioNode | AudioParam, output: 'frequency' | 'trigger'): void {
+		if (output === 'frequency') {
+			this.frequencyDestinations.push(destination);
+		} else {
+			this.triggerDestinations.push(destination);
+		}
+	}
+
+	disconnect(destination: CustomAudioNode | AudioParam, output: 'frequency' | 'trigger'): void {
+		if (output === 'frequency') {
+			this.frequencyDestinations = this.frequencyDestinations.filter((d) => d !== destination);
+		} else {
+			this.triggerDestinations = this.triggerDestinations.filter((d) => d !== destination);
+		}
+	}
+
+	start(): void {
+		navigator.requestMIDIAccess().then((midiAccess) => {
+			this.midiAccess = midiAccess;
+
+			this.midiAccess.inputs.forEach((input) => {
+				input.addEventListener('midimessage', (event: any) => {
+					const [status, note, velocity] = event.data;
+	
+					if (status === 144) {
+						this.triggerDestinations.forEach((destination) => {
+							if (destination instanceof AudioParam) {
+								destination.setValueAtTime(velocity / 127, globalContext.currentTime);
+								return 
+							}
+	
+							if (isCustomAudioScheduledSourceNode(destination)) {
+								destination.start(globalContext.currentTime);
+							}
+						});
+					}
+	
+					if (status === 128) {
+						this.triggerDestinations.forEach((destination) => {
+							if (destination instanceof AudioParam) {
+								return 
+							}
+	
+							if (isCustomAudioScheduledSourceNode(destination)) {
+								destination.stop(globalContext.currentTime);
+							}
+						});
+					}
+	
+					this.frequencyDestinations.forEach((destination) => {
+						if (destination instanceof AudioParam) {
+							destination.setValueAtTime(midiNoteToFrequency(note), globalContext.currentTime);
+						}
+					});
+				});
+			});
+		});
+	}
+
+	stop(): void {}
 }
 
 /* FUNCTIONS */
@@ -492,6 +563,8 @@ function createCustomAudioNode(
 				sequencerNode.loopLength,
 			);
 		}
+		case 'midi':
+			return new MidiNode();
 		default:
 			return null;
 	}
@@ -536,6 +609,10 @@ function isSerializedOscillatorNode(
 	serializedAudioElement: SerializedAudioElement<string, string>
 ): serializedAudioElement is SerializedOscillatorNode {
 	return serializedAudioElement.type === 'oscillator';
+}
+
+function midiNoteToFrequency(midiNote: number): number {
+	return Math.pow(2, (midiNote - 69) / 12) * 440;
 }
 
 function noteStringToFrequency(noteString: string): number {

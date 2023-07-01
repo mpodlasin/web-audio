@@ -3,8 +3,9 @@
 	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination'
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
 	import { sequencerEnvelopeOscillatorGainDestination } from '../examples/sequencer-envelope-oscillator-gain-destination'
+	import { midiEnvelopeOscillatorGainDestination } from '../examples/midi-envelope-oscillator-gain-destination';
 
-	let chosenExample = 'sequencer-envelope-oscillator-gain-destination'
+	let chosenExample = 'midi-envelope-oscillator-gain-destination'
 
 	let text: string;
 	$: if (chosenExample === 'oscillator-gain-destination') {
@@ -13,6 +14,8 @@
 		text = JSON.stringify(triggerEnvelopeOscillatorGainDestination, null, 2);
 	} else if (chosenExample === 'sequencer-envelope-oscillator-gain-destination') {
 		text = JSON.stringify(sequencerEnvelopeOscillatorGainDestination, null, 2);
+	} else if (chosenExample === 'midi-envelope-oscillator-gain-destination') {
+		text = JSON.stringify(midiEnvelopeOscillatorGainDestination, null, 2);
 	}
 
 	let audioNodeDatabase: AudioNodeDatabase = {};
@@ -25,6 +28,8 @@
 			exampleObject = triggerEnvelopeOscillatorGainDestination;
 		} else if (chosenExample === 'sequencer-envelope-oscillator-gain-destination') {
 			exampleObject = sequencerEnvelopeOscillatorGainDestination;
+		} else if (chosenExample === 'midi-envelope-oscillator-gain-destination') {
+			exampleObject = midiEnvelopeOscillatorGainDestination;
 		}
 
 		audioNodeDatabase = {};
@@ -45,6 +50,7 @@
 			<option value="oscillator-gain-destination">Oscillator Gain Destination</option>
 			<option value="trigger-envelope-oscillator-gain-destination">Trigger Envelope Oscillator Gain Destination</option>
 			<option value="sequencer-envelope-oscillator-gain-destination">Sequencer Envelope Oscillator Gain Destination</option>
+			<option value="midi-envelope-oscillator-gain-destination">Midi Envelope Oscillator Gain Destination</option>
 		</select>
 	</div>
 	<div>
