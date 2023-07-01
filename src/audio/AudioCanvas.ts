@@ -382,45 +382,54 @@ export class MidiNode {
 			this.midiAccess = midiAccess;
 
 			this.midiAccess.inputs.forEach((input) => {
-				input.addEventListener('midimessage', (event: any) => {
-					const [status, note, velocity] = event.data;
-	
-					if (status === 144) {
-						this.triggerDestinations.forEach((destination) => {
-							if (destination instanceof AudioParam) {
-								destination.setValueAtTime(velocity / 127, globalContext.currentTime);
-								return 
-							}
-	
-							if (isCustomAudioScheduledSourceNode(destination)) {
-								destination.start(globalContext.currentTime);
-							}
-						});
-					}
-	
-					if (status === 128) {
-						this.triggerDestinations.forEach((destination) => {
-							if (destination instanceof AudioParam) {
-								return 
-							}
-	
-							if (isCustomAudioScheduledSourceNode(destination)) {
-								destination.stop(globalContext.currentTime);
-							}
-						});
-					}
-	
-					this.frequencyDestinations.forEach((destination) => {
-						if (destination instanceof AudioParam) {
-							destination.setValueAtTime(midiNoteToFrequency(note), globalContext.currentTime);
-						}
-					});
-				});
+				input.addEventListener('midimessage', this.handleMidiMessage.bind(this) as any);
 			});
 		});
 	}
 
-	stop(): void {}
+	stop(): void {
+		if (this.midiAccess !== null) {
+			this.midiAccess.inputs.forEach((input) => {
+				input.removeEventListener('midimessage', this.handleMidiMessage.bind(this) as any);
+			});
+		}
+	}
+
+	private handleMidiMessage(event: MIDIMessageEvent) {
+		const [status, note] = event.data;
+
+		if (status === 144) {
+			this.triggerDestinations.forEach((destination) => {
+				if (destination instanceof AudioParam) {
+					return 
+				}
+
+				if (isCustomAudioScheduledSourceNode(destination)) {
+					destination.start(globalContext.currentTime);
+				}
+			});
+		}
+
+		if (status === 128) {
+			this.triggerDestinations.forEach((destination) => {
+				if (destination instanceof AudioParam) {
+					return 
+				}
+
+				if (isCustomAudioScheduledSourceNode(destination)) {
+					destination.stop(globalContext.currentTime);
+				}
+			});
+		}
+
+		if (note) {
+			this.frequencyDestinations.forEach((destination) => {
+				if (destination instanceof AudioParam) {
+					destination.setValueAtTime(midiNoteToFrequency(note), globalContext.currentTime);
+				}
+			});
+		}
+	}
 }
 
 /* FUNCTIONS */
