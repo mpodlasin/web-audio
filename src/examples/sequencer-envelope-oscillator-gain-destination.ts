@@ -4,12 +4,12 @@ export const sequencerEnvelopeOscillatorGainDestination: SerializedAudioElements
     '1': {
         type: 'sequencer' as const,
         parameters: {},
-        tempoInBpm: 80,
+        tempoInBpm: 40,
         notes: [
-            { time: 0, duration: 1, note: 'A3' },
-            { time: 1, duration: 1, note: 'C3' },
-            { time: 2, duration: 1, note: 'E3' },
-            { time: 3, duration: 1, note: 'F3' },
+            { time: 0, duration: 0.1, note: 'A2' },
+            { time: 1, duration: 0.1, note: 'C2' },
+            { time: 2, duration: 0.1, note: 'E2' },
+            { time: 3, duration: 0.1, note: 'F2' },
         ],
         loopLength: 4,
     },
@@ -19,8 +19,8 @@ export const sequencerEnvelopeOscillatorGainDestination: SerializedAudioElements
         parameters: {},
         attack: 0,
         decay: 0,
-        sustain: 0.3,
-        release: 0.5,
+        sustain: 0.5,
+        release: 0.9,
     },
     '3': {
         type: 'oscillator' as const,
