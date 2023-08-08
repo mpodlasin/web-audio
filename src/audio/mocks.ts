@@ -67,5 +67,3 @@ Object.defineProperty(window, 'AudioParam', {
 	writable: true,
 	value: AudioParamMock
 });
-
-

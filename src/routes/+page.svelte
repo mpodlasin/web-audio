@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { createAudioCanvas, type AudioNodeDatabase, playAudioCanvas } from '../audio/AudioCanvas';
-	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination'
+	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination';
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
-	import { sequencerEnvelopeOscillatorGainDestination } from '../examples/sequencer-envelope-oscillator-gain-destination'
+	import { sequencerEnvelopeOscillatorGainDestination } from '../examples/sequencer-envelope-oscillator-gain-destination';
 	import { midiEnvelopeOscillatorGainDestination } from '../examples/midi-envelope-oscillator-gain-destination';
 
-	let chosenExample = 'midi-envelope-oscillator-gain-destination'
+	let chosenExample = 'midi-envelope-oscillator-gain-destination';
 
 	let text: string;
 	$: if (chosenExample === 'oscillator-gain-destination') {
@@ -34,12 +34,12 @@
 
 		audioNodeDatabase = {};
 
-		createAudioCanvas(exampleObject, audioNodeDatabase)
+		createAudioCanvas(exampleObject, audioNodeDatabase);
 	}
 
 	const handlePlay = () => {
-		playAudioCanvas(audioNodeDatabase)
-	}
+		playAudioCanvas(audioNodeDatabase);
+	};
 </script>
 
 <div>
@@ -48,14 +48,20 @@
 		<label for="example">Chosen Example</label>
 		<select id="example" bind:value={chosenExample}>
 			<option value="oscillator-gain-destination">Oscillator Gain Destination</option>
-			<option value="trigger-envelope-oscillator-gain-destination">Trigger Envelope Oscillator Gain Destination</option>
-			<option value="sequencer-envelope-oscillator-gain-destination">Sequencer Envelope Oscillator Gain Destination</option>
-			<option value="midi-envelope-oscillator-gain-destination">Midi Envelope Oscillator Gain Destination</option>
+			<option value="trigger-envelope-oscillator-gain-destination"
+				>Trigger Envelope Oscillator Gain Destination</option
+			>
+			<option value="sequencer-envelope-oscillator-gain-destination"
+				>Sequencer Envelope Oscillator Gain Destination</option
+			>
+			<option value="midi-envelope-oscillator-gain-destination"
+				>Midi Envelope Oscillator Gain Destination</option
+			>
 		</select>
 	</div>
 	<div>
 		<label for="text">Text</label>
-		<textarea id="text" bind:value={text} rows={20}></textarea>
+		<textarea id="text" bind:value={text} rows={20} />
 	</div>
 	<div>
 		<label for="play">Play</label>

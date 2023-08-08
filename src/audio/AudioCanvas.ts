@@ -26,13 +26,16 @@ export type SerializedAudioElementWithId<
 	id: string;
 };
 
-export type Inputs = string[] | { id: string, output: string }[];
+export type Inputs = string[] | { id: string; output: string }[];
 
-export type SerializedAudioParameter = number | Inputs
+export type SerializedAudioParameter = number | Inputs;
 
-export type SerializedOscillatorNode = SerializedAudioElement<'oscillator', 'frequency' | 'detune'> & {
+export type SerializedOscillatorNode = SerializedAudioElement<
+	'oscillator',
+	'frequency' | 'detune'
+> & {
 	oscillatorType: OscillatorType;
-}
+};
 
 export type SerializedGainNode = SerializedAudioElement<'gain', 'gain'>;
 
@@ -40,38 +43,37 @@ export type SerializedDestinationNode = SerializedAudioElement<'destination', ne
 
 export type SerializedTriggerNode = SerializedAudioElement<'trigger', never> & {
 	tempoInBpm: number;
-}
+};
 
 export type SerializedSequencerNode = SerializedAudioElement<'sequencer', never> & {
 	tempoInBpm: number;
 	notes: SerializedSequencerNote[];
 	loopLength: number;
-}
+};
 
-export type SerializedMidiNode = SerializedAudioElement<'midi', never>
+export type SerializedMidiNode = SerializedAudioElement<'midi', never>;
 
 export type SerializedSequencerNote = {
 	note: string;
 	time: number;
 	duration: number;
-}
+};
 
 export type SerializedEnvelopeNode = SerializedAudioElement<'envelope', never> & {
 	attack: number;
 	decay: number;
 	sustain: number;
 	release: number;
-}
+};
 
 export type AllowedSerializedAudioElements =
-	| SerializedOscillatorNode	
+	| SerializedOscillatorNode
 	| SerializedGainNode
 	| SerializedDestinationNode
 	| SerializedTriggerNode
 	| SerializedEnvelopeNode
 	| SerializedSequencerNode
 	| SerializedMidiNode;
-
 
 /* Initialized */
 
@@ -91,7 +93,8 @@ export function isCustomAudioScheduledSourceNode(
 	return 'start' in customAudioNode && 'stop' in customAudioNode;
 }
 
-export interface CustomAudioNodeWithWebApiNode<T extends AudioNode = AudioNode> extends CustomAudioNode {
+export interface CustomAudioNodeWithWebApiNode<T extends AudioNode = AudioNode>
+	extends CustomAudioNode {
 	readonly webApiNode: T;
 }
 
@@ -101,7 +104,9 @@ export function isCustomAudioNodeWithWebApiNode(
 	return 'webApiNode' in customAudioNode;
 }
 
-export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode> implements CustomAudioNodeWithWebApiNode<T> {
+export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
+	implements CustomAudioNodeWithWebApiNode<T>
+{
 	readonly webApiNode: T;
 	private desinations: CustomAudioNode[] = [];
 
@@ -136,7 +141,10 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode> implement
 	}
 }
 
-export class CustomAudioNodeWithWebApiAudioScheduledSourceNode<T extends AudioScheduledSourceNode> extends GenericCustomAudioNodeWithWebApiNode<T> implements CustomAudioScheduledSourceNode {
+export class CustomAudioNodeWithWebApiAudioScheduledSourceNode<T extends AudioScheduledSourceNode>
+	extends GenericCustomAudioNodeWithWebApiNode<T>
+	implements CustomAudioScheduledSourceNode
+{
 	start(when?: number): void {
 		this.webApiNode.start(when);
 	}
@@ -180,7 +188,7 @@ export class EnvelopeNode implements CustomAudioNode, CustomAudioScheduledSource
 		if (!(destination instanceof AudioParam)) {
 			throw new Error('EnvelopeNode can only connect to AudioParams');
 		}
-		
+
 		this.destinations.push(destination);
 	}
 
@@ -214,9 +222,7 @@ export class TriggerNode implements CustomAudioNode, CustomAudioScheduledSourceN
 	private setIntervalId: number | null = null;
 	private playedTime = 0;
 
-	constructor(
-		private tempoInBPM: number,
-	) {}
+	constructor(private tempoInBPM: number) {}
 
 	connect(destination: CustomAudioNode | AudioParam): void {
 		this.destinations.push(destination);
@@ -236,10 +242,10 @@ export class TriggerNode implements CustomAudioNode, CustomAudioScheduledSourceN
 		this.setIntervalId = window.setInterval(() => {
 			this.destinations.forEach((destination) => {
 				if (destination instanceof AudioParam) {
-					return 
+					return;
 				}
 
-				if (isCustomAudioScheduledSourceNode(destination)) {	
+				if (isCustomAudioScheduledSourceNode(destination)) {
 					while (this.playedTime < globalContext.currentTime + lookAheadInSeconds) {
 						destination.start(this.playedTime);
 						destination.stop(this.playedTime + sampleLengthInSeconds);
@@ -256,8 +262,7 @@ export class TriggerNode implements CustomAudioNode, CustomAudioScheduledSourceN
 			this.setIntervalId = null;
 		}
 	}
-}	
-
+}
 
 export type AudioNodeDatabase = {
 	[key: string]: CustomAudioNode;
@@ -311,20 +316,23 @@ export class SequencerNode {
 			return {
 				playTimeInSecondsRelativeToStartTime: startTime + noteStartTimeInSeconds,
 				durationInSeconds: noteLengthInSeconds,
-				frequency,
-			}
+				frequency
+			};
 		});
 
 		this.setIntervalId = window.setInterval(() => {
 			const currentTime = globalContext.currentTime;
 
 			const notesToPlay = notesWithPlayTimeRelativeToStartTime.filter((note) => {
-				return this.playedTime <= note.playTimeInSecondsRelativeToStartTime && note.playTimeInSecondsRelativeToStartTime < currentTime + lookAheadInSeconds;
+				return (
+					this.playedTime <= note.playTimeInSecondsRelativeToStartTime &&
+					note.playTimeInSecondsRelativeToStartTime < currentTime + lookAheadInSeconds
+				);
 			});
 
 			this.triggerDestinations.forEach((destination) => {
 				if (destination instanceof AudioParam) {
-					return 
+					return;
 				}
 
 				if (isCustomAudioScheduledSourceNode(destination)) {
@@ -359,7 +367,6 @@ export class MidiNode {
 	private frequencyDestinations: Destination[] = [];
 	private triggerDestinations: Destination[] = [];
 	private midiAccess: MIDIAccess | null = null;
-
 
 	connect(destination: CustomAudioNode | AudioParam, output: 'frequency' | 'trigger'): void {
 		if (output === 'frequency') {
@@ -401,7 +408,7 @@ export class MidiNode {
 		if (status === 144) {
 			this.triggerDestinations.forEach((destination) => {
 				if (destination instanceof AudioParam) {
-					return 
+					return;
 				}
 
 				if (isCustomAudioScheduledSourceNode(destination)) {
@@ -413,7 +420,7 @@ export class MidiNode {
 		if (status === 128) {
 			this.triggerDestinations.forEach((destination) => {
 				if (destination instanceof AudioParam) {
-					return 
+					return;
 				}
 
 				if (isCustomAudioScheduledSourceNode(destination)) {
@@ -449,7 +456,6 @@ export function createAudioCanvas(
 	});
 
 	Object.values(audioElementsWithIds).forEach((audioElementA) => {
-
 		if (audioElementA.inputs) {
 			for (const input of audioElementA.inputs) {
 				const inputId = typeof input === 'string' ? input : input.id;
@@ -477,7 +483,7 @@ export function createAudioCanvas(
 				);
 			}
 		}
-	})
+	});
 
 	Object.entries(audioElementsWithIds).forEach(([id, audioElement]) => {
 		if (isSerializedOscillatorNode(audioElement)) {
@@ -562,14 +568,19 @@ function createCustomAudioNode(
 			return new TriggerNode((audioElement as SerializedTriggerNode).tempoInBpm);
 		case 'envelope': {
 			const envelopeNode = audioElement as SerializedEnvelopeNode;
-			return new EnvelopeNode(envelopeNode.attack, envelopeNode.decay, envelopeNode.sustain, envelopeNode.release);
+			return new EnvelopeNode(
+				envelopeNode.attack,
+				envelopeNode.decay,
+				envelopeNode.sustain,
+				envelopeNode.release
+			);
 		}
 		case 'sequencer': {
 			const sequencerNode = audioElement as SerializedSequencerNode;
 			return new SequencerNode(
 				sequencerNode.tempoInBpm,
 				sequencerNode.notes,
-				sequencerNode.loopLength,
+				sequencerNode.loopLength
 			);
 		}
 		case 'midi':
@@ -591,10 +602,7 @@ function addIdsToAudioElements(
 	return audioElementsWithIds;
 }
 
-function accessParameter(
-	audioNode: CustomAudioNode,
-	parameterName: string
-): AudioParam {
+function accessParameter(audioNode: CustomAudioNode, parameterName: string): AudioParam {
 	if (audioNode instanceof CustomOscillatorNode) {
 		switch (parameterName) {
 			case 'frequency':
@@ -628,7 +636,7 @@ function noteStringToFrequency(noteString: string): number {
 	const note = noteString.split('');
 	const octave = Number(note.pop());
 	const noteName = note.join('');
-	const frequency = noteFrequencies[noteName] ?? 0
+	const frequency = noteFrequencies[noteName] ?? 0;
 
 	return frequency * Math.pow(2, octave);
 }
@@ -638,12 +646,12 @@ const noteFrequencies: Record<string, number> = {
 	'C#': 17.32,
 	D: 18.35,
 	'D#': 19.45,
-	E: 20.60,
+	E: 20.6,
 	F: 21.83,
 	'F#': 23.12,
-	G: 24.50,
+	G: 24.5,
 	'G#': 25.96,
-	A: 27.50,
+	A: 27.5,
 	'A#': 29.14,
-	B: 30.87,
-}
+	B: 30.87
+};
