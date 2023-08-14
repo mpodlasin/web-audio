@@ -358,7 +358,6 @@ export class SequencerNode {
 	}
 
 	private scheduleNote(time: number, duration: number, frequency: number): void {
-		console.log('schedule note', time, duration, frequency);
 		this.triggerDestinations.forEach((destination) => {
 			if (destination instanceof AudioParam) {
 				return;
@@ -554,7 +553,9 @@ export function playAudioCanvas(audioNodeDatabase: AudioNodeDatabase): void {
 		}
 
 		if (isCustomAudioScheduledSourceNode(audioNode)) {
-			audioNode.start();
+			if (!(audioNode instanceof EnvelopeNode)) {
+				audioNode.start();
+			}
 		}
 	}
 }
