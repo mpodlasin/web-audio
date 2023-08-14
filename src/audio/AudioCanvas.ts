@@ -298,55 +298,54 @@ export class SequencerNode {
 		const startTime = when;
 		let scheduledTime = startTime;
 
-		const notesToPlay = this.notes.map(note => {
-			return {
-				time: startTime + note.time,
-				duration: note.duration,
-				frequency: noteStringToFrequency(note.note),
-			}
-		}).filter(note => note.time < lookAheadInSeconds)
+		const notesToPlay = this.notes
+			.map((note) => {
+				return {
+					time: startTime + note.time,
+					duration: note.duration,
+					frequency: noteStringToFrequency(note.note)
+				};
+			})
+			.filter((note) => note.time < lookAheadInSeconds);
 
-		notesToPlay.forEach(note => {
-			this.scheduleNote(
-				note.time,
-				note.duration,
-				note.frequency
-			);
+		notesToPlay.forEach((note) => {
+			this.scheduleNote(note.time, note.duration, note.frequency);
 		});
 
 		scheduledTime = startTime + lookAheadInSeconds;
-		
+
 		this.setIntervalId = window.setInterval(() => {
 			const currentTime = globalContext.currentTime;
-			const numberOfFullyScheduledLoops = Math.floor((scheduledTime - startTime) / this.loopLengthInSeconds);
+			const numberOfFullyScheduledLoops = Math.floor(
+				(scheduledTime - startTime) / this.loopLengthInSeconds
+			);
 
 			const mappedNotes = [
-				...this.notes.map(note => {
+				...this.notes.map((note) => {
 					return {
 						time: startTime + note.time + numberOfFullyScheduledLoops * this.loopLengthInSeconds,
 						duration: note.duration,
-						frequency: noteStringToFrequency(note.note),
-					}
+						frequency: noteStringToFrequency(note.note)
+					};
 				}),
-				...this.notes.map(note => {
+				...this.notes.map((note) => {
 					return {
-						time: startTime + note.time + (numberOfFullyScheduledLoops + 1) * this.loopLengthInSeconds,
+						time:
+							startTime + note.time + (numberOfFullyScheduledLoops + 1) * this.loopLengthInSeconds,
 						duration: note.duration,
-						frequency: noteStringToFrequency(note.note),
-					}
-				}),
-			]
+						frequency: noteStringToFrequency(note.note)
+					};
+				})
+			];
 
-			const notesToPlay = mappedNotes.filter(note => scheduledTime <= note.time && note.time < scheduledTime + lookAheadInSeconds)
+			const notesToPlay = mappedNotes.filter(
+				(note) => scheduledTime <= note.time && note.time < scheduledTime + lookAheadInSeconds
+			);
 
-			notesToPlay.forEach(note => {
-				this.scheduleNote(
-					note.time,
-					note.duration,
-					note.frequency
-				);
+			notesToPlay.forEach((note) => {
+				this.scheduleNote(note.time, note.duration, note.frequency);
 			});
-		
+
 			scheduledTime = currentTime + lookAheadInSeconds;
 		}, updateIntervalInMiliseconds);
 	}
@@ -359,21 +358,21 @@ export class SequencerNode {
 	}
 
 	private scheduleNote(time: number, duration: number, frequency: number): void {
-		console.log('schedule note', time, duration, frequency)
+		console.log('schedule note', time, duration, frequency);
 		this.triggerDestinations.forEach((destination) => {
 			if (destination instanceof AudioParam) {
 				return;
 			}
 
 			if (isCustomAudioScheduledSourceNode(destination)) {
-					destination.start(time);
-					destination.stop(time + duration);
+				destination.start(time);
+				destination.stop(time + duration);
 			}
 		});
 
 		this.frequencyDestinations.forEach((destination) => {
 			if (destination instanceof AudioParam) {
-					destination.setValueAtTime(frequency, time);
+				destination.setValueAtTime(frequency, time);
 			}
 		});
 	}
