@@ -20,7 +20,7 @@ export const sequencerEnvelopeOscillatorGainDestination: SerializedAudioElements
 		attack: 0,
 		decay: 0,
 		sustain: 0.5,
-		release: 0.9
+		release: 0.4
 	},
 	'3': {
 		type: 'oscillator' as const,

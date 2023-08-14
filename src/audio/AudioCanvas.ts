@@ -264,20 +264,15 @@ export class TriggerNode implements CustomAudioNode, CustomAudioScheduledSourceN
 	}
 }
 
-export type AudioNodeDatabase = {
-	[key: string]: CustomAudioNode;
-};
-
 export class SequencerNode {
 	private frequencyDestinations: Destination[] = [];
 	private triggerDestinations: Destination[] = [];
 	private setIntervalId: number | null = null;
-	private playedTime = 0;
 
 	constructor(
 		private tempoInBPM: number,
 		private notes: SerializedSequencerNote[],
-		private loopLength: number
+		private loopLengthInSeconds: number
 	) {}
 
 	connect(destination: CustomAudioNode | AudioParam, output: 'frequency' | 'trigger'): void {
@@ -299,59 +294,60 @@ export class SequencerNode {
 	start(when: number = globalContext.currentTime): void {
 		const lookAheadInSeconds = settings.lookAheadInSeconds;
 		const updateIntervalInMiliseconds = settings.updateIntervalInMiliseconds;
+
 		const startTime = when;
-		this.playedTime = when;
-		const tempoInSeconds = 60 / this.tempoInBPM;
+		let scheduledTime = startTime;
 
-		const notesWithPlayTimeRelativeToStartTime = this.notes.map((note) => {
-			const noteLengthInBeats = note.duration;
-			const noteLengthInSeconds = noteLengthInBeats * tempoInSeconds;
-
-			const noteStartTimeInBeats = note.time;
-			const noteStartTimeInSeconds = noteStartTimeInBeats * tempoInSeconds;
-
-			const noteString = note.note;
-			const frequency = noteStringToFrequency(noteString);
-
+		const notesToPlay = this.notes.map(note => {
 			return {
-				playTimeInSecondsRelativeToStartTime: startTime + noteStartTimeInSeconds,
-				durationInSeconds: noteLengthInSeconds,
-				frequency
-			};
+				time: startTime + note.time,
+				duration: note.duration,
+				frequency: noteStringToFrequency(note.note),
+			}
+		}).filter(note => note.time < lookAheadInSeconds)
+
+		notesToPlay.forEach(note => {
+			this.scheduleNote(
+				note.time,
+				note.duration,
+				note.frequency
+			);
 		});
 
+		scheduledTime = startTime + lookAheadInSeconds;
+		
 		this.setIntervalId = window.setInterval(() => {
 			const currentTime = globalContext.currentTime;
+			const numberOfFullyScheduledLoops = Math.floor((scheduledTime - startTime) / this.loopLengthInSeconds);
 
-			const notesToPlay = notesWithPlayTimeRelativeToStartTime.filter((note) => {
-				return (
-					this.playedTime <= note.playTimeInSecondsRelativeToStartTime &&
-					note.playTimeInSecondsRelativeToStartTime < currentTime + lookAheadInSeconds
+			const mappedNotes = [
+				...this.notes.map(note => {
+					return {
+						time: startTime + note.time + numberOfFullyScheduledLoops * this.loopLengthInSeconds,
+						duration: note.duration,
+						frequency: noteStringToFrequency(note.note),
+					}
+				}),
+				...this.notes.map(note => {
+					return {
+						time: startTime + note.time + (numberOfFullyScheduledLoops + 1) * this.loopLengthInSeconds,
+						duration: note.duration,
+						frequency: noteStringToFrequency(note.note),
+					}
+				}),
+			]
+
+			const notesToPlay = mappedNotes.filter(note => scheduledTime <= note.time && note.time < scheduledTime + lookAheadInSeconds)
+
+			notesToPlay.forEach(note => {
+				this.scheduleNote(
+					note.time,
+					note.duration,
+					note.frequency
 				);
 			});
-
-			this.triggerDestinations.forEach((destination) => {
-				if (destination instanceof AudioParam) {
-					return;
-				}
-
-				if (isCustomAudioScheduledSourceNode(destination)) {
-					notesToPlay.forEach((note) => {
-						destination.start(note.playTimeInSecondsRelativeToStartTime);
-						destination.stop(note.playTimeInSecondsRelativeToStartTime + note.durationInSeconds);
-					});
-
-					this.playedTime = currentTime + lookAheadInSeconds;
-				}
-			});
-
-			this.frequencyDestinations.forEach((destination) => {
-				if (destination instanceof AudioParam) {
-					notesToPlay.forEach((note) => {
-						destination.setValueAtTime(note.frequency, note.playTimeInSecondsRelativeToStartTime);
-					});
-				}
-			});
+		
+			scheduledTime = currentTime + lookAheadInSeconds;
 		}, updateIntervalInMiliseconds);
 	}
 
@@ -360,6 +356,26 @@ export class SequencerNode {
 			window.clearInterval(this.setIntervalId);
 			this.setIntervalId = null;
 		}
+	}
+
+	private scheduleNote(time: number, duration: number, frequency: number): void {
+		console.log('schedule note', time, duration, frequency)
+		this.triggerDestinations.forEach((destination) => {
+			if (destination instanceof AudioParam) {
+				return;
+			}
+
+			if (isCustomAudioScheduledSourceNode(destination)) {
+					destination.start(time);
+					destination.stop(time + duration);
+			}
+		});
+
+		this.frequencyDestinations.forEach((destination) => {
+			if (destination instanceof AudioParam) {
+					destination.setValueAtTime(frequency, time);
+			}
+		});
 	}
 }
 
@@ -438,6 +454,10 @@ export class MidiNode {
 		}
 	}
 }
+
+export type AudioNodeDatabase = {
+	[key: string]: CustomAudioNode;
+};
 
 /* FUNCTIONS */
 

@@ -5,7 +5,7 @@
 	import { sequencerEnvelopeOscillatorGainDestination } from '../examples/sequencer-envelope-oscillator-gain-destination';
 	import { midiEnvelopeOscillatorGainDestination } from '../examples/midi-envelope-oscillator-gain-destination';
 
-	let chosenExample = 'midi-envelope-oscillator-gain-destination';
+	let chosenExample = 'sequencer-envelope-oscillator-gain-destination'
 
 	let text: string;
 	$: if (chosenExample === 'oscillator-gain-destination') {
