@@ -1,11 +1,27 @@
 <script lang="ts">
-	import { createAudioCanvas, type AudioNodeDatabase, playAudioCanvas } from '../audio/AudioCanvas';
+	import {
+		createAudioCanvas,
+		type AudioNodeDatabase,
+		playAudioCanvas,
+		type SerializedAudioElements
+	} from '../audio/AudioCanvas';
 	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination';
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
 	import { sequencerEnvelopeOscillatorGainDestination } from '../examples/sequencer-envelope-oscillator-gain-destination';
 	import { midiEnvelopeOscillatorGainDestination } from '../examples/midi-envelope-oscillator-gain-destination';
+	import Node from '../components/Node.svelte';
 
 	let chosenExample = 'sequencer-envelope-oscillator-gain-destination';
+
+	interface SerializedAudioElementsWithPositions {
+		[key: string]: SerializedAudioElements[string] & {
+			id: string;
+			position: {
+				x: number;
+				y: number;
+			};
+		};
+	}
 
 	let text: string;
 	$: if (chosenExample === 'oscillator-gain-destination') {
@@ -20,25 +36,52 @@
 
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
+	let audioGraph: SerializedAudioElements;
 	$: {
-		let exampleObject: any;
 		if (chosenExample === 'oscillator-gain-destination') {
-			exampleObject = oscillatorGainDestination;
+			audioGraph = oscillatorGainDestination;
 		} else if (chosenExample === 'trigger-envelope-oscillator-gain-destination') {
-			exampleObject = triggerEnvelopeOscillatorGainDestination;
+			audioGraph = triggerEnvelopeOscillatorGainDestination;
 		} else if (chosenExample === 'sequencer-envelope-oscillator-gain-destination') {
-			exampleObject = sequencerEnvelopeOscillatorGainDestination;
+			audioGraph = sequencerEnvelopeOscillatorGainDestination;
 		} else if (chosenExample === 'midi-envelope-oscillator-gain-destination') {
-			exampleObject = midiEnvelopeOscillatorGainDestination;
+			audioGraph = midiEnvelopeOscillatorGainDestination;
 		}
 
 		audioNodeDatabase = {};
 
-		createAudioCanvas(exampleObject, audioNodeDatabase);
+		createAudioCanvas(audioGraph, audioNodeDatabase);
 	}
+
+	$: audioGraphWithPositions = {
+		...Object.entries(audioGraph).reduce(
+			(acc: SerializedAudioElementsWithPositions, [key, value]) => {
+				acc[key] = {
+					id: key,
+					...value,
+					position: {
+						x: 0,
+						y: 0
+					}
+				};
+
+				return acc;
+			},
+			{}
+		)
+	};
 
 	const handlePlay = () => {
 		playAudioCanvas(audioNodeDatabase);
+	};
+
+	const handleDrag = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
+		const { x, y, id } = event.detail;
+
+		if (audioGraphWithPositions[id]) {
+			audioGraphWithPositions[id]!.position.x = x;
+			audioGraphWithPositions[id]!.position.y = y;
+		}
 	};
 </script>
 
@@ -59,9 +102,15 @@
 			>
 		</select>
 	</div>
-	<div>
-		<label for="text">Text</label>
-		<textarea id="text" bind:value={text} rows={20} />
+	<div class="audio-canvas">
+		{#each Object.values(audioGraphWithPositions) as node}
+			<Node id={node.id} {node} position={node.position} on:drag={handleDrag} />
+		{/each}
+
+		positions:
+		{#each Object.values(audioGraphWithPositions) as node}
+			{node.type} {node.position.x}, {node.position.y}
+		{/each}
 	</div>
 	<div>
 		<label for="play">Play</label>
@@ -70,7 +119,9 @@
 </div>
 
 <style>
-	textarea {
+	.audio-canvas {
 		width: 100%;
+		height: 80vh;
+		border: 1px solid black;
 	}
 </style>
