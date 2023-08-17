@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import type { AllowedSerializedAudioElements } from '../audio/AudioCanvas';
+	import Node from './Node.svelte';
 
 	const disaptcher = createEventDispatcher();
 
@@ -49,7 +50,7 @@
 	on:mouseup={handleMouseUp}
 	style="position: absolute; left: {position.x}px; top: {position.y}px;"
 >
-	{node.type}
+	<Node nodeId={id} {node} />
 </div>
 
 <style>
