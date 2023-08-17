@@ -9,7 +9,7 @@
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
 	import { sequencerEnvelopeOscillatorGainDestination } from '../examples/sequencer-envelope-oscillator-gain-destination';
 	import { midiEnvelopeOscillatorGainDestination } from '../examples/midi-envelope-oscillator-gain-destination';
-	import Node from '../components/Node.svelte';
+	import DraggableNode from '../components/DraggableNode.svelte';
 
 	let chosenExample = 'sequencer-envelope-oscillator-gain-destination';
 
@@ -21,17 +21,6 @@
 				y: number;
 			};
 		};
-	}
-
-	let text: string;
-	$: if (chosenExample === 'oscillator-gain-destination') {
-		text = JSON.stringify(oscillatorGainDestination, null, 2);
-	} else if (chosenExample === 'trigger-envelope-oscillator-gain-destination') {
-		text = JSON.stringify(triggerEnvelopeOscillatorGainDestination, null, 2);
-	} else if (chosenExample === 'sequencer-envelope-oscillator-gain-destination') {
-		text = JSON.stringify(sequencerEnvelopeOscillatorGainDestination, null, 2);
-	} else if (chosenExample === 'midi-envelope-oscillator-gain-destination') {
-		text = JSON.stringify(midiEnvelopeOscillatorGainDestination, null, 2);
 	}
 
 	let audioNodeDatabase: AudioNodeDatabase = {};
@@ -99,8 +88,7 @@
 </script>
 
 <div>
-	<h2>Page</h2>
-	<div>
+	<div class="menu">
 		<label for="example">Chosen Example</label>
 		<select id="example" bind:value={chosenExample}>
 			<option value="oscillator-gain-destination">Oscillator Gain Destination</option>
@@ -114,27 +102,23 @@
 				>Midi Envelope Oscillator Gain Destination</option
 			>
 		</select>
+		<div>
+			<label for="play">Play</label>
+			<button id="play" on:click={handlePlay}>Play</button>
+		</div>
 	</div>
 	<div class="audio-canvas">
 		{#each Object.values(audioGraphWithPositions) as node (node.id)}
-			<Node id={node.id} {node} position={node.position} on:drag={handleDrag} />
+			<DraggableNode id={node.id} {node} position={node.position} on:drag={handleDrag} />
 		{/each}
-
-		positions:
-		{#each Object.values(audioGraphWithPositions) as node (node.id)}
-			{node.type} {node.position.x}, {node.position.y}
-		{/each}
-	</div>
-	<div>
-		<label for="play">Play</label>
-		<button id="play" on:click={handlePlay}>Play</button>
 	</div>
 </div>
 
 <style>
-	.audio-canvas {
-		width: 100%;
-		height: 80vh;
+	.menu {
+		position: fixed;
+		top: 8px;
 		border: 1px solid black;
+		padding: 16px;
 	}
 </style>
