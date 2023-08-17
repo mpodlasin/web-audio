@@ -75,6 +75,37 @@ export type AllowedSerializedAudioElements =
 	| SerializedSequencerNode
 	| SerializedMidiNode;
 
+export const allowedSerializedAudioElementStaticDefinitions = {
+	sequencer: {
+		inputs: [],
+		outputs: ['frequency', 'trigger']
+	},
+	oscillator: {
+		inputs: [],
+		outputs: ['audio']
+	},
+	gain: {
+		inputs: ['audio'],
+		outputs: ['audio']
+	},
+	destination: {
+		inputs: ['audio'],
+		outputs: []
+	},
+	trigger: {
+		inputs: [],
+		outputs: ['trigger']
+	},
+	envelope: {
+		inputs: ['trigger'],
+		outputs: ['envelope']
+	},
+	midi: {
+		inputs: [],
+		outputs: ['frequency', 'trigger']
+	}
+};
+
 /* Initialized */
 
 export interface CustomAudioNode {

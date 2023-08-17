@@ -29,7 +29,7 @@
 
 	const handleMouseMove = (event: MouseEvent) => {
 		if (!isDragging) return;
-        event.preventDefault();
+		event.preventDefault();
 
 		disaptcher('drag', {
 			id,
@@ -44,19 +44,10 @@
 </script>
 
 <div
-	class="node"
 	on:mousemove={handleMouseMove}
 	on:mousedown={handleMouseDown}
 	on:mouseup={handleMouseUp}
 	style="position: absolute; left: {position.x}px; top: {position.y}px;"
 >
-	<Node nodeId={id} {node} />
+	<Node {node} />
 </div>
-
-<style>
-	.node {
-		width: 100px;
-		height: 100px;
-		border: 1px solid black;
-	}
-</style>
