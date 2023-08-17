@@ -52,24 +52,33 @@
 
 		createAudioCanvas(audioGraph, audioNodeDatabase);
 	}
+	let audioGraphWithPositions: SerializedAudioElementsWithPositions;
 
-	$: audioGraphWithPositions = {
-		...Object.entries(audioGraph).reduce(
-			(acc: SerializedAudioElementsWithPositions, [key, value]) => {
-				acc[key] = {
-					id: key,
-					...value,
-					position: {
-						x: 0,
-						y: 0
-					}
-				};
+	$: {
+		const audioGraphWithPositionsFromLocalStorage = localStorage.getItem('audioGraphWithPositions');
 
-				return acc;
-			},
-			{}
-		)
-	};
+		if (audioGraphWithPositionsFromLocalStorage !== null) {
+			audioGraphWithPositions = JSON.parse(audioGraphWithPositionsFromLocalStorage);
+		} else {
+			audioGraphWithPositions = {
+				...Object.entries(audioGraph).reduce(
+					(acc: SerializedAudioElementsWithPositions, [key, value]) => {
+						acc[key] = {
+							id: key,
+							...value,
+							position: {
+								x: 0,
+								y: 0
+							}
+						};
+
+						return acc;
+					},
+					{}
+				)
+			};
+		}
+	}
 
 	const handlePlay = () => {
 		playAudioCanvas(audioNodeDatabase);
@@ -83,6 +92,10 @@
 			audioGraphWithPositions[id]!.position.y = y;
 		}
 	};
+
+	$: {
+		localStorage.setItem('audioGraphWithPositions', JSON.stringify(audioGraphWithPositions));
+	}
 </script>
 
 <div>
@@ -103,12 +116,12 @@
 		</select>
 	</div>
 	<div class="audio-canvas">
-		{#each Object.values(audioGraphWithPositions) as node}
+		{#each Object.values(audioGraphWithPositions) as node (node.id)}
 			<Node id={node.id} {node} position={node.position} on:drag={handleDrag} />
 		{/each}
 
 		positions:
-		{#each Object.values(audioGraphWithPositions) as node}
+		{#each Object.values(audioGraphWithPositions) as node (node.id)}
 			{node.type} {node.position.x}, {node.position.y}
 		{/each}
 	</div>

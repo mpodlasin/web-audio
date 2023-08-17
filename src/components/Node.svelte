@@ -28,6 +28,7 @@
 
 	const handleMouseMove = (event: MouseEvent) => {
 		if (!isDragging) return;
+        event.preventDefault();
 
 		disaptcher('drag', {
 			id,
