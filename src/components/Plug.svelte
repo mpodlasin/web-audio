@@ -1,7 +1,25 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+
+	export let id: string;
+	export let type: 'input' | 'output';
+	let plug: HTMLElement;
+
+	const dispatcher = createEventDispatcher();
+
+	$: {
+		if (plug) {
+			dispatcher('plug', {
+				id,
+				type,
+				x: plug.getBoundingClientRect().x,
+				y: plug.getBoundingClientRect().y
+			});
+		}
+	}
 </script>
 
-<div class="plug" />
+<div class="plug" bind:this={plug} />
 
 <style>
 	.plug {

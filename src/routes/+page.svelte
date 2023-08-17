@@ -3,7 +3,8 @@
 		createAudioCanvas,
 		type AudioNodeDatabase,
 		playAudioCanvas,
-		type SerializedAudioElements
+		type SerializedAudioElements,
+		allowedSerializedAudioElementStaticDefinitions
 	} from '../audio/AudioCanvas';
 	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination';
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
@@ -85,6 +86,91 @@
 	$: {
 		localStorage.setItem('audioGraphWithPositions', JSON.stringify(audioGraphWithPositions));
 	}
+
+	$: lines = Object.values(audioGraphWithPositions).reduce(
+		(acc: (readonly [readonly [string, string], string])[], node) => {
+			if (node.inputs) {
+				const mapped = node.inputs.map((input) => {
+					if (typeof input === 'string') {
+						const staticNodeDefinition =
+							allowedSerializedAudioElementStaticDefinitions[
+								audioGraphWithPositions[input]!
+									.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
+							];
+						return [[input, staticNodeDefinition.outputs[0] as string], node.id] as const;
+					} else {
+						return [[input.id, input.output], node.id] as const;
+					}
+				});
+
+				return [...mapped, ...acc];
+			}
+
+			return acc;
+		},
+		[]
+	);
+
+	let plugPositions: {
+		[key: string]: {
+			inputPlugPositions: { [key: string]: { x: number; y: number } };
+			outputPlugPositions: { [key: string]: { x: number; y: number } };
+		};
+	} = {};
+
+	const handleNodePlugPositions = (event: CustomEvent) => {
+		const { id, inputPlugPositions, outputPlugPositions } = event.detail;
+
+		plugPositions[id] = {
+			inputPlugPositions,
+			outputPlugPositions
+		};
+	};
+
+	$: linesToDisplay = lines.flatMap(([from, to]) => {
+		const [fromId, fromName] = from;
+
+		const fromNode = audioGraphWithPositions[fromId];
+		const toNode = audioGraphWithPositions[to];
+
+		if (!fromNode || !toNode) {
+			return [];
+		}
+
+		const fromStaticNodeDefinition =
+			allowedSerializedAudioElementStaticDefinitions[
+				fromNode.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
+			];
+		const toStaticNodeDefinition =
+			allowedSerializedAudioElementStaticDefinitions[
+				toNode.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
+			];
+		const fromPlugPosition = plugPositions[fromId]?.outputPlugPositions[fromName];
+		const toPlugPosition =
+			plugPositions[to]?.inputPlugPositions[toStaticNodeDefinition.inputs[0] as string];
+
+		if (fromPlugPosition && toPlugPosition) {
+			return [
+				{
+					from: {
+						x: fromPlugPosition.x,
+						y: fromPlugPosition.y
+					},
+					to: {
+						x: toPlugPosition.x,
+						y: toPlugPosition.y
+					}
+				}
+			];
+		}
+
+		return [];
+	});
+
+	$: {
+		console.log(plugPositions);
+		console.log(lines);
+	}
 </script>
 
 <div>
@@ -109,8 +195,19 @@
 	</div>
 	<div class="audio-canvas">
 		{#each Object.values(audioGraphWithPositions) as node (node.id)}
-			<DraggableNode id={node.id} {node} position={node.position} on:drag={handleDrag} />
+			<DraggableNode
+				id={node.id}
+				{node}
+				position={node.position}
+				on:drag={handleDrag}
+				on:nodePlugPositions={handleNodePlugPositions}
+			/>
 		{/each}
+		<svg width="100vh" height="100vh">
+			{#each linesToDisplay as line}
+				<line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} stroke="black" />
+			{/each}
+		</svg>
 	</div>
 </div>
 

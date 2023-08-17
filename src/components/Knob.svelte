@@ -6,10 +6,6 @@
 
 	const numberParameter = typeof parameter === 'number' ? parameter : null;
 	const inputParameter = typeof parameter === 'object' ? parameter : null;
-
-	$: {
-		console.log(parameterName, parameter);
-	}
 </script>
 
 <div class="wrapper">
