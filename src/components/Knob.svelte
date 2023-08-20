@@ -21,7 +21,9 @@
 		window.addEventListener('mousemove', handleMouseMove);
 	}
 
-	$: angle = numberParameter ? 180 * (numberParameter - minValue) / (maxValue - minValue) - 90 : 0;
+	$: angle = numberParameter
+		? (180 * (numberParameter - minValue)) / (maxValue - minValue) - 90
+		: 0;
 
 	function handleMouseMove(event: MouseEvent) {
 		if (isDragging) {
@@ -49,8 +51,13 @@
 
 <div class="wrapper">
 	<div>{parameterName}</div>
-	<div class="knob" bind:this={knob} on:mousedown={handleMouseDown} style="transform: rotate({angle}deg)">
-		<div class="knob-pointer"></div>
+	<div
+		class="knob"
+		bind:this={knob}
+		on:mousedown={handleMouseDown}
+		style="transform: rotate({angle}deg)"
+	>
+		<div class="knob-pointer" />
 	</div>
 	{#if numberParameter !== null}
 		<div>{numberParameter}</div>
