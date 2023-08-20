@@ -248,6 +248,12 @@
 	$: console.log('plugPositions', plugPositions);
 
 	$: console.log('linesToDisplay', linesToDisplay);
+
+	const handleNodeParameterChange = (
+		event: CustomEvent<{ id: string; parameterName: string; value: number }>
+	) => {
+		// ????
+	};
 </script>
 
 <div>
@@ -278,6 +284,7 @@
 				position={node.position}
 				on:drag={handleDrag}
 				on:nodePlugAndKnobPositions={handleNodePlugPositions}
+				on:nodeParameterChange={handleNodeParameterChange}
 			/>
 		{/each}
 		<svg width="100vh" height="100vh">

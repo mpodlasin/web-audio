@@ -50,13 +50,27 @@
 			parameterKnobPositions
 		});
 	}
+
+	const handleParameterChange = (event: any) => {
+		const parameterName = event.detail.parameterName;
+		const value = event.detail.value;
+
+		dispatcher('nodeParameterChange', { id, parameterName, value });
+	};
 </script>
 
 <div class="node">
 	<div class="header">{node.type}</div>
 	<div class="parameters">
 		{#each parameters as nodeParameter}
-			<Knob parameterName={nodeParameter[0]} parameter={nodeParameter[1]} on:knob={handleKnob} />
+			<Knob
+				parameterName={nodeParameter[0]}
+				parameter={nodeParameter[1]}
+				on:knob={handleKnob}
+				minValue={staticDefinition.parameters[nodeParameter[0]]?.minValue ?? 0}
+				maxValue={staticDefinition.parameters[nodeParameter[0]]?.minValue ?? Infinity}
+				on:change={handleParameterChange}
+			/>
 		{/each}
 	</div>
 	<div class="inputs-and-outputs">

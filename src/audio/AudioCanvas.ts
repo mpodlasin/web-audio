@@ -75,34 +75,66 @@ export type AllowedSerializedAudioElements =
 	| SerializedSequencerNode
 	| SerializedMidiNode;
 
-export const allowedSerializedAudioElementStaticDefinitions = {
+export const allowedSerializedAudioElementStaticDefinitions: {
+	[key in AllowedSerializedAudioElements['type']]: {
+		inputs: string[];
+		outputs: string[];
+		parameters: {
+			[key: string]: {
+				minValue: number;
+				maxValue: number;
+			};
+		};
+	};
+} = {
 	sequencer: {
 		inputs: [],
-		outputs: ['frequency', 'trigger']
+		outputs: ['frequency', 'trigger'],
+		parameters: {}
 	},
 	oscillator: {
 		inputs: [],
-		outputs: ['audio']
+		outputs: ['audio'],
+		parameters: {
+			frequency: {
+				minValue: 0,
+				maxValue: 10000
+			},
+			detune: {
+				minValue: -4800,
+				maxValue: 4800
+			}
+		}
 	},
 	gain: {
 		inputs: ['audio'],
-		outputs: ['audio']
+		outputs: ['audio'],
+		parameters: {
+			gain: {
+				minValue: 0,
+				maxValue: 1
+			}
+		}
 	},
 	destination: {
 		inputs: ['audio'],
-		outputs: []
+		outputs: [],
+		parameters: {}
 	},
 	trigger: {
 		inputs: [],
-		outputs: ['trigger']
+		outputs: ['trigger'],
+		parameters: {}
 	},
 	envelope: {
 		inputs: ['trigger'],
-		outputs: ['envelope']
+		outputs: ['envelope'],
+		parameters: {}
 	},
 	midi: {
 		inputs: [],
-		outputs: ['frequency', 'trigger']
+		outputs: ['frequency', 'trigger'],
+		parameters: {}
 	}
 };
 

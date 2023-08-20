@@ -7,8 +7,8 @@
 	export let minValue: number;
 	export let maxValue: number;
 
-	const numberParameter = typeof parameter === 'number' ? parameter : null;
-	const inputParameter = typeof parameter === 'object' ? parameter : null;
+	$: numberParameter = typeof parameter === 'number' ? parameter : null;
+	$: inputParameter = typeof parameter === 'object' ? parameter : null;
 
 	const dispatcher = createEventDispatcher();
 
@@ -19,6 +19,11 @@
 	function handleMouseDown(event: MouseEvent) {
 		isDragging = true;
 		window.addEventListener('mousemove', handleMouseMove);
+
+		window.addEventListener('mouseup', () => {
+			isDragging = false;
+			window.removeEventListener('mousemove', handleMouseMove);
+		});
 	}
 
 	$: angle = numberParameter
@@ -47,6 +52,8 @@
 			});
 		}
 	}
+
+	$: console.log('numberParameter', numberParameter);
 </script>
 
 <div class="wrapper">
