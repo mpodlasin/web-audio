@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { SerializedAudioParameter } from '../audio/AudioCanvas';
-    import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	export let parameterName: string;
 	export let parameter: SerializedAudioParameter;
@@ -8,19 +8,19 @@
 	const numberParameter = typeof parameter === 'number' ? parameter : null;
 	const inputParameter = typeof parameter === 'object' ? parameter : null;
 
-    const dispatcher = createEventDispatcher();
+	const dispatcher = createEventDispatcher();
 
-    let knob: HTMLDivElement;
+	let knob: HTMLDivElement;
 
-    $: {
-        if (knob) {
-            dispatcher("knob", {
-                parameterName,
-                x: knob.getBoundingClientRect().x,
-                y: knob.getBoundingClientRect().y,
-            })
-        }
-    }
+	$: {
+		if (knob) {
+			dispatcher('knob', {
+				parameterName,
+				x: knob.getBoundingClientRect().x,
+				y: knob.getBoundingClientRect().y
+			});
+		}
+	}
 </script>
 
 <div class="wrapper">

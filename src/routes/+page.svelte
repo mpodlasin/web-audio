@@ -80,43 +80,57 @@
 
 	$: lines = Object.values(audioGraphWithPositions).reduce(
 		(acc: (readonly [readonly [string, string], readonly [string, string]])[], node) => {
-				const staticToDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
+			const staticToDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
 
-				const mapped = node.inputs ? node.inputs.map((input) => {
-					if (typeof input === 'string') {
-						const staticNodeDefinition =
-							allowedSerializedAudioElementStaticDefinitions[
-								audioGraphWithPositions[input]!
-									.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
-							];
-						return [[input, staticNodeDefinition.outputs[0] as string], [node.id, staticToDefinition.inputs[0] as string]] as const;
-					} else {
-						return [[input.id, input.output], [node.id, staticToDefinition.inputs[0] as string]] as const;
-					}
-				}) : []
+			const mapped = node.inputs
+				? node.inputs.map((input) => {
+						if (typeof input === 'string') {
+							const staticNodeDefinition =
+								allowedSerializedAudioElementStaticDefinitions[
+									audioGraphWithPositions[input]!
+										.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
+								];
+							return [
+								[input, staticNodeDefinition.outputs[0] as string],
+								[node.id, staticToDefinition.inputs[0] as string]
+							] as const;
+						} else {
+							return [
+								[input.id, input.output],
+								[node.id, staticToDefinition.inputs[0] as string]
+							] as const;
+						}
+				  })
+				: [];
 
-				const mappedParams = node.parameters
-					? Object.entries(node.parameters).flatMap(([key, value]) => {
-							if (Array.isArray(value)) {
-								return value.map((input) => {
-									if (typeof input === 'string') {
-										const staticNodeDefinition =
-											allowedSerializedAudioElementStaticDefinitions[
-												audioGraphWithPositions[input]!
-													.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
-											];
-										return [[input, staticNodeDefinition.outputs[0] as string], [node.id, key]] as const;
-									} else {
-										return [[input.id, input.output], [node.id, key]] as const; 
-									}
-								})
-							}
+			const mappedParams = node.parameters
+				? Object.entries(node.parameters).flatMap(([key, value]) => {
+						if (Array.isArray(value)) {
+							return value.map((input) => {
+								if (typeof input === 'string') {
+									const staticNodeDefinition =
+										allowedSerializedAudioElementStaticDefinitions[
+											audioGraphWithPositions[input]!
+												.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
+										];
+									return [
+										[input, staticNodeDefinition.outputs[0] as string],
+										[node.id, key]
+									] as const;
+								} else {
+									return [
+										[input.id, input.output],
+										[node.id, key]
+									] as const;
+								}
+							});
+						}
 
-							return [];
-					  })
-					: [];
+						return [];
+				  })
+				: [];
 
-				return [...mapped, ...mappedParams, ...acc];
+			return [...mapped, ...mappedParams, ...acc];
 		},
 		[]
 	);
@@ -142,22 +156,24 @@
 
 			plugPositions[id] = {
 				inputPlugPositions: Object.fromEntries(
-					Object.entries(plugPositions[id]?.inputPlugPositions ?? {}).map(
-						([key, { x, y }]) => [key, { x: x + diffX, y: y + diffY }]
-					)
+					Object.entries(plugPositions[id]?.inputPlugPositions ?? {}).map(([key, { x, y }]) => [
+						key,
+						{ x: x + diffX, y: y + diffY }
+					])
 				),
 				outputPlugPositions: Object.fromEntries(
-					Object.entries(plugPositions[id]?.outputPlugPositions ?? {}).map(
-						([key, { x, y }]) => [key, { x: x + diffX, y: y + diffY }]
-					)
+					Object.entries(plugPositions[id]?.outputPlugPositions ?? {}).map(([key, { x, y }]) => [
+						key,
+						{ x: x + diffX, y: y + diffY }
+					])
 				),
 				parameterKnobPositions: Object.fromEntries(
-					Object.entries(plugPositions[id]?.parameterKnobPositions ?? {}).map(
-						([key, { x, y }]) => [key, { x: x + diffX, y: y + diffY }]
-					)
+					Object.entries(plugPositions[id]?.parameterKnobPositions ?? {}).map(([key, { x, y }]) => [
+						key,
+						{ x: x + diffX, y: y + diffY }
+					])
 				)
 			};
-			
 
 			audioGraphWithPositions[id]!.position.x = x;
 			audioGraphWithPositions[id]!.position.y = y;
@@ -192,8 +208,7 @@
 		const fromPlugPosition = plugPositions[fromId]?.outputPlugPositions[fromName];
 		const toPlugPosition =
 			plugPositions[toId]?.inputPlugPositions[toStaticNodeDefinition.inputs[0] as string];
-		const toParameterKnobPosition =
-			plugPositions[toId]?.parameterKnobPositions[toName];
+		const toParameterKnobPosition = plugPositions[toId]?.parameterKnobPositions[toName];
 
 		if (fromPlugPosition && toParameterKnobPosition) {
 			return [

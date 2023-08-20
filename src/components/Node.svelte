@@ -19,7 +19,7 @@
 
 	let inputPlugPositions: Record<string, { x: number; y: number }> = {};
 	let outputPlugPositions: Record<string, { x: number; y: number }> = {};
-    let parameterKnobPositions: Record<string, { x: number; y: number }> = {};
+	let parameterKnobPositions: Record<string, { x: number; y: number }> = {};
 
 	const handlePlug = (event: any) => {
 		const id = event.detail.id;
@@ -34,20 +34,20 @@
 		}
 	};
 
-    const handleKnob = (event: any) => {
-        const id = event.detail.parameterName;
-        const x = event.detail.x;
-        const y = event.detail.y;
+	const handleKnob = (event: any) => {
+		const id = event.detail.parameterName;
+		const x = event.detail.x;
+		const y = event.detail.y;
 
-        parameterKnobPositions[id] = { x, y };
-    }
+		parameterKnobPositions[id] = { x, y };
+	};
 
 	$: {
 		dispatcher('nodePlugAndKnobPositions', {
 			id,
 			inputPlugPositions,
 			outputPlugPositions,
-            parameterKnobPositions
+			parameterKnobPositions
 		});
 	}
 </script>
