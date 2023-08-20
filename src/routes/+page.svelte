@@ -74,39 +74,49 @@
 		playAudioCanvas(audioNodeDatabase);
 	};
 
-	const handleDrag = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
-		const { x, y, id } = event.detail;
-
-		if (audioGraphWithPositions[id]) {
-			audioGraphWithPositions[id]!.position.x = x;
-			audioGraphWithPositions[id]!.position.y = y;
-		}
-	};
-
 	$: {
 		localStorage.setItem('audioGraphWithPositions', JSON.stringify(audioGraphWithPositions));
 	}
 
 	$: lines = Object.values(audioGraphWithPositions).reduce(
-		(acc: (readonly [readonly [string, string], string])[], node) => {
-			if (node.inputs) {
-				const mapped = node.inputs.map((input) => {
+		(acc: (readonly [readonly [string, string], readonly [string, string]])[], node) => {
+				const staticToDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
+
+				const mapped = node.inputs ? node.inputs.map((input) => {
 					if (typeof input === 'string') {
 						const staticNodeDefinition =
 							allowedSerializedAudioElementStaticDefinitions[
 								audioGraphWithPositions[input]!
 									.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
 							];
-						return [[input, staticNodeDefinition.outputs[0] as string], node.id] as const;
+						return [[input, staticNodeDefinition.outputs[0] as string], [node.id, staticToDefinition.inputs[0] as string]] as const;
 					} else {
-						return [[input.id, input.output], node.id] as const;
+						return [[input.id, input.output], [node.id, staticToDefinition.inputs[0] as string]] as const;
 					}
-				});
+				}) : []
 
-				return [...mapped, ...acc];
-			}
+				const mappedParams = node.parameters
+					? Object.entries(node.parameters).flatMap(([key, value]) => {
+							if (Array.isArray(value)) {
+								return value.map((input) => {
+									if (typeof input === 'string') {
+										const staticNodeDefinition =
+											allowedSerializedAudioElementStaticDefinitions[
+												audioGraphWithPositions[input]!
+													.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
+											];
+										return [[input, staticNodeDefinition.outputs[0] as string], [node.id, key]] as const;
+									} else {
+										return [[input.id, input.output], [node.id, key]] as const; 
+									}
+								})
+							}
 
-			return acc;
+							return [];
+					  })
+					: [];
+
+				return [...mapped, ...mappedParams, ...acc];
 		},
 		[]
 	);
@@ -115,39 +125,90 @@
 		[key: string]: {
 			inputPlugPositions: { [key: string]: { x: number; y: number } };
 			outputPlugPositions: { [key: string]: { x: number; y: number } };
+			parameterKnobPositions: { [key: string]: { x: number; y: number } };
 		};
 	} = {};
 
+	const handleDrag = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
+		const { x, y, id } = event.detail;
+		const node = audioGraphWithPositions[id];
+
+		if (node) {
+			const oldX = node.position.x;
+			const oldY = node.position.y;
+
+			const diffX = x - oldX;
+			const diffY = y - oldY;
+
+			plugPositions[id] = {
+				inputPlugPositions: Object.fromEntries(
+					Object.entries(plugPositions[id]?.inputPlugPositions ?? {}).map(
+						([key, { x, y }]) => [key, { x: x + diffX, y: y + diffY }]
+					)
+				),
+				outputPlugPositions: Object.fromEntries(
+					Object.entries(plugPositions[id]?.outputPlugPositions ?? {}).map(
+						([key, { x, y }]) => [key, { x: x + diffX, y: y + diffY }]
+					)
+				),
+				parameterKnobPositions: Object.fromEntries(
+					Object.entries(plugPositions[id]?.parameterKnobPositions ?? {}).map(
+						([key, { x, y }]) => [key, { x: x + diffX, y: y + diffY }]
+					)
+				)
+			};
+			
+
+			audioGraphWithPositions[id]!.position.x = x;
+			audioGraphWithPositions[id]!.position.y = y;
+		}
+	};
+
 	const handleNodePlugPositions = (event: CustomEvent) => {
-		const { id, inputPlugPositions, outputPlugPositions } = event.detail;
+		const { id, inputPlugPositions, outputPlugPositions, parameterKnobPositions } = event.detail;
 
 		plugPositions[id] = {
 			inputPlugPositions,
-			outputPlugPositions
+			outputPlugPositions,
+			parameterKnobPositions
 		};
 	};
 
 	$: linesToDisplay = lines.flatMap(([from, to]) => {
 		const [fromId, fromName] = from;
+		const [toId, toName] = to;
 
 		const fromNode = audioGraphWithPositions[fromId];
-		const toNode = audioGraphWithPositions[to];
+		const toNode = audioGraphWithPositions[toId];
 
 		if (!fromNode || !toNode) {
 			return [];
 		}
 
-		const fromStaticNodeDefinition =
-			allowedSerializedAudioElementStaticDefinitions[
-				fromNode.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
-			];
 		const toStaticNodeDefinition =
 			allowedSerializedAudioElementStaticDefinitions[
 				toNode.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
 			];
 		const fromPlugPosition = plugPositions[fromId]?.outputPlugPositions[fromName];
 		const toPlugPosition =
-			plugPositions[to]?.inputPlugPositions[toStaticNodeDefinition.inputs[0] as string];
+			plugPositions[toId]?.inputPlugPositions[toStaticNodeDefinition.inputs[0] as string];
+		const toParameterKnobPosition =
+			plugPositions[toId]?.parameterKnobPositions[toName];
+
+		if (fromPlugPosition && toParameterKnobPosition) {
+			return [
+				{
+					from: {
+						x: fromPlugPosition.x,
+						y: fromPlugPosition.y
+					},
+					to: {
+						x: toParameterKnobPosition.x,
+						y: toParameterKnobPosition.y
+					}
+				}
+			];
+		}
 
 		if (fromPlugPosition && toPlugPosition) {
 			return [
@@ -167,10 +228,11 @@
 		return [];
 	});
 
-	$: {
-		console.log(plugPositions);
-		console.log(lines);
-	}
+	$: console.log('lines', lines);
+
+	$: console.log('plugPositions', plugPositions);
+
+	$: console.log('linesToDisplay', linesToDisplay);
 </script>
 
 <div>
@@ -200,7 +262,7 @@
 				{node}
 				position={node.position}
 				on:drag={handleDrag}
-				on:nodePlugPositions={handleNodePlugPositions}
+				on:nodePlugAndKnobPositions={handleNodePlugPositions}
 			/>
 		{/each}
 		<svg width="100vh" height="100vh">
