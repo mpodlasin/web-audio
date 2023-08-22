@@ -4,13 +4,16 @@
 		type AudioNodeDatabase,
 		playAudioCanvas,
 		type SerializedAudioElements,
-		allowedSerializedAudioElementStaticDefinitions
+		allowedSerializedAudioElementStaticDefinitions,
+		updateAudioCanvas
 	} from '../audio/AudioCanvas';
 	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination';
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
 	import { sequencerEnvelopeOscillatorGainDestination } from '../examples/sequencer-envelope-oscillator-gain-destination';
 	import { midiEnvelopeOscillatorGainDestination } from '../examples/midi-envelope-oscillator-gain-destination';
 	import DraggableNode from '../components/DraggableNode.svelte';
+
+	const audioGraphLocalStorageKey = 'audioGraph';
 
 	let chosenExample = 'sequencer-envelope-oscillator-gain-destination';
 
@@ -27,56 +30,57 @@
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
 	let audioGraph: SerializedAudioElements;
+	let oldAudioGraph: SerializedAudioElements;
 	$: {
-		if (chosenExample === 'oscillator-gain-destination') {
-			audioGraph = oscillatorGainDestination;
-		} else if (chosenExample === 'trigger-envelope-oscillator-gain-destination') {
-			audioGraph = triggerEnvelopeOscillatorGainDestination;
-		} else if (chosenExample === 'sequencer-envelope-oscillator-gain-destination') {
-			audioGraph = sequencerEnvelopeOscillatorGainDestination;
-		} else if (chosenExample === 'midi-envelope-oscillator-gain-destination') {
-			audioGraph = midiEnvelopeOscillatorGainDestination;
+		if (!audioGraph) {
+			if (chosenExample === 'oscillator-gain-destination') {
+				audioGraph = oscillatorGainDestination;
+			} else if (chosenExample === 'trigger-envelope-oscillator-gain-destination') {
+				audioGraph = triggerEnvelopeOscillatorGainDestination;
+			} else if (chosenExample === 'sequencer-envelope-oscillator-gain-destination') {
+				audioGraph = sequencerEnvelopeOscillatorGainDestination;
+			} else if (chosenExample === 'midi-envelope-oscillator-gain-destination') {
+				audioGraph = midiEnvelopeOscillatorGainDestination;
+			}
+			oldAudioGraph = audioGraph;
+
+			audioNodeDatabase = {};
+
+			createAudioCanvas(audioGraph, audioNodeDatabase);
 		}
-
-		audioNodeDatabase = {};
-
-		createAudioCanvas(audioGraph, audioNodeDatabase);
 	}
-	let audioGraphWithPositions: SerializedAudioElementsWithPositions;
+
+	let audioGraphWithPositions: SerializedAudioElementsWithPositions = {};
+
+	const audioGraphWithPositionFromLocalStorage = localStorage.getItem(audioGraphLocalStorageKey);
+
+	if (audioGraphWithPositionFromLocalStorage) {
+		audioGraphWithPositions = JSON.parse(audioGraphWithPositionFromLocalStorage);
+	}
 
 	$: {
-		const audioGraphWithPositionsFromLocalStorage = localStorage.getItem('audioGraphWithPositions');
+		localStorage.setItem(audioGraphLocalStorageKey, JSON.stringify(audioGraphWithPositions));
+	}
 
-		if (audioGraphWithPositionsFromLocalStorage !== null) {
-			audioGraphWithPositions = JSON.parse(audioGraphWithPositionsFromLocalStorage);
-		} else {
-			audioGraphWithPositions = {
-				...Object.entries(audioGraph).reduce(
-					(acc: SerializedAudioElementsWithPositions, [key, value]) => {
-						acc[key] = {
-							id: key,
-							...value,
-							position: {
-								x: 0,
-								y: 0
-							}
-						};
-
-						return acc;
-					},
-					{}
-				)
-			};
-		}
+	$: {
+		audioGraphWithPositions = Object.fromEntries(
+			Object.entries(audioGraph).map(([key, value]) => [
+				key,
+				{
+					...value,
+					id: key,
+					position: audioGraphWithPositions[key]?.position ?? {
+						x: Math.random() * 1000,
+						y: Math.random() * 800
+					}
+				}
+			])
+		);
 	}
 
 	const handlePlay = () => {
 		playAudioCanvas(audioNodeDatabase);
 	};
-
-	$: {
-		localStorage.setItem('audioGraphWithPositions', JSON.stringify(audioGraphWithPositions));
-	}
 
 	$: lines = Object.values(audioGraphWithPositions).reduce(
 		(acc: (readonly [readonly [string, string], readonly [string, string]])[], node) => {
@@ -243,16 +247,23 @@
 		return [];
 	});
 
-	$: console.log('lines', lines);
-
-	$: console.log('plugPositions', plugPositions);
-
-	$: console.log('linesToDisplay', linesToDisplay);
-
 	const handleNodeParameterChange = (
 		event: CustomEvent<{ id: string; parameterName: string; value: number }>
 	) => {
-		// ????
+		oldAudioGraph = JSON.parse(JSON.stringify(audioGraph));
+
+		const { id, parameterName, value } = event.detail;
+
+		audioGraph = {
+			...audioGraph,
+			[id]: {
+				...audioGraph[id],
+				parameters: {
+					...audioGraph[id]!.parameters,
+					[parameterName]: value
+				}
+			}
+		} as any;
 	};
 </script>
 

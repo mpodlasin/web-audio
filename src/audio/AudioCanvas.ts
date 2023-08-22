@@ -738,3 +738,59 @@ const noteFrequencies: Record<string, number> = {
 	'A#': 29.14,
 	B: 30.87
 };
+
+export const updateAudioCanvas = (
+	newAudioElements: SerializedAudioElements,
+	oldAudioElements: SerializedAudioElements,
+	audioNodeDatabase: AudioNodeDatabase
+) => {
+	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
+		const oldAudioElement = oldAudioElements[id];
+
+		if (oldAudioElement === undefined) {
+			const createdAudioNode = createCustomAudioNode(newAudioElement);
+
+			if (createdAudioNode !== null) {
+				audioNodeDatabase[id] = createdAudioNode;
+			}
+
+			return;
+		}
+
+		const audioNode = audioNodeDatabase[id];
+
+		if (!audioNode) {
+			throw new Error(`Audio node with id ${id} not found`);
+		}
+
+		const changedParametersWithValues = getChangedParameters(newAudioElement, oldAudioElement);
+
+		changedParametersWithValues.forEach(([parameterName, parameterValue]) => {
+			accessParameter(audioNode, parameterName).value = parameterValue;
+		});
+	});
+};
+
+function getChangedParameters(
+	newAudioElement: SerializedAudioElement<string, string>,
+	oldAudioElement: SerializedAudioElement<string, string>
+): [string, number][] {
+	const changedParameters: [string, number][] = [];
+
+	if (newAudioElement.parameters && oldAudioElement.parameters) {
+		for (const parameterName in newAudioElement.parameters) {
+			const newParameterValue = newAudioElement.parameters[parameterName];
+			const oldParameterValue = oldAudioElement.parameters[parameterName];
+
+			if (
+				typeof newParameterValue === 'number' &&
+				typeof oldParameterValue === 'number' &&
+				newParameterValue !== oldParameterValue
+			) {
+				changedParameters.push([parameterName, newParameterValue]);
+			}
+		}
+	}
+
+	return changedParameters;
+}

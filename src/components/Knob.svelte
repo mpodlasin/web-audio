@@ -17,6 +17,7 @@
 	let isDragging = false;
 
 	function handleMouseDown(event: MouseEvent) {
+		event.stopPropagation();
 		isDragging = true;
 		window.addEventListener('mousemove', handleMouseMove);
 
@@ -52,8 +53,6 @@
 			});
 		}
 	}
-
-	$: console.log('numberParameter', numberParameter);
 </script>
 
 <div class="wrapper">

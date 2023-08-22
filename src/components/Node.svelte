@@ -11,9 +11,8 @@
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
 
-	const staticDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
-
-	const parameters = Object.entries(node.parameters ?? {}) as [string, SerializedAudioParameter][];
+	$: staticDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
+	$: parameters = Object.entries(node.parameters ?? {}) as [string, SerializedAudioParameter][];
 
 	const dispatcher = createEventDispatcher();
 
@@ -62,7 +61,7 @@
 <div class="node">
 	<div class="header">{node.type}</div>
 	<div class="parameters">
-		{#each parameters as nodeParameter}
+		{#each parameters as nodeParameter (nodeParameter[0])}
 			<Knob
 				parameterName={nodeParameter[0]}
 				parameter={nodeParameter[1]}
@@ -75,12 +74,12 @@
 	</div>
 	<div class="inputs-and-outputs">
 		<div class="inputs">
-			{#each staticDefinition.inputs as input}
+			{#each staticDefinition.inputs as input (input)}
 				<Plug type="input" id={input} on:plug={handlePlug} />
 			{/each}
 		</div>
 		<div class="outputs">
-			{#each staticDefinition.outputs as output}
+			{#each staticDefinition.outputs as output (output)}
 				<Plug type="output" id={output} on:plug={handlePlug} />
 			{/each}
 		</div>
