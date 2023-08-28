@@ -6,6 +6,7 @@
 	export let parameter: SerializedAudioParameter;
 	export let minValue: number;
 	export let maxValue: number;
+	export let unit: string | null = null;
 
 	$: numberParameter = typeof parameter === 'number' ? parameter : null;
 	$: inputParameter = typeof parameter === 'object' ? parameter : null;
@@ -15,6 +16,7 @@
 	let knob: HTMLDivElement;
 
 	let isDragging = false;
+	let previousValue = numberParameter ?? 0;
 
 	function handleMouseDown(event: MouseEvent) {
 		event.stopPropagation();
@@ -23,6 +25,7 @@
 
 		window.addEventListener('mouseup', () => {
 			isDragging = false;
+			previousValue = numberParameter ?? 0;
 			window.removeEventListener('mousemove', handleMouseMove);
 		});
 	}
@@ -32,16 +35,18 @@
 		: 0;
 
 	function handleMouseMove(event: MouseEvent) {
+		event.preventDefault();
 		if (isDragging) {
-			const { x, y } = knob.getBoundingClientRect();
-			const { clientX, clientY } = event;
-			const dx = clientX - x;
-			const dy = clientY - y;
-			const distance = Math.sqrt(dx * dx + dy * dy);
-			const maxDistance = 40;
-			const value = Math.min(distance / maxDistance, 1);
+			const { y } = knob.getBoundingClientRect();
+			const { clientY } = event;
+			const dy = y - clientY;
+			const value = previousValue + dy * 10;
 			dispatcher('change', { parameterName, value });
 		}
+	}
+
+	$: {
+		console.log(angle);
 	}
 
 	$: {
@@ -66,7 +71,12 @@
 		<div class="knob-pointer" />
 	</div>
 	{#if numberParameter !== null}
-		<div>{numberParameter}</div>
+		<div>
+			{numberParameter.toFixed(2)}
+			{#if unit}
+				{' '}{unit}
+			{/if}
+		</div>
 	{/if}
 </div>
 

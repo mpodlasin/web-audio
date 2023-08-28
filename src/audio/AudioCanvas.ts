@@ -83,6 +83,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			[key: string]: {
 				minValue: number;
 				maxValue: number;
+				unit?: string;
 			};
 		};
 	};
@@ -98,11 +99,13 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		parameters: {
 			frequency: {
 				minValue: 0,
-				maxValue: 10000
+				maxValue: 10000,
+				unit: 'Hz'
 			},
 			detune: {
 				minValue: -4800,
-				maxValue: 4800
+				maxValue: 4800,
+				unit: 'cents'
 			}
 		}
 	},

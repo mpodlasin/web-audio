@@ -67,7 +67,8 @@
 				parameter={nodeParameter[1]}
 				on:knob={handleKnob}
 				minValue={staticDefinition.parameters[nodeParameter[0]]?.minValue ?? 0}
-				maxValue={staticDefinition.parameters[nodeParameter[0]]?.minValue ?? Infinity}
+				maxValue={staticDefinition.parameters[nodeParameter[0]]?.maxValue ?? Infinity}
+				unit={staticDefinition.parameters[nodeParameter[0]]?.unit ?? null}
 				on:change={handleParameterChange}
 			/>
 		{/each}
