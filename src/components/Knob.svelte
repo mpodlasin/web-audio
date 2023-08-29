@@ -41,12 +41,14 @@
 			const { clientY } = event;
 			const dy = y - clientY;
 			const value = previousValue + dy * 10;
-			dispatcher('change', { parameterName, value });
-		}
-	}
 
-	$: {
-		console.log(angle);
+			const normalizedValue = Math.min(
+				Math.max(value, minValue),
+				maxValue
+			);
+
+			dispatcher('change', { parameterName, value: normalizedValue });
+		}
 	}
 
 	$: {

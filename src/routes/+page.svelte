@@ -265,6 +265,10 @@
 			}
 		} as any;
 	};
+
+	$: {
+		updateAudioCanvas(audioGraph, oldAudioGraph, audioNodeDatabase);
+	}
 </script>
 
 <div>
