@@ -755,6 +755,18 @@ export const updateAudioCanvas = (
 
 			if (createdAudioNode !== null) {
 				audioNodeDatabase[id] = createdAudioNode;
+
+				newAudioElement.parameters && Object.keys(newAudioElement.parameters).forEach(parameterName => {
+					connectAudioElementsToParameter(
+						{
+							...newAudioElement,
+							id,
+						},
+						addIdsToAudioElements(newAudioElements),
+						parameterName,
+						audioNodeDatabase
+					);
+				});
 			}
 
 			return;

@@ -242,7 +242,7 @@ describe('AudioCanvas', () => {
 			).toBe(444);
 		});
 
-		xit('creates new oscillator', () => {
+		it('creates new oscillator', () => {
 			const audioElements = {
 				'1': {
 					type: 'oscillator' as const,
@@ -262,10 +262,6 @@ describe('AudioCanvas', () => {
 			const newAudioElements = {
 				'1': {
 					...audioElements['1'],
-					parameters: {
-						frequency: 444,
-						detune: 0
-					}
 				},
 				'2': {
 					type: 'oscillator' as const,
