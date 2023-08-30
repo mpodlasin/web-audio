@@ -84,6 +84,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				minValue: number;
 				maxValue: number;
 				unit?: string;
+				defaultValue?: number;
 			};
 		};
 	};
@@ -100,12 +101,14 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			frequency: {
 				minValue: 0,
 				maxValue: 10000,
-				unit: 'Hz'
+				unit: 'Hz',
+				defaultValue: 440
 			},
 			detune: {
 				minValue: -4800,
 				maxValue: 4800,
-				unit: 'cents'
+				unit: 'cents',
+				defaultValue: 0
 			}
 		}
 	},
@@ -115,7 +118,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		parameters: {
 			gain: {
 				minValue: 0,
-				maxValue: 1
+				maxValue: 1,
+				defaultValue: 1
 			}
 		}
 	},
@@ -767,11 +771,11 @@ export const updateAudioCanvas = (
 				connectAudioElementsToParameters(
 					{
 						...newAudioElement,
-						id,
+						id
 					},
 					addIdsToAudioElements(newAudioElements),
 					audioNodeDatabase
-				)
+				);
 			}
 
 			return;

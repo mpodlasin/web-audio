@@ -261,7 +261,7 @@ describe('AudioCanvas', () => {
 
 			const newAudioElements = {
 				'1': {
-					...audioElements['1'],
+					...audioElements['1']
 				},
 				'2': {
 					type: 'oscillator' as const,

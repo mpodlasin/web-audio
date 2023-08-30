@@ -59,6 +59,7 @@
 	}
 
 	$: {
+		console.log('setting items in local storage');
 		localStorage.setItem(audioGraphLocalStorageKey, JSON.stringify(audioGraphWithPositions));
 	}
 
@@ -269,6 +270,49 @@
 	$: {
 		updateAudioCanvas(audioGraph, oldAudioGraph, audioNodeDatabase);
 	}
+
+	let menuPosition = { x: 0, y: 0 };
+	let showMenu = false;
+
+	const handleCanvasLeftClick = (event: MouseEvent) => {
+		event.preventDefault();
+
+		menuPosition = { x: event.clientX, y: event.clientY };
+		showMenu = true;
+	};
+
+	const handleCanvasRightClick = (event: MouseEvent) => {
+		event.preventDefault();
+
+		showMenu = false;
+	};
+
+	const handleCreateElementClick =
+		(element: keyof typeof allowedSerializedAudioElementStaticDefinitions) =>
+		(event: MouseEvent) => {
+			event.preventDefault();
+
+			const idsSoFar = Object.keys(audioGraph);
+
+			const nextId = Math.max(...idsSoFar.map((id) => parseInt(id, 10))) + 1;
+
+			const staticNodeDefinition = allowedSerializedAudioElementStaticDefinitions[element];
+
+			audioGraph = {
+				...audioGraph,
+				[nextId]: {
+					type: element,
+					inputs: [],
+					outputs: [],
+					parameters: Object.fromEntries(
+						Object.entries(staticNodeDefinition.parameters).map(([key, value]) => [
+							key,
+							value.defaultValue
+						])
+					)
+				}
+			} as any;
+		};
 </script>
 
 <div>
@@ -291,7 +335,12 @@
 			<button id="play" on:click={handlePlay}>Play</button>
 		</div>
 	</div>
-	<div class="audio-canvas">
+	<div
+		class="audio-canvas"
+		on:contextmenu={handleCanvasLeftClick}
+		on:click={handleCanvasRightClick}
+		on:keypress={() => {}}
+	>
 		{#each Object.values(audioGraphWithPositions) as node (node.id)}
 			<DraggableNode
 				id={node.id}
@@ -307,6 +356,17 @@
 				<line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} stroke="black" />
 			{/each}
 		</svg>
+
+		{#if showMenu}
+			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
+				<button on:click={handleCreateElementClick('oscillator')}>Oscillator</button>
+				<button on:click={handleCreateElementClick('gain')}>Gain</button>
+				<button on:click={handleCreateElementClick('trigger')}>Trigger</button>
+				<button on:click={handleCreateElementClick('sequencer')}>Sequencer</button>
+				<button on:click={handleCreateElementClick('midi')}>Midi</button>
+				<button on:click={handleCreateElementClick('envelope')}>Envelope</button>
+			</div>
+		{/if}
 	</div>
 </div>
 
@@ -316,5 +376,14 @@
 		top: 8px;
 		border: 1px solid black;
 		padding: 16px;
+	}
+
+	.create-node-menu {
+		position: absolute;
+		border: 1px solid black;
+		padding: 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
 	}
 </style>

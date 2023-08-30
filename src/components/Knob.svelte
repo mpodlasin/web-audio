@@ -42,10 +42,7 @@
 			const dy = y - clientY;
 			const value = previousValue + dy * 10;
 
-			const normalizedValue = Math.min(
-				Math.max(value, minValue),
-				maxValue
-			);
+			const normalizedValue = Math.min(Math.max(value, minValue), maxValue);
 
 			dispatcher('change', { parameterName, value: normalizedValue });
 		}
