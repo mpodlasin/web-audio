@@ -351,7 +351,7 @@
 				on:nodeParameterChange={handleNodeParameterChange}
 			/>
 		{/each}
-		<svg width="100vh" height="100vh">
+		<svg width="100vw" height="100vh">
 			{#each linesToDisplay as line}
 				<line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} stroke="black" />
 			{/each}
