@@ -557,16 +557,7 @@ export function createAudioCanvas(
 	});
 
 	Object.values(audioElementsWithIds).forEach((audioElement) => {
-		if (audioElement.parameters) {
-			for (const parameterName in audioElement.parameters) {
-				connectAudioElementsToParameter(
-					audioElement,
-					audioElementsWithIds,
-					parameterName,
-					audioNodeDatabase
-				);
-			}
-		}
+		connectAudioElementsToParameters(audioElement, audioElementsWithIds, audioNodeDatabase);
 	});
 
 	Object.entries(audioElementsWithIds).forEach(([id, audioElement]) => {
@@ -578,6 +569,23 @@ export function createAudioCanvas(
 			}
 		}
 	});
+}
+
+function connectAudioElementsToParameters(
+	audioElementA: SerializedAudioElementWithId<string, string>,
+	audioElementsWithIds: SerializedAudioElementsWithIds,
+	audioNodeDatabase: AudioNodeDatabase
+): void {
+	if (audioElementA.parameters) {
+		for (const parameterName in audioElementA.parameters) {
+			connectAudioElementsToParameter(
+				audioElementA,
+				audioElementsWithIds,
+				parameterName,
+				audioNodeDatabase
+			);
+		}
+	}
 }
 
 function connectAudioElementsToParameter(
@@ -756,17 +764,14 @@ export const updateAudioCanvas = (
 			if (createdAudioNode !== null) {
 				audioNodeDatabase[id] = createdAudioNode;
 
-				newAudioElement.parameters && Object.keys(newAudioElement.parameters).forEach(parameterName => {
-					connectAudioElementsToParameter(
-						{
-							...newAudioElement,
-							id,
-						},
-						addIdsToAudioElements(newAudioElements),
-						parameterName,
-						audioNodeDatabase
-					);
-				});
+				connectAudioElementsToParameters(
+					{
+						...newAudioElement,
+						id,
+					},
+					addIdsToAudioElements(newAudioElements),
+					audioNodeDatabase
+				)
 			}
 
 			return;
