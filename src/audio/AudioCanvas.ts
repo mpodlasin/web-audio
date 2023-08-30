@@ -791,7 +791,7 @@ export const updateAudioCanvas = (
 						id
 					},
 					addIdsToAudioElements(newAudioElements),
-					audioNodeDatabase,
+					audioNodeDatabase
 				);
 			}
 
@@ -822,13 +822,18 @@ export const updateAudioCanvas = (
 				throw new Error(`Audio element with id ${inputId} not found`);
 			}
 
-			connectAudioElements({
-				...audioElementB,
-				id: inputId
-			}, {
-				...newAudioElement,
-				id,
-			}, audioNodeDatabase, output);
+			connectAudioElements(
+				{
+					...audioElementB,
+					id: inputId
+				},
+				{
+					...newAudioElement,
+					id
+				},
+				audioNodeDatabase,
+				output
+			);
 		});
 	});
 };
@@ -845,7 +850,10 @@ function getAddedInputs(
 				addedInputs.push(input);
 			}
 
-			if (typeof input !== 'string' && !oldAudioElement.inputs.some((i) => typeof i !== 'string' && i.id === input.id)) {
+			if (
+				typeof input !== 'string' &&
+				!oldAudioElement.inputs.some((i) => typeof i !== 'string' && i.id === input.id)
+			) {
 				addedInputs.push(input);
 			}
 		}

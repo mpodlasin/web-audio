@@ -310,7 +310,7 @@ describe('AudioCanvas', () => {
 					inputs: ['1'],
 					parameters: {
 						gain: 0.5
-					},
+					}
 				}
 			};
 
@@ -341,8 +341,8 @@ describe('AudioCanvas', () => {
 					inputs: [],
 					parameters: {
 						gain: 0.5
-					},
-				},
+					}
+				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
@@ -356,7 +356,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					...audioElements['2'],
-					inputs: ['1'],
+					inputs: ['1']
 				}
 			};
 
