@@ -56,6 +56,20 @@
 
 		dispatcher('nodeParameterChange', { id, parameterName, value });
 	};
+
+	const handlePlugClick = (event: any) => {
+		const plugId = event.detail.id;
+		const type = event.detail.type;
+
+		dispatcher('nodePlugClick', { id: plugId, type, nodeId: id });
+	};
+
+	const handlePlugUp = (event: any) => {
+		const plugId = event.detail.id;
+		const type = event.detail.type;
+
+		dispatcher('nodePlugUp', { id: plugId, type, nodeId: id });
+	};
 </script>
 
 <div class="node">
@@ -76,12 +90,24 @@
 	<div class="inputs-and-outputs">
 		<div class="inputs">
 			{#each staticDefinition.inputs as input (input)}
-				<Plug type="input" id={input} on:plug={handlePlug} />
+				<Plug
+					type="input"
+					id={input}
+					on:plug={handlePlug}
+					on:click={handlePlugClick}
+					on:up={handlePlugUp}
+				/>
 			{/each}
 		</div>
 		<div class="outputs">
 			{#each staticDefinition.outputs as output (output)}
-				<Plug type="output" id={output} on:plug={handlePlug} />
+				<Plug
+					type="output"
+					id={output}
+					on:plug={handlePlug}
+					on:click={handlePlugClick}
+					on:up={handlePlugUp}
+				/>
 			{/each}
 		</div>
 	</div>

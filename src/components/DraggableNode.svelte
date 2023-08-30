@@ -49,5 +49,12 @@
 	on:mouseup={handleMouseUp}
 	style="position: absolute; left: {position.x}px; top: {position.y}px;"
 >
-	<Node {id} {node} on:nodePlugAndKnobPositions on:nodeParameterChange />
+	<Node
+		{id}
+		{node}
+		on:nodePlugAndKnobPositions
+		on:nodeParameterChange
+		on:nodePlugClick
+		on:nodePlugUp
+	/>
 </div>

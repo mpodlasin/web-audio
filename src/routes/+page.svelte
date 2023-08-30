@@ -313,6 +313,62 @@
 				}
 			} as any;
 		};
+
+	let draggingLine = false;
+	let startingPlug: { id: string; type: 'input' | 'output'; nodeId: string } | null = null;
+	let positionOfStartingPlug: { x: number; y: number } = { x: 0, y: 0 };
+	let positionOfEndPlug: { x: number; y: number } = { x: 0, y: 0 };
+
+	const handlePlugClick = (
+		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
+	) => {
+		const { id, type, nodeId } = event.detail;
+
+		draggingLine = true;
+		startingPlug = { id, type, nodeId };
+		positionOfStartingPlug =
+			plugPositions[nodeId]?.[type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'][id]!;
+	};
+
+	const handlePlugUp = (
+		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
+	) => {
+		if (!draggingLine) return;
+		if (!startingPlug) return;
+
+		const { type, nodeId } = event.detail;
+
+		if (startingPlug.type === type) return;
+
+		if (type === 'input' && startingPlug.type === 'output') {
+			const startingNodeStaticDefinition =
+				allowedSerializedAudioElementStaticDefinitions[
+					audioGraph[startingPlug.nodeId]!
+						.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
+				];
+
+			audioGraph = {
+				...audioGraph,
+				[nodeId]: {
+					...audioGraph[nodeId],
+					inputs: [
+						...(audioGraph[nodeId]!.inputs ?? []),
+						startingNodeStaticDefinition.outputs[0] === startingPlug.id
+							? startingPlug.nodeId
+							: { id: startingPlug.nodeId, output: startingPlug.id }
+					]
+				}
+			} as any;
+		}
+
+		draggingLine = false;
+	};
+
+	const handleLineDrag = (event: MouseEvent) => {
+		event.preventDefault();
+
+		positionOfEndPlug = { x: event.clientX, y: event.clientY };
+	};
 </script>
 
 <div>
@@ -340,6 +396,7 @@
 		on:contextmenu={handleCanvasLeftClick}
 		on:click={handleCanvasRightClick}
 		on:keypress={() => {}}
+		on:mousemove={handleLineDrag}
 	>
 		{#each Object.values(audioGraphWithPositions) as node (node.id)}
 			<DraggableNode
@@ -349,12 +406,24 @@
 				on:drag={handleDrag}
 				on:nodePlugAndKnobPositions={handleNodePlugPositions}
 				on:nodeParameterChange={handleNodeParameterChange}
+				on:nodePlugClick={handlePlugClick}
+				on:nodePlugUp={handlePlugUp}
 			/>
 		{/each}
 		<svg width="100vw" height="100vh">
 			{#each linesToDisplay as line}
 				<line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} stroke="black" />
 			{/each}
+
+			{#if draggingLine}
+				<line
+					x1={positionOfStartingPlug.x}
+					y1={positionOfStartingPlug.y}
+					x2={positionOfEndPlug.x}
+					y2={positionOfEndPlug.y}
+					stroke="black"
+				/>
+			{/if}
 		</svg>
 
 		{#if showMenu}

@@ -17,9 +17,23 @@
 			});
 		}
 	}
+
+	const handlePlugClick = (event: any) => {
+		event.stopPropagation();
+		event.preventDefault();
+
+		dispatcher('click', { id, type });
+	};
+
+	const handlePlugUp = (event: any) => {
+		event.stopPropagation();
+		event.preventDefault();
+
+		dispatcher('up', { id, type });
+	};
 </script>
 
-<div class="plug" bind:this={plug} />
+<div class="plug" bind:this={plug} on:mousedown={handlePlugClick} on:mouseup={handlePlugUp} />
 
 <style>
 	.plug {
