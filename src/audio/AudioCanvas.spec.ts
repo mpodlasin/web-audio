@@ -283,5 +283,93 @@ describe('AudioCanvas', () => {
 			).toBe(555);
 			expect((audioNodeDatabase['2'] as CustomOscillatorNode).webApiNode.type).toBe('sine');
 		});
+
+		it('adds gain connected to oscillator', () => {
+			const audioElements = {
+				'1': {
+					type: 'oscillator' as const,
+					parameters: {
+						frequency: 333,
+						detune: 0
+					},
+					oscillatorType: 'square' as const
+				}
+			};
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			createAudioCanvas(audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeDefined();
+
+			const newAudioElements = {
+				'1': {
+					...audioElements['1']
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: ['1'],
+					parameters: {
+						gain: 0.5
+					},
+				}
+			};
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeDefined();
+			expect(audioNodeDatabase['2']).toBeDefined();
+			expect(
+				(audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.connect
+			).toHaveBeenCalledWith((audioNodeDatabase['2'] as CustomGainNode).webApiNode);
+			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.type).toBe('square');
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.frequency.value).toBe(333);
+		});
+
+		it('adds connection between oscillator and gain', () => {
+			const audioElements = {
+				'1': {
+					type: 'oscillator' as const,
+					parameters: {
+						frequency: 333,
+						detune: 0
+					},
+					oscillatorType: 'square' as const
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: [],
+					parameters: {
+						gain: 0.5
+					},
+				},
+			};
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			createAudioCanvas(audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeDefined();
+
+			const newAudioElements = {
+				'1': {
+					...audioElements['1']
+				},
+				'2': {
+					...audioElements['2'],
+					inputs: ['1'],
+				}
+			};
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeDefined();
+			expect(audioNodeDatabase['2']).toBeDefined();
+			expect(
+				(audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.connect
+			).toHaveBeenCalledWith((audioNodeDatabase['2'] as CustomGainNode).webApiNode);
+			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.type).toBe('square');
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.frequency.value).toBe(333);
+		});
 	});
 });

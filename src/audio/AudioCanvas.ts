@@ -26,7 +26,7 @@ export type SerializedAudioElementWithId<
 	id: string;
 };
 
-export type Inputs = string[] | { id: string; output: string }[];
+export type Inputs = (string | { id: string; output: string })[];
 
 export type SerializedAudioParameter = number | Inputs;
 
@@ -543,21 +543,8 @@ export function createAudioCanvas(
 		}
 	});
 
-	Object.values(audioElementsWithIds).forEach((audioElementA) => {
-		if (audioElementA.inputs) {
-			for (const input of audioElementA.inputs) {
-				const inputId = typeof input === 'string' ? input : input.id;
-				const output = typeof input === 'string' ? undefined : input.output;
-
-				const audioElementB = audioElementsWithIds[inputId];
-
-				if (audioElementB === undefined) {
-					throw new Error(`Audio element with id ${inputId} not found`);
-				}
-
-				connectAudioElements(audioElementB, audioElementA, audioNodeDatabase, output);
-			}
-		}
+	Object.values(audioElementsWithIds).forEach((audioElement) => {
+		findInputsAndConnectAudioElements(audioElement, audioElementsWithIds, audioNodeDatabase);
 	});
 
 	Object.values(audioElementsWithIds).forEach((audioElement) => {
@@ -634,6 +621,27 @@ export function playAudioCanvas(audioNodeDatabase: AudioNodeDatabase): void {
 			if (!(audioNode instanceof EnvelopeNode)) {
 				audioNode.start();
 			}
+		}
+	}
+}
+
+function findInputsAndConnectAudioElements(
+	audioElementA: SerializedAudioElementWithId<string, string>,
+	audioElementsWithIds: SerializedAudioElementsWithIds,
+	audioNodeDatabase: AudioNodeDatabase
+): void {
+	if (audioElementA.inputs) {
+		for (const input of audioElementA.inputs) {
+			const inputId = typeof input === 'string' ? input : input.id;
+			const output = typeof input === 'string' ? undefined : input.output;
+
+			const audioElementB = audioElementsWithIds[inputId];
+
+			if (audioElementB === undefined) {
+				throw new Error(`Audio element with id ${inputId} not found`);
+			}
+
+			connectAudioElements(audioElementB, audioElementA, audioNodeDatabase, output);
 		}
 	}
 }
@@ -776,6 +784,15 @@ export const updateAudioCanvas = (
 					addIdsToAudioElements(newAudioElements),
 					audioNodeDatabase
 				);
+
+				findInputsAndConnectAudioElements(
+					{
+						...newAudioElement,
+						id
+					},
+					addIdsToAudioElements(newAudioElements),
+					audioNodeDatabase,
+				);
 			}
 
 			return;
@@ -792,8 +809,50 @@ export const updateAudioCanvas = (
 		changedParametersWithValues.forEach(([parameterName, parameterValue]) => {
 			accessParameter(audioNode, parameterName).value = parameterValue;
 		});
+
+		const addedInputs = getAddedInputs(newAudioElement, oldAudioElement);
+
+		addedInputs.forEach((input) => {
+			const inputId = typeof input === 'string' ? input : input.id;
+			const output = typeof input === 'string' ? undefined : input.output;
+
+			const audioElementB = newAudioElements[inputId];
+
+			if (audioElementB === undefined) {
+				throw new Error(`Audio element with id ${inputId} not found`);
+			}
+
+			connectAudioElements({
+				...audioElementB,
+				id: inputId
+			}, {
+				...newAudioElement,
+				id,
+			}, audioNodeDatabase, output);
+		});
 	});
 };
+
+function getAddedInputs(
+	newAudioElement: SerializedAudioElement<string, string>,
+	oldAudioElement: SerializedAudioElement<string, string>
+) {
+	const addedInputs: Inputs = [];
+
+	if (newAudioElement.inputs && oldAudioElement.inputs) {
+		for (const input of newAudioElement.inputs) {
+			if (typeof input === 'string' && !oldAudioElement.inputs.includes(input)) {
+				addedInputs.push(input);
+			}
+
+			if (typeof input !== 'string' && !oldAudioElement.inputs.some((i) => typeof i !== 'string' && i.id === input.id)) {
+				addedInputs.push(input);
+			}
+		}
+	}
+
+	return addedInputs;
+}
 
 function getChangedParameters(
 	newAudioElement: SerializedAudioElement<string, string>,
