@@ -145,6 +145,131 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	}
 };
 
+export const addNode = (
+	audioGraph: SerializedAudioElements,
+	type: AllowedSerializedAudioElements['type']
+): SerializedAudioElements => {
+	const idsSoFar = Object.keys(audioGraph);
+
+	const nextId = Math.max(...idsSoFar.map((id) => parseInt(id, 10))) + 1;
+
+	const staticNodeDefinition = allowedSerializedAudioElementStaticDefinitions[type];
+
+	return {
+		...audioGraph,
+		[nextId]: {
+			type,
+			inputs: [],
+			parameters: Object.fromEntries(
+				Object.entries(staticNodeDefinition.parameters).map(([key, value]) => [
+					key,
+					value.defaultValue
+				])
+			)
+		}
+	};
+};
+
+export const addConnection = (
+	audioGraph: SerializedAudioElements,
+	startingPlug: { type: 'input' | 'output'; nodeId: string; id: string },
+	endingPlug: { type: 'input' | 'output'; nodeId: string; id: string }
+) => {
+	if (startingPlug.type === endingPlug.type) {
+		throw new Error(`You tried connecting two ${startingPlug.type}s together`);
+	}
+
+	if (startingPlug.nodeId === endingPlug.nodeId) {
+		throw new Error(`You tried connecting a node to itself`);
+	}
+
+	let newAudioGraph: SerializedAudioElements;
+
+	if (endingPlug.type === 'input' && startingPlug.type === 'output') {
+		const startingNode = audioGraph[startingPlug.nodeId];
+		const endingNode = audioGraph[endingPlug.nodeId];
+
+		if (startingNode === undefined) {
+			throw new Error(`Audio element with id ${startingPlug.nodeId} not found`);
+		}
+
+		if (endingNode === undefined) {
+			throw new Error(`Audio element with id ${endingPlug.nodeId} not found`);
+		}
+
+		const startingNodeStaticDefinition =
+			allowedSerializedAudioElementStaticDefinitions[startingNode.type];
+
+		newAudioGraph = {
+			...audioGraph,
+			[endingPlug.nodeId]: {
+				...endingNode,
+				inputs: [
+					...(endingNode.inputs ?? []),
+					startingNodeStaticDefinition.outputs[0] === startingPlug.id
+						? startingPlug.nodeId
+						: { id: startingPlug.nodeId, output: startingPlug.id }
+				]
+			}
+		};
+	} else if (endingPlug.type === 'output' && startingPlug.type === 'input') {
+		const startingNode = audioGraph[startingPlug.nodeId];
+		const endingNode = audioGraph[endingPlug.nodeId];
+
+		if (startingNode === undefined) {
+			throw new Error(`Audio element with id ${startingPlug.nodeId} not found`);
+		}
+
+		if (endingNode === undefined) {
+			throw new Error(`Audio element with id ${endingPlug.nodeId} not found`);
+		}
+
+		const endingNodeStaticDefinition =
+			allowedSerializedAudioElementStaticDefinitions[endingNode.type];
+
+		newAudioGraph = {
+			...audioGraph,
+			[startingPlug.nodeId]: {
+				...startingNode,
+				inputs: [
+					...(startingNode.inputs ?? []),
+					endingNodeStaticDefinition.outputs[0] === endingPlug.id
+						? endingPlug.nodeId
+						: { id: endingPlug.nodeId, output: endingPlug.id }
+				]
+			}
+		};
+	} else {
+		newAudioGraph = { ...audioGraph };
+	}
+
+	return newAudioGraph;
+};
+
+export const changeParameter = (
+	audioGraph: SerializedAudioElements,
+	nodeId: string,
+	parameterName: string,
+	value: number
+): SerializedAudioElements => {
+	const node = audioGraph[nodeId];
+
+	if (node === undefined) {
+		throw new Error(`Audio element with id ${nodeId} not found`);
+	}
+
+	return {
+		...audioGraph,
+		[nodeId]: {
+			...node,
+			parameters: {
+				...node.parameters,
+				[parameterName]: value
+			} as any /* TODO: Fix this */
+		}
+	};
+};
+
 /* Initialized */
 
 export interface CustomAudioNode {

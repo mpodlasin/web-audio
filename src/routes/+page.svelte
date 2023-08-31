@@ -5,7 +5,10 @@
 		playAudioCanvas,
 		type SerializedAudioElements,
 		allowedSerializedAudioElementStaticDefinitions,
-		updateAudioCanvas
+		updateAudioCanvas,
+		addNode,
+		addConnection,
+		changeParameter
 	} from '../audio/AudioCanvas';
 	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination';
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
@@ -255,16 +258,7 @@
 
 		const { id, parameterName, value } = event.detail;
 
-		audioGraph = {
-			...audioGraph,
-			[id]: {
-				...audioGraph[id],
-				parameters: {
-					...audioGraph[id]!.parameters,
-					[parameterName]: value
-				}
-			}
-		} as any;
+		audioGraph = changeParameter(audioGraph, id, parameterName, value);
 	};
 
 	$: {
@@ -288,30 +282,10 @@
 	};
 
 	const handleCreateElementClick =
-		(element: keyof typeof allowedSerializedAudioElementStaticDefinitions) =>
-		(event: MouseEvent) => {
+		(type: keyof typeof allowedSerializedAudioElementStaticDefinitions) => (event: MouseEvent) => {
 			event.preventDefault();
 
-			const idsSoFar = Object.keys(audioGraph);
-
-			const nextId = Math.max(...idsSoFar.map((id) => parseInt(id, 10))) + 1;
-
-			const staticNodeDefinition = allowedSerializedAudioElementStaticDefinitions[element];
-
-			audioGraph = {
-				...audioGraph,
-				[nextId]: {
-					type: element,
-					inputs: [],
-					outputs: [],
-					parameters: Object.fromEntries(
-						Object.entries(staticNodeDefinition.parameters).map(([key, value]) => [
-							key,
-							value.defaultValue
-						])
-					)
-				}
-			} as any;
+			audioGraph = addNode(audioGraph, type);
 		};
 
 	let draggingLine = false;
@@ -336,30 +310,7 @@
 		if (!draggingLine) return;
 		if (!startingPlug) return;
 
-		const { type, nodeId } = event.detail;
-
-		if (startingPlug.type === type) return;
-
-		if (type === 'input' && startingPlug.type === 'output') {
-			const startingNodeStaticDefinition =
-				allowedSerializedAudioElementStaticDefinitions[
-					audioGraph[startingPlug.nodeId]!
-						.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
-				];
-
-			audioGraph = {
-				...audioGraph,
-				[nodeId]: {
-					...audioGraph[nodeId],
-					inputs: [
-						...(audioGraph[nodeId]!.inputs ?? []),
-						startingNodeStaticDefinition.outputs[0] === startingPlug.id
-							? startingPlug.nodeId
-							: { id: startingPlug.nodeId, output: startingPlug.id }
-					]
-				}
-			} as any;
-		}
+		audioGraph = addConnection(audioGraph, startingPlug, event.detail);
 
 		draggingLine = false;
 	};
