@@ -8,7 +8,10 @@ import {
 	CustomOscillatorNode,
 	CustomGainNode,
 	DestinationNode,
-	updateAudioCanvas
+	updateAudioCanvas,
+	addConnection,
+	addNode,
+	changeParameter
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -224,15 +227,7 @@ describe('AudioCanvas', () => {
 					.value
 			).toBe(333);
 
-			const newAudioElements = {
-				'1': {
-					...audioElements['1'],
-					parameters: {
-						frequency: 444,
-						detune: 0
-					}
-				}
-			};
+			const newAudioElements = changeParameter(audioElements, "1", "frequency", 444);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
@@ -259,19 +254,7 @@ describe('AudioCanvas', () => {
 
 			expect(audioNodeDatabase['1']).toBeDefined();
 
-			const newAudioElements = {
-				'1': {
-					...audioElements['1']
-				},
-				'2': {
-					type: 'oscillator' as const,
-					parameters: {
-						frequency: 555,
-						detune: 0
-					},
-					oscillatorType: 'sine' as const
-				}
-			};
+			const newAudioElements = addNode(audioElements, 'oscillator')
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
@@ -280,7 +263,7 @@ describe('AudioCanvas', () => {
 			expect(
 				((audioNodeDatabase['2'] as CustomOscillatorNode).webApiNode as OscillatorNode).frequency
 					.value
-			).toBe(555);
+			).toBe(440);
 			expect((audioNodeDatabase['2'] as CustomOscillatorNode).webApiNode.type).toBe('sine');
 		});
 
@@ -348,17 +331,17 @@ describe('AudioCanvas', () => {
 
 			createAudioCanvas(audioElements, audioNodeDatabase);
 
-			expect(audioNodeDatabase['1']).toBeDefined();
+			const newAudioElements = addConnection(audioElements, {
+				type: 'output',
+				nodeId: '1',
+				id: 'audio',
+			}, {
+				type: 'input',
+				nodeId: '2',
+				id: 'audio',
+			})
 
-			const newAudioElements = {
-				'1': {
-					...audioElements['1']
-				},
-				'2': {
-					...audioElements['2'],
-					inputs: ['1']
-				}
-			};
+			expect(newAudioElements['2']?.inputs).toEqual(['1']);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
