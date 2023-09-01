@@ -17,6 +17,16 @@ export type SerializedAudioElement<T extends string, P extends string> = {
 	parameters?: {
 		[key in P]: SerializedAudioParameter;
 	};
+	ui?: UIInformation;
+};
+
+export type Position = {
+	x: number;
+	y: number;
+};
+
+export type UIInformation = {
+	position: Position;
 };
 
 export type SerializedAudioElementWithId<
@@ -145,10 +155,10 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	}
 };
 
-export const addNode = (
-	audioGraph: SerializedAudioElements,
+export const addNode = <S extends SerializedAudioElements>(
+	audioGraph: S,
 	type: AllowedSerializedAudioElements['type']
-): SerializedAudioElements => {
+): S => {
 	const idsSoFar = Object.keys(audioGraph);
 
 	const nextId = Math.max(...idsSoFar.map((id) => parseInt(id, 10))) + 1;
@@ -170,11 +180,11 @@ export const addNode = (
 	};
 };
 
-export const addConnection = (
-	audioGraph: SerializedAudioElements,
+export const addConnection = <S extends SerializedAudioElements>(
+	audioGraph: S,
 	startingPlug: { type: 'input' | 'output'; nodeId: string; id: string },
 	endingPlug: { type: 'input' | 'output'; nodeId: string; id: string }
-) => {
+): S => {
 	if (startingPlug.type === endingPlug.type) {
 		throw new Error(`You tried connecting two ${startingPlug.type}s together`);
 	}
@@ -183,7 +193,7 @@ export const addConnection = (
 		throw new Error(`You tried connecting a node to itself`);
 	}
 
-	let newAudioGraph: SerializedAudioElements;
+	let newAudioGraph: S;
 
 	if (endingPlug.type === 'input' && startingPlug.type === 'output') {
 		const startingNode = audioGraph[startingPlug.nodeId];
@@ -246,12 +256,12 @@ export const addConnection = (
 	return newAudioGraph;
 };
 
-export const changeParameter = (
-	audioGraph: SerializedAudioElements,
+export const changeParameter = <S extends SerializedAudioElements>(
+	audioGraph: S,
 	nodeId: string,
 	parameterName: string,
 	value: number
-): SerializedAudioElements => {
+): S => {
 	const node = audioGraph[nodeId];
 
 	if (node === undefined) {

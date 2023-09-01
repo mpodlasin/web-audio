@@ -20,74 +20,69 @@
 
 	let chosenExample = 'sequencer-envelope-oscillator-gain-destination';
 
-	interface SerializedAudioElementsWithPositions {
-		[key: string]: SerializedAudioElements[string] & {
-			id: string;
-			position: {
-				x: number;
-				y: number;
+	const addRandomPositions = (audioGraph: SerializedAudioElements): SerializedAudioElements => {
+		const audioGraphWithPositions: SerializedAudioElements = {};
+
+		for (const [key, value] of Object.entries(audioGraph)) {
+			audioGraphWithPositions[key] = {
+				...value,
+				ui: {
+					position: {
+						x: Math.random() * 1000,
+						y: Math.random() * 1000
+					}
+				}
 			};
-		};
-	}
+		}
+
+		return audioGraphWithPositions;
+	};
 
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
-	let audioGraph: SerializedAudioElements;
-	let oldAudioGraph: SerializedAudioElements;
+	let audioGraphHistory: SerializedAudioElements[] = [];
 	$: {
-		if (!audioGraph) {
-			if (chosenExample === 'oscillator-gain-destination') {
-				audioGraph = oscillatorGainDestination;
-			} else if (chosenExample === 'trigger-envelope-oscillator-gain-destination') {
-				audioGraph = triggerEnvelopeOscillatorGainDestination;
-			} else if (chosenExample === 'sequencer-envelope-oscillator-gain-destination') {
-				audioGraph = sequencerEnvelopeOscillatorGainDestination;
-			} else if (chosenExample === 'midi-envelope-oscillator-gain-destination') {
-				audioGraph = midiEnvelopeOscillatorGainDestination;
+		if (audioGraphHistory.length === 0) {
+			const audioGraphWithPositionFromLocalStorage =
+				localStorage.getItem(audioGraphLocalStorageKey);
+
+			if (audioGraphWithPositionFromLocalStorage) {
+				const audioGraphWithPositions = JSON.parse(audioGraphWithPositionFromLocalStorage);
+				audioGraphHistory = [audioGraphWithPositions];
+			} else {
+				switch (chosenExample) {
+					case 'oscillator-gain-destination':
+						audioGraphHistory = [addRandomPositions(oscillatorGainDestination)];
+						break;
+					case 'trigger-envelope-oscillator-gain-destination':
+						audioGraphHistory = [addRandomPositions(triggerEnvelopeOscillatorGainDestination)];
+						break;
+					case 'sequencer-envelope-oscillator-gain-destination':
+						audioGraphHistory = [addRandomPositions(sequencerEnvelopeOscillatorGainDestination)];
+						break;
+					case 'midi-envelope-oscillator-gain-destination':
+						audioGraphHistory = [addRandomPositions(midiEnvelopeOscillatorGainDestination)];
+						break;
+				}
 			}
-			oldAudioGraph = audioGraph;
 
-			audioNodeDatabase = {};
-
-			createAudioCanvas(audioGraph, audioNodeDatabase);
+			createAudioCanvas(audioGraphHistory.at(-1) ?? {}, audioNodeDatabase);
 		}
 	}
 
-	let audioGraphWithPositions: SerializedAudioElementsWithPositions = {};
-
-	const audioGraphWithPositionFromLocalStorage = localStorage.getItem(audioGraphLocalStorageKey);
-
-	if (audioGraphWithPositionFromLocalStorage) {
-		audioGraphWithPositions = JSON.parse(audioGraphWithPositionFromLocalStorage);
-	}
+	$: previousAudioGraphWithPositions = audioGraphHistory.at(-2) ?? {};
+	$: audioGraphWithPositions = audioGraphHistory.at(-1) ?? {};
 
 	$: {
-		console.log('setting items in local storage');
 		localStorage.setItem(audioGraphLocalStorageKey, JSON.stringify(audioGraphWithPositions));
-	}
-
-	$: {
-		audioGraphWithPositions = Object.fromEntries(
-			Object.entries(audioGraph).map(([key, value]) => [
-				key,
-				{
-					...value,
-					id: key,
-					position: audioGraphWithPositions[key]?.position ?? {
-						x: Math.random() * 1000,
-						y: Math.random() * 800
-					}
-				}
-			])
-		);
 	}
 
 	const handlePlay = () => {
 		playAudioCanvas(audioNodeDatabase);
 	};
 
-	$: lines = Object.values(audioGraphWithPositions).reduce(
-		(acc: (readonly [readonly [string, string], readonly [string, string]])[], node) => {
+	$: lines = Object.entries(audioGraphWithPositions).reduce(
+		(acc: (readonly [readonly [string, string], readonly [string, string]])[], [id, node]) => {
 			const staticToDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
 
 			const mapped = node.inputs
@@ -100,12 +95,12 @@
 								];
 							return [
 								[input, staticNodeDefinition.outputs[0] as string],
-								[node.id, staticToDefinition.inputs[0] as string]
+								[id, staticToDefinition.inputs[0] as string]
 							] as const;
 						} else {
 							return [
 								[input.id, input.output],
-								[node.id, staticToDefinition.inputs[0] as string]
+								[id, staticToDefinition.inputs[0] as string]
 							] as const;
 						}
 				  })
@@ -123,12 +118,12 @@
 										];
 									return [
 										[input, staticNodeDefinition.outputs[0] as string],
-										[node.id, key]
+										[id, key]
 									] as const;
 								} else {
 									return [
 										[input.id, input.output],
-										[node.id, key]
+										[id, key]
 									] as const;
 								}
 							});
@@ -156,8 +151,8 @@
 		const node = audioGraphWithPositions[id];
 
 		if (node) {
-			const oldX = node.position.x;
-			const oldY = node.position.y;
+			const oldX = node.ui?.position.x ?? 0;
+			const oldY = node.ui?.position.y ?? 0;
 
 			const diffX = x - oldX;
 			const diffY = y - oldY;
@@ -183,8 +178,10 @@
 				)
 			};
 
-			audioGraphWithPositions[id]!.position.x = x;
-			audioGraphWithPositions[id]!.position.y = y;
+			audioGraphWithPositions[id]?.ui?.position &&
+				(audioGraphWithPositions[id]!.ui!.position.x = x);
+			audioGraphWithPositions[id]?.ui?.position &&
+				(audioGraphWithPositions[id]!.ui!.position.y = y);
 		}
 	};
 
@@ -254,15 +251,16 @@
 	const handleNodeParameterChange = (
 		event: CustomEvent<{ id: string; parameterName: string; value: number }>
 	) => {
-		oldAudioGraph = JSON.parse(JSON.stringify(audioGraph));
-
 		const { id, parameterName, value } = event.detail;
 
-		audioGraph = changeParameter(audioGraph, id, parameterName, value);
+		audioGraphHistory = [
+			...audioGraphHistory,
+			changeParameter(audioGraphWithPositions, id, parameterName, value)
+		];
 	};
 
 	$: {
-		updateAudioCanvas(audioGraph, oldAudioGraph, audioNodeDatabase);
+		updateAudioCanvas(audioGraphWithPositions, previousAudioGraphWithPositions, audioNodeDatabase);
 	}
 
 	let menuPosition = { x: 0, y: 0 };
@@ -285,7 +283,7 @@
 		(type: keyof typeof allowedSerializedAudioElementStaticDefinitions) => (event: MouseEvent) => {
 			event.preventDefault();
 
-			audioGraph = addNode(audioGraph, type);
+			audioGraphHistory = [...audioGraphHistory, addNode(audioGraphWithPositions, type)];
 		};
 
 	let draggingLine = false;
@@ -310,7 +308,10 @@
 		if (!draggingLine) return;
 		if (!startingPlug) return;
 
-		audioGraph = addConnection(audioGraph, startingPlug, event.detail);
+		audioGraphHistory = [
+			...audioGraphHistory,
+			addConnection(audioGraphWithPositions, startingPlug, event.detail)
+		];
 
 		draggingLine = false;
 	};
@@ -349,11 +350,11 @@
 		on:keypress={() => {}}
 		on:mousemove={handleLineDrag}
 	>
-		{#each Object.values(audioGraphWithPositions) as node (node.id)}
+		{#each Object.entries(audioGraphWithPositions) as [id, node] (id)}
 			<DraggableNode
-				id={node.id}
+				{id}
 				{node}
-				position={node.position}
+				position={node.ui?.position ?? { x: 0, y: 0 }}
 				on:drag={handleDrag}
 				on:nodePlugAndKnobPositions={handleNodePlugPositions}
 				on:nodeParameterChange={handleNodeParameterChange}

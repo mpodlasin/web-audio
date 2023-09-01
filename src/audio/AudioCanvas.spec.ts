@@ -227,7 +227,7 @@ describe('AudioCanvas', () => {
 					.value
 			).toBe(333);
 
-			const newAudioElements = changeParameter(audioElements, "1", "frequency", 444);
+			const newAudioElements = changeParameter(audioElements, '1', 'frequency', 444);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
@@ -254,7 +254,7 @@ describe('AudioCanvas', () => {
 
 			expect(audioNodeDatabase['1']).toBeDefined();
 
-			const newAudioElements = addNode(audioElements, 'oscillator')
+			const newAudioElements = addNode(audioElements, 'oscillator');
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
@@ -331,15 +331,19 @@ describe('AudioCanvas', () => {
 
 			createAudioCanvas(audioElements, audioNodeDatabase);
 
-			const newAudioElements = addConnection(audioElements, {
-				type: 'output',
-				nodeId: '1',
-				id: 'audio',
-			}, {
-				type: 'input',
-				nodeId: '2',
-				id: 'audio',
-			})
+			const newAudioElements = addConnection(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'audio'
+				},
+				{
+					type: 'input',
+					nodeId: '2',
+					id: 'audio'
+				}
+			);
 
 			expect(newAudioElements['2']?.inputs).toEqual(['1']);
 
