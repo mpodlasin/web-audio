@@ -178,10 +178,18 @@
 				)
 			};
 
-			audioGraphWithPositions[id]?.ui?.position &&
-				(audioGraphWithPositions[id]!.ui!.position.x = x);
-			audioGraphWithPositions[id]?.ui?.position &&
-				(audioGraphWithPositions[id]!.ui!.position.y = y);
+			audioGraphWithPositions = {
+				...audioGraphWithPositions,
+				[id]: {
+					...audioGraphWithPositions[id] as any,
+					ui: {
+						position: {
+							x,
+							y
+						}
+					}
+				}
+			};
 		}
 	};
 
