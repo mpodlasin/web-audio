@@ -56,5 +56,6 @@
 		on:nodeParameterChange
 		on:nodePlugClick
 		on:nodePlugUp
+		on:deleteNode
 	/>
 </div>

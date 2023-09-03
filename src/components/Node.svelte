@@ -71,19 +71,31 @@
 		dispatcher('nodePlugUp', { id: plugId, type, nodeId: id });
 	};
 
+	const handleDeleteNodeClick = () => {
+		dispatcher('deleteNode', { id });
+	};
+
 	let showContextMenu = false;
 	let contextMenuPosition = { x: 0, y: 0 };
+
+	let element: HTMLDivElement;
 
 	const handleContextMenu = (event: MouseEvent) => {
 		event.preventDefault();
 		event.stopPropagation();
 
+		const rect = element.getBoundingClientRect();
+
 		showContextMenu = true;
-		contextMenuPosition = { x: event.clientX, y: event.clientY };
+
+		contextMenuPosition = {
+			x: event.clientX - rect.left,
+			y: event.clientY - rect.top
+		};
 	};
 </script>
 
-<div class="node" on:contextmenu={handleContextMenu}>
+<div class="node" on:contextmenu={handleContextMenu} bind:this={element}>
 	<div class="header">{node.type}</div>
 	<div class="parameters">
 		{#each parameters as nodeParameter (nodeParameter[0])}
@@ -127,7 +139,7 @@
 			class="context-menu"
 			style="left: {contextMenuPosition.x}px; top: {contextMenuPosition.y}px;"
 		>
-			<button>Delete</button>
+			<button on:click={handleDeleteNodeClick}>Delete</button>
 		</div>
 	{/if}
 </div>

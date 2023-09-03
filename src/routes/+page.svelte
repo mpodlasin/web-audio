@@ -10,7 +10,10 @@
 		addConnection,
 		changeParameter,
 		type Plug,
-		removeConnection
+		removeConnection,
+
+		removeNode
+
 	} from '../audio/AudioCanvas';
 	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination';
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
@@ -380,6 +383,10 @@
 
 		showLineMenu = false;
 	};
+
+	const handleDeleteNode = (event: CustomEvent<{ id: string }>) => {
+		audioGraphHistory = [...audioGraphHistory, removeNode(audioGraphWithPositions, event.detail.id)];
+	};
 </script>
 
 <div>
@@ -419,6 +426,7 @@
 				on:nodeParameterChange={handleNodeParameterChange}
 				on:nodePlugClick={handlePlugClick}
 				on:nodePlugUp={handlePlugUp}
+				on:deleteNode={handleDeleteNode}
 			/>
 		{/each}
 		<svg width="100vw" height="100vh">

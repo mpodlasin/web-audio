@@ -12,7 +12,8 @@ import {
 	addConnection,
 	addNode,
 	changeParameter,
-	removeConnection
+	removeConnection,
+	removeNode
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -408,6 +409,43 @@ describe('AudioCanvas', () => {
 			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
 			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.type).toBe('square');
 			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.frequency.value).toBe(333);
+		});
+
+		it('removes oscillator conenected to gain', () => {
+			const audioElements = {
+				'1': {
+					type: 'oscillator' as const,
+					parameters: {
+						frequency: 333,
+						detune: 0
+					},
+					oscillatorType: 'square' as const
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: ['1'],
+					parameters: {
+						gain: 0.5
+					}
+				}
+			};
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			createAudioCanvas(audioElements, audioNodeDatabase);
+
+			const oscillatorNode = audioNodeDatabase['1'] as CustomOscillatorNode;
+
+			const newAudioElements = removeNode(audioElements, '1');
+
+			expect(newAudioElements['1']).toBeUndefined();
+			expect(newAudioElements['2']?.inputs).toEqual([]);
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeUndefined();
+			expect(audioNodeDatabase['2']).toBeDefined();
+			expect(oscillatorNode.webApiNode.stop).toHaveBeenCalled();
+			expect(oscillatorNode.webApiNode.disconnect).toHaveBeenCalled();
 		});
 	});
 });

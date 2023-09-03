@@ -180,6 +180,27 @@ export const addNode = <S extends SerializedAudioElements>(
 	};
 };
 
+export const removeNode = <S extends SerializedAudioElements>(
+	audioGraph: S,
+	nodeId: string
+): S => {
+	const newAudioGraph = { ...audioGraph };
+
+	delete newAudioGraph[nodeId];
+
+	Object.values(newAudioGraph).forEach((audioElement) => {
+		audioElement.inputs = audioElement.inputs ? audioElement.inputs.filter((input) => {
+			if (typeof input === 'string') {
+				return input !== nodeId;
+			} else {
+				return input.id !== nodeId;
+			}
+		}) : undefined;
+	});
+
+	return newAudioGraph;
+};
+
 export type Plug = {
 	type: 'input' | 'output';
 	nodeId: string;
@@ -964,6 +985,29 @@ export const updateAudioCanvas = (
 	oldAudioElements: SerializedAudioElements,
 	audioNodeDatabase: AudioNodeDatabase
 ) => {
+	Object.entries(oldAudioElements).forEach(([id]) => {
+		const newAudioElement = newAudioElements[id];
+
+		if (newAudioElement === undefined) {
+			const node = audioNodeDatabase[id];
+			if (node !== undefined) {
+				if (isCustomAudioScheduledSourceNode(node)) {
+					try {
+						node.stop();
+					} catch {
+						/* Do nothing */
+					}
+				}
+
+				if (isCustomAudioNodeWithWebApiNode(node)) {
+					node.webApiNode.disconnect();
+				}
+			}
+
+			delete audioNodeDatabase[id];
+		}
+	});
+
 	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
 		const oldAudioElement = oldAudioElements[id];
 
