@@ -180,22 +180,21 @@ export const addNode = <S extends SerializedAudioElements>(
 	};
 };
 
-export const removeNode = <S extends SerializedAudioElements>(
-	audioGraph: S,
-	nodeId: string
-): S => {
+export const removeNode = <S extends SerializedAudioElements>(audioGraph: S, nodeId: string): S => {
 	const newAudioGraph = { ...audioGraph };
 
 	delete newAudioGraph[nodeId];
 
 	Object.values(newAudioGraph).forEach((audioElement) => {
-		audioElement.inputs = audioElement.inputs ? audioElement.inputs.filter((input) => {
-			if (typeof input === 'string') {
-				return input !== nodeId;
-			} else {
-				return input.id !== nodeId;
-			}
-		}) : undefined;
+		audioElement.inputs = audioElement.inputs
+			? audioElement.inputs.filter((input) => {
+					if (typeof input === 'string') {
+						return input !== nodeId;
+					} else {
+						return input.id !== nodeId;
+					}
+			  })
+			: undefined;
 	});
 
 	return newAudioGraph;
