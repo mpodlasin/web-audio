@@ -180,10 +180,16 @@ export const addNode = <S extends SerializedAudioElements>(
 	};
 };
 
+export type Plug = {
+	type: 'input' | 'output';
+	nodeId: string;
+	id: string;
+};
+
 export const addConnection = <S extends SerializedAudioElements>(
 	audioGraph: S,
-	startingPlug: { type: 'input' | 'output'; nodeId: string; id: string },
-	endingPlug: { type: 'input' | 'output'; nodeId: string; id: string }
+	startingPlug: Plug,
+	endingPlug: Plug
 ): S => {
 	if (startingPlug.type === endingPlug.type) {
 		throw new Error(`You tried connecting two ${startingPlug.type}s together`);
@@ -247,6 +253,48 @@ export const addConnection = <S extends SerializedAudioElements>(
 						? endingPlug.nodeId
 						: { id: endingPlug.nodeId, output: endingPlug.id }
 				]
+			}
+		};
+	} else {
+		newAudioGraph = { ...audioGraph };
+	}
+
+	return newAudioGraph;
+};
+
+export const removeConnection = <S extends SerializedAudioElements>(
+	audioGraph: S,
+	startingPlug: Plug,
+	endingPlug: Plug
+): S => {
+	if (startingPlug.type === endingPlug.type) {
+		throw new Error(`You tried unconnecting two ${startingPlug.type}s together`);
+	}
+
+	if (startingPlug.nodeId === endingPlug.nodeId) {
+		throw new Error(`You tried unconnecting a node from itself`);
+	}
+
+	let newAudioGraph: S;
+
+	if (endingPlug.type === 'input' && startingPlug.type === 'output') {
+		const endingNode = audioGraph[endingPlug.nodeId];
+
+		if (endingNode === undefined) {
+			throw new Error(`Audio element with id ${endingPlug.nodeId} not found`);
+		}
+
+		newAudioGraph = {
+			...audioGraph,
+			[endingPlug.nodeId]: {
+				...endingNode,
+				inputs: (endingNode.inputs ?? []).filter((input) => {
+					if (typeof input === 'string') {
+						return input !== startingPlug.nodeId;
+					} else {
+						return false;
+					}
+				})
 			}
 		};
 	} else {
@@ -795,6 +843,20 @@ function connectAudioElements(
 	}
 }
 
+function disconnectAudioElements(
+	audioElementA: SerializedAudioElementWithId<string, string>,
+	audioElementB: SerializedAudioElementWithId<string, string>,
+	audioNodeDatabase: AudioNodeDatabase,
+	output?: string
+): void {
+	const audioNodeA = audioNodeDatabase[audioElementA.id];
+	const audioNodeB = audioNodeDatabase[audioElementB.id];
+
+	if (audioNodeA !== undefined && audioNodeB !== undefined) {
+		audioNodeA.disconnect(audioNodeB, output);
+	}
+}
+
 function createCustomAudioNode(
 	audioElement: SerializedAudioElement<string, string>
 ): CustomAudioNode | null {
@@ -970,6 +1032,32 @@ export const updateAudioCanvas = (
 				output
 			);
 		});
+
+		const removedInputs = getRemovedInputs(newAudioElement, oldAudioElement);
+
+		removedInputs.forEach((input) => {
+			const inputId = typeof input === 'string' ? input : input.id;
+			const output = typeof input === 'string' ? undefined : input.output;
+
+			const audioElementB = newAudioElements[inputId];
+
+			if (audioElementB === undefined) {
+				throw new Error(`Audio element with id ${inputId} not found`);
+			}
+
+			disconnectAudioElements(
+				{
+					...audioElementB,
+					id: inputId
+				},
+				{
+					...newAudioElement,
+					id
+				},
+				audioNodeDatabase,
+				output
+			);
+		});
 	});
 };
 
@@ -995,6 +1083,30 @@ function getAddedInputs(
 	}
 
 	return addedInputs;
+}
+
+function getRemovedInputs(
+	newAudioElement: SerializedAudioElement<string, string>,
+	oldAudioElement: SerializedAudioElement<string, string>
+) {
+	const removedInputs: Inputs = [];
+
+	if (newAudioElement.inputs && oldAudioElement.inputs) {
+		for (const input of oldAudioElement.inputs) {
+			if (typeof input === 'string' && !newAudioElement.inputs.includes(input)) {
+				removedInputs.push(input);
+			}
+
+			if (
+				typeof input !== 'string' &&
+				!newAudioElement.inputs.some((i) => typeof i !== 'string' && i.id === input.id)
+			) {
+				removedInputs.push(input);
+			}
+		}
+	}
+
+	return removedInputs;
 }
 
 function getChangedParameters(

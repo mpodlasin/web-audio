@@ -8,7 +8,9 @@
 		updateAudioCanvas,
 		addNode,
 		addConnection,
-		changeParameter
+		changeParameter,
+		type Plug,
+		removeConnection
 	} from '../audio/AudioCanvas';
 	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination';
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
@@ -41,6 +43,7 @@
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
 	let audioGraphHistory: SerializedAudioElements[] = [];
+
 	$: {
 		if (audioGraphHistory.length === 0) {
 			const audioGraphWithPositionFromLocalStorage =
@@ -181,7 +184,7 @@
 			audioGraphWithPositions = {
 				...audioGraphWithPositions,
 				[id]: {
-					...audioGraphWithPositions[id] as any,
+					...(audioGraphWithPositions[id] as any),
 					ui: {
 						position: {
 							x,
@@ -226,6 +229,18 @@
 		if (fromPlugPosition && toParameterKnobPosition) {
 			return [
 				{
+					line: [
+						{
+							nodeId: fromId,
+							type: 'output',
+							id: fromName
+						},
+						{
+							nodeId: toId,
+							type: 'input',
+							id: toName
+						}
+					] as const,
 					from: {
 						x: fromPlugPosition.x,
 						y: fromPlugPosition.y
@@ -241,6 +256,18 @@
 		if (fromPlugPosition && toPlugPosition) {
 			return [
 				{
+					line: [
+						{
+							nodeId: fromId,
+							type: 'output',
+							id: fromName
+						},
+						{
+							nodeId: toId,
+							type: 'input',
+							id: toName
+						}
+					] as const,
 					from: {
 						x: fromPlugPosition.x,
 						y: fromPlugPosition.y
@@ -329,6 +356,30 @@
 
 		positionOfEndPlug = { x: event.clientX, y: event.clientY };
 	};
+
+	let showLineMenu = false;
+	let lineMenuPlugs: [Plug, Plug] | null = null;
+	let lineMenuPosition = { x: 0, y: 0 };
+
+	const handleLineLeftClick = (fromPlug: Plug, toPlug: Plug) => (event: MouseEvent) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		showLineMenu = true;
+		lineMenuPlugs = [fromPlug, toPlug];
+		lineMenuPosition = { x: event.clientX, y: event.clientY };
+	};
+
+	const handleDeleteConnection = () => {
+		if (!lineMenuPlugs) return;
+
+		audioGraphHistory = [
+			...audioGraphHistory,
+			removeConnection(audioGraphWithPositions, lineMenuPlugs[0], lineMenuPlugs[1])
+		];
+
+		showLineMenu = false;
+	};
 </script>
 
 <div>
@@ -373,6 +424,15 @@
 		<svg width="100vw" height="100vh">
 			{#each linesToDisplay as line}
 				<line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} stroke="black" />
+				<line
+					on:contextmenu={handleLineLeftClick(line.line[0], line.line[1])}
+					x1={line.from.x}
+					y1={line.from.y}
+					x2={line.to.x}
+					y2={line.to.y}
+					stroke="transparent"
+					stroke-width="10"
+				/>
 			{/each}
 
 			{#if draggingLine}
@@ -385,6 +445,15 @@
 				/>
 			{/if}
 		</svg>
+
+		{#if showLineMenu}
+			<div
+				class="create-node-menu"
+				style="left: {lineMenuPosition.x}px; top: {lineMenuPosition.y}px;"
+			>
+				<button on:click={handleDeleteConnection}>Delete</button>
+			</div>
+		{/if}
 
 		{#if showMenu}
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">

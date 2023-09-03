@@ -11,7 +11,8 @@ import {
 	updateAudioCanvas,
 	addConnection,
 	addNode,
-	changeParameter
+	changeParameter,
+	removeConnection
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -353,6 +354,56 @@ describe('AudioCanvas', () => {
 			expect(audioNodeDatabase['2']).toBeDefined();
 			expect(
 				(audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.connect
+			).toHaveBeenCalledWith((audioNodeDatabase['2'] as CustomGainNode).webApiNode);
+			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.type).toBe('square');
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.frequency.value).toBe(333);
+		});
+
+		it('removes connection between oscillator and gain', () => {
+			const audioElements = {
+				'1': {
+					type: 'oscillator' as const,
+					parameters: {
+						frequency: 333,
+						detune: 0
+					},
+					oscillatorType: 'square' as const
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: ['1'],
+					parameters: {
+						gain: 0.5
+					}
+				}
+			};
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			createAudioCanvas(audioElements, audioNodeDatabase);
+
+			const newAudioElements = removeConnection(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'audio'
+				},
+				{
+					type: 'input',
+					nodeId: '2',
+					id: 'audio'
+				}
+			);
+
+			expect(newAudioElements['2']?.inputs).toEqual([]);
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeDefined();
+			expect(audioNodeDatabase['2']).toBeDefined();
+			expect(
+				(audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.disconnect
 			).toHaveBeenCalledWith((audioNodeDatabase['2'] as CustomGainNode).webApiNode);
 			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
 			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.type).toBe('square');
