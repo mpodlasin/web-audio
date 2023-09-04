@@ -93,6 +93,13 @@
 			y: event.clientY - rect.top
 		};
 	};
+
+	const handleKnobMouseUp = (event: CustomEvent) => {
+		dispatcher('knobMouseUp', {
+			nodeId: id,
+			parameterName: event.detail.parameterName
+		});
+	};
 </script>
 
 <div class="node" on:contextmenu={handleContextMenu} bind:this={element}>
@@ -107,6 +114,7 @@
 				maxValue={staticDefinition.parameters[nodeParameter[0]]?.maxValue ?? Infinity}
 				unit={staticDefinition.parameters[nodeParameter[0]]?.unit ?? null}
 				on:change={handleParameterChange}
+				on:mouseup={handleKnobMouseUp}
 			/>
 		{/each}
 	</div>

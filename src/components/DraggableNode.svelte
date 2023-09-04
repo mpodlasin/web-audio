@@ -57,5 +57,6 @@
 		on:nodePlugClick
 		on:nodePlugUp
 		on:deleteNode
+		on:knobMouseUp
 	/>
 </div>

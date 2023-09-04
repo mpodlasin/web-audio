@@ -13,7 +13,8 @@ import {
 	addNode,
 	changeParameter,
 	removeConnection,
-	removeNode
+	removeNode,
+	addConnectionToParameter
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -411,6 +412,51 @@ describe('AudioCanvas', () => {
 			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.frequency.value).toBe(333);
 		});
 
+		it('adds connection between sequencer and oscillator', () => {
+			const audioElements = {
+				'1': {
+					type: 'sequencer' as const,
+					parameters: {},
+					tempoInBpm: 80,
+					notes: [],
+					loopLength: 4
+				},
+				'2': {
+					type: 'oscillator' as const,
+					parameters: {
+						frequency: 30,
+						detune: 0
+					},
+					oscillatorType: 'sine' as const
+				}
+			};
+
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			createAudioCanvas(audioElements, audioNodeDatabase);
+
+			const newAudioElements = addConnectionToParameter(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'frequency'
+				},
+				{
+					type: 'input',
+					nodeId: '2',
+					id: 'frequency'
+				}
+			);
+
+			expect(newAudioElements['2']?.parameters.frequency).toEqual(['1']);
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeDefined();
+			expect(audioNodeDatabase['2']).toBeDefined();
+		});
+
 		it('removes oscillator conenected to gain', () => {
 			const audioElements = {
 				'1': {
@@ -470,8 +516,6 @@ describe('AudioCanvas', () => {
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
 			createAudioCanvas(audioElements, audioNodeDatabase);
-
-			const oscillatorNode = audioNodeDatabase['2'] as CustomOscillatorNode;
 
 			const newAudioElements = removeNode(audioElements, '1');
 

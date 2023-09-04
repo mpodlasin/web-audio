@@ -11,7 +11,8 @@
 		changeParameter,
 		type Plug,
 		removeConnection,
-		removeNode
+		removeNode,
+		addConnectionToParameter
 	} from '../audio/AudioCanvas';
 	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination';
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
@@ -352,6 +353,22 @@
 		draggingLine = false;
 	};
 
+	const handleKnobMouseUp = (event: CustomEvent<{ nodeId: string; parameterName: string }>) => {
+		if (!draggingLine) return;
+		if (!startingPlug) return;
+
+		audioGraphHistory = [
+			...audioGraphHistory,
+			addConnectionToParameter(audioGraphWithPositions, startingPlug, {
+				nodeId: event.detail.nodeId,
+				type: 'input',
+				id: event.detail.parameterName
+			})
+		];
+
+		draggingLine = false;
+	};
+
 	const handleLineDrag = (event: MouseEvent) => {
 		event.preventDefault();
 
@@ -428,6 +445,7 @@
 				on:nodePlugClick={handlePlugClick}
 				on:nodePlugUp={handlePlugUp}
 				on:deleteNode={handleDeleteNode}
+				on:knobMouseUp={handleKnobMouseUp}
 			/>
 		{/each}
 		<svg width="100vw" height="100vh">

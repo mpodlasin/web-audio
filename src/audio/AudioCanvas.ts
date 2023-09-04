@@ -18,7 +18,7 @@ export type SerializedAudioElement<T extends string, P extends string> = {
 		[key in P]: SerializedAudioParameter;
 	} & {
 		[key: string]: SerializedAudioParameter;
-	}
+	};
 	ui?: UIInformation;
 };
 
@@ -210,10 +210,9 @@ export const removeNode = <S extends SerializedAudioElements>(audioGraph: S, nod
 					}
 				});
 
-				const staticNodeDefinition = allowedSerializedAudioElementStaticDefinitions[
-					audioElement.type
-				];
-				const defaultParameterValue = staticNodeDefinition.parameters[parameterName]?.defaultValue
+				const staticNodeDefinition =
+					allowedSerializedAudioElementStaticDefinitions[audioElement.type];
+				const defaultParameterValue = staticNodeDefinition.parameters[parameterName]?.defaultValue;
 
 				if (filteredParameter.length === 0 && defaultParameterValue !== undefined) {
 					audioElement.parameters[parameterName] = defaultParameterValue;
@@ -300,6 +299,60 @@ export const addConnection = <S extends SerializedAudioElements>(
 						? endingPlug.nodeId
 						: { id: endingPlug.nodeId, output: endingPlug.id }
 				]
+			}
+		};
+	} else {
+		newAudioGraph = { ...audioGraph };
+	}
+
+	return newAudioGraph;
+};
+
+export const addConnectionToParameter = <S extends SerializedAudioElements>(
+	audioGraph: S,
+	startingPlug: Plug,
+	endingPlug: Plug
+): S => {
+	if (startingPlug.type === endingPlug.type) {
+		throw new Error(`You tried connecting two ${startingPlug.type}s together`);
+	}
+
+	if (startingPlug.nodeId === endingPlug.nodeId) {
+		throw new Error(`You tried connecting a node to itself`);
+	}
+
+	let newAudioGraph: S;
+
+	if (endingPlug.type === 'input' && startingPlug.type === 'output') {
+		const startingNode = audioGraph[startingPlug.nodeId];
+		const endingNode = audioGraph[endingPlug.nodeId];
+
+		if (startingNode === undefined) {
+			throw new Error(`Audio element with id ${startingPlug.nodeId} not found`);
+		}
+
+		if (endingNode === undefined) {
+			throw new Error(`Audio element with id ${endingPlug.nodeId} not found`);
+		}
+
+		const startingNodeStaticDefinition =
+			allowedSerializedAudioElementStaticDefinitions[startingNode.type];
+
+		const parameter = endingNode.parameters?.[endingPlug.id];
+
+		newAudioGraph = {
+			...audioGraph,
+			[endingPlug.nodeId]: {
+				...endingNode,
+				parameters: {
+					...endingNode.parameters,
+					[endingPlug.id]: [
+						...(Array.isArray(parameter) ? parameter : []),
+						startingNodeStaticDefinition.outputs[0] === startingPlug.id
+							? startingPlug.nodeId
+							: { id: startingPlug.nodeId, output: startingPlug.id }
+					]
+				}
 			}
 		};
 	} else {

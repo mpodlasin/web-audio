@@ -10,6 +10,7 @@
 
 	$: numberParameter = typeof parameter === 'number' ? parameter : null;
 	$: inputParameter = typeof parameter === 'object' ? parameter : null;
+	$: isControlled = typeof parameter === 'object';
 
 	const dispatcher = createEventDispatcher();
 
@@ -19,6 +20,8 @@
 	let previousValue = numberParameter ?? 0;
 
 	function handleMouseDown(event: MouseEvent) {
+		if (isControlled) return;
+
 		event.stopPropagation();
 		isDragging = true;
 		window.addEventListener('mousemove', handleMouseMove);
@@ -27,6 +30,12 @@
 			isDragging = false;
 			previousValue = numberParameter ?? 0;
 			window.removeEventListener('mousemove', handleMouseMove);
+		});
+	}
+
+	function handleMouseUp() {
+		dispatcher('mouseup', {
+			parameterName
 		});
 	}
 
@@ -65,13 +74,25 @@
 		class="knob"
 		bind:this={knob}
 		on:mousedown={handleMouseDown}
+		on:mouseup={handleMouseUp}
 		style="transform: rotate({angle}deg)"
 	>
 		<div class="knob-pointer" />
+		{#if isControlled}
+			<div class="controlled-knob-circle" />
+		{/if}
 	</div>
 	{#if numberParameter !== null}
 		<div>
 			{numberParameter.toFixed(2)}
+			{#if unit}
+				{' '}{unit}
+			{/if}
+		</div>
+	{/if}
+	{#if inputParameter !== null}
+		<div>
+			.
 			{#if unit}
 				{' '}{unit}
 			{/if}
@@ -105,5 +126,17 @@
 		left: 50%;
 		transform-origin: bottom;
 		transform: translateX(-50%);
+	}
+
+	.controlled-knob-circle {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background-color: gray;
+		border: 2px solid lightgray;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 </style>
