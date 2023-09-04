@@ -1,6 +1,5 @@
 <script lang="ts">
 	import {
-		createAudioCanvas,
 		type AudioNodeDatabase,
 		playAudioCanvas,
 		type SerializedAudioElements,
@@ -71,7 +70,7 @@
 				}
 			}
 
-			createAudioCanvas(audioGraphHistory.at(-1) ?? {}, audioNodeDatabase);
+			updateAudioCanvas(audioGraphHistory.at(-1) ?? {}, {}, audioNodeDatabase);
 		}
 	}
 

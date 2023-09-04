@@ -3,7 +3,6 @@
  */
 import './mocks';
 import {
-	createAudioCanvas,
 	type AudioNodeDatabase,
 	CustomOscillatorNode,
 	CustomGainNode,
@@ -19,7 +18,7 @@ import {
 import { OscillatorNodeMock } from './mocks';
 
 describe('AudioCanvas', () => {
-	describe('createAudioCanvas', () => {
+	describe('updateAudioCanvas - creating', () => {
 		it('returns single oscillator', () => {
 			const audioElements = {
 				'1': {
@@ -33,7 +32,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			expect(audioNodeDatabase['1']).toBeDefined();
 			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode).toBeInstanceOf(
@@ -68,16 +67,19 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			expect(audioNodeDatabase['1']).toBeDefined();
 			expect(audioNodeDatabase['2']).toBeDefined();
+
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.type).toBe('square');
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.frequency.value).toBe(333);
+
+			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
+
 			expect(
 				(audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.connect
 			).toHaveBeenCalledWith((audioNodeDatabase['2'] as CustomGainNode).webApiNode);
-			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
-			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.type).toBe('square');
-			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.frequency.value).toBe(333);
 		});
 
 		it('returns oscillator connected to oscillator frequency', () => {
@@ -101,7 +103,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			expect(audioNodeDatabase['1']).toBeDefined();
 			expect(audioNodeDatabase['2']).toBeDefined();
@@ -138,7 +140,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			expect(audioNodeDatabase['1']).toBeDefined();
 			expect(audioNodeDatabase['2']).toBeDefined();
@@ -199,7 +201,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			expect(audioNodeDatabase['1']).toBeDefined();
 			expect(audioNodeDatabase['2']).toBeDefined();
@@ -209,7 +211,7 @@ describe('AudioCanvas', () => {
 		});
 	});
 
-	describe('updateAudioCanvas', () => {
+	describe('updateAudioCanvas - updating', () => {
 		it('updates oscillator frequency', () => {
 			const audioElements = {
 				'1': {
@@ -223,7 +225,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			expect(
 				((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode as OscillatorNode).frequency
@@ -253,7 +255,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			expect(audioNodeDatabase['1']).toBeDefined();
 
@@ -283,7 +285,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			expect(audioNodeDatabase['1']).toBeDefined();
 
@@ -332,7 +334,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			const newAudioElements = addConnection(
 				audioElements,
@@ -382,7 +384,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			const newAudioElements = removeConnection(
 				audioElements,
@@ -432,7 +434,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			const newAudioElements = addConnectionToParameter(
 				audioElements,
@@ -481,7 +483,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			const newAudioElements = removeConnection(
 				audioElements,
@@ -530,7 +532,7 @@ describe('AudioCanvas', () => {
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			const oscillatorNode = audioNodeDatabase['1'] as CustomOscillatorNode;
 
@@ -568,7 +570,7 @@ describe('AudioCanvas', () => {
 
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
-			createAudioCanvas(audioElements, audioNodeDatabase);
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			const newAudioElements = removeNode(audioElements, '1');
 
