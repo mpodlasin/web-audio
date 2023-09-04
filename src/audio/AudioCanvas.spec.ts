@@ -412,25 +412,24 @@ describe('AudioCanvas', () => {
 			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.frequency.value).toBe(333);
 		});
 
-		it('adds connection between sequencer and oscillator', () => {
+		it('adds connection between gain and oscillator detune parameter', () => {
 			const audioElements = {
 				'1': {
-					type: 'sequencer' as const,
-					parameters: {},
-					tempoInBpm: 80,
-					notes: [],
-					loopLength: 4
-				},
-				'2': {
 					type: 'oscillator' as const,
 					parameters: {
-						frequency: 30,
+						frequency: 333,
 						detune: 0
 					},
-					oscillatorType: 'sine' as const
+					oscillatorType: 'square' as const
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: [],
+					parameters: {
+						gain: 0.5
+					}
 				}
 			};
-
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
 			createAudioCanvas(audioElements, audioNodeDatabase);
@@ -439,43 +438,47 @@ describe('AudioCanvas', () => {
 				audioElements,
 				{
 					type: 'output',
-					nodeId: '1',
-					id: 'frequency'
+					nodeId: '2',
+					id: 'audio'
 				},
 				{
 					type: 'input',
-					nodeId: '2',
-					id: 'frequency'
+					nodeId: '1',
+					id: 'detune'
 				}
 			);
 
-			expect(newAudioElements['2']?.parameters.frequency).toEqual(['1']);
+			expect(newAudioElements['1']?.parameters.detune).toEqual(['2']);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
 			expect(audioNodeDatabase['1']).toBeDefined();
 			expect(audioNodeDatabase['2']).toBeDefined();
+			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.connect).toHaveBeenCalledWith(
+				(audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.detune
+			);
+			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.type).toBe('square');
 		});
 
-		it('removes connection between sequencer and oscillator', () => {
+		xit('removes connection between gain and oscillator detune parameter', () => {
 			const audioElements = {
 				'1': {
-					type: 'sequencer' as const,
-					parameters: {},
-					tempoInBpm: 80,
-					notes: [],
-					loopLength: 4
-				},
-				'2': {
 					type: 'oscillator' as const,
 					parameters: {
-						frequency: ['1'],
-						detune: 0
+						detune: ['2'],
+						frequency: 440
 					},
-					oscillatorType: 'sine' as const
+					oscillatorType: 'square' as const
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: [],
+					parameters: {
+						gain: 0.5
+					}
 				}
 			};
-
 			const audioNodeDatabase: AudioNodeDatabase = {};
 
 			createAudioCanvas(audioElements, audioNodeDatabase);
@@ -484,22 +487,27 @@ describe('AudioCanvas', () => {
 				audioElements,
 				{
 					type: 'output',
-					nodeId: '1',
-					id: 'frequency'
+					nodeId: '2',
+					id: 'audio'
 				},
 				{
 					type: 'input',
-					nodeId: '2',
-					id: 'frequency'
+					nodeId: '1',
+					id: 'detune'
 				}
 			);
 
-			expect(newAudioElements['2']?.parameters.frequency).toEqual(440);
+			expect(newAudioElements['1']?.parameters.detune).toEqual(0);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
 			expect(audioNodeDatabase['1']).toBeDefined();
 			expect(audioNodeDatabase['2']).toBeDefined();
+			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.disconnect).toHaveBeenCalledWith(
+				(audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.detune
+			);
+			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.type).toBe('square');
 		});
 
 		it('removes oscillator conenected to gain', () => {

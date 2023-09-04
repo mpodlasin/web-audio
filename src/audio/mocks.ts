@@ -30,10 +30,12 @@ export class OscillatorNodeMock {
 
 export class GainNodeMock {
 	public connect: jest.Mock;
+	public disconnect: jest.Mock;
 	public gain: AudioParamMock;
 
 	constructor() {
 		this.connect = jest.fn();
+		this.disconnect = jest.fn();
 		this.gain = new AudioParamMock();
 	}
 }

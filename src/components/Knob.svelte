@@ -39,9 +39,10 @@
 		});
 	}
 
-	$: angle = numberParameter
-		? (180 * (numberParameter - minValue)) / (maxValue - minValue) - 90
-		: 0;
+	$: angle =
+		numberParameter !== null
+			? (180 * (numberParameter - minValue)) / (maxValue - minValue) - 90
+			: 0;
 
 	function handleMouseMove(event: MouseEvent) {
 		event.preventDefault();

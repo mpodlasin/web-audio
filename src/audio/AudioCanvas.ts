@@ -1144,10 +1144,30 @@ export const updateAudioCanvas = (
 			throw new Error(`Audio node with id ${id} not found`);
 		}
 
-		const changedParametersWithValues = getChangedParameters(newAudioElement, oldAudioElement);
+		const changedParametersWithValues = getChangedParametersWithValues(
+			newAudioElement,
+			oldAudioElement
+		);
 
 		changedParametersWithValues.forEach(([parameterName, parameterValue]) => {
 			accessParameter(audioNode, parameterName).value = parameterValue;
+		});
+
+		const changedParametersWithConnections = getChangedParametersWithConnections(
+			newAudioElement,
+			oldAudioElement
+		);
+
+		changedParametersWithConnections.forEach(([parameterName]) => {
+			connectAudioElementsToParameter(
+				{
+					...newAudioElement,
+					id
+				},
+				addIdsToAudioElements(newAudioElements),
+				parameterName,
+				audioNodeDatabase
+			);
 		});
 
 		const addedInputs = getAddedInputs(newAudioElement, oldAudioElement);
@@ -1252,7 +1272,7 @@ function getRemovedInputs(
 	return removedInputs;
 }
 
-function getChangedParameters(
+function getChangedParametersWithValues(
 	newAudioElement: SerializedAudioElement<string, string>,
 	oldAudioElement: SerializedAudioElement<string, string>
 ): [string, number][] {
@@ -1275,3 +1295,23 @@ function getChangedParameters(
 
 	return changedParameters;
 }
+
+const getChangedParametersWithConnections = (
+	newAudioElement: SerializedAudioElement<string, string>,
+	oldAudioElement: SerializedAudioElement<string, string>
+): [string, Inputs][] => {
+	const changedParameters: [string, Inputs][] = [];
+
+	if (newAudioElement.parameters && oldAudioElement.parameters) {
+		for (const parameterName in newAudioElement.parameters) {
+			const newParameterValue = newAudioElement.parameters[parameterName];
+			const oldParameterValue = oldAudioElement.parameters[parameterName];
+
+			if (Array.isArray(newParameterValue) && !Array.isArray(oldParameterValue)) {
+				changedParameters.push([parameterName, newParameterValue]);
+			}
+		}
+	}
+
+	return changedParameters;
+};
