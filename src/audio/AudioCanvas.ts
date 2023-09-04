@@ -16,7 +16,9 @@ export type SerializedAudioElement<T extends string, P extends string> = {
 	inputs?: Inputs;
 	parameters?: {
 		[key in P]: SerializedAudioParameter;
-	};
+	} & {
+		[key: string]: SerializedAudioParameter;
+	}
 	ui?: UIInformation;
 };
 
@@ -195,6 +197,31 @@ export const removeNode = <S extends SerializedAudioElements>(audioGraph: S, nod
 					}
 			  })
 			: undefined;
+
+		for (const parameterName in audioElement.parameters) {
+			const parameterValue = audioElement.parameters[parameterName];
+
+			if (Array.isArray(parameterValue)) {
+				const filteredParameter = parameterValue.filter((input) => {
+					if (typeof input === 'string') {
+						return input !== nodeId;
+					} else {
+						return input.id !== nodeId;
+					}
+				});
+
+				const staticNodeDefinition = allowedSerializedAudioElementStaticDefinitions[
+					audioElement.type
+				];
+				const defaultParameterValue = staticNodeDefinition.parameters[parameterName]?.defaultValue
+
+				if (filteredParameter.length === 0 && defaultParameterValue !== undefined) {
+					audioElement.parameters[parameterName] = defaultParameterValue;
+				} else {
+					audioElement.parameters[parameterName] = filteredParameter;
+				}
+			}
+		}
 	});
 
 	return newAudioGraph;

@@ -447,5 +447,36 @@ describe('AudioCanvas', () => {
 			expect(oscillatorNode.webApiNode.stop).toHaveBeenCalled();
 			expect(oscillatorNode.webApiNode.disconnect).toHaveBeenCalled();
 		});
+
+		it('removes sequencer connected to oscillator', () => {
+			const audioElements = {
+				'1': {
+					type: 'sequencer' as const,
+					parameters: {},
+					tempoInBpm: 80,
+					notes: [],
+					loopLength: 4
+				},
+				'2': {
+					type: 'oscillator' as const,
+					parameters: {
+						frequency: [{ id: '1', output: 'frequency' }],
+						detune: 0
+					},
+					oscillatorType: 'sine' as const
+				}
+			};
+
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			createAudioCanvas(audioElements, audioNodeDatabase);
+
+			const oscillatorNode = audioNodeDatabase['2'] as CustomOscillatorNode;
+
+			const newAudioElements = removeNode(audioElements, '1');
+
+			expect(newAudioElements['1']).toBeUndefined();
+			expect(newAudioElements['2']?.parameters.frequency).toEqual(440);
+		});
 	});
 });
