@@ -463,7 +463,7 @@ describe('AudioCanvas', () => {
 			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.type).toBe('square');
 		});
 
-		xit('removes connection between gain and oscillator detune parameter', () => {
+		it('removes connection between gain and oscillator detune parameter', () => {
 			const audioElements = {
 				'1': {
 					type: 'oscillator' as const,

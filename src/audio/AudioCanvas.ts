@@ -1202,9 +1202,21 @@ export const updateAudioCanvas = (
 	});
 
 	/* removes connections to parameters */
-
 	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
-		/* todo */
+		const oldAudioElement = oldAudioElements[id];
+
+		if (oldAudioElement === undefined) return;
+
+		const removedInputs = getRemovedParameterInputs(newAudioElement, oldAudioElement);
+
+		removedInputs.forEach(([parameterName, nodeId]) => {
+			const audioElementNode = audioNodeDatabase[id];
+			const removedInputNode = audioNodeDatabase[nodeId];
+
+			if (removedInputNode && audioElementNode) {
+				removedInputNode.disconnect(accessParameter(audioElementNode, parameterName));
+			}
+		});
 	});
 };
 
@@ -1282,4 +1294,33 @@ const getChangedParameters = (
 	}
 
 	return changedParameters;
+};
+
+const getRemovedParameterInputs = (
+	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
+	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
+): [string, string][] => {
+	const removedParameterInputs: [string, string][] = [];
+
+	if (newAudioElement.parameters && oldAudioElement.parameters) {
+		for (const parameterName in oldAudioElement.parameters) {
+			const newParameterValue = newAudioElement.parameters[parameterName];
+			const oldParameterValue = oldAudioElement.parameters[parameterName];
+
+			if (
+				newParameterValue !== undefined &&
+				oldParameterValue !== undefined &&
+				typeof newParameterValue === 'number' &&
+				typeof oldParameterValue !== 'number'
+			) {
+				removedParameterInputs.push(
+					...oldParameterValue.map(
+						(v) => [parameterName, typeof v === 'string' ? v : v.id] as [string, string]
+					)
+				);
+			}
+		}
+	}
+
+	return removedParameterInputs;
 };
