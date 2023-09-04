@@ -1170,25 +1170,9 @@ export const updateAudioCanvas = (
 	/* removes connections to inputs */
 
 	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
-		/* todo */
-	});
-
-	/* removes connections to parameters */
-
-	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
-		/* todo */
-	});
-
-	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
 		const oldAudioElement = oldAudioElements[id];
 
 		if (!oldAudioElement) return;
-
-		const audioNode = audioNodeDatabase[id];
-
-		if (!audioNode) {
-			throw new Error(`Audio node with id ${id} not found`);
-		}
 
 		const removedInputs = getRemovedInputs(newAudioElement, oldAudioElement);
 
@@ -1215,6 +1199,12 @@ export const updateAudioCanvas = (
 				output
 			);
 		});
+	});
+
+	/* removes connections to parameters */
+
+	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
+		/* todo */
 	});
 };
 
@@ -1264,30 +1254,6 @@ function getRemovedInputs(
 	}
 
 	return removedInputs;
-}
-
-function getChangedParametersWithValues(
-	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
-	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
-): [string, number][] {
-	const changedParameters: [string, number][] = [];
-
-	if (newAudioElement.parameters && oldAudioElement.parameters) {
-		for (const parameterName in newAudioElement.parameters) {
-			const newParameterValue = newAudioElement.parameters[parameterName];
-			const oldParameterValue = oldAudioElement.parameters[parameterName];
-
-			if (
-				typeof newParameterValue === 'number' &&
-				typeof oldParameterValue === 'number' &&
-				newParameterValue !== oldParameterValue
-			) {
-				changedParameters.push([parameterName, newParameterValue]);
-			}
-		}
-	}
-
-	return changedParameters;
 }
 
 const getChangedParameters = (
