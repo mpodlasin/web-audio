@@ -457,6 +457,51 @@ describe('AudioCanvas', () => {
 			expect(audioNodeDatabase['2']).toBeDefined();
 		});
 
+		it('removes connection between sequencer and oscillator', () => {
+			const audioElements = {
+				'1': {
+					type: 'sequencer' as const,
+					parameters: {},
+					tempoInBpm: 80,
+					notes: [],
+					loopLength: 4
+				},
+				'2': {
+					type: 'oscillator' as const,
+					parameters: {
+						frequency: ['1'],
+						detune: 0
+					},
+					oscillatorType: 'sine' as const
+				}
+			};
+
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			createAudioCanvas(audioElements, audioNodeDatabase);
+
+			const newAudioElements = removeConnection(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'frequency'
+				},
+				{
+					type: 'input',
+					nodeId: '2',
+					id: 'frequency'
+				}
+			);
+
+			expect(newAudioElements['2']?.parameters.frequency).toEqual(440);
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeDefined();
+			expect(audioNodeDatabase['2']).toBeDefined();
+		});
+
 		it('removes oscillator conenected to gain', () => {
 			const audioElements = {
 				'1': {

@@ -394,7 +394,27 @@ export const removeConnection = <S extends SerializedAudioElements>(
 					} else {
 						return false;
 					}
-				})
+				}),
+				parameters: Object.fromEntries(
+					Object.entries(endingNode.parameters ?? {}).map(([key, value]) => {
+						if (Array.isArray(value)) {
+							const endingNodeStaticDefinition =
+								allowedSerializedAudioElementStaticDefinitions[endingNode.type];
+							const defaultParameterValue =
+								endingNodeStaticDefinition.parameters[key]?.defaultValue;
+							const filteredArray = value.filter((input) => {
+								if (typeof input === 'string') {
+									return input !== startingPlug.nodeId;
+								} else {
+									return false;
+								}
+							});
+							return [key, filteredArray.length === 0 ? defaultParameterValue : filteredArray];
+						} else {
+							return [key, value];
+						}
+					})
+				)
 			}
 		};
 	} else {
