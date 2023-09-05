@@ -13,7 +13,8 @@ import {
 	changeParameter,
 	removeConnection,
 	removeNode,
-	addConnectionToParameter
+	addConnectionToParameter,
+	SequencerNode
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -549,6 +550,54 @@ describe('AudioCanvas', () => {
 			expect(oscillatorNode.webApiNode.disconnect).toHaveBeenCalled();
 		});
 
+
+		it('adds connection between sequencer frequency and oscillator detune parameter', () => {
+			const audioElements = {
+				'1': {
+					type: 'oscillator' as const,
+					parameters: {
+						frequency: 333,
+						detune: 0,
+					},
+					oscillatorType: 'square' as const
+				},
+				'2': {
+					type: 'sequencer' as const,
+					parameters: {},
+					tempoInBpm: 80,
+					notes: [],
+					loopLength: 4
+				}
+			};
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
+
+			const newAudioElements = addConnectionToParameter(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '2',
+					id: 'frequency'
+				},
+				{
+					type: 'input',
+					nodeId: '1',
+					id: 'detune'
+				}
+			);
+
+			expect(newAudioElements['1']?.parameters.detune).toEqual(['2']);
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeDefined();
+			expect(audioNodeDatabase['2']).toBeDefined();
+
+			expect((audioNodeDatabase['2'] as SequencerNode).getFrequencyDestinations()).toHaveLength(1);
+			expect((audioNodeDatabase['2'] as SequencerNode).getTriggerDestinations()).toHaveLength(0);
+		});
+
 		it('removes sequencer connected to oscillator', () => {
 			const audioElements = {
 				'1': {
@@ -573,6 +622,8 @@ describe('AudioCanvas', () => {
 			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
 			const newAudioElements = removeNode(audioElements, '1');
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
 			expect(newAudioElements['1']).toBeUndefined();
 			expect(newAudioElements['2']?.parameters.frequency).toEqual(440);

@@ -740,6 +740,19 @@ export class SequencerNode {
 		}
 	}
 
+	/* for testing purposes       */
+	/* -------------------------- */
+
+	getFrequencyDestinations() {
+		return [...this.frequencyDestinations]
+	}
+
+	getTriggerDestinations() {
+		return [...this.triggerDestinations]
+	}
+
+ 	/* -------------------------- */
+
 	private scheduleNote(time: number, duration: number, frequency: number): void {
 		this.triggerDestinations.forEach((destination) => {
 			if (destination instanceof AudioParam) {
@@ -754,6 +767,7 @@ export class SequencerNode {
 
 		this.frequencyDestinations.forEach((destination) => {
 			if (destination instanceof AudioParam) {
+				console.log(destination, frequency, time);
 				destination.setValueAtTime(frequency, time);
 			}
 		});
@@ -878,10 +892,12 @@ function connectAudioElementsToParameter(
 				throw new Error(`Audio element with id ${inputId} not found`);
 			}
 
+			const staticDefinitionAudioElementB = allowedSerializedAudioElementStaticDefinitions[audioElementB.type]
+
 			const audioNodeB = audioNodeDatabase[audioElementB.id];
 
 			if (audioNodeA !== undefined && audioNodeB !== undefined) {
-				audioNodeB.connect(accessParameter(audioNodeA, parameterName), output);
+				audioNodeB.connect(accessParameter(audioNodeA, parameterName), output ?? staticDefinitionAudioElementB.outputs[0]);
 			}
 		}
 	} else if (typeof parameterValue === 'number' && audioNodeA !== undefined) {
