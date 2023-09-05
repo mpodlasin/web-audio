@@ -550,14 +550,13 @@ describe('AudioCanvas', () => {
 			expect(oscillatorNode.webApiNode.disconnect).toHaveBeenCalled();
 		});
 
-
 		it('adds connection between sequencer frequency and oscillator detune parameter', () => {
 			const audioElements = {
 				'1': {
 					type: 'oscillator' as const,
 					parameters: {
 						frequency: 333,
-						detune: 0,
+						detune: 0
 					},
 					oscillatorType: 'square' as const
 				},

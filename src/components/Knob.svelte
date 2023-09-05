@@ -50,7 +50,7 @@
 			const { y } = knob.getBoundingClientRect();
 			const { clientY } = event;
 			const dy = y - clientY;
-			const value = previousValue + dy * (maxValue - minValue) / 500;
+			const value = previousValue + (dy * (maxValue - minValue)) / 500;
 
 			const normalizedValue = Math.min(Math.max(value, minValue), maxValue);
 
