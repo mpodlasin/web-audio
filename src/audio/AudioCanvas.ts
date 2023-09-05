@@ -767,7 +767,6 @@ export class SequencerNode {
 
 		this.frequencyDestinations.forEach((destination) => {
 			if (destination instanceof AudioParam) {
-				console.log(destination, frequency, time);
 				destination.setValueAtTime(frequency, time);
 			}
 		});
