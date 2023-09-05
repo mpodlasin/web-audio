@@ -7,6 +7,7 @@
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
+	import OscilloscopeNode from './OscilloscopeNode.svelte';
 
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
@@ -117,6 +118,11 @@
 				on:mouseup={handleKnobMouseUp}
 			/>
 		{/each}
+	</div>
+	<div class="special">
+		{#if node.type === 'oscilloscope'}
+			<OscilloscopeNode />
+		{/if}
 	</div>
 	<div class="inputs-and-outputs">
 		<div class="inputs">

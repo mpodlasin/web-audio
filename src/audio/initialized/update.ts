@@ -15,6 +15,7 @@ import {
 import {
 	CustomGainNode,
 	CustomOscillatorNode,
+	CustomOscilloscopeNode,
 	DestinationNode,
 	EnvelopeNode,
 	MidiNode,
@@ -172,6 +173,8 @@ function createCustomAudioNode(
 		}
 		case 'midi':
 			return new MidiNode();
+		case 'oscilloscope':
+			return new CustomOscilloscopeNode();
 	}
 }
 

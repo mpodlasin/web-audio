@@ -76,6 +76,8 @@ export type SerializedEnvelopeNode = SerializedAudioElement<'envelope', never> &
 	release: number;
 };
 
+export type SerializedOscilloscopeNode = SerializedAudioElement<'oscilloscope', never>;
+
 export type AllowedSerializedAudioElements =
 	| SerializedOscillatorNode
 	| SerializedGainNode
@@ -83,4 +85,5 @@ export type AllowedSerializedAudioElements =
 	| SerializedTriggerNode
 	| SerializedEnvelopeNode
 	| SerializedSequencerNode
-	| SerializedMidiNode;
+	| SerializedMidiNode
+	| SerializedOscilloscopeNode;

@@ -53,6 +53,11 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		outputs: [],
 		parameters: {}
 	},
+	oscilloscope: {
+		inputs: ['audio'],
+		outputs: ['audio'],
+		parameters: {}
+	},
 	trigger: {
 		inputs: [],
 		outputs: ['trigger'],

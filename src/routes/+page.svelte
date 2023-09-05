@@ -489,6 +489,7 @@
 				<button on:click={handleCreateElementClick('sequencer')}>Sequencer</button>
 				<button on:click={handleCreateElementClick('midi')}>Midi</button>
 				<button on:click={handleCreateElementClick('envelope')}>Envelope</button>
+				<button on:click={handleCreateElementClick('oscilloscope')}>Oscilloscope</button>
 			</div>
 		{/if}
 	</div>

@@ -74,6 +74,12 @@ export class CustomGainNode extends GenericCustomAudioNodeWithWebApiNode<GainNod
 	}
 }
 
+export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode<AnalyserNode> {
+	constructor() {
+		super(globalContext.createAnalyser());
+	}
+}
+
 export class EnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor() {
 		super(createEnvelopeNode());
