@@ -158,15 +158,9 @@ function createCustomAudioNode(
 		case 'destination':
 			return new DestinationNode();
 		case 'trigger':
-			return new TriggerNode((audioElement as SerializedTriggerNode).tempoInBpm);
+			return new TriggerNode();
 		case 'envelope': {
-			const envelopeNode = audioElement as SerializedEnvelopeNode;
-			return new EnvelopeNode(
-				envelopeNode.attack,
-				envelopeNode.decay,
-				envelopeNode.sustain,
-				envelopeNode.release
-			);
+			return new EnvelopeNode();
 		}
 		case 'sequencer': {
 			const sequencerNode = audioElement as SerializedSequencerNode;
@@ -210,8 +204,10 @@ function accessParameter(audioNode: CustomAudioNode, parameterName: string): Aud
 		}
 	}
 
-	if (audioNode instanceof EnvelopeNode) {
-		return {} as AudioParam;
+	if (audioNode instanceof EnvelopeNode || audioNode instanceof TriggerNode) {
+		const param = audioNode.webApiNode.parameters.get(parameterName);
+
+		if (param) return param;
 	}
 
 	throw new Error(`Parameter ${parameterName} not found for ${audioNode.constructor}`);

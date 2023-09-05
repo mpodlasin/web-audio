@@ -56,7 +56,14 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	trigger: {
 		inputs: [],
 		outputs: ['trigger'],
-		parameters: {}
+		parameters: {
+			tempoInBPM: {
+				defaultValue: 120,
+				minValue: 0,
+				maxValue: 1000,
+				unit: 'BPM'
+			}
+		}
 	},
 	envelope: {
 		inputs: ['trigger'],

@@ -1,7 +1,7 @@
 import { globalContext } from '../GlobalContext';
 import type { SerializedSequencerNote } from '../serialized';
 import { settings } from '../settings';
-import { createEnvelopeNode } from '../web-audio/utils';
+import { createEnvelopeNode, createTriggerNode } from '../web-audio/utils';
 import {
 	isCustomAudioNodeWithWebApiNode,
 	type CustomAudioNode,
@@ -76,7 +76,13 @@ export class CustomGainNode extends GenericCustomAudioNodeWithWebApiNode<GainNod
 
 export class EnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor() {
-		super(createEnvelopeNode())
+		super(createEnvelopeNode());
+	}
+}
+
+export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	constructor() {
+		super(createTriggerNode());
 	}
 }
 
@@ -87,54 +93,6 @@ export class DestinationNode extends GenericCustomAudioNodeWithWebApiNode<AudioD
 }
 
 export type Destination = CustomAudioNode | AudioParam;
-
-export class TriggerNode implements CustomAudioNode, CustomAudioScheduledSourceNode {
-	private destinations: Destination[] = [];
-	private setIntervalId: number | null = null;
-	private playedTime = 0;
-
-	constructor(private tempoInBPM: number) {}
-
-	connect(destination: CustomAudioNode | AudioParam): void {
-		this.destinations.push(destination);
-	}
-
-	disconnect(destination: CustomAudioNode | AudioParam): void {
-		this.destinations = this.destinations.filter((d) => d !== destination);
-	}
-
-	start(when: number = globalContext.currentTime): void {
-		this.playedTime = when;
-		const tempoInSeconds = 60 / this.tempoInBPM;
-		const lookAheadInSeconds = settings.lookAheadInSeconds;
-		const sampling = settings.sampling;
-		const sampleLengthInSeconds = 1 / sampling;
-
-		this.setIntervalId = window.setInterval(() => {
-			this.destinations.forEach((destination) => {
-				if (destination instanceof AudioParam) {
-					return;
-				}
-
-				if (isCustomAudioScheduledSourceNode(destination)) {
-					while (this.playedTime < globalContext.currentTime + lookAheadInSeconds) {
-						destination.start(this.playedTime);
-						destination.stop(this.playedTime + sampleLengthInSeconds);
-						this.playedTime += tempoInSeconds;
-					}
-				}
-			});
-		}, settings.updateIntervalInMiliseconds);
-	}
-
-	stop(when: number = globalContext.currentTime): void {
-		if (this.setIntervalId !== null) {
-			window.clearInterval(this.setIntervalId);
-			this.setIntervalId = null;
-		}
-	}
-}
-
 export class SequencerNode {
 	private frequencyDestinations: Destination[] = [];
 	private triggerDestinations: Destination[] = [];
