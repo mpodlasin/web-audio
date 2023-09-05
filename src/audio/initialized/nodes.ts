@@ -1,6 +1,7 @@
 import { globalContext } from '../GlobalContext';
 import type { SerializedSequencerNote } from '../serialized';
 import { settings } from '../settings';
+import { createEnvelopeNode } from '../web-audio/utils';
 import {
 	isCustomAudioNodeWithWebApiNode,
 	type CustomAudioNode,
@@ -73,6 +74,12 @@ export class CustomGainNode extends GenericCustomAudioNodeWithWebApiNode<GainNod
 	}
 }
 
+export class EnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	constructor() {
+		super(createEnvelopeNode())
+	}
+}
+
 export class DestinationNode extends GenericCustomAudioNodeWithWebApiNode<AudioDestinationNode> {
 	constructor() {
 		super(globalContext.destination);
@@ -80,49 +87,6 @@ export class DestinationNode extends GenericCustomAudioNodeWithWebApiNode<AudioD
 }
 
 export type Destination = CustomAudioNode | AudioParam;
-
-export class EnvelopeNode implements CustomAudioNode, CustomAudioScheduledSourceNode {
-	private destinations: Destination[] = [];
-
-	constructor(
-		private readonly attack: number,
-		private readonly decay: number,
-		private readonly sustain: number,
-		private readonly release: number
-	) {}
-
-	connect(destination: CustomAudioNode | AudioParam): void {
-		if (!(destination instanceof AudioParam)) {
-			throw new Error('EnvelopeNode can only connect to AudioParams');
-		}
-
-		this.destinations.push(destination);
-	}
-
-	disconnect(destination: CustomAudioNode | AudioParam): void {
-		this.destinations = this.destinations.filter((d) => d !== destination);
-	}
-
-	start(when: number = globalContext.currentTime): void {
-		this.destinations.forEach((destination) => {
-			if (destination instanceof AudioParam) {
-				destination.cancelScheduledValues(when);
-				destination.setValueAtTime(0, when);
-				destination.linearRampToValueAtTime(1, when + this.attack);
-				destination.linearRampToValueAtTime(this.sustain, when + this.attack + this.decay);
-			}
-		});
-	}
-
-	stop(when: number = globalContext.currentTime): void {
-		this.destinations.forEach((destination) => {
-			if (destination instanceof AudioParam) {
-				destination.cancelScheduledValues(when);
-				destination.linearRampToValueAtTime(0, when + this.release);
-			}
-		});
-	}
-}
 
 export class TriggerNode implements CustomAudioNode, CustomAudioScheduledSourceNode {
 	private destinations: Destination[] = [];

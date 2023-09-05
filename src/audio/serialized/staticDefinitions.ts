@@ -61,7 +61,31 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	envelope: {
 		inputs: ['trigger'],
 		outputs: ['envelope'],
-		parameters: {}
+		parameters: {
+			attack: {
+				minValue: 0,
+				maxValue: 4800,
+				unit: 'ms',
+				defaultValue: 0
+			},
+			decay: {
+				minValue: 0,
+				maxValue: 4800,
+				unit: 'ms',
+				defaultValue: 200
+			},
+			sustain: {
+				minValue: 0,
+				maxValue: 1,
+				defaultValue: 0
+			},
+			release: {
+				minValue: 0,
+				maxValue: 4800,
+				unit: 'ms',
+				defaultValue: 200
+			}
+		}
 	},
 	midi: {
 		inputs: [],

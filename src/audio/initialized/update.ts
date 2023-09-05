@@ -1,3 +1,4 @@
+import { globalContext } from '../GlobalContext';
 import {
 	allowedSerializedAudioElementStaticDefinitions,
 	type AllowedSerializedAudioElements,
@@ -92,9 +93,7 @@ export function playAudioCanvas(audioNodeDatabase: AudioNodeDatabase): void {
 		}
 
 		if (isCustomAudioScheduledSourceNode(audioNode)) {
-			if (!(audioNode instanceof EnvelopeNode)) {
-				audioNode.start();
-			}
+			audioNode.start();
 		}
 	}
 }
@@ -211,7 +210,11 @@ function accessParameter(audioNode: CustomAudioNode, parameterName: string): Aud
 		}
 	}
 
-	throw new Error(`Parameter ${parameterName} not found`);
+	if (audioNode instanceof EnvelopeNode) {
+		return {} as AudioParam;
+	}
+
+	throw new Error(`Parameter ${parameterName} not found for ${audioNode.constructor}`);
 }
 
 export const updateAudioCanvas = (
