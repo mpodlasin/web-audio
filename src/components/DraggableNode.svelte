@@ -7,6 +7,7 @@
 
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
+	export let instantiatedNode: unknown;
 	export let position: {
 		x: number;
 		y: number;
@@ -52,6 +53,7 @@
 	<Node
 		{id}
 		{node}
+		{instantiatedNode}
 		on:nodePlugAndKnobPositions
 		on:nodeParameterChange
 		on:nodePlugClick

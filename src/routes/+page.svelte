@@ -437,6 +437,7 @@
 			<DraggableNode
 				{id}
 				{node}
+				instantiatedNode={audioNodeDatabase[id]}
 				position={node.ui?.position ?? { x: 0, y: 0 }}
 				on:drag={handleDrag}
 				on:nodePlugAndKnobPositions={handleNodePlugPositions}

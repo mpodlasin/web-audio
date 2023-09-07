@@ -3,7 +3,8 @@
 	import {
 		allowedSerializedAudioElementStaticDefinitions,
 		type AllowedSerializedAudioElements,
-		type SerializedAudioParameter
+		type SerializedAudioParameter,
+		CustomOscilloscopeNode
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
@@ -11,6 +12,7 @@
 
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
+	export let instantiatedNode: unknown;
 
 	$: staticDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
 	$: parameters = Object.entries(node.parameters ?? {}) as [string, SerializedAudioParameter][];
@@ -120,8 +122,8 @@
 		{/each}
 	</div>
 	<div class="special">
-		{#if node.type === 'oscilloscope'}
-			<OscilloscopeNode />
+		{#if node.type === 'oscilloscope' && instantiatedNode instanceof CustomOscilloscopeNode}
+			<OscilloscopeNode oscilloscopeNode={instantiatedNode} />
 		{/if}
 	</div>
 	<div class="inputs-and-outputs">
