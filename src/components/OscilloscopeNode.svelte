@@ -10,25 +10,24 @@
 	let canvas: HTMLCanvasElement;
 	$: canvasCtx = canvas?.getContext('2d') ?? null;
 
-	// draw an oscilloscope of the current audio source
-
 	function draw() {
 		requestAnimationFrame(draw);
 
 		if (canvasCtx === null) return;
+		if (!canvas) return;
 		if (!analyser) return;
 
 		analyser.getByteTimeDomainData(dataArray);
 
-		canvasCtx.fillStyle = 'rgb(200, 200, 200)';
-		canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+		const sliceWidth = (canvas.width * 1.0) / bufferLength;
+
+		canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
 		canvasCtx.lineWidth = 2;
 		canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
 
 		canvasCtx.beginPath();
 
-		const sliceWidth = (canvas.width * 1.0) / bufferLength;
 		let x = 0;
 
 		for (let i = 0; i < bufferLength; i++) {
