@@ -39,31 +39,14 @@ class Envelope extends AudioWorkletProcessor {
 	}
 
 	lastValueOfPreviousProcess = 0;
-	enveloping = false;
-	nrOfEnvelopedFrames = 0;
+
+	finishEnvelopeAt = null;
 
 	process(inputList, outputList, parameters) {
-		if (this.enveloping) {
-			if (this.nrOfEnvelopedFrames < 100000) {
-				outputList.forEach((output) => {
-					output.forEach((out) => {
-						for (let i = 0; i < out.length; i++) {
-							out[i] = 1;
-						}
-					});
-				});
-				this.nrOfEnvelopedFrames++;
-			} else {
-				this.enveloping = false;
-				this.nrOfEnvelopedFrames = 0;
-			}
-		}
+		let triggerEnvelope = false;
 
 		inputList.forEach((input) => {
 			input.forEach((inp) => {
-				this.lastValueOfPreviousProcess = inp[inp.length - 1];
-
-				let triggerEnvelope = false;
 				if (this.lastValueOfPreviousProcess === 0 && inp[0] === 1) {
 					triggerEnvelope = true;
 				} else {
@@ -74,11 +57,20 @@ class Envelope extends AudioWorkletProcessor {
 					}
 				}
 
-				if (triggerEnvelope) {
-					this.enveloping = true;
-				}
+				this.lastValueOfPreviousProcess = inp[inp.length - 1];
 			});
 		});
+
+		if (triggerEnvelope) {
+			const release = parameters.release;
+
+			if (release.length === 1) {
+				const releaseInMilliseconds = release[0];
+				const releaseInSeconds = releaseInMilliseconds / 1000;
+
+				this.finishEnvelopeAt = currentTime + releaseInSeconds;
+			}
+		}
 
 		return true;
 	}
