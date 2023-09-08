@@ -296,7 +296,6 @@ function connectAudioElements(
 	const audioNodeB = audioNodeDatabase[audioElementB.id];
 
 	if (audioNodeA !== undefined && audioNodeB !== undefined) {
-		console.log('connect');
 		audioNodeA.connect(audioNodeB, output);
 	}
 }
