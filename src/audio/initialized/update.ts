@@ -1,4 +1,3 @@
-import { globalContext } from '../GlobalContext';
 import {
 	allowedSerializedAudioElementStaticDefinitions,
 	type AllowedSerializedAudioElements,
@@ -6,8 +5,6 @@ import {
 	type SerializedAudioElementsWithIds,
 	type SerializedAudioElement,
 	type SerializedOscillatorNode,
-	type SerializedTriggerNode,
-	type SerializedEnvelopeNode,
 	type SerializedSequencerNode,
 	type SerializedAudioElements,
 	type Inputs
@@ -25,11 +22,180 @@ import {
 import {
 	isCustomAudioScheduledSourceNode,
 	type CustomAudioNode,
-	isCustomAudioNodeWithWebApiNode
+	isCustomAudioNodeWithWebApiNode,
+	type AudioNodeDatabase
 } from './types';
 
-export type AudioNodeDatabase = {
-	[key: string]: CustomAudioNode;
+export const updateAudioCanvas = (
+	newAudioElements: SerializedAudioElements,
+	oldAudioElements: SerializedAudioElements,
+	audioNodeDatabase: AudioNodeDatabase
+) => {
+	/* remove deleted nodes */
+	Object.entries(oldAudioElements).forEach(([id]) => {
+		const newAudioElement = newAudioElements[id];
+
+		if (newAudioElement === undefined) {
+			const node = audioNodeDatabase[id];
+			if (node !== undefined) {
+				if (isCustomAudioScheduledSourceNode(node)) {
+					try {
+						node.stop();
+					} catch {
+						/* Do nothing */
+					}
+				}
+
+				if (isCustomAudioNodeWithWebApiNode(node)) {
+					node.webApiNode.disconnect();
+				}
+			}
+
+			delete audioNodeDatabase[id];
+		}
+	});
+
+	/* add new nodes */
+
+	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
+		const oldAudioElement = oldAudioElements[id];
+
+		if (oldAudioElement === undefined) {
+			const createdAudioNode = createCustomAudioNode(newAudioElement);
+
+			if (createdAudioNode !== null) {
+				audioNodeDatabase[id] = createdAudioNode;
+			}
+		}
+	});
+
+	/* add connections to inputs */
+
+	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
+		const oldAudioElement = oldAudioElements[id];
+
+		if (oldAudioElement === undefined) {
+			findInputsAndConnectAudioElements(
+				{
+					...newAudioElement,
+					id
+				},
+				addIdsToAudioElements(newAudioElements),
+				audioNodeDatabase
+			);
+		} else {
+			const addedInputs = getAddedInputs(newAudioElement, oldAudioElement);
+
+			addedInputs.forEach((input) => {
+				const inputId = typeof input === 'string' ? input : input.id;
+				const output = typeof input === 'string' ? undefined : input.output;
+
+				const audioElementB = newAudioElements[inputId];
+
+				if (audioElementB === undefined) {
+					throw new Error(`Audio element with id ${inputId} not found`);
+				}
+
+				connectAudioElements(
+					{
+						...audioElementB,
+						id: inputId
+					},
+					{
+						...newAudioElement,
+						id
+					},
+					audioNodeDatabase,
+					output
+				);
+			});
+		}
+	});
+
+	/* add connections to parameters */
+	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
+		const oldAudioElement = oldAudioElements[id];
+
+		if (oldAudioElement === undefined) {
+			connectAudioElementsToParameters(
+				{
+					...newAudioElement,
+					id
+				},
+				addIdsToAudioElements(newAudioElements),
+				audioNodeDatabase
+			);
+		} else {
+			const changedParametersWithConnections = getChangedParameters(
+				newAudioElement,
+				oldAudioElement
+			);
+
+			changedParametersWithConnections.forEach((parameterName) => {
+				connectAudioElementsToParameter(
+					{
+						...newAudioElement,
+						id
+					},
+					addIdsToAudioElements(newAudioElements),
+					parameterName,
+					audioNodeDatabase
+				);
+			});
+		}
+	});
+
+	/* removes connections to inputs */
+
+	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
+		const oldAudioElement = oldAudioElements[id];
+
+		if (!oldAudioElement) return;
+
+		const removedInputs = getRemovedInputs(newAudioElement, oldAudioElement);
+
+		removedInputs.forEach((input) => {
+			const inputId = typeof input === 'string' ? input : input.id;
+			const output = typeof input === 'string' ? undefined : input.output;
+
+			const audioElementB = newAudioElements[inputId];
+
+			if (audioElementB === undefined) {
+				throw new Error(`Audio element with id ${inputId} not found`);
+			}
+
+			disconnectAudioElements(
+				{
+					...audioElementB,
+					id: inputId
+				},
+				{
+					...newAudioElement,
+					id
+				},
+				audioNodeDatabase,
+				output
+			);
+		});
+	});
+
+	/* removes connections to parameters */
+	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
+		const oldAudioElement = oldAudioElements[id];
+
+		if (oldAudioElement === undefined) return;
+
+		const removedInputs = getRemovedParameterInputs(newAudioElement, oldAudioElement);
+
+		removedInputs.forEach(([parameterName, nodeId]) => {
+			const audioElementNode = audioNodeDatabase[id];
+			const removedInputNode = audioNodeDatabase[nodeId];
+
+			if (removedInputNode && audioElementNode) {
+				removedInputNode.disconnect(accessParameter(audioElementNode, parameterName));
+			}
+		});
+	});
 };
 
 function connectAudioElementsToParameters(
@@ -215,178 +381,6 @@ function accessParameter(audioNode: CustomAudioNode, parameterName: string): Aud
 
 	throw new Error(`Parameter ${parameterName} not found for ${audioNode.constructor}`);
 }
-
-export const updateAudioCanvas = (
-	newAudioElements: SerializedAudioElements,
-	oldAudioElements: SerializedAudioElements,
-	audioNodeDatabase: AudioNodeDatabase
-) => {
-	/* remove deleted nodes */
-	Object.entries(oldAudioElements).forEach(([id]) => {
-		const newAudioElement = newAudioElements[id];
-
-		if (newAudioElement === undefined) {
-			const node = audioNodeDatabase[id];
-			if (node !== undefined) {
-				if (isCustomAudioScheduledSourceNode(node)) {
-					try {
-						node.stop();
-					} catch {
-						/* Do nothing */
-					}
-				}
-
-				if (isCustomAudioNodeWithWebApiNode(node)) {
-					node.webApiNode.disconnect();
-				}
-			}
-
-			delete audioNodeDatabase[id];
-		}
-	});
-
-	/* add new nodes */
-
-	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
-		const oldAudioElement = oldAudioElements[id];
-
-		if (oldAudioElement === undefined) {
-			const createdAudioNode = createCustomAudioNode(newAudioElement);
-
-			if (createdAudioNode !== null) {
-				audioNodeDatabase[id] = createdAudioNode;
-			}
-		}
-	});
-
-	/* add connections to inputs */
-
-	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
-		const oldAudioElement = oldAudioElements[id];
-
-		if (oldAudioElement === undefined) {
-			findInputsAndConnectAudioElements(
-				{
-					...newAudioElement,
-					id
-				},
-				addIdsToAudioElements(newAudioElements),
-				audioNodeDatabase
-			);
-		} else {
-			const addedInputs = getAddedInputs(newAudioElement, oldAudioElement);
-
-			addedInputs.forEach((input) => {
-				const inputId = typeof input === 'string' ? input : input.id;
-				const output = typeof input === 'string' ? undefined : input.output;
-
-				const audioElementB = newAudioElements[inputId];
-
-				if (audioElementB === undefined) {
-					throw new Error(`Audio element with id ${inputId} not found`);
-				}
-
-				connectAudioElements(
-					{
-						...audioElementB,
-						id: inputId
-					},
-					{
-						...newAudioElement,
-						id
-					},
-					audioNodeDatabase,
-					output
-				);
-			});
-		}
-	});
-
-	/* add connections to parameters */
-	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
-		const oldAudioElement = oldAudioElements[id];
-
-		if (oldAudioElement === undefined) {
-			connectAudioElementsToParameters(
-				{
-					...newAudioElement,
-					id
-				},
-				addIdsToAudioElements(newAudioElements),
-				audioNodeDatabase
-			);
-		} else {
-			const changedParametersWithConnections = getChangedParameters(
-				newAudioElement,
-				oldAudioElement
-			);
-
-			changedParametersWithConnections.forEach((parameterName) => {
-				connectAudioElementsToParameter(
-					{
-						...newAudioElement,
-						id
-					},
-					addIdsToAudioElements(newAudioElements),
-					parameterName,
-					audioNodeDatabase
-				);
-			});
-		}
-	});
-
-	/* removes connections to inputs */
-
-	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
-		const oldAudioElement = oldAudioElements[id];
-
-		if (!oldAudioElement) return;
-
-		const removedInputs = getRemovedInputs(newAudioElement, oldAudioElement);
-
-		removedInputs.forEach((input) => {
-			const inputId = typeof input === 'string' ? input : input.id;
-			const output = typeof input === 'string' ? undefined : input.output;
-
-			const audioElementB = newAudioElements[inputId];
-
-			if (audioElementB === undefined) {
-				throw new Error(`Audio element with id ${inputId} not found`);
-			}
-
-			disconnectAudioElements(
-				{
-					...audioElementB,
-					id: inputId
-				},
-				{
-					...newAudioElement,
-					id
-				},
-				audioNodeDatabase,
-				output
-			);
-		});
-	});
-
-	/* removes connections to parameters */
-	Object.entries(newAudioElements).forEach(([id, newAudioElement]) => {
-		const oldAudioElement = oldAudioElements[id];
-
-		if (oldAudioElement === undefined) return;
-
-		const removedInputs = getRemovedParameterInputs(newAudioElement, oldAudioElement);
-
-		removedInputs.forEach(([parameterName, nodeId]) => {
-			const audioElementNode = audioNodeDatabase[id];
-			const removedInputNode = audioNodeDatabase[nodeId];
-
-			if (removedInputNode && audioElementNode) {
-				removedInputNode.disconnect(accessParameter(audioElementNode, parameterName));
-			}
-		});
-	});
-};
 
 function getAddedInputs(
 	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,

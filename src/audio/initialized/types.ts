@@ -1,3 +1,7 @@
+export type AudioNodeDatabase = {
+	[key: string]: CustomAudioNode;
+};
+
 export interface CustomAudioNode {
 	connect(destination: CustomAudioNode | AudioParam, output?: string): void;
 	disconnect(desination: CustomAudioNode | AudioParam, output?: string): void;

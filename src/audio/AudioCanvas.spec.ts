@@ -627,5 +627,40 @@ describe('AudioCanvas', () => {
 			expect(newAudioElements['1']).toBeUndefined();
 			expect(newAudioElements['2']?.parameters.frequency).toEqual(440);
 		});
+
+		it('does not make any updates if nothing changed', () => {
+			const audioElements = {
+				'1': {
+					type: 'oscillator' as const,
+					parameters: {
+						frequency: 333,
+						detune: 0
+					},
+					oscillatorType: 'square' as const
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: ['1'],
+					parameters: {
+						gain: 0.5
+					}
+				}
+			};
+
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
+
+			jest.resetAllMocks();
+
+			const newAudioElements = { ...audioElements };
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.connect).not.toHaveBeenCalled();
+			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.connect).not.toHaveBeenCalled();
+			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.disconnect).not.toHaveBeenCalled();
+			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.disconnect).not.toHaveBeenCalled();
+		});
 	});
 });
