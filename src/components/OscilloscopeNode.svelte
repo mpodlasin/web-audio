@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { globalContext } from '../audio/GlobalContext';
 	import type { CustomOscilloscopeNode } from '../audio/initialized';
 
 	export let oscilloscopeNode: CustomOscilloscopeNode;
@@ -10,6 +11,10 @@
 	let canvas: HTMLCanvasElement;
 	$: canvasCtx = canvas?.getContext('2d') ?? null;
 
+	const steps = 20;
+
+	let lastPosition = 0;
+
 	function draw() {
 		requestAnimationFrame(draw);
 
@@ -19,32 +24,25 @@
 
 		analyser.getByteTimeDomainData(dataArray);
 
-		const sliceWidth = (canvas.width * 1.0) / bufferLength;
-
-		canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-
 		canvasCtx.lineWidth = 2;
 		canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+		canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+
+		const v = (dataArray[0] ?? 128) / 128.0;
+		const y = (v * canvas.height) / 2;
 
 		canvasCtx.beginPath();
 
-		let x = 0;
+		canvasCtx.moveTo(canvas.width - 2, lastPosition);
+		canvasCtx.lineTo(canvas.width - 1, y);
 
-		for (let i = 0; i < bufferLength; i++) {
-			const v = (dataArray[i] ?? 0) / 128.0;
-			const y = (v * canvas.height) / 2;
-
-			if (i === 0) {
-				canvasCtx.moveTo(x, y);
-			} else {
-				canvasCtx.lineTo(x, y);
-			}
-
-			x += sliceWidth;
-		}
-
-		canvasCtx.lineTo(canvas.width, canvas.height / 2);
 		canvasCtx.stroke();
+
+		lastPosition = y;
+
+		canvasCtx.globalCompositeOperation = 'copy';
+		canvasCtx.drawImage(canvasCtx.canvas, -1, 0);
+		canvasCtx.globalCompositeOperation = 'source-over';
 	}
 
 	draw();
