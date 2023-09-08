@@ -12,11 +12,3 @@ export async function loadCustomNodes() {
 		console.log('Failed to register audio worklet');
 	}
 }
-
-export function createEnvelopeNode() {
-	return new AudioWorkletNode(globalContext, 'envelope');
-}
-
-export function createTriggerNode() {
-	return new AudioWorkletNode(globalContext, 'trigger');
-}

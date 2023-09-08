@@ -1,7 +1,6 @@
 import { globalContext } from '../GlobalContext';
 import type { SerializedSequencerNote } from '../serialized';
 import { settings } from '../settings';
-import { createEnvelopeNode, createTriggerNode } from '../web-audio/utils';
 import {
 	isCustomAudioNodeWithWebApiNode,
 	type CustomAudioNode,
@@ -82,13 +81,13 @@ export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode
 
 export class EnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor() {
-		super(createEnvelopeNode());
+		super(new AudioWorkletNode(globalContext, 'envelope'));
 	}
 }
 
 export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor() {
-		super(createTriggerNode());
+		super(new AudioWorkletNode(globalContext, 'trigger'));
 	}
 }
 

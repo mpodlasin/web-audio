@@ -50,6 +50,14 @@ export const audioContextMock = {
 	destination: destinationMock
 };
 
+export class AudioWorkletNodeMock {
+	public connect: jest.Mock;
+
+	constructor() {
+		this.connect = jest.fn();
+	}
+}
+
 Object.defineProperty(window, 'AudioContext', {
 	writable: true,
 	value: jest.fn(() => audioContextMock)
@@ -68,4 +76,9 @@ Object.defineProperty(window, 'GainNode', {
 Object.defineProperty(window, 'AudioParam', {
 	writable: true,
 	value: AudioParamMock
+});
+
+Object.defineProperty(window, 'AudioWorkletNode', {
+	writable: true,
+	value: AudioWorkletNodeMock,
 });
