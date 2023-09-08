@@ -7,7 +7,10 @@ export const addNode = <S extends SerializedAudioElements>(
 ): S => {
 	const idsSoFar = Object.keys(audioGraph);
 
-	const nextId = Object.keys(audioGraph).length === 0 ? 1 : Math.max(...idsSoFar.map((id) => parseInt(id, 10))) + 1;
+	const nextId =
+		Object.keys(audioGraph).length === 0
+			? 1
+			: Math.max(...idsSoFar.map((id) => parseInt(id, 10))) + 1;
 
 	const staticNodeDefinition = allowedSerializedAudioElementStaticDefinitions[type];
 

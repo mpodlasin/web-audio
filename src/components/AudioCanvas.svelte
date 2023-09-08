@@ -182,18 +182,43 @@
 				)
 			};
 
-			audioGraphWithPositions = {
-				...audioGraphWithPositions,
-				[id]: {
-					...(audioGraphWithPositions[id] as any),
-					ui: {
-						position: {
-							x,
-							y
+			if (audioGraphHistory.length >= 2) {
+				audioGraphHistory = [
+					...audioGraphHistory,
+					{
+						...audioGraphHistory.at(-1),
+						[id]: {
+							...(audioGraphHistory.at(-1)?.[id] as any),
+							ui: {
+								position: {
+									x,
+									y
+								}
+							}
 						}
 					}
+				];
+			} else {
+				const onlyElement = audioGraphHistory[0];
+
+				if (onlyElement) {
+					audioGraphHistory = [
+						onlyElement,
+						{
+							...onlyElement,
+							[id]: {
+								...(onlyElement[id] as any),
+								ui: {
+									position: {
+										x,
+										y
+									}
+								}
+							}
+						}
+					];
 				}
-			};
+			}
 		}
 	};
 

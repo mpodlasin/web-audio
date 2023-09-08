@@ -657,10 +657,16 @@ describe('AudioCanvas', () => {
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
-			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.connect).not.toHaveBeenCalled();
+			expect(
+				(audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.connect
+			).not.toHaveBeenCalled();
 			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.connect).not.toHaveBeenCalled();
-			expect((audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.disconnect).not.toHaveBeenCalled();
-			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.disconnect).not.toHaveBeenCalled();
+			expect(
+				(audioNodeDatabase['1'] as CustomOscillatorNode).webApiNode.disconnect
+			).not.toHaveBeenCalled();
+			expect(
+				(audioNodeDatabase['2'] as CustomGainNode).webApiNode.disconnect
+			).not.toHaveBeenCalled();
 		});
 	});
 });

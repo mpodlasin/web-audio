@@ -80,5 +80,5 @@ Object.defineProperty(window, 'AudioParam', {
 
 Object.defineProperty(window, 'AudioWorkletNode', {
 	writable: true,
-	value: AudioWorkletNodeMock,
+	value: AudioWorkletNodeMock
 });
