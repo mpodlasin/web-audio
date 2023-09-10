@@ -72,6 +72,25 @@ class Envelope extends AudioWorkletProcessor {
 			}
 		}
 
+		if (currentTime < this.finishEnvelopeAt) {
+			const release = parameters.release;
+
+			if (release.length === 1) {
+				const releaseInMilliseconds = release[0];
+				const releaseInSeconds = releaseInMilliseconds / 1000;
+
+				outputList.forEach((output) => {
+					output.forEach((out) => {
+						for (let i = 0; i < out.length - 1; i++) {
+							out[i] = (this.finishEnvelopeAt - currentTime) / releaseInSeconds;
+						}
+					});
+				});
+			}
+		} else {
+			this.finishEnvelopeAt = null;
+		}
+
 		return true;
 	}
 }
