@@ -21,7 +21,7 @@
 
 	const audioGraphLocalStorageKey = 'audioGraph';
 
-	let chosenExample = 'sequencer-envelope-oscillator-gain-destination';
+	let chosenExample = 'empty';
 
 	const addRandomPositions = (audioGraph: SerializedAudioElements): SerializedAudioElements => {
 		const audioGraphWithPositions: SerializedAudioElements = {};
@@ -55,6 +55,9 @@
 				audioGraphHistory = [audioGraphWithPositions];
 			} else {
 				switch (chosenExample) {
+					case 'empty':
+						audioGraphHistory = [{}];
+						break;
 					case 'oscillator-gain-destination':
 						audioGraphHistory = [addRandomPositions(oscillatorGainDestination)];
 						break;
@@ -435,6 +438,7 @@
 	<div class="menu">
 		<label for="example">Chosen Example</label>
 		<select id="example" bind:value={chosenExample}>
+			<option value="empty">---</option>
 			<option value="oscillator-gain-destination">Oscillator Gain Destination</option>
 			<option value="trigger-envelope-oscillator-gain-destination"
 				>Trigger Envelope Oscillator Gain Destination</option

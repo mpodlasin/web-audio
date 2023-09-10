@@ -6,28 +6,10 @@ class Envelope extends AudioWorkletProcessor {
 	static get parameterDescriptors() {
 		return [
 			{
-				name: 'trigger',
-				minValue: 0,
-				maxValue: 0,
-				defaultValue: 0
-			},
-			{
 				name: 'attack',
 				defaultValue: 0,
 				minValue: 0,
 				maxValue: 1000
-			},
-			{
-				name: 'decay',
-				defaultValue: 0,
-				minValue: 0,
-				maxValue: 1000
-			},
-			{
-				name: 'sustain',
-				defaultValue: 1,
-				minValue: 0,
-				maxValue: 1
 			},
 			{
 				name: 'release',
