@@ -56,12 +56,36 @@ class Envelope extends AudioWorkletProcessor {
 						}
 					}
 				}
-
-				this.lastValueOfPreviousProcess = inp[inp.length - 1];
 			});
 		});
 
 		if (triggerEnvelope) {
+			this.envelopeStartedAt = currentTime;
+		}
+
+		let triggerRelease = false;
+
+		inputList.forEach((input) => {
+			input.forEach((inp) => {
+				if (this.lastValueOfPreviousProcess === 1 && inp[0] === 0) {
+					triggerRelease = true;
+				} else {
+					for (let i = 0; i < inp.length - 1; i++) {
+						if (inp[i] === 1 && inp[i + 1] === 0) {
+							triggerRelease = true;
+						}
+					}
+				}
+			});
+		});
+
+		inputList.forEach((input) => {
+			input.forEach((inp) => {
+				this.lastValueOfPreviousProcess = inp[inp.length - 1];
+			});
+		});
+
+		if (triggerRelease) {
 			const release = parameters.release;
 
 			if (release.length === 1) {
@@ -69,6 +93,25 @@ class Envelope extends AudioWorkletProcessor {
 				const releaseInSeconds = releaseInMilliseconds / 1000;
 
 				this.finishEnvelopeAt = currentTime + releaseInSeconds;
+			}
+
+			this.envelopeStartedAt = null;
+		}
+
+		if (this.envelopeStartedAt && this.envelopeStartedAt < currentTime) {
+			const attack = parameters.attack;
+
+			if (attack.length === 1) {
+				const attackInMilliseconds = attack[0];
+				const attackInSeconds = attackInMilliseconds / 1000;
+
+				outputList.forEach((output) => {
+					output.forEach((out) => {
+						for (let i = 0; i < out.length - 1; i++) {
+							out[i] = (currentTime - this.envelopeStartedAt) / attackInSeconds;
+						}
+					});
+				});
 			}
 		}
 
