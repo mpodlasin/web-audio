@@ -21,10 +21,14 @@ class Envelope extends AudioWorkletProcessor {
 	}
 
 	lastValueOfPreviousProcess = 0;
+	finishEnvelopeAt: number | null = null;
+	envelopeStartedAt: number | null = null;
 
-	finishEnvelopeAt = null;
-
-	process(inputList, outputList, parameters) {
+	process(
+		inputList: Float32Array[][],
+		outputList: Float32Array[][],
+		parameters: Record<string, Float32Array>
+	) {
 		let triggerEnvelope = false;
 
 		inputList.forEach((input) => {
@@ -63,15 +67,15 @@ class Envelope extends AudioWorkletProcessor {
 
 		inputList.forEach((input) => {
 			input.forEach((inp) => {
-				this.lastValueOfPreviousProcess = inp[inp.length - 1];
+				this.lastValueOfPreviousProcess = inp[inp.length - 1] ?? 0;
 			});
 		});
 
 		if (triggerRelease) {
 			const release = parameters.release;
 
-			if (release.length === 1) {
-				const releaseInMilliseconds = release[0];
+			if (release && release.length === 1) {
+				const releaseInMilliseconds = release[0] ?? 0;
 				const releaseInSeconds = releaseInMilliseconds / 1000;
 
 				this.finishEnvelopeAt = currentTime + releaseInSeconds;
@@ -83,12 +87,13 @@ class Envelope extends AudioWorkletProcessor {
 		if (this.envelopeStartedAt && this.envelopeStartedAt < currentTime) {
 			const attack = parameters.attack;
 
-			if (attack.length === 1) {
-				const attackInMilliseconds = attack[0];
+			if (attack && attack.length === 1) {
+				const attackInMilliseconds = attack[0] ?? 0;
 				const attackInSeconds = attackInMilliseconds / 1000;
 
 				outputList.forEach((output) => {
 					output.forEach((out) => {
+						if (!this.envelopeStartedAt) return;
 						for (let i = 0; i < out.length - 1; i++) {
 							out[i] = (currentTime - this.envelopeStartedAt) / attackInSeconds;
 						}
@@ -97,15 +102,16 @@ class Envelope extends AudioWorkletProcessor {
 			}
 		}
 
-		if (currentTime < this.finishEnvelopeAt) {
+		if (this.finishEnvelopeAt && currentTime < this.finishEnvelopeAt) {
 			const release = parameters.release;
 
-			if (release.length === 1) {
-				const releaseInMilliseconds = release[0];
+			if (release && release.length === 1) {
+				const releaseInMilliseconds = release[0] ?? 0;
 				const releaseInSeconds = releaseInMilliseconds / 1000;
 
 				outputList.forEach((output) => {
 					output.forEach((out) => {
+						if (!this.finishEnvelopeAt) return;
 						for (let i = 0; i < out.length - 1; i++) {
 							out[i] = (this.finishEnvelopeAt - currentTime) / releaseInSeconds;
 						}
@@ -121,3 +127,21 @@ class Envelope extends AudioWorkletProcessor {
 }
 
 registerProcessor('envelope', Envelope);
+
+interface AudioWorkletProcessor {
+	readonly port: MessagePort;
+	process(
+		inputs: Float32Array[][],
+		outputs: Float32Array[][],
+		parameters: Record<string, Float32Array>
+	): void;
+}
+
+declare const AudioWorkletProcessor: {
+	prototype: AudioWorkletProcessor;
+	new (options?: AudioWorkletNodeOptions): AudioWorkletProcessor;
+};
+
+declare const registerProcessor: any;
+
+declare const currentTime: number;

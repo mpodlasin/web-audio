@@ -14,11 +14,15 @@ class Trigger extends AudioWorkletProcessor {
 		];
 	}
 
-	process(inputList, outputList, parameters) {
+	process(
+		inputList: Float32Array[][],
+		outputList: Float32Array[][],
+		parameters: Record<string, Float32Array>
+	) {
 		const tempoInBPM = parameters.tempoInBPM;
 
-		if (tempoInBPM.length === 1) {
-			const tempoPerSecond = tempoInBPM[0] / 60;
+		if (tempoInBPM && tempoInBPM.length === 1) {
+			const tempoPerSecond = (tempoInBPM[0] ?? 0) / 60;
 			const lengthInSeconds = 1 / (tempoPerSecond * 2);
 			const frameInSeconds = lengthInSeconds * 2;
 
