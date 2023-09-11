@@ -1,4 +1,4 @@
-class Envelope extends AudioWorkletProcessor {
+export class Envelope extends AudioWorkletProcessor {
 	constructor() {
 		super();
 	}

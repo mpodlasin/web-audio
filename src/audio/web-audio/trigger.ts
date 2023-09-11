@@ -1,4 +1,4 @@
-class Trigger extends AudioWorkletProcessor {
+export class Trigger extends AudioWorkletProcessor {
 	constructor() {
 		super();
 	}
@@ -46,3 +46,21 @@ class Trigger extends AudioWorkletProcessor {
 }
 
 registerProcessor('trigger', Trigger);
+
+interface AudioWorkletProcessor {
+	readonly port: MessagePort;
+	process(
+		inputs: Float32Array[][],
+		outputs: Float32Array[][],
+		parameters: Record<string, Float32Array>
+	): void;
+}
+
+declare const AudioWorkletProcessor: {
+	prototype: AudioWorkletProcessor;
+	new (options?: AudioWorkletNodeOptions): AudioWorkletProcessor;
+};
+
+declare const registerProcessor: any;
+
+declare const currentTime: number;

@@ -58,6 +58,10 @@ export class AudioWorkletNodeMock {
 	}
 }
 
+export class AudioWorkletProcessorMock {}
+
+export const registerProcessorMock = jest.fn();
+
 Object.defineProperty(window, 'AudioContext', {
 	writable: true,
 	value: jest.fn(() => audioContextMock)
@@ -82,3 +86,13 @@ Object.defineProperty(window, 'AudioWorkletNode', {
 	writable: true,
 	value: AudioWorkletNodeMock
 });
+
+Object.defineProperty(window, 'AudioWorkletProcessor', {
+	writable: true,
+	value: AudioWorkletProcessorMock,
+})
+
+Object.defineProperty(window, 'registerProcessor', {
+	writable: true,
+	value: registerProcessorMock,
+})
