@@ -224,10 +224,11 @@ function connectAudioElementsToParameter(
 	const audioNodeA = audioNodeDatabase[audioElementA.id];
 	const parameterValue = audioElementA.parameters?.[parameterName];
 
-	if (Array.isArray(parameterValue)) {
-		for (const input of parameterValue) {
-			const inputId = typeof input === 'string' ? input : input.id;
-			const output = typeof input === 'string' ? undefined : input.output;
+	if (parameterValue && parameterValue.inputs.length > 0) {
+		for (const input of parameterValue.inputs) {
+			const inputId = input.id;
+			const output = input.output;
+
 			const audioElementB = audioElementsWithIds[inputId];
 
 			if (audioElementB === undefined) {
@@ -246,8 +247,10 @@ function connectAudioElementsToParameter(
 				);
 			}
 		}
-	} else if (typeof parameterValue === 'number' && audioNodeA !== undefined) {
-		accessParameter(audioNodeA, parameterName).value = parameterValue;
+	}
+
+	if (audioNodeA !== undefined && parameterValue !== undefined) {
+		accessParameter(audioNodeA, parameterName).value = parameterValue.base;
 	}
 }
 
@@ -441,14 +444,18 @@ const getChangedParameters = (
 			const newParameterValue = newAudioElement.parameters[parameterName];
 			const oldParameterValue = oldAudioElement.parameters[parameterName];
 
-			if (Array.isArray(newParameterValue) && !Array.isArray(oldParameterValue)) {
+			if (
+				newParameterValue !== undefined &&
+				oldParameterValue !== undefined &&
+				newParameterValue.base !== oldParameterValue.base
+			) {
 				changedParameters.push(parameterName);
 			}
 
 			if (
-				typeof newParameterValue === 'number' &&
-				typeof oldParameterValue === 'number' &&
-				newParameterValue !== oldParameterValue
+				newParameterValue !== undefined &&
+				oldParameterValue !== undefined &&
+				newParameterValue.inputs.length > oldParameterValue.inputs.length
 			) {
 				changedParameters.push(parameterName);
 			}
@@ -469,16 +476,11 @@ const getRemovedParameterInputs = (
 			const newParameterValue = newAudioElement.parameters[parameterName];
 			const oldParameterValue = oldAudioElement.parameters[parameterName];
 
-			if (
-				newParameterValue !== undefined &&
-				oldParameterValue !== undefined &&
-				typeof newParameterValue === 'number' &&
-				typeof oldParameterValue !== 'number'
-			) {
+			if (newParameterValue !== undefined && oldParameterValue !== undefined) {
 				removedParameterInputs.push(
-					...oldParameterValue.map(
-						(v) => [parameterName, typeof v === 'string' ? v : v.id] as [string, string]
-					)
+					...oldParameterValue.inputs
+						.filter((input) => !newParameterValue.inputs.some((i) => i.id === input.id))
+						.map(({ id }) => [parameterName, id] as [string, string])
 				);
 			}
 		}

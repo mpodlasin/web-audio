@@ -38,7 +38,10 @@ export type SerializedAudioElementWithId<
 
 export type Inputs = (string | { id: string; output: string })[];
 
-export type SerializedAudioParameter = number | Inputs;
+export type SerializedAudioParameter = {
+	base: number;
+	inputs: { id: string; output: string }[];
+};
 
 export type SerializedOscillatorNode = SerializedAudioElement<
 	'oscillator',

@@ -5,15 +5,15 @@ export const oscillatorGainDestination: SerializedAudioElements = {
 		type: 'oscillator',
 		oscillatorType: 'sine',
 		parameters: {
-			frequency: 440,
-			detune: 0
+			frequency: { base: 440, inputs: [] },
+			detune: { base: 0, inputs: [] }
 		}
 	},
 	'2': {
 		type: 'gain',
 		inputs: ['1'],
 		parameters: {
-			gain: 0.5
+			gain: { base: 0.5, inputs: [] }
 		}
 	},
 	'3': {

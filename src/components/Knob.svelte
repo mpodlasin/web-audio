@@ -8,9 +8,8 @@
 	export let maxValue: number;
 	export let unit: string | null = null;
 
-	$: numberParameter = typeof parameter === 'number' ? parameter : null;
-	$: inputParameter = typeof parameter === 'object' ? parameter : null;
-	$: isControlled = typeof parameter === 'object';
+	$: numberParameter = parameter.base;
+	$: isControlled = parameter.inputs.length > 0;
 
 	const dispatcher = createEventDispatcher();
 
@@ -20,8 +19,6 @@
 	let previousValue = numberParameter ?? 0;
 
 	function handleMouseDown(event: MouseEvent) {
-		if (isControlled) return;
-
 		event.stopPropagation();
 		isDragging = true;
 		window.addEventListener('mousemove', handleMouseMove);
@@ -39,10 +36,7 @@
 		});
 	}
 
-	$: angle =
-		numberParameter !== null
-			? (180 * (numberParameter - minValue)) / (maxValue - minValue) - 90
-			: 0;
+	$: angle = (180 * (numberParameter - minValue)) / (maxValue - minValue) - 90;
 
 	function handleMouseMove(event: MouseEvent) {
 		event.preventDefault();
@@ -86,14 +80,6 @@
 	{#if numberParameter !== null}
 		<div>
 			{numberParameter.toFixed(2)}
-			{#if unit}
-				{' '}{unit}
-			{/if}
-		</div>
-	{/if}
-	{#if inputParameter !== null}
-		<div>
-			.
 			{#if unit}
 				{' '}{unit}
 			{/if}

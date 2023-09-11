@@ -18,8 +18,8 @@ export const triggerEnvelopeOscillatorGainDestination: SerializedAudioElements =
 	'3': {
 		type: 'oscillator' as const,
 		parameters: {
-			frequency: 220,
-			detune: 0
+			frequency: { base: 220, inputs: [] },
+			detune: { base: 0, inputs: [] }
 		},
 		oscillatorType: 'sine' as const
 	},
@@ -27,7 +27,7 @@ export const triggerEnvelopeOscillatorGainDestination: SerializedAudioElements =
 		type: 'gain' as const,
 		inputs: ['3'],
 		parameters: {
-			gain: ['2']
+			gain: { base: 0, inputs: [{ id: '2', output: 'envelope' }] }
 		}
 	},
 	'5': {

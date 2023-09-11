@@ -89,10 +89,10 @@ Object.defineProperty(window, 'AudioWorkletNode', {
 
 Object.defineProperty(window, 'AudioWorkletProcessor', {
 	writable: true,
-	value: AudioWorkletProcessorMock,
-})
+	value: AudioWorkletProcessorMock
+});
 
 Object.defineProperty(window, 'registerProcessor', {
 	writable: true,
-	value: registerProcessorMock,
-})
+	value: registerProcessorMock
+});

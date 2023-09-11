@@ -22,7 +22,7 @@ export const addNode = <S extends SerializedAudioElements>(
 			parameters: Object.fromEntries(
 				Object.entries(staticNodeDefinition.parameters).map(([key, value]) => [
 					key,
-					value.defaultValue
+					{ base: value.defaultValue, inputs: [] }
 				])
 			),
 			...(type === 'oscillator'
@@ -53,24 +53,8 @@ export const removeNode = <S extends SerializedAudioElements>(audioGraph: S, nod
 		for (const parameterName in audioElement.parameters) {
 			const parameterValue = audioElement.parameters[parameterName];
 
-			if (Array.isArray(parameterValue)) {
-				const filteredParameter = parameterValue.filter((input) => {
-					if (typeof input === 'string') {
-						return input !== nodeId;
-					} else {
-						return input.id !== nodeId;
-					}
-				});
-
-				const staticNodeDefinition =
-					allowedSerializedAudioElementStaticDefinitions[audioElement.type];
-				const defaultParameterValue = staticNodeDefinition.parameters[parameterName]?.defaultValue;
-
-				if (filteredParameter.length === 0 && defaultParameterValue !== undefined) {
-					audioElement.parameters[parameterName] = defaultParameterValue;
-				} else {
-					audioElement.parameters[parameterName] = filteredParameter;
-				}
+			if (parameterValue) {
+				parameterValue.inputs = parameterValue.inputs.filter((input) => input.id !== nodeId);
 			}
 		}
 	});
@@ -198,12 +182,16 @@ export const addConnectionToParameter = <S extends SerializedAudioElements>(
 				...endingNode,
 				parameters: {
 					...endingNode.parameters,
-					[endingPlug.id]: [
-						...(Array.isArray(parameter) ? parameter : []),
-						startingNodeStaticDefinition.outputs[0] === startingPlug.id
-							? startingPlug.nodeId
-							: { id: startingPlug.nodeId, output: startingPlug.id }
-					]
+					[endingPlug.id]: {
+						...parameter,
+						inputs: [
+							...(parameter?.inputs ?? []),
+							{
+								id: startingPlug.nodeId,
+								output: startingPlug.id
+							}
+						]
+					}
 				}
 			}
 		};
@@ -249,22 +237,13 @@ export const removeConnection = <S extends SerializedAudioElements>(
 				}),
 				parameters: Object.fromEntries(
 					Object.entries(endingNode.parameters ?? {}).map(([key, value]) => {
-						if (Array.isArray(value)) {
-							const endingNodeStaticDefinition =
-								allowedSerializedAudioElementStaticDefinitions[endingNode.type];
-							const defaultParameterValue =
-								endingNodeStaticDefinition.parameters[key]?.defaultValue;
-							const filteredArray = value.filter((input) => {
-								if (typeof input === 'string') {
-									return input !== startingPlug.nodeId;
-								} else {
-									return false;
-								}
-							});
-							return [key, filteredArray.length === 0 ? defaultParameterValue : filteredArray];
-						} else {
-							return [key, value];
-						}
+						return [
+							key,
+							{
+								...value,
+								inputs: value.inputs.filter((input) => input.id !== startingPlug.nodeId)
+							}
+						];
 					})
 				)
 			}
@@ -294,8 +273,11 @@ export const changeParameter = <S extends SerializedAudioElements>(
 			...node,
 			parameters: {
 				...node.parameters,
-				[parameterName]: value
-			} as any /* TODO: Fix this */
+				[parameterName]: {
+					...node.parameters?.[parameterName],
+					base: value
+				}
+			}
 		}
 	};
 };
