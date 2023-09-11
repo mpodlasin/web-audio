@@ -119,7 +119,7 @@
 								return [
 									[input.id, input.output],
 									[id, key]
-								]
+								] as const
 							})
 						 }) : []
 
