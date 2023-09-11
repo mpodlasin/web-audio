@@ -525,4 +525,13 @@
 		flex-direction: column;
 		gap: 8px;
 	}
+
+	svg {
+		position: relative;
+		pointer-events: none;
+	}
+
+	line {
+		pointer-events: all;
+	}
 </style>

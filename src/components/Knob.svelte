@@ -91,7 +91,7 @@
 		align-items: center;
 		justify-content: center;
 		gap: 16px;
-		z-index: -1;
+		min-width: 80px;
 	}
 	.knob {
 		width: 40px;
