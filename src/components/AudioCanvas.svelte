@@ -115,30 +115,13 @@
 
 			const mappedParams = node.parameters
 				? Object.entries(node.parameters).flatMap(([key, value]) => {
-						if (Array.isArray(value)) {
-							return value.map((input) => {
-								if (typeof input === 'string') {
-									const staticNodeDefinition =
-										allowedSerializedAudioElementStaticDefinitions[
-											audioGraphWithPositions[input]!
-												.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
-										];
-									return [
-										[input, staticNodeDefinition.outputs[0] as string],
-										[id, key]
-									] as const;
-								} else {
-									return [
-										[input.id, input.output],
-										[id, key]
-									] as const;
-								}
-							});
-						}
-
-						return [];
-				  })
-				: [];
+							return value.inputs.map(input => {
+								return [
+									[input.id, input.output],
+									[id, key]
+								]
+							})
+						 }) : []
 
 			return [...mapped, ...mappedParams, ...acc];
 		},
