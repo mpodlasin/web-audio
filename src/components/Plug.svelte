@@ -42,5 +42,6 @@
 		border-radius: 50%;
 		background-color: #fff;
 		border: 1px solid #000;
+		z-index: -1;
 	}
 </style>

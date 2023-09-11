@@ -56,8 +56,8 @@
 		if (knob) {
 			dispatcher('knob', {
 				parameterName,
-				x: knob.getBoundingClientRect().x,
-				y: knob.getBoundingClientRect().y
+				x: knob.getBoundingClientRect().x - 2,
+				y: knob.getBoundingClientRect().y - 2,
 			});
 		}
 	}
@@ -67,15 +67,12 @@
 	<div>{parameterName}</div>
 	<div
 		class="knob"
-		bind:this={knob}
 		on:mousedown={handleMouseDown}
 		on:mouseup={handleMouseUp}
 		style="transform: rotate({angle}deg)"
 	>
 		<div class="knob-pointer" />
-		{#if isControlled}
-			<div class="controlled-knob-circle" />
-		{/if}
+		<div class:visible={isControlled} class="controlled-knob-circle" bind:this={knob} />
 	</div>
 	{#if numberParameter !== null}
 		<div>
@@ -94,6 +91,7 @@
 		align-items: center;
 		justify-content: center;
 		gap: 16px;
+		z-index: -1;
 	}
 	.knob {
 		width: 40px;
@@ -125,5 +123,10 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+		visibility: hidden;
+	}
+
+	.visible {
+		visibility: visible;
 	}
 </style>
