@@ -31,6 +31,8 @@ export class Envelope extends AudioWorkletProcessor {
 	) {
 		let triggerEnvelope = false;
 
+		const numberOfSamplesPerSecond = sampleRate;
+
 		inputList.forEach((input) => {
 			input.forEach((inp) => {
 				if (this.lastValueOfPreviousProcess === 0 && inp[0] === 1) {
@@ -94,8 +96,12 @@ export class Envelope extends AudioWorkletProcessor {
 				outputList.forEach((output) => {
 					output.forEach((out) => {
 						if (!this.envelopeStartedAt) return;
+						let timeAtSample = currentTime;
+
 						for (let i = 0; i < out.length - 1; i++) {
-							out[i] = (currentTime - this.envelopeStartedAt) / attackInSeconds;
+							out[i] = Math.max(0, Math.min((timeAtSample - this.envelopeStartedAt) / attackInSeconds, 1));
+
+							timeAtSample += out.length / numberOfSamplesPerSecond
 						}
 					});
 				});
@@ -112,8 +118,11 @@ export class Envelope extends AudioWorkletProcessor {
 				outputList.forEach((output) => {
 					output.forEach((out) => {
 						if (!this.finishEnvelopeAt) return;
+						let timeAtSample = currentTime;
 						for (let i = 0; i < out.length - 1; i++) {
-							out[i] = (this.finishEnvelopeAt - currentTime) / releaseInSeconds;
+							out[i] = Math.max(0, Math.min((this.finishEnvelopeAt - timeAtSample) / releaseInSeconds, 1));
+
+							timeAtSample += out.length / numberOfSamplesPerSecond
 						}
 					});
 				});
@@ -142,6 +151,7 @@ declare const AudioWorkletProcessor: {
 	new (options?: AudioWorkletNodeOptions): AudioWorkletProcessor;
 };
 
-declare const registerProcessor: any;
+declare const registerProcessor: (name: string, value: object) => void;
 
 declare const currentTime: number;
+declare const sampleRate: number;

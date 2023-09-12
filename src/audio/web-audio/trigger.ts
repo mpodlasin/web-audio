@@ -61,6 +61,6 @@ declare const AudioWorkletProcessor: {
 	new (options?: AudioWorkletNodeOptions): AudioWorkletProcessor;
 };
 
-declare const registerProcessor: any;
+declare const registerProcessor: (name: string, value: object) => void;
 
 declare const currentTime: number;
