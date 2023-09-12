@@ -57,7 +57,7 @@
 			dispatcher('knob', {
 				parameterName,
 				x: knob.getBoundingClientRect().x - 2,
-				y: knob.getBoundingClientRect().y - 2,
+				y: knob.getBoundingClientRect().y - 2
 			});
 		}
 	}

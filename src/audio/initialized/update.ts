@@ -125,12 +125,19 @@ export const updateAudioCanvas = (
 				addIdsToAudioElements(newAudioElements),
 				audioNodeDatabase
 			);
+
+			setParameterValues(
+				{
+					...newAudioElement,
+					id
+				},
+				audioNodeDatabase
+			);
 		} else {
-			const changedParametersWithConnections = getChangedParameters(
+			const changedParametersWithConnections = getParametersWithAddedInputs(
 				newAudioElement,
 				oldAudioElement
 			);
-
 			changedParametersWithConnections.forEach((parameterName) => {
 				connectAudioElementsToParameter(
 					{
@@ -138,6 +145,21 @@ export const updateAudioCanvas = (
 						id
 					},
 					addIdsToAudioElements(newAudioElements),
+					parameterName,
+					audioNodeDatabase
+				);
+			});
+
+			const parametersWithChangedValues = getParametersWithChangedValues(
+				newAudioElement,
+				oldAudioElement
+			);
+			parametersWithChangedValues.forEach((parameterName) => {
+				setParameterValue(
+					{
+						...newAudioElement,
+						id
+					},
 					parameterName,
 					audioNodeDatabase
 				);
@@ -215,6 +237,30 @@ function connectAudioElementsToParameters(
 	}
 }
 
+function setParameterValues(
+	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
+	audioNodeDatabase: AudioNodeDatabase
+): void {
+	if (audioElementA.parameters) {
+		for (const parameterName in audioElementA.parameters) {
+			setParameterValue(audioElementA, parameterName, audioNodeDatabase);
+		}
+	}
+}
+
+function setParameterValue(
+	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
+	parameterName: string,
+	audioNodeDatabase: AudioNodeDatabase
+) {
+	const audioNodeA = audioNodeDatabase[audioElementA.id];
+	const parameterValue = audioElementA.parameters?.[parameterName];
+
+	if (audioNodeA !== undefined && parameterValue !== undefined) {
+		accessParameter(audioNodeA, parameterName).value = parameterValue.base;
+	}
+}
+
 function connectAudioElementsToParameter(
 	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
 	audioElementsWithIds: SerializedAudioElementsWithIds,
@@ -247,10 +293,6 @@ function connectAudioElementsToParameter(
 				);
 			}
 		}
-	}
-
-	if (audioNodeA !== undefined && parameterValue !== undefined) {
-		accessParameter(audioNodeA, parameterName).value = parameterValue.base;
 	}
 }
 
@@ -433,7 +475,7 @@ function getRemovedInputs(
 	return removedInputs;
 }
 
-const getChangedParameters = (
+const getParametersWithChangedValues = (
 	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
 	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
 ): string[] => {
@@ -451,6 +493,22 @@ const getChangedParameters = (
 			) {
 				changedParameters.push(parameterName);
 			}
+		}
+	}
+
+	return changedParameters;
+};
+
+const getParametersWithAddedInputs = (
+	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
+	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
+): string[] => {
+	const changedParameters: string[] = [];
+
+	if (newAudioElement.parameters && oldAudioElement.parameters) {
+		for (const parameterName in newAudioElement.parameters) {
+			const newParameterValue = newAudioElement.parameters[parameterName];
+			const oldParameterValue = oldAudioElement.parameters[parameterName];
 
 			if (
 				newParameterValue !== undefined &&

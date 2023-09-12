@@ -65,7 +65,10 @@
 						audioGraphHistory = [{}, addRandomPositions(triggerEnvelopeOscillatorGainDestination)];
 						break;
 					case 'sequencer-envelope-oscillator-gain-destination':
-						audioGraphHistory = [{}, addRandomPositions(sequencerEnvelopeOscillatorGainDestination)];
+						audioGraphHistory = [
+							{},
+							addRandomPositions(sequencerEnvelopeOscillatorGainDestination)
+						];
 						break;
 					case 'midi-envelope-oscillator-gain-destination':
 						audioGraphHistory = [{}, addRandomPositions(midiEnvelopeOscillatorGainDestination)];
@@ -113,13 +116,14 @@
 
 			const mappedParams = node.parameters
 				? Object.entries(node.parameters).flatMap(([key, value]) => {
-							return value.inputs.map(input => {
-								return [
-									[input.id, input.output],
-									[id, key]
-								] as const
-							})
-						 }) : []
+						return value.inputs.map((input) => {
+							return [
+								[input.id, input.output],
+								[id, key]
+							] as const;
+						});
+				  })
+				: [];
 
 			return [...mapped, ...mappedParams, ...acc];
 		},
@@ -443,21 +447,21 @@
 		on:keypress={() => {}}
 		on:mousemove={handleLineDrag}
 	>
-	{#each Object.entries(audioGraphWithPositions) as [id, node] (id)}
-		<DraggableNode
-			{id}
-			{node}
-			instantiatedNode={audioNodeDatabase[id]}
-			position={node.ui?.position ?? { x: 0, y: 0 }}
-			on:drag={handleDrag}
-			on:nodePlugAndKnobPositions={handleNodePlugPositions}
-			on:nodeParameterChange={handleNodeParameterChange}
-			on:nodePlugClick={handlePlugClick}
-			on:nodePlugUp={handlePlugUp}
-			on:deleteNode={handleDeleteNode}
-			on:knobMouseUp={handleKnobMouseUp}
-		/>
-	{/each}
+		{#each Object.entries(audioGraphWithPositions) as [id, node] (id)}
+			<DraggableNode
+				{id}
+				{node}
+				instantiatedNode={audioNodeDatabase[id]}
+				position={node.ui?.position ?? { x: 0, y: 0 }}
+				on:drag={handleDrag}
+				on:nodePlugAndKnobPositions={handleNodePlugPositions}
+				on:nodeParameterChange={handleNodeParameterChange}
+				on:nodePlugClick={handlePlugClick}
+				on:nodePlugUp={handlePlugUp}
+				on:deleteNode={handleDeleteNode}
+				on:knobMouseUp={handleKnobMouseUp}
+			/>
+		{/each}
 		<svg width="100vw" height="100vh">
 			{#each linesToDisplay as line}
 				<line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} stroke="black" />
