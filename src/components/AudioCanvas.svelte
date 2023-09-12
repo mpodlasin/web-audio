@@ -56,24 +56,22 @@
 			} else {
 				switch (chosenExample) {
 					case 'empty':
-						audioGraphHistory = [{}];
+						audioGraphHistory = [{}, {}];
 						break;
 					case 'oscillator-gain-destination':
-						audioGraphHistory = [addRandomPositions(oscillatorGainDestination)];
+						audioGraphHistory = [{}, addRandomPositions(oscillatorGainDestination)];
 						break;
 					case 'trigger-envelope-oscillator-gain-destination':
-						audioGraphHistory = [addRandomPositions(triggerEnvelopeOscillatorGainDestination)];
+						audioGraphHistory = [{}, addRandomPositions(triggerEnvelopeOscillatorGainDestination)];
 						break;
 					case 'sequencer-envelope-oscillator-gain-destination':
-						audioGraphHistory = [addRandomPositions(sequencerEnvelopeOscillatorGainDestination)];
+						audioGraphHistory = [{}, addRandomPositions(sequencerEnvelopeOscillatorGainDestination)];
 						break;
 					case 'midi-envelope-oscillator-gain-destination':
-						audioGraphHistory = [addRandomPositions(midiEnvelopeOscillatorGainDestination)];
+						audioGraphHistory = [{}, addRandomPositions(midiEnvelopeOscillatorGainDestination)];
 						break;
 				}
 			}
-
-			updateAudioCanvas(audioGraphHistory.at(-1) ?? {}, {}, audioNodeDatabase);
 		}
 	}
 
