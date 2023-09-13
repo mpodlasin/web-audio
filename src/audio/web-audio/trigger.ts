@@ -21,27 +21,42 @@ export class Trigger extends AudioWorkletProcessor {
 	) {
 		const tempoInBPM = parameters.tempoInBPM;
 
-		if (tempoInBPM && tempoInBPM.length === 1) {
-			const tempoPerSecond = (tempoInBPM[0] ?? 0) / 60;
-			const lengthInSeconds = 1 / (tempoPerSecond * 2);
-			const frameInSeconds = lengthInSeconds * 2;
+		if (!tempoInBPM) return;
 
+		if (tempoInBPM.length === 1) {
 			outputList.forEach((output) => {
 				output.forEach((out) => {
-					for (let i = 0; i < out.length; i++) {
-						const now = currentTime % frameInSeconds;
+					const tempoArray = out.map(() => tempoInBPM[0] ?? 0);
 
-						if (now <= lengthInSeconds) {
-							out[i] = 1;
-						} else {
-							out[i] = 0;
-						}
-					}
+					this.createOutputs(out, tempoArray);
+				});
+			});
+		} else {
+			outputList.forEach((output) => {
+				output.forEach((out) => {
+					this.createOutputs(out, tempoInBPM);
 				});
 			});
 		}
 
 		return true;
+	}
+
+	private createOutputs(out: Float32Array, tempoInBPM: Float32Array) {
+		for (let i = 0; i < out.length; i++) {
+			const tempoPerSecond = (tempoInBPM[i] ?? 0) / 60;
+			const durationInSeconds = 1 / tempoPerSecond;
+			const cycleStart = currentTime % durationInSeconds;
+			const sampleLengthInSeconds = 1 / sampleRate;
+
+			const now = cycleStart + i * sampleLengthInSeconds;
+
+			if (now <= durationInSeconds / 2) {
+				out[i] = 1;
+			} else {
+				out[i] = 0;
+			}
+		}
 	}
 }
 
@@ -64,3 +79,4 @@ declare const AudioWorkletProcessor: {
 declare const registerProcessor: (name: string, value: object) => void;
 
 declare const currentTime: number;
+declare const sampleRate: number;

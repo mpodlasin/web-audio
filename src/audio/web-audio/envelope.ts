@@ -99,9 +99,12 @@ export class Envelope extends AudioWorkletProcessor {
 						let timeAtSample = currentTime;
 
 						for (let i = 0; i < out.length - 1; i++) {
-							out[i] = Math.max(0, Math.min((timeAtSample - this.envelopeStartedAt) / attackInSeconds, 1));
+							out[i] = Math.max(
+								0,
+								Math.min((timeAtSample - this.envelopeStartedAt) / attackInSeconds, 1)
+							);
 
-							timeAtSample += out.length / numberOfSamplesPerSecond
+							timeAtSample += out.length / numberOfSamplesPerSecond;
 						}
 					});
 				});
@@ -120,9 +123,12 @@ export class Envelope extends AudioWorkletProcessor {
 						if (!this.finishEnvelopeAt) return;
 						let timeAtSample = currentTime;
 						for (let i = 0; i < out.length - 1; i++) {
-							out[i] = Math.max(0, Math.min((this.finishEnvelopeAt - timeAtSample) / releaseInSeconds, 1));
+							out[i] = Math.max(
+								0,
+								Math.min((this.finishEnvelopeAt - timeAtSample) / releaseInSeconds, 1)
+							);
 
-							timeAtSample += out.length / numberOfSamplesPerSecond
+							timeAtSample += out.length / numberOfSamplesPerSecond;
 						}
 					});
 				});
