@@ -123,11 +123,11 @@
 			/>
 		{/each}
 	</div>
-	<div class="special">
-		{#if node.type === 'oscilloscope' && instantiatedNode instanceof CustomOscilloscopeNode}
+	{#if node.type === 'oscilloscope' && instantiatedNode instanceof CustomOscilloscopeNode}
+		<div class="special">
 			<OscilloscopeNode oscilloscopeNode={instantiatedNode} />
-		{/if}
-	</div>
+		</div>
+	{/if}
 	<div class="inputs-and-outputs">
 		<div class="inputs">
 			{#each staticDefinition.inputs as input (input)}
@@ -173,7 +173,7 @@
 		gap: 16px;
 		min-width: 70px;
 		background-color: var(--neutral-900);
-		border: 2px solid var(--primary-500);
+		border: 1px solid var(--primary-500);
 		border-radius: 8px;
 		box-shadow: 3px 4px 19px -5px rgba(0, 0, 0, 0.6);
 	}

@@ -94,8 +94,8 @@
 		min-width: 80px;
 	}
 	.knob {
-		width: 40px;
-		height: 40px;
+		width: 35px;
+		height: 35px;
 		border-radius: 50%;
 		background-color: var(--neutral-500);
 		border: 2px solid var(--neutral-300);
@@ -104,7 +104,7 @@
 
 	.knob-pointer {
 		width: 2px;
-		height: 16px;
+		height: 15px;
 		background-color: lightgray;
 		position: absolute;
 		top: 0;
