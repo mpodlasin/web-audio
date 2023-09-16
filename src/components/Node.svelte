@@ -97,6 +97,16 @@
 			x: event.clientX - rect.left,
 			y: event.clientY - rect.top
 		};
+
+		window.addEventListener('click', hideContextMenu);
+		window.addEventListener('contextmenu', hideContextMenu);
+	};
+
+	const hideContextMenu = () => {
+		showContextMenu = false;
+
+		window.removeEventListener('click', hideContextMenu);
+		window.removeEventListener('contextmenu', hideContextMenu);
 	};
 
 	const handleKnobMouseUp = (event: CustomEvent) => {
