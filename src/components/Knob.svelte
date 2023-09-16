@@ -57,14 +57,14 @@
 			dispatcher('knob', {
 				parameterName,
 				x: knob.getBoundingClientRect().x + 6,
-				y: knob.getBoundingClientRect().y + 6,
+				y: knob.getBoundingClientRect().y + 6
 			});
 		}
 	}
 </script>
 
 <div class="wrapper">
-	<div>{parameterName}</div>
+	<div class="title">{parameterName}</div>
 	<div
 		class="knob"
 		on:mousedown={handleMouseDown}
@@ -75,7 +75,7 @@
 		<div class:visible={isControlled} class="controlled-knob-circle" bind:this={knob} />
 	</div>
 	{#if numberParameter !== null}
-		<div>
+		<div class="value">
 			{numberParameter.toFixed(2)}
 			{#if unit}
 				{' '}{unit}
@@ -128,5 +128,13 @@
 
 	.visible {
 		visibility: visible;
+	}
+
+	.title {
+		font-size: 12px;
+	}
+
+	.value {
+		font-size: 10px;
 	}
 </style>

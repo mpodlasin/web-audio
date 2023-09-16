@@ -18,6 +18,8 @@
 	import { sequencerEnvelopeOscillatorGainDestination } from '../examples/sequencer-envelope-oscillator-gain-destination';
 	import { midiEnvelopeOscillatorGainDestination } from '../examples/midi-envelope-oscillator-gain-destination';
 	import DraggableNode from '../components/DraggableNode.svelte';
+	import Menu from './Menu.svelte';
+	import Button from './Button.svelte';
 
 	const audioGraphLocalStorageKey = 'audioGraph';
 
@@ -492,20 +494,24 @@
 				class="create-node-menu"
 				style="left: {lineMenuPosition.x}px; top: {lineMenuPosition.y}px;"
 			>
-				<button on:click={handleDeleteConnection}>Delete</button>
+				<Menu>
+					<Button on:click={handleDeleteConnection} title="Delete" variant="danger" />
+				</Menu>
 			</div>
 		{/if}
 
 		{#if showMenu}
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
-				<button on:click={handleCreateElementClick('oscillator')}>Oscillator</button>
-				<button on:click={handleCreateElementClick('gain')}>Gain</button>
-				<button on:click={handleCreateElementClick('trigger')}>Trigger</button>
-				<button on:click={handleCreateElementClick('sequencer')}>Sequencer</button>
-				<button on:click={handleCreateElementClick('midi')}>Midi</button>
-				<button on:click={handleCreateElementClick('envelope')}>Envelope</button>
-				<button on:click={handleCreateElementClick('oscilloscope')}>Oscilloscope</button>
-				<button on:click={handleCreateElementClick('destination')}>Destination</button>
+				<Menu>
+					<Button on:click={handleCreateElementClick('oscillator')} title="Oscillator" />
+					<Button on:click={handleCreateElementClick('gain')} title="Gain" />
+					<Button on:click={handleCreateElementClick('trigger')} title="Trigger" />
+					<Button on:click={handleCreateElementClick('sequencer')} title="Sequencer" />
+					<Button on:click={handleCreateElementClick('midi')} title="MIDI" />
+					<Button on:click={handleCreateElementClick('envelope')} title="Envelope" />
+					<Button on:click={handleCreateElementClick('oscilloscope')} title="Oscilloscope" />
+					<Button on:click={handleCreateElementClick('destination')} title="Destination" />
+				</Menu>
 			</div>
 		{/if}
 	</div>
@@ -525,11 +531,6 @@
 
 	.create-node-menu {
 		position: absolute;
-		border: 1px solid black;
-		padding: 16px;
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
 	}
 
 	svg {

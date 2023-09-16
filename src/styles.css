@@ -1,14 +1,17 @@
 :root {
-    --neutral-300: #D4D4D4;
-    --neutral-500: #676767;
-    --neutral-700: #292929;
-    --neutral-900: #1C1C1C;
+	--neutral-300: #d4d4d4;
+	--neutral-500: #676767;
+	--neutral-700: #292929;
+	--neutral-900: #1c1c1c;
 
-    --primary-500: #45C7FF;
+	--primary-500: #45c7ff;
+
+	--danger-300: #ff6161;
 }
 
-html, body {
-    margin: 0;
-    font-family: "Inter", arial;
-    color: var(--neutral-300);
+html,
+body {
+	margin: 0;
+	font-family: 'Inter', arial;
+	color: var(--neutral-300);
 }

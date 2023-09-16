@@ -13,7 +13,7 @@
 				id,
 				type,
 				x: plug.getBoundingClientRect().x + 7,
-				y: plug.getBoundingClientRect().y + 7,
+				y: plug.getBoundingClientRect().y + 7
 			});
 		}
 	}

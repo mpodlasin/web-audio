@@ -9,6 +9,8 @@
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
 	import OscilloscopeNode from './OscilloscopeNode.svelte';
+	import Button from './Button.svelte';
+	import Menu from './Menu.svelte';
 
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
@@ -155,7 +157,9 @@
 			class="context-menu"
 			style="left: {contextMenuPosition.x}px; top: {contextMenuPosition.y}px;"
 		>
-			<button on:click={handleDeleteNodeClick}>Delete</button>
+			<Menu>
+				<Button on:click={handleDeleteNodeClick} title="Delete" variant="danger" />
+			</Menu>
 		</div>
 	{/if}
 </div>
@@ -171,13 +175,14 @@
 		background-color: var(--neutral-900);
 		border: 2px solid var(--primary-500);
 		border-radius: 8px;
-		box-shadow: 3px 4px 19px -5px rgba(0, 0, 0, 0.60);
+		box-shadow: 3px 4px 19px -5px rgba(0, 0, 0, 0.6);
 	}
 
 	.header {
 		text-transform: capitalize;
 		font-weight: bold;
 		text-align: center;
+		font-size: 14px;
 	}
 
 	.parameters {
@@ -202,9 +207,6 @@
 	}
 
 	.context-menu {
-		background-color: #fff;
-		border: 1px solid #000;
-		padding: 8px;
 		position: absolute;
 	}
 </style>
