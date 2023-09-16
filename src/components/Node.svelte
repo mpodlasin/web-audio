@@ -168,7 +168,10 @@
 		flex-direction: column;
 		gap: 16px;
 		min-width: 70px;
-		background-color: white;
+		background-color: var(--neutral-900);
+		border: 2px solid var(--primary-500);
+		border-radius: 8px;
+		box-shadow: 3px 4px 19px -5px rgba(0, 0, 0, 0.60);
 	}
 
 	.header {

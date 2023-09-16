@@ -4,6 +4,8 @@
 
 	export let oscilloscopeNode: CustomOscilloscopeNode;
 
+	const color = '#45C7FF';
+
 	$: analyser = oscilloscopeNode.webApiNode;
 	$: bufferLength = analyser.frequencyBinCount;
 	$: dataArray = new Uint8Array(bufferLength);
@@ -24,9 +26,9 @@
 
 		analyser.getByteTimeDomainData(dataArray);
 
-		canvasCtx.lineWidth = 2;
-		canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
-		canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+		canvasCtx.lineWidth = 1;
+		canvasCtx.strokeStyle = color;
+		canvasCtx.fillStyle = color;
 
 		const v = (dataArray[0] ?? 128) / 128.0;
 		const y = (v * canvas.height) / 2;
@@ -52,6 +54,7 @@
 
 <style>
 	canvas {
-		border: 1px solid lightgray;
+		border: 1px solid var(--neutral-500);
+		border-radius: 4px;
 	}
 </style>

@@ -56,8 +56,8 @@
 		if (knob) {
 			dispatcher('knob', {
 				parameterName,
-				x: knob.getBoundingClientRect().x - 2,
-				y: knob.getBoundingClientRect().y - 2
+				x: knob.getBoundingClientRect().x + 6,
+				y: knob.getBoundingClientRect().y + 6,
 			});
 		}
 	}
@@ -97,8 +97,8 @@
 		width: 40px;
 		height: 40px;
 		border-radius: 50%;
-		background-color: gray;
-		border: 2px solid lightgray;
+		background-color: var(--neutral-500);
+		border: 2px solid var(--neutral-300);
 		position: relative;
 	}
 
@@ -117,8 +117,8 @@
 		width: 8px;
 		height: 8px;
 		border-radius: 50%;
-		background-color: gray;
-		border: 2px solid lightgray;
+		background-color: var(--neutral-700);
+		border: 2px solid var(--neutral-300);
 		position: absolute;
 		top: 50%;
 		left: 50%;

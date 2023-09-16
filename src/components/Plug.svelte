@@ -12,8 +12,8 @@
 			dispatcher('plug', {
 				id,
 				type,
-				x: plug.getBoundingClientRect().x,
-				y: plug.getBoundingClientRect().y
+				x: plug.getBoundingClientRect().x + 7,
+				y: plug.getBoundingClientRect().y + 7,
 			});
 		}
 	}
@@ -37,10 +37,10 @@
 
 <style>
 	.plug {
-		width: 15px;
-		height: 15px;
+		width: 12px;
+		height: 12px;
 		border-radius: 50%;
-		background-color: #fff;
-		border: 1px solid #000;
+		background-color: var(---neutral-700);
+		border: 2px solid var(--neutral-500);
 	}
 </style>

@@ -419,7 +419,7 @@
 	};
 </script>
 
-<div>
+<div class="canvas">
 	<div class="menu">
 		<label for="example">Chosen Example</label>
 		<select id="example" bind:value={chosenExample}>
@@ -464,7 +464,7 @@
 		{/each}
 		<svg width="100vw" height="100vh">
 			{#each linesToDisplay as line}
-				<line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} stroke="black" />
+				<line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} class="visible" />
 				<line
 					on:contextmenu={handleLineLeftClick(line.line[0], line.line[1])}
 					x1={line.from.x}
@@ -482,7 +482,7 @@
 					y1={positionOfStartingPlug.y}
 					x2={positionOfEndPlug.x}
 					y2={positionOfEndPlug.y}
-					stroke="black"
+					class="visible"
 				/>
 			{/if}
 		</svg>
@@ -512,6 +512,10 @@
 </div>
 
 <style>
+	.canvas {
+		background-color: var(--neutral-700);
+	}
+
 	.menu {
 		position: fixed;
 		top: 8px;
@@ -535,5 +539,9 @@
 
 	line {
 		pointer-events: all;
+	}
+
+	line.visible {
+		stroke: var(--neutral-300);
 	}
 </style>
