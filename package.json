@@ -19,6 +19,7 @@
 		"@babel/core": "^7.22.5",
 		"@babel/preset-env": "^7.22.5",
 		"@babel/preset-typescript": "^7.22.5",
+		"@poppanator/sveltekit-svg": "^3.0.1",
 		"@storybook/addon-essentials": "^7.3.2",
 		"@storybook/addon-interactions": "^7.3.2",
 		"@storybook/addon-links": "^7.3.2",

@@ -20,6 +20,7 @@
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import Menu from './Menu.svelte';
 	import Button from './Button.svelte';
+	import ProjectHeader from './ProjectHeader.svelte';
 
 	const audioGraphLocalStorageKey = 'audioGraph';
 
@@ -86,10 +87,6 @@
 	$: {
 		localStorage.setItem(audioGraphLocalStorageKey, JSON.stringify(audioGraphWithPositions));
 	}
-
-	const handlePlay = () => {
-		playAudioCanvas(audioNodeDatabase);
-	};
 
 	$: lines = Object.entries(audioGraphWithPositions).reduce(
 		(acc: (readonly [readonly [string, string], readonly [string, string]])[], [id, node]) => {
@@ -419,29 +416,23 @@
 			removeNode(audioGraphWithPositions, event.detail.id)
 		];
 	};
+
+	let playing = false;
+
+	const handlePlayChange = (event: CustomEvent<{ playing: boolean }>) => {
+		console.log('play chaaaange');
+		playing = event.detail.playing;
+	};
+
+	$: {
+		if (playing) {
+			playAudioCanvas(audioNodeDatabase);
+		}
+	}
 </script>
 
 <div class="canvas">
-	<div class="menu">
-		<label for="example">Chosen Example</label>
-		<select id="example" bind:value={chosenExample}>
-			<option value="empty">---</option>
-			<option value="oscillator-gain-destination">Oscillator Gain Destination</option>
-			<option value="trigger-envelope-oscillator-gain-destination"
-				>Trigger Envelope Oscillator Gain Destination</option
-			>
-			<option value="sequencer-envelope-oscillator-gain-destination"
-				>Sequencer Envelope Oscillator Gain Destination</option
-			>
-			<option value="midi-envelope-oscillator-gain-destination"
-				>Midi Envelope Oscillator Gain Destination</option
-			>
-		</select>
-		<div>
-			<label for="play">Play</label>
-			<button id="play" on:click={handlePlay}>Play</button>
-		</div>
-	</div>
+	<ProjectHeader projectName="Project 1" {playing} on:playChange={handlePlayChange} />
 	<div
 		class="audio-canvas"
 		on:contextmenu={handleCanvasLeftClick}
@@ -520,13 +511,6 @@
 <style>
 	.canvas {
 		background-color: var(--neutral-700);
-	}
-
-	.menu {
-		position: fixed;
-		top: 8px;
-		border: 1px solid black;
-		padding: 16px;
 	}
 
 	.create-node-menu {
