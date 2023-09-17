@@ -11,7 +11,10 @@
 		type Plug,
 		removeConnection,
 		removeNode,
-		addConnectionToParameter
+		addConnectionToParameter,
+
+		plugsEqual
+
 	} from '../audio/AudioCanvas';
 	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination';
 	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
@@ -426,6 +429,7 @@
 		menuPosition = { x: event.clientX, y: event.clientY };
 		showMenu = true;
 		menuKind = 'canvas';
+		lineMenuPlugs = null;
 
 		window.addEventListener('click', closeMenu);
 	};
@@ -448,6 +452,7 @@
 		menuPosition = { x: event.clientX, y: event.clientY };
 		showMenu = true;
 		menuKind = 'node';
+		lineMenuPlugs = null;
 		menuNodeId = nodeId;
 
 		window.addEventListener('click', closeMenu);
@@ -455,6 +460,7 @@
 
 	const closeMenu = () => {
 		showMenu = false;
+		lineMenuPlugs = null;
 
 		window.removeEventListener('click', closeMenu);
 	};
@@ -489,7 +495,10 @@
 					x2={line.to.x}
 					y2={line.to.y}
 					stroke="transparent"
-					stroke-width="10"
+					stroke-width="7"
+					stroke-linecap="round"
+					class="invisible"
+					class:chosen={lineMenuPlugs ? plugsEqual(lineMenuPlugs[0], line.line[0]) && plugsEqual(lineMenuPlugs[1], line.line[1]) : false}
 				/>
 			{/each}
 
@@ -557,5 +566,14 @@
 
 	line.visible {
 		stroke: var(--neutral-300);
+	}
+
+	line.invisible {
+		transition: stroke 0.2s;
+		opacity: 0.5;
+	}
+
+	line.invisible:hover, line.chosen {
+		stroke: var(--primary-500);
 	}
 </style>
