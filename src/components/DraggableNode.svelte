@@ -19,13 +19,15 @@
 	};
 
 	const handleMouseDown = (event: MouseEvent) => {
-		const rect = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
-		internalClickPosition = {
-			x: event.clientX - rect.left,
-			y: event.clientY - rect.top
-		};
+		if (event.button === 0) {
+			const rect = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
+			internalClickPosition = {
+				x: event.clientX - rect.left,
+				y: event.clientY - rect.top
+			};
 
-		window.addEventListener('mousemove', handleMouseMove);
+			window.addEventListener('mousemove', handleMouseMove);
+		}
 	};
 
 	const handleMouseMove = (event: MouseEvent) => {
@@ -41,11 +43,17 @@
 	const handleMouseUp = () => {
 		window.removeEventListener('mousemove', handleMouseMove);
 	};
+
+	const handleContextMenu = (event: MouseEvent) => {
+		event.stopPropagation();
+	};
 </script>
 
 <div
 	on:mousedown={handleMouseDown}
 	on:mouseup={handleMouseUp}
+	on:contextmenu={handleContextMenu}
+	on:contextmenu
 	style="position: absolute; left: {position.x}px; top: {position.y}px;"
 >
 	<Node

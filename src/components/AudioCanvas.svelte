@@ -313,18 +313,47 @@
 
 	let menuPosition = { x: 0, y: 0 };
 	let showMenu = false;
+	let menuKind: 'canvas' | 'node' | 'line' = 'canvas';
+	let lineMenuPlugs: [Plug, Plug] | null = null;
+	let menuNodeId: string = '';
 
 	const handleCanvasLeftClick = (event: MouseEvent) => {
 		event.preventDefault();
 
 		menuPosition = { x: event.clientX, y: event.clientY };
 		showMenu = true;
+		menuKind = 'canvas';
+
+		window.addEventListener('click', closeMenu);
 	};
 
-	const handleCanvasRightClick = (event: MouseEvent) => {
+	const handleLineLeftClick = (fromPlug: Plug, toPlug: Plug) => (event: MouseEvent) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		showMenu = true;
+		menuKind = 'line';
+		lineMenuPlugs = [fromPlug, toPlug];
+		menuPosition = { x: event.clientX, y: event.clientY };
+
+		window.addEventListener('click', closeMenu);
+	};
+
+	const handleNodeLeftClick = (nodeId: string) => (event: MouseEvent) => {
 		event.preventDefault();
 
+		menuPosition = { x: event.clientX, y: event.clientY };
+		showMenu = true;
+		menuKind = 'node';
+		menuNodeId = nodeId;
+
+		window.addEventListener('click', closeMenu);
+	};
+
+	const closeMenu = () => {
 		showMenu = false;
+
+		window.removeEventListener('click', closeMenu);
 	};
 
 	const handleCreateElementClick =
@@ -386,19 +415,6 @@
 		positionOfEndPlug = { x: event.clientX, y: event.clientY };
 	};
 
-	let showLineMenu = false;
-	let lineMenuPlugs: [Plug, Plug] | null = null;
-	let lineMenuPosition = { x: 0, y: 0 };
-
-	const handleLineLeftClick = (fromPlug: Plug, toPlug: Plug) => (event: MouseEvent) => {
-		event.preventDefault();
-		event.stopPropagation();
-
-		showLineMenu = true;
-		lineMenuPlugs = [fromPlug, toPlug];
-		lineMenuPosition = { x: event.clientX, y: event.clientY };
-	};
-
 	const handleDeleteConnection = () => {
 		if (!lineMenuPlugs) return;
 
@@ -407,14 +423,11 @@
 			removeConnection(audioGraphWithPositions, lineMenuPlugs[0], lineMenuPlugs[1])
 		];
 
-		showLineMenu = false;
+		showMenu = false;
 	};
 
-	const handleDeleteNode = (event: CustomEvent<{ id: string }>) => {
-		audioGraphHistory = [
-			...audioGraphHistory,
-			removeNode(audioGraphWithPositions, event.detail.id)
-		];
+	const handleDeleteNode = () => {
+		audioGraphHistory = [...audioGraphHistory, removeNode(audioGraphWithPositions, menuNodeId)];
 	};
 
 	let playing = false;
@@ -433,13 +446,7 @@
 
 <div class="canvas">
 	<ProjectHeader projectName="Project 1" {playing} on:playChange={handlePlayChange} />
-	<div
-		class="audio-canvas"
-		on:contextmenu={handleCanvasLeftClick}
-		on:click={handleCanvasRightClick}
-		on:keypress={() => {}}
-		on:mousemove={handleLineDrag}
-	>
+	<div class="audio-canvas" on:contextmenu={handleCanvasLeftClick} on:mousemove={handleLineDrag}>
 		{#each Object.entries(audioGraphWithPositions) as [id, node] (id)}
 			<DraggableNode
 				{id}
@@ -453,6 +460,7 @@
 				on:nodePlugUp={handlePlugUp}
 				on:deleteNode={handleDeleteNode}
 				on:knobMouseUp={handleKnobMouseUp}
+				on:contextmenu={handleNodeLeftClick(id)}
 			/>
 		{/each}
 		<svg width="100vw" height="100vh">
@@ -480,18 +488,23 @@
 			{/if}
 		</svg>
 
-		{#if showLineMenu}
-			<div
-				class="create-node-menu"
-				style="left: {lineMenuPosition.x}px; top: {lineMenuPosition.y}px;"
-			>
+		{#if showMenu && menuKind === 'line'}
+			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
 				<Menu>
 					<Button on:click={handleDeleteConnection} title="Delete" variant="danger" />
 				</Menu>
 			</div>
 		{/if}
 
-		{#if showMenu}
+		{#if showMenu && menuKind === 'node'}
+			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
+				<Menu>
+					<Button on:click={handleDeleteNode} title="Delete" variant="danger" />
+				</Menu>
+			</div>
+		{/if}
+
+		{#if showMenu && menuKind === 'canvas'}
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
 				<Menu>
 					<Button on:click={handleCreateElementClick('oscillator')} title="Oscillator" />

@@ -76,38 +76,7 @@
 		dispatcher('nodePlugUp', { id: plugId, type, nodeId: id });
 	};
 
-	const handleDeleteNodeClick = () => {
-		dispatcher('deleteNode', { id });
-	};
-
-	let showContextMenu = false;
-	let contextMenuPosition = { x: 0, y: 0 };
-
 	let element: HTMLDivElement;
-
-	const handleContextMenu = (event: MouseEvent) => {
-		event.preventDefault();
-		event.stopPropagation();
-
-		const rect = element.getBoundingClientRect();
-
-		showContextMenu = true;
-
-		contextMenuPosition = {
-			x: event.clientX - rect.left,
-			y: event.clientY - rect.top
-		};
-
-		window.addEventListener('click', hideContextMenu);
-		window.addEventListener('contextmenu', hideContextMenu);
-	};
-
-	const hideContextMenu = () => {
-		showContextMenu = false;
-
-		window.removeEventListener('click', hideContextMenu);
-		window.removeEventListener('contextmenu', hideContextMenu);
-	};
 
 	const handleKnobMouseUp = (event: CustomEvent) => {
 		dispatcher('knobMouseUp', {
@@ -117,7 +86,7 @@
 	};
 </script>
 
-<div class="node" on:contextmenu={handleContextMenu} bind:this={element}>
+<div class="node" bind:this={element}>
 	<div class="header">{node.type}</div>
 	<div class="parameters">
 		{#each parameters as nodeParameter (nodeParameter[0])}
@@ -162,16 +131,6 @@
 			{/each}
 		</div>
 	</div>
-	{#if showContextMenu}
-		<div
-			class="context-menu"
-			style="left: {contextMenuPosition.x}px; top: {contextMenuPosition.y}px;"
-		>
-			<Menu>
-				<Button on:click={handleDeleteNodeClick} title="Delete" variant="danger" />
-			</Menu>
-		</div>
-	{/if}
 </div>
 
 <style>
@@ -214,9 +173,5 @@
 		flex-grow: 0;
 		flex-direction: row;
 		gap: 8px;
-	}
-
-	.context-menu {
-		position: absolute;
 	}
 </style>
