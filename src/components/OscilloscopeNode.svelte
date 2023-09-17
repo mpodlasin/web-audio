@@ -31,7 +31,8 @@
 		canvasCtx.fillStyle = color;
 
 		const v = (dataArray[0] ?? 128) / 128.0;
-		const y = (v * canvas.height) / 2;
+		const v2 = 2 - v;
+		const y = (v2 * canvas.height) / 2;
 
 		canvasCtx.beginPath();
 
