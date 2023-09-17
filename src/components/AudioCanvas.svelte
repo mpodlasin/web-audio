@@ -311,6 +311,9 @@
 		updateAudioCanvas(audioGraphWithPositions, previousAudioGraphWithPositions, audioNodeDatabase);
 	}
 
+	/* ---------------------------------------------- */
+	/* CONTEXT MENU */
+
 	let menuPosition = { x: 0, y: 0 };
 	let showMenu = false;
 	let menuKind: 'canvas' | 'node' | 'line' = 'canvas';
@@ -355,6 +358,8 @@
 
 		window.removeEventListener('click', closeMenu);
 	};
+
+	/* -------------------------------------------------- */
 
 	const handleCreateElementClick =
 		(type: keyof typeof allowedSerializedAudioElementStaticDefinitions) => (event: MouseEvent) => {
