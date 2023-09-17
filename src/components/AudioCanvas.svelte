@@ -311,6 +311,106 @@
 		updateAudioCanvas(audioGraphWithPositions, previousAudioGraphWithPositions, audioNodeDatabase);
 	}
 
+	const handleCreateElementClick =
+		(type: keyof typeof allowedSerializedAudioElementStaticDefinitions) => (event: MouseEvent) => {
+			event.preventDefault();
+
+			audioGraphHistory = [...audioGraphHistory, addNode(audioGraphWithPositions, type)];
+		};
+
+	/* -------------------------------------------------------------------------- */
+	/* LINE DRAGGING */
+
+	let draggingLine = false;
+	let startingPlug: { id: string; type: 'input' | 'output'; nodeId: string } | null = null;
+	let positionOfStartingPlug: { x: number; y: number } = { x: 0, y: 0 };
+	let positionOfEndPlug: { x: number; y: number } = { x: 0, y: 0 };
+
+	const handlePlugClick = (
+		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
+	) => {
+		const { id, type, nodeId } = event.detail;
+
+		draggingLine = true;
+		startingPlug = { id, type, nodeId };
+		positionOfStartingPlug =
+			plugPositions[nodeId]?.[type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'][id]!;
+
+		window.addEventListener('mouseup', stopDragging);
+	};
+
+	const stopDragging = () => {
+		draggingLine = false;
+
+		window.removeEventListener('mouseup', stopDragging);
+	};
+
+	const handlePlugUp = (
+		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
+	) => {
+		if (!draggingLine) return;
+		if (!startingPlug) return;
+
+		audioGraphHistory = [
+			...audioGraphHistory,
+			addConnection(audioGraphWithPositions, startingPlug, event.detail)
+		];
+
+		stopDragging();
+	};
+
+	const handleKnobMouseUp = (event: CustomEvent<{ nodeId: string; parameterName: string }>) => {
+		if (!draggingLine) return;
+		if (!startingPlug) return;
+
+		audioGraphHistory = [
+			...audioGraphHistory,
+			addConnectionToParameter(audioGraphWithPositions, startingPlug, {
+				nodeId: event.detail.nodeId,
+				type: 'input',
+				id: event.detail.parameterName
+			})
+		];
+
+		stopDragging();
+	};
+
+	const handleLineDrag = (event: MouseEvent) => {
+		event.preventDefault();
+
+		positionOfEndPlug = { x: event.clientX, y: event.clientY };
+	};
+
+	/* ----------------------------------------------------------- */
+
+	const handleDeleteConnection = () => {
+		if (!lineMenuPlugs) return;
+
+		audioGraphHistory = [
+			...audioGraphHistory,
+			removeConnection(audioGraphWithPositions, lineMenuPlugs[0], lineMenuPlugs[1])
+		];
+
+		showMenu = false;
+	};
+
+	const handleDeleteNode = () => {
+		audioGraphHistory = [...audioGraphHistory, removeNode(audioGraphWithPositions, menuNodeId)];
+	};
+
+	let playing = false;
+
+	const handlePlayChange = (event: CustomEvent<{ playing: boolean }>) => {
+		console.log('play chaaaange');
+		playing = event.detail.playing;
+	};
+
+	$: {
+		if (playing) {
+			playAudioCanvas(audioNodeDatabase);
+		}
+	}
+
 	/* ---------------------------------------------- */
 	/* CONTEXT MENU */
 
@@ -358,95 +458,6 @@
 
 		window.removeEventListener('click', closeMenu);
 	};
-
-	/* -------------------------------------------------- */
-
-	const handleCreateElementClick =
-		(type: keyof typeof allowedSerializedAudioElementStaticDefinitions) => (event: MouseEvent) => {
-			event.preventDefault();
-
-			audioGraphHistory = [...audioGraphHistory, addNode(audioGraphWithPositions, type)];
-		};
-
-	let draggingLine = false;
-	let startingPlug: { id: string; type: 'input' | 'output'; nodeId: string } | null = null;
-	let positionOfStartingPlug: { x: number; y: number } = { x: 0, y: 0 };
-	let positionOfEndPlug: { x: number; y: number } = { x: 0, y: 0 };
-
-	const handlePlugClick = (
-		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
-	) => {
-		const { id, type, nodeId } = event.detail;
-
-		draggingLine = true;
-		startingPlug = { id, type, nodeId };
-		positionOfStartingPlug =
-			plugPositions[nodeId]?.[type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'][id]!;
-	};
-
-	const handlePlugUp = (
-		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
-	) => {
-		if (!draggingLine) return;
-		if (!startingPlug) return;
-
-		audioGraphHistory = [
-			...audioGraphHistory,
-			addConnection(audioGraphWithPositions, startingPlug, event.detail)
-		];
-
-		draggingLine = false;
-	};
-
-	const handleKnobMouseUp = (event: CustomEvent<{ nodeId: string; parameterName: string }>) => {
-		if (!draggingLine) return;
-		if (!startingPlug) return;
-
-		audioGraphHistory = [
-			...audioGraphHistory,
-			addConnectionToParameter(audioGraphWithPositions, startingPlug, {
-				nodeId: event.detail.nodeId,
-				type: 'input',
-				id: event.detail.parameterName
-			})
-		];
-
-		draggingLine = false;
-	};
-
-	const handleLineDrag = (event: MouseEvent) => {
-		event.preventDefault();
-
-		positionOfEndPlug = { x: event.clientX, y: event.clientY };
-	};
-
-	const handleDeleteConnection = () => {
-		if (!lineMenuPlugs) return;
-
-		audioGraphHistory = [
-			...audioGraphHistory,
-			removeConnection(audioGraphWithPositions, lineMenuPlugs[0], lineMenuPlugs[1])
-		];
-
-		showMenu = false;
-	};
-
-	const handleDeleteNode = () => {
-		audioGraphHistory = [...audioGraphHistory, removeNode(audioGraphWithPositions, menuNodeId)];
-	};
-
-	let playing = false;
-
-	const handlePlayChange = (event: CustomEvent<{ playing: boolean }>) => {
-		console.log('play chaaaange');
-		playing = event.detail.playing;
-	};
-
-	$: {
-		if (playing) {
-			playAudioCanvas(audioNodeDatabase);
-		}
-	}
 </script>
 
 <div class="canvas">
