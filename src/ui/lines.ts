@@ -1,0 +1,127 @@
+import {
+	allowedSerializedAudioElementStaticDefinitions,
+	type SerializedAudioElements
+} from '../audio/serialized';
+import type { PlugPositions } from './plugPositions';
+
+export const getLinesToDisplay = (
+	audioGraphWithPositions: SerializedAudioElements,
+	plugPositions: PlugPositions
+) => {
+	const lines = Object.entries(audioGraphWithPositions).reduce(
+		(acc: (readonly [readonly [string, string], readonly [string, string]])[], [id, node]) => {
+			const staticToDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
+
+			const mapped = node.inputs
+				? node.inputs.map((input) => {
+						if (typeof input === 'string') {
+							const staticNodeDefinition =
+								allowedSerializedAudioElementStaticDefinitions[
+									audioGraphWithPositions[input]?.type ?? 'oscillator'
+								];
+							return [
+								[input, staticNodeDefinition.outputs[0] as string],
+								[id, staticToDefinition.inputs[0] as string]
+							] as const;
+						} else {
+							return [
+								[input.id, input.output],
+								[id, staticToDefinition.inputs[0] as string]
+							] as const;
+						}
+				  })
+				: [];
+
+			const mappedParams = node.parameters
+				? Object.entries(node.parameters).flatMap(([key, value]) => {
+						return value.inputs.map((input) => {
+							return [
+								[input.id, input.output],
+								[id, key]
+							] as const;
+						});
+				  })
+				: [];
+
+			return [...mapped, ...mappedParams, ...acc];
+		},
+		[]
+	);
+
+	return lines.flatMap(([from, to]) => {
+		const [fromId, fromName] = from;
+		const [toId, toName] = to;
+
+		const fromNode = audioGraphWithPositions[fromId];
+		const toNode = audioGraphWithPositions[toId];
+
+		if (!fromNode || !toNode) {
+			return [];
+		}
+
+		const toStaticNodeDefinition =
+			allowedSerializedAudioElementStaticDefinitions[
+				toNode.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
+			];
+		const fromPlugPosition = plugPositions[fromId]?.outputPlugPositions[fromName];
+		const toPlugPosition =
+			plugPositions[toId]?.inputPlugPositions[toStaticNodeDefinition.inputs[0] as string];
+		const toParameterKnobPosition = plugPositions[toId]?.parameterKnobPositions[toName];
+
+		if (fromPlugPosition && toParameterKnobPosition) {
+			return [
+				{
+					line: [
+						{
+							nodeId: fromId,
+							type: 'output',
+							id: fromName
+						},
+						{
+							nodeId: toId,
+							type: 'input',
+							id: toName
+						}
+					] as const,
+					from: {
+						x: fromPlugPosition.x,
+						y: fromPlugPosition.y
+					},
+					to: {
+						x: toParameterKnobPosition.x,
+						y: toParameterKnobPosition.y
+					}
+				}
+			];
+		}
+
+		if (fromPlugPosition && toPlugPosition) {
+			return [
+				{
+					line: [
+						{
+							nodeId: fromId,
+							type: 'output',
+							id: fromName
+						},
+						{
+							nodeId: toId,
+							type: 'input',
+							id: toName
+						}
+					] as const,
+					from: {
+						x: fromPlugPosition.x,
+						y: fromPlugPosition.y
+					},
+					to: {
+						x: toPlugPosition.x,
+						y: toPlugPosition.y
+					}
+				}
+			];
+		}
+
+		return [];
+	});
+};
