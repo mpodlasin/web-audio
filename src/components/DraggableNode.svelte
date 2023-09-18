@@ -12,6 +12,7 @@
 		x: number;
 		y: number;
 	};
+	export let running: boolean;
 
 	let internalClickPosition = {
 		x: 0,
@@ -60,6 +61,7 @@
 		{id}
 		{node}
 		{instantiatedNode}
+		{running}
 		on:nodePlugAndKnobPositions
 		on:nodeParameterChange
 		on:nodePlugClick

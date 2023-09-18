@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { globalContext } from '../audio/GlobalContext';
 	import type { CustomOscilloscopeNode } from '../audio/initialized';
 
 	export let oscilloscopeNode: CustomOscilloscopeNode;
+	export let running: boolean;
 
 	const color = '#45C7FF';
 
@@ -19,6 +19,8 @@
 
 	function draw() {
 		requestAnimationFrame(draw);
+
+		if (!running) return;
 
 		if (canvasCtx === null) return;
 		if (!canvas) return;

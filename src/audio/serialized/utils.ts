@@ -70,7 +70,7 @@ export type Plug = {
 
 export const plugsEqual = (plugA: Plug, plugB: Plug): boolean => {
 	return plugA.id === plugB.id && plugA.nodeId === plugB.nodeId && plugA.type === plugB.type;
-}
+};
 
 export const addConnection = <S extends SerializedAudioElements>(
 	audioGraph: S,

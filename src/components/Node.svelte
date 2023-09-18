@@ -9,12 +9,11 @@
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
 	import OscilloscopeNode from './OscilloscopeNode.svelte';
-	import Button from './Button.svelte';
-	import Menu from './Menu.svelte';
 
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
 	export let instantiatedNode: unknown;
+	export let running: boolean;
 
 	$: staticDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
 	$: parameters = Object.entries(node.parameters ?? {}) as [string, SerializedAudioParameter][];
@@ -104,7 +103,7 @@
 	</div>
 	{#if node.type === 'oscilloscope' && instantiatedNode instanceof CustomOscilloscopeNode}
 		<div class="special">
-			<OscilloscopeNode oscilloscopeNode={instantiatedNode} />
+			<OscilloscopeNode oscilloscopeNode={instantiatedNode} {running} />
 		</div>
 	{/if}
 	<div class="inputs-and-outputs">
