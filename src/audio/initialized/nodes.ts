@@ -89,6 +89,22 @@ export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkl
 	constructor() {
 		super(new AudioWorkletNode(globalContext, 'trigger'));
 	}
+
+	start() {
+		const running = this.webApiNode.parameters.get('running');
+
+		if (running) {
+			running.value = 1;
+		}
+	}
+
+	stop() {
+		const running = this.webApiNode.parameters.get('running');
+
+		if (running) {
+			running.value = 0;
+		}
+	}
 }
 
 export class DestinationNode extends GenericCustomAudioNodeWithWebApiNode<AudioDestinationNode> {

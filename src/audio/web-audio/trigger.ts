@@ -10,6 +10,12 @@ export class Trigger extends AudioWorkletProcessor {
 				defaultValue: 120,
 				minValue: 0,
 				maxValue: 1000
+			},
+			{
+				name: 'running',
+				defalueValue: 0,
+				minValue: 0,
+				maxValue: 1
 			}
 		];
 	}
@@ -20,8 +26,11 @@ export class Trigger extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>
 	) {
 		const tempoInBPM = parameters.tempoInBPM;
+		const running = parameters.running;
 
 		if (!tempoInBPM) return;
+
+		if (!running || running[0] === 0) return true;
 
 		if (tempoInBPM.length === 1) {
 			outputList.forEach((output) => {
