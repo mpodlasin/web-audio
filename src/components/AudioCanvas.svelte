@@ -282,7 +282,6 @@
 	let playing = false;
 
 	const handlePlayChange = (event: CustomEvent<{ playing: boolean }>) => {
-		console.log('play chaaaange');
 		playing = event.detail.playing;
 	};
 
