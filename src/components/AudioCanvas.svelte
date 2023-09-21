@@ -23,7 +23,7 @@
 	import Button from './Button.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
 	import { getLinesToDisplay } from '../ui/lines';
-	import type { PlugPositions } from '../ui/plugPositions';
+	import { addDiff, addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
 
 	const audioGraphLocalStorageKey = 'audioGraph';
 
@@ -50,8 +50,6 @@
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
 	let audioGraphHistory: SerializedAudioElements[] = [];
-
-	let canvasPosition: { x: number; y: number } = { x: 0, y: 0 };
 	let dragStartPosition: { x: number; y: number } | null = null;
 
 	const handleDragCanvasStart = (event: MouseEvent) => {
@@ -68,9 +66,36 @@
 	const handleDragCanvas = (event: MouseEvent) => {
 		if (!dragStartPosition) return;
 
-		canvasPosition = {
+		const positionChange = {
 			x: dragStartPosition.x - event.clientX,
 			y: dragStartPosition.y - event.clientY
+		};
+
+		const newAudioGraphWithPositions = Object.fromEntries(
+			Object.entries(audioGraphWithPositions).map(([id, node]) => [
+				id,
+				{
+					...node,
+					ui: {
+						...node.ui,
+						position: node.ui?.position
+							? {
+									x: node.ui.position.x - positionChange.x,
+									y: node.ui.position.y - positionChange.y
+							  }
+							: { x: 0, y: 0 }
+					}
+				}
+			])
+		);
+
+		audioGraphHistory = [...audioGraphHistory, newAudioGraphWithPositions];
+
+		plugPositions = addDiffToAllPositions(plugPositions, -positionChange.x, -positionChange.y);
+
+		dragStartPosition = {
+			x: event.clientX,
+			y: event.clientY
 		};
 	};
 
@@ -127,26 +152,11 @@
 			const diffX = x - oldX;
 			const diffY = y - oldY;
 
-			plugPositions[id] = {
-				inputPlugPositions: Object.fromEntries(
-					Object.entries(plugPositions[id]?.inputPlugPositions ?? {}).map(([key, { x, y }]) => [
-						key,
-						{ x: x + diffX, y: y + diffY }
-					])
-				),
-				outputPlugPositions: Object.fromEntries(
-					Object.entries(plugPositions[id]?.outputPlugPositions ?? {}).map(([key, { x, y }]) => [
-						key,
-						{ x: x + diffX, y: y + diffY }
-					])
-				),
-				parameterKnobPositions: Object.fromEntries(
-					Object.entries(plugPositions[id]?.parameterKnobPositions ?? {}).map(([key, { x, y }]) => [
-						key,
-						{ x: x + diffX, y: y + diffY }
-					])
-				)
-			};
+			const prevPositions = plugPositions[id];
+
+			if (!prevPositions) return;
+
+			plugPositions[id] = addDiff(prevPositions, diffX, diffY);
 
 			if (audioGraphHistory.length >= 2) {
 				audioGraphHistory = [
@@ -198,58 +208,7 @@
 		};
 	};
 
-	$: audioGraphWithRelativePositions = Object.fromEntries(
-		Object.entries(audioGraphWithPositions).map(([id, node]) => [
-			id,
-			{
-				...node,
-				ui: {
-					...node.ui,
-					position: {
-						x: (node.ui?.position.x ?? 0) - canvasPosition.x,
-						y: (node.ui?.position.y ?? 0) - canvasPosition.y
-					}
-				}
-			}
-		])
-	);
-
-	$: relativePlugPositions = Object.fromEntries(
-		Object.entries(plugPositions).map(([id, positions]) => [
-			id,
-			{
-				inputPlugPositions: Object.fromEntries(
-					Object.entries(positions.inputPlugPositions).map(([id, inputPlugPositions]) => [
-						id,
-						{
-							x: inputPlugPositions.x - canvasPosition.x,
-							y: inputPlugPositions.y - canvasPosition.y
-						}
-					])
-				),
-				outputPlugPositions: Object.fromEntries(
-					Object.entries(positions.outputPlugPositions).map(([id, outputPlugPositions]) => [
-						id,
-						{
-							x: outputPlugPositions.x - canvasPosition.x,
-							y: outputPlugPositions.y - canvasPosition.y
-						}
-					])
-				),
-				parameterKnobPositions: Object.fromEntries(
-					Object.entries(positions.parameterKnobPositions).map(([id, parameterKnobPositions]) => [
-						id,
-						{
-							x: parameterKnobPositions.x - canvasPosition.x,
-							y: parameterKnobPositions.y - canvasPosition.y
-						}
-					])
-				)
-			}
-		])
-	);
-
-	$: linesToDisplay = getLinesToDisplay(audioGraphWithPositions, relativePlugPositions);
+	$: linesToDisplay = getLinesToDisplay(audioGraphWithPositions, plugPositions);
 
 	const handleNodeParameterChange = (
 		event: CustomEvent<{ id: string; parameterName: string; value: number }>
@@ -425,7 +384,7 @@
 >
 	<ProjectHeader projectName="Project 1" {playing} on:playChange={handlePlayChange} />
 	<div class="audio-canvas" on:contextmenu={handleCanvasLeftClick} on:mousemove={handleLineDrag}>
-		{#each Object.entries(audioGraphWithRelativePositions) as [id, node] (id)}
+		{#each Object.entries(audioGraphWithPositions) as [id, node] (id)}
 			<DraggableNode
 				{id}
 				{node}
