@@ -20,6 +20,7 @@
 	};
 
 	const handleMouseDown = (event: MouseEvent) => {
+		event.stopPropagation();
 		if (event.button === 0) {
 			const rect = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
 			internalClickPosition = {

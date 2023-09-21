@@ -51,6 +51,29 @@
 
 	let audioGraphHistory: SerializedAudioElements[] = [];
 
+	let canvasPosition: { x: number; y: number } = { x: 0, y: 0 };
+	let dragStartPosition: { x: number; y: number } | null = null;
+
+	const handleDragCanvasStart = (event: MouseEvent) => {
+		dragStartPosition = {
+			x: event.clientX,
+			y: event.clientY
+		};
+	};
+
+	const handleDragCanvasEnd = () => {
+		dragStartPosition = null;
+	};
+
+	const handleDragCanvas = (event: MouseEvent) => {
+		if (!dragStartPosition) return;
+
+		canvasPosition = {
+			x: dragStartPosition.x - event.clientX,
+			y: dragStartPosition.y - event.clientY
+		};
+	};
+
 	$: {
 		if (audioGraphHistory.length === 0) {
 			const audioGraphWithPositionFromLocalStorage =
@@ -93,7 +116,7 @@
 
 	let plugPositions: PlugPositions = {};
 
-	const handleDrag = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
+	const handleDragNode = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
 		const { x, y, id } = event.detail;
 		const node = audioGraphWithPositions[id];
 
@@ -175,7 +198,58 @@
 		};
 	};
 
-	$: linesToDisplay = getLinesToDisplay(audioGraphWithPositions, plugPositions);
+	$: audioGraphWithRelativePositions = Object.fromEntries(
+		Object.entries(audioGraphWithPositions).map(([id, node]) => [
+			id,
+			{
+				...node,
+				ui: {
+					...node.ui,
+					position: {
+						x: (node.ui?.position.x ?? 0) - canvasPosition.x,
+						y: (node.ui?.position.y ?? 0) - canvasPosition.y
+					}
+				}
+			}
+		])
+	);
+
+	$: relativePlugPositions = Object.fromEntries(
+		Object.entries(plugPositions).map(([id, positions]) => [
+			id,
+			{
+				inputPlugPositions: Object.fromEntries(
+					Object.entries(positions.inputPlugPositions).map(([id, inputPlugPositions]) => [
+						id,
+						{
+							x: inputPlugPositions.x - canvasPosition.x,
+							y: inputPlugPositions.y - canvasPosition.y
+						}
+					])
+				),
+				outputPlugPositions: Object.fromEntries(
+					Object.entries(positions.outputPlugPositions).map(([id, outputPlugPositions]) => [
+						id,
+						{
+							x: outputPlugPositions.x - canvasPosition.x,
+							y: outputPlugPositions.y - canvasPosition.y
+						}
+					])
+				),
+				parameterKnobPositions: Object.fromEntries(
+					Object.entries(positions.parameterKnobPositions).map(([id, parameterKnobPositions]) => [
+						id,
+						{
+							x: parameterKnobPositions.x - canvasPosition.x,
+							y: parameterKnobPositions.y - canvasPosition.y
+						}
+					])
+				)
+			}
+		])
+	);
+
+	$: linesToDisplay = getLinesToDisplay(audioGraphWithPositions, relativePlugPositions);
 
 	const handleNodeParameterChange = (
 		event: CustomEvent<{ id: string; parameterName: string; value: number }>
@@ -343,17 +417,22 @@
 	};
 </script>
 
-<div class="canvas">
+<div
+	class="canvas"
+	on:mousedown={handleDragCanvasStart}
+	on:mousemove={handleDragCanvas}
+	on:mouseup={handleDragCanvasEnd}
+>
 	<ProjectHeader projectName="Project 1" {playing} on:playChange={handlePlayChange} />
 	<div class="audio-canvas" on:contextmenu={handleCanvasLeftClick} on:mousemove={handleLineDrag}>
-		{#each Object.entries(audioGraphWithPositions) as [id, node] (id)}
+		{#each Object.entries(audioGraphWithRelativePositions) as [id, node] (id)}
 			<DraggableNode
 				{id}
 				{node}
 				running={playing}
 				instantiatedNode={audioNodeDatabase[id]}
 				position={node.ui?.position ?? { x: 0, y: 0 }}
-				on:drag={handleDrag}
+				on:drag={handleDragNode}
 				on:nodePlugAndKnobPositions={handleNodePlugPositions}
 				on:nodeParameterChange={handleNodeParameterChange}
 				on:nodePlugClick={handlePlugClick}
