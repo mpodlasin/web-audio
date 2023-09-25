@@ -15,10 +15,14 @@
 			playing: !playing
 		});
 	};
+
+	const handleProjectNameClick = () => {
+		dispatcher('projectNameClick');
+	};
 </script>
 
 <div class="menu">
-	<div class="projectName">
+	<div class="projectName" on:click={handleProjectNameClick} on:keypress={() => {}}>
 		<ChevronRight />
 		<div>{projectName}</div>
 	</div>
@@ -50,6 +54,7 @@
 		display: flex;
 		gap: 4px;
 		align-items: center;
+		cursor: pointer;
 	}
 
 	.playPause {

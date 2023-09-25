@@ -24,6 +24,7 @@
 	import ProjectHeader from './ProjectHeader.svelte';
 	import { getLinesToDisplay } from '../ui/lines';
 	import { addDiff, addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
+	import ProjectsModal from './ProjectsModal.svelte';
 
 	const audioGraphLocalStorageKey = 'audioGraph';
 
@@ -374,6 +375,16 @@
 
 		window.removeEventListener('click', closeMenu);
 	};
+
+	let showProjectsModal = false;
+
+	const handleProjectNameClick = () => {
+		showProjectsModal = true;
+	};
+
+	const handleCloseProjectsModal = () => {
+		showProjectsModal = false;
+	};
 </script>
 
 <div
@@ -382,7 +393,17 @@
 	on:mousemove={handleDragCanvas}
 	on:mouseup={handleDragCanvasEnd}
 >
-	<ProjectHeader projectName="Project 1" {playing} on:playChange={handlePlayChange} />
+	<ProjectHeader
+		projectName="Project 1"
+		{playing}
+		on:playChange={handlePlayChange}
+		on:projectNameClick={handleProjectNameClick}
+	/>
+	<ProjectsModal
+		open={showProjectsModal}
+		projects={['Nice project', 'Another good project']}
+		on:close={handleCloseProjectsModal}
+	/>
 	<div class="audio-canvas" on:contextmenu={handleCanvasLeftClick} on:mousemove={handleLineDrag}>
 		{#each Object.entries(audioGraphWithPositions) as [id, node] (id)}
 			<DraggableNode
