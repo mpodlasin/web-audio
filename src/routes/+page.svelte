@@ -61,7 +61,7 @@
 		if (chosenProjectName === event.detail) {
 			chosenProjectName = projectNames[0] ?? 'Project 1';
 		}
-	}
+	};
 </script>
 
 {#await customNodesPromise}
