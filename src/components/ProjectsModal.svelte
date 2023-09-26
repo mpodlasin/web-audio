@@ -38,6 +38,13 @@
 		event.stopPropagation();
 
 		showMoreMenuForProject = projectName;
+
+		window.addEventListener('click', closeMoreMenu);
+	};
+
+	const closeMoreMenu = () => {
+		showMoreMenuForProject = '';
+		window.removeEventListener('click', closeMoreMenu);
 	};
 
 	const handleDeleteProject = (projectName: string) => (event: MouseEvent) => {
