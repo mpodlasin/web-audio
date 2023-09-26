@@ -52,6 +52,34 @@
 		disaptcher('projectDelete', projectName);
 		showMoreMenuForProject = '';
 	};
+
+	let renameModeForProject = '';
+	let renamedProject = '';
+
+	const handleRenameProject = (projectName: string) => (event: MouseEvent) => {
+		event.stopPropagation();
+		showMoreMenuForProject = '';
+		renamedProject = projectName;
+		renameModeForProject = projectName;
+	};
+
+	const confirmNameChange = () => {
+		disaptcher('projectNameChange', {
+			oldName: renameModeForProject,
+			newName: renamedProject
+		});
+
+		renameModeForProject = '';
+		renamedProject = '';
+	};
+
+	const handleEnter = (event: KeyboardEvent) => {
+		if (event.key !== 'Enter') return;
+
+		event.preventDefault();
+
+		confirmNameChange();
+	};
 </script>
 
 <dialog bind:this={dialog}>
@@ -62,11 +90,17 @@
 	<div class="projects">
 		{#each projects as project (project)}
 			<div class="project" on:click={handleChangeProject(project)} on:keydown={() => {}}>
-				{project}
+				{#if renameModeForProject === project}
+					<!-- svelte-ignore a11y-autofocus -->
+					<input type="text" bind:value={renamedProject} autofocus on:keydown={handleEnter} />
+				{:else}
+					{project}
+				{/if}
 				<div class="more" on:click={handleMoreClick(project)} on:keydown={() => {}}><More /></div>
 				{#if showMoreMenuForProject === project}
 					<div class="more-menu">
 						<Menu>
+							<Button title="Rename" on:click={handleRenameProject(project)} />
 							<Button title="Delete" variant="danger" on:click={handleDeleteProject(project)} />
 						</Menu>
 					</div>

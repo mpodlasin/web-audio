@@ -364,6 +364,7 @@
 		on:newProject={handleNewProject}
 		on:projectChange={handleProjectChange}
 		on:projectDelete
+		on:projectNameChange
 	/>
 	<div class="audio-canvas" on:contextmenu={handleCanvasLeftClick} on:mousemove={handleLineDrag}>
 		{#each Object.entries(audioGraphWithPositions) as [id, node] (id)}

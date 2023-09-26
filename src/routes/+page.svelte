@@ -62,6 +62,27 @@
 			chosenProjectName = projectNames[0] ?? 'Project 1';
 		}
 	};
+
+	const handleProjectNameChange = (event: CustomEvent<{ oldName: string; newName: string }>) => {
+		const { newName, oldName } = event.detail;
+
+		const project = projects[oldName];
+
+		if (!project) return;
+
+		const newProjects = {
+			...projects,
+			[newName]: project
+		};
+
+		delete newProjects[oldName];
+
+		projects = newProjects;
+
+		if (chosenProjectName === oldName) {
+			chosenProjectName = newName;
+		}
+	};
 </script>
 
 {#await customNodesPromise}
@@ -76,6 +97,7 @@
 			on:newProject={handleNewProject}
 			on:projectChange={handleProjectChange}
 			on:projectDelete={handleProjectDelete}
+			on:projectNameChange={handleProjectNameChange}
 		/>
 	{/key}
 {/await}
