@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { CustomAudioNodeWithWebApiAudioScheduledSourceNode } from '../audio/initialized';
 	import type { SerializedAudioElements } from '../audio/serialized';
 	import { loadCustomNodes } from '../audio/web-audio/utils';
 	import AudioCanvas from '../components/AudioCanvas.svelte';
@@ -9,7 +10,7 @@
 
 	const projectsString = localStorage.getItem(audioGraphLocalStorageKey);
 
-	$: projects = (
+	let projects = (
 		projectsString !== null
 			? JSON.parse(projectsString)
 			: {
@@ -19,7 +20,13 @@
 
 	$: projectNames = Object.keys(projects);
 
-	$: chosenProjectName = projectNames[0] ?? 'Project 1';
+	let chosenProjectName = '';
+
+	$: {
+		if (!chosenProjectName) {
+			chosenProjectName = projectNames[0] ?? 'Project 1';
+		}
+	}
 
 	$: chosenProject = projects[chosenProjectName];
 
@@ -28,13 +35,10 @@
 	}
 
 	const handleChange = (event: CustomEvent<SerializedAudioElements>) => {
-		localStorage.setItem(
-			audioGraphLocalStorageKey,
-			JSON.stringify({
-				...projects,
-				[chosenProjectName]: event.detail
-			})
-		);
+		projects = {
+			...projects,
+			[chosenProjectName]: event.detail
+		};
 	};
 
 	const handleNewProject = () => {
@@ -49,12 +53,14 @@
 {#await customNodesPromise}
 	Loading...
 {:then}
-	<AudioCanvas
-		{projectNames}
-		{chosenProjectName}
-		initialAudioCanvas={chosenProject ?? {}}
-		on:change={handleChange}
-		on:newProject={handleNewProject}
-		on:projectChange={handleProjectChange}
-	/>
+	{#key chosenProjectName}
+		<AudioCanvas
+			{projectNames}
+			{chosenProjectName}
+			initialAudioCanvas={chosenProject ?? {}}
+			on:change={handleChange}
+			on:newProject={handleNewProject}
+			on:projectChange={handleProjectChange}
+		/>
+	{/key}
 {/await}

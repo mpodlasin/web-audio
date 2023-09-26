@@ -29,12 +29,8 @@
 
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
-	let audioGraphHistory: SerializedAudioElements[] = [];
+	let audioGraphHistory: SerializedAudioElements[] = [{}, initialAudioCanvas];
 	let dragStartPosition: { x: number; y: number } | null = null;
-
-	$: {
-		audioGraphHistory = [{}, initialAudioCanvas];
-	}
 
 	const handleDragCanvasStart = (event: MouseEvent) => {
 		dragStartPosition = {

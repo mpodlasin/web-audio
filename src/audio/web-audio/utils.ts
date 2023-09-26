@@ -3,8 +3,6 @@ import envelopeNodeWorkletUrl from './envelope.js?worker&url';
 import triggerNodeWorkletUrl from './trigger.js?worker&url';
 
 export async function loadCustomNodes() {
-	console.log(envelopeNodeWorkletUrl);
-	console.log(triggerNodeWorkletUrl);
 	try {
 		await Promise.all([
 			globalContext.audioWorklet.addModule(envelopeNodeWorkletUrl),
