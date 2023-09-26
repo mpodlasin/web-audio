@@ -48,6 +48,20 @@
 	const handleProjectChange = (event: CustomEvent<string>) => {
 		chosenProjectName = event.detail;
 	};
+
+	const handleProjectDelete = (event: CustomEvent<string>) => {
+		const projectsCopy = {
+			...projects
+		};
+
+		delete projectsCopy[event.detail];
+
+		projects = projectsCopy;
+
+		if (chosenProjectName === event.detail) {
+			chosenProjectName = projectNames[0] ?? 'Project 1';
+		}
+	}
 </script>
 
 {#await customNodesPromise}
@@ -61,6 +75,7 @@
 			on:change={handleChange}
 			on:newProject={handleNewProject}
 			on:projectChange={handleProjectChange}
+			on:projectDelete={handleProjectDelete}
 		/>
 	{/key}
 {/await}

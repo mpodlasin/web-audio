@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+    import Menu from "./Menu.svelte";
+    import Button from "./Button.svelte";
 	import Close from '../icons/Close_MD.svg?component';
+    import More from '../icons/More_Vertical.svg?component';
 	export let projects: string[];
 	export let open: boolean;
 	let dialog: HTMLDialogElement;
@@ -28,6 +31,20 @@
 	const handleChangeProject = (projectName: string) => () => {
 		disaptcher('projectChange', projectName);
 	};
+
+    let showMoreMenuForProject = ''
+
+    const handleMoreClick = (projectName: string) => (event: MouseEvent) => {
+        event.stopPropagation();
+
+        showMoreMenuForProject = projectName;
+    };
+
+    const handleDeleteProject = (projectName: string) => (event: MouseEvent) => {
+        event.stopPropagation();
+		disaptcher('projectDelete', projectName);
+        showMoreMenuForProject = '';
+	};
 </script>
 
 <dialog bind:this={dialog}>
@@ -39,6 +56,14 @@
 		{#each projects as project (project)}
 			<div class="project" on:click={handleChangeProject(project)} on:keydown={() => {}}>
 				{project}
+                <div class="more" on:click={handleMoreClick(project)} on:keydown={() => {}}><More /></div>
+                {#if showMoreMenuForProject === project}
+                <div class="more-menu">
+                    <Menu>
+                        <Button title="Delete" variant="danger" on:click={handleDeleteProject(project)} />
+                    </Menu>
+                </div>
+                {/if}
 			</div>
 		{/each}
 		<div class="add" on:click={handleNewProject} on:keydown={() => {}}>+</div>
@@ -81,6 +106,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+        position: relative;
 	}
 
 	.add {
@@ -100,4 +126,18 @@
 		right: 32px;
 		cursor: pointer;
 	}
+
+    .more {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+    }
+
+    .more-menu {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        transform: translateX(100%);
+        z-index: 10;
+    }
 </style>
