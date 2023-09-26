@@ -20,6 +20,14 @@
 	const handleClose = () => {
 		disaptcher('close');
 	};
+
+	const handleNewProject = () => {
+		disaptcher('newProject');
+	};
+
+	const handleChangeProject = (projectName: string) => () => {
+		disaptcher('projectChange', projectName);
+	};
 </script>
 
 <dialog bind:this={dialog}>
@@ -29,11 +37,11 @@
 	Projects
 	<div class="projects">
 		{#each projects as project (project)}
-			<div class="project">
+			<div class="project" on:click={handleChangeProject(project)} on:keydown={() => {}}>
 				{project}
 			</div>
 		{/each}
-		<div class="add">+</div>
+		<div class="add" on:click={handleNewProject} on:keydown={() => {}}>+</div>
 	</div>
 </dialog>
 

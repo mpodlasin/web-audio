@@ -14,10 +14,6 @@
 		addConnectionToParameter,
 		plugsEqual
 	} from '../audio/AudioCanvas';
-	import { oscillatorGainDestination } from '../examples/oscillator-gain-desination';
-	import { triggerEnvelopeOscillatorGainDestination } from '../examples/trigger-envelope-oscillator-gain-destination';
-	import { sequencerEnvelopeOscillatorGainDestination } from '../examples/sequencer-envelope-oscillator-gain-destination';
-	import { midiEnvelopeOscillatorGainDestination } from '../examples/midi-envelope-oscillator-gain-destination';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import Menu from './Menu.svelte';
 	import Button from './Button.svelte';
@@ -25,33 +21,20 @@
 	import { getLinesToDisplay } from '../ui/lines';
 	import { addDiff, addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
 	import ProjectsModal from './ProjectsModal.svelte';
+	import { createEventDispatcher } from 'svelte';
 
-	const audioGraphLocalStorageKey = 'audioGraph';
-
-	let chosenExample = 'empty';
-
-	const addRandomPositions = (audioGraph: SerializedAudioElements): SerializedAudioElements => {
-		const audioGraphWithPositions: SerializedAudioElements = {};
-
-		for (const [key, value] of Object.entries(audioGraph)) {
-			audioGraphWithPositions[key] = {
-				...value,
-				ui: {
-					position: {
-						x: Math.random() * 1000,
-						y: Math.random() * 1000
-					}
-				}
-			};
-		}
-
-		return audioGraphWithPositions;
-	};
+	export let chosenProjectName: string;
+	export let projectNames: string[];
+	export let initialAudioCanvas: SerializedAudioElements;
 
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
 	let audioGraphHistory: SerializedAudioElements[] = [];
 	let dragStartPosition: { x: number; y: number } | null = null;
+
+	$: {
+		audioGraphHistory = [{}, initialAudioCanvas];
+	}
 
 	const handleDragCanvasStart = (event: MouseEvent) => {
 		dragStartPosition = {
@@ -100,44 +83,13 @@
 		};
 	};
 
-	$: {
-		if (audioGraphHistory.length === 0) {
-			const audioGraphWithPositionFromLocalStorage =
-				localStorage.getItem(audioGraphLocalStorageKey);
-
-			if (audioGraphWithPositionFromLocalStorage) {
-				const audioGraphWithPositions = JSON.parse(audioGraphWithPositionFromLocalStorage);
-				audioGraphHistory = [audioGraphWithPositions];
-			} else {
-				switch (chosenExample) {
-					case 'empty':
-						audioGraphHistory = [{}, {}];
-						break;
-					case 'oscillator-gain-destination':
-						audioGraphHistory = [{}, addRandomPositions(oscillatorGainDestination)];
-						break;
-					case 'trigger-envelope-oscillator-gain-destination':
-						audioGraphHistory = [{}, addRandomPositions(triggerEnvelopeOscillatorGainDestination)];
-						break;
-					case 'sequencer-envelope-oscillator-gain-destination':
-						audioGraphHistory = [
-							{},
-							addRandomPositions(sequencerEnvelopeOscillatorGainDestination)
-						];
-						break;
-					case 'midi-envelope-oscillator-gain-destination':
-						audioGraphHistory = [{}, addRandomPositions(midiEnvelopeOscillatorGainDestination)];
-						break;
-				}
-			}
-		}
-	}
-
 	$: previousAudioGraphWithPositions = audioGraphHistory.at(-2) ?? {};
 	$: audioGraphWithPositions = audioGraphHistory.at(-1) ?? {};
 
+	const dispatcher = createEventDispatcher();
+
 	$: {
-		localStorage.setItem(audioGraphLocalStorageKey, JSON.stringify(audioGraphWithPositions));
+		dispatcher('change', audioGraphWithPositions);
 	}
 
 	let plugPositions: PlugPositions = {};
@@ -385,6 +337,16 @@
 	const handleCloseProjectsModal = () => {
 		showProjectsModal = false;
 	};
+
+	const handleNewProject = () => {
+		showProjectsModal = false;
+		dispatcher('newProject');
+	};
+
+	const handleProjectChange = (event: CustomEvent<string>) => {
+		showProjectsModal = false;
+		dispatcher('projectChange', event.detail);
+	};
 </script>
 
 <div
@@ -394,15 +356,17 @@
 	on:mouseup={handleDragCanvasEnd}
 >
 	<ProjectHeader
-		projectName="Project 1"
+		projectName={chosenProjectName}
 		{playing}
 		on:playChange={handlePlayChange}
 		on:projectNameClick={handleProjectNameClick}
 	/>
 	<ProjectsModal
 		open={showProjectsModal}
-		projects={['Nice project', 'Another good project']}
+		projects={projectNames}
 		on:close={handleCloseProjectsModal}
+		on:newProject={handleNewProject}
+		on:projectChange={handleProjectChange}
 	/>
 	<div class="audio-canvas" on:contextmenu={handleCanvasLeftClick} on:mousemove={handleLineDrag}>
 		{#each Object.entries(audioGraphWithPositions) as [id, node] (id)}
