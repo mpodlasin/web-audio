@@ -1,9 +1,10 @@
 import { allowedSerializedAudioElementStaticDefinitions } from './staticDefinitions';
-import type { AllowedSerializedAudioElements, SerializedAudioElements } from './types';
+import type { AllowedSerializedAudioElements, Position, SerializedAudioElements } from './types';
 
 export const addNode = <S extends SerializedAudioElements>(
 	audioGraph: S,
-	type: AllowedSerializedAudioElements['type']
+	type: AllowedSerializedAudioElements['type'],
+	position?: Position
 ): S => {
 	const idsSoFar = Object.keys(audioGraph);
 
@@ -19,6 +20,9 @@ export const addNode = <S extends SerializedAudioElements>(
 		[nextId]: {
 			type,
 			inputs: [],
+			ui: {
+				position
+			},
 			parameters: Object.fromEntries(
 				Object.entries(staticNodeDefinition.parameters).map(([key, value]) => [
 					key,

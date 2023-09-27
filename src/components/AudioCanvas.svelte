@@ -181,7 +181,10 @@
 		(type: keyof typeof allowedSerializedAudioElementStaticDefinitions) => (event: MouseEvent) => {
 			event.preventDefault();
 
-			audioGraphHistory = [...audioGraphHistory, addNode(audioGraphWithPositions, type)];
+			audioGraphHistory = [
+				...audioGraphHistory,
+				addNode(audioGraphWithPositions, type, menuPosition)
+			];
 		};
 
 	/* -------------------------------------------------------------------------- */
