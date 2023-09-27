@@ -84,7 +84,10 @@
 
 		const newProjects = {
 			...projects,
-			[newName]: project
+			[newName]: {
+				...project,
+				name: newName
+			}
 		};
 
 		delete newProjects[oldName];

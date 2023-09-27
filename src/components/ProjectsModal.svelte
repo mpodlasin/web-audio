@@ -29,6 +29,8 @@
 	};
 
 	const handleChangeProject = (projectName: string) => () => {
+		if (showMoreMenuForProject || renameModeForProject) return;
+
 		disaptcher('projectChange', projectName);
 	};
 
@@ -61,6 +63,15 @@
 		showMoreMenuForProject = '';
 		renamedProject = projectName;
 		renameModeForProject = projectName;
+
+		window.addEventListener('click', stopRenamingProject);
+	};
+
+	const stopRenamingProject = () => {
+		renamedProject = '';
+		renameModeForProject = '';
+
+		window.removeEventListener('click', stopRenamingProject);
 	};
 
 	const confirmNameChange = () => {
@@ -107,7 +118,9 @@
 				{/if}
 			</div>
 		{/each}
-		<div class="add" on:click={handleNewProject} on:keydown={() => {}}>+</div>
+		<div class="add" on:click={handleNewProject} on:keydown={() => {}}>
+			<div class="plus">+</div>
+		</div>
 	</div>
 </dialog>
 
@@ -130,7 +143,7 @@
 
 	.projects {
 		display: grid;
-		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-columns: repeat(3, 200px);
 		gap: 16px;
 		padding: 32px;
 	}
@@ -139,14 +152,15 @@
 	.add {
 		border: 1px solid var(--neutral-500);
 		border-radius: 8px;
-		padding: 48px;
+		padding: 8px;
 		transition: background-color 0.2s;
-	}
-
-	.project {
+		height: 100px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+	}
+
+	.project {
 		position: relative;
 	}
 
@@ -180,5 +194,18 @@
 		right: 14px;
 		transform: translateX(100%);
 		z-index: 10;
+	}
+
+	.plus {
+		transform: translateY(-3px);
+	}
+
+	input {
+		border: 1px solid var(--neutral-500);
+		background-color: var(--neutral-900);
+		outline: none;
+		color: var(--neutral-300);
+		padding: 4px 8px;
+		border-radius: 4px;
 	}
 </style>
