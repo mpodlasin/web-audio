@@ -28,7 +28,7 @@ export class Trigger extends AudioWorkletProcessor {
 		const tempoInBPM = parameters.tempoInBPM;
 		const running = parameters.running;
 
-		if (!tempoInBPM) return;
+		if (!tempoInBPM) return true;
 
 		if (!running || running[0] === 0) return true;
 
@@ -51,19 +51,28 @@ export class Trigger extends AudioWorkletProcessor {
 		return true;
 	}
 
+	lastCycleEnd = 0;
+	lastOutput = -1;
+
 	private createOutputs(out: Float32Array, tempoInBPM: Float32Array) {
 		for (let i = 0; i < out.length; i++) {
 			const tempoPerSecond = (tempoInBPM[i] ?? 0) / 60;
 			const durationInSeconds = 1 / tempoPerSecond;
-			const cycleStart = currentTime % durationInSeconds;
+			const cycleStart = (currentTime - this.lastCycleEnd) % durationInSeconds;
 			const sampleLengthInSeconds = 1 / sampleRate;
 
 			const now = cycleStart + i * sampleLengthInSeconds;
 
 			if (now <= durationInSeconds / 2) {
 				out[i] = 1;
+				if (this.lastOutput === 0) {
+					this.lastCycleEnd = currentTime;
+				}
+
+				this.lastOutput = 1;
 			} else {
 				out[i] = 0;
+				this.lastOutput = 0;
 			}
 		}
 	}
