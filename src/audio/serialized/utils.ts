@@ -179,9 +179,6 @@ export const addConnectionToParameter = <S extends SerializedAudioElements>(
 			throw new Error(`Audio element with id ${endingPlug.nodeId} not found`);
 		}
 
-		const startingNodeStaticDefinition =
-			allowedSerializedAudioElementStaticDefinitions[startingNode.type];
-
 		const parameter = endingNode.parameters?.[endingPlug.id];
 
 		newAudioGraph = {
