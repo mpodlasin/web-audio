@@ -16,6 +16,12 @@ export class Envelope extends AudioWorkletProcessor {
 				defaultValue: 0,
 				minValue: 0,
 				maxValue: 1000
+			},
+			{
+				name: 'running',
+				defalueValue: 0,
+				minValue: 0,
+				maxValue: 1
 			}
 		];
 	}
@@ -23,6 +29,8 @@ export class Envelope extends AudioWorkletProcessor {
 	lastValueOfPreviousProcess = 0;
 	finishEnvelopeAt: number | null = null;
 	envelopeStartedAt: number | null = null;
+
+	processedSamples = 0;
 
 	process(
 		inputList: Float32Array[][],
@@ -96,15 +104,13 @@ export class Envelope extends AudioWorkletProcessor {
 				outputList.forEach((output) => {
 					output.forEach((out) => {
 						if (!this.envelopeStartedAt) return;
-						let timeAtSample = currentTime;
 
-						for (let i = 0; i < out.length - 1; i++) {
+						for (let i = 0; i < out.length; i++) {
+							const timeAtSample = (this.processedSamples + i + 1) / numberOfSamplesPerSecond;
 							out[i] = Math.max(
 								0,
 								Math.min((timeAtSample - this.envelopeStartedAt) / attackInSeconds, 1)
 							);
-
-							timeAtSample += out.length / numberOfSamplesPerSecond;
 						}
 					});
 				});
@@ -121,14 +127,13 @@ export class Envelope extends AudioWorkletProcessor {
 				outputList.forEach((output) => {
 					output.forEach((out) => {
 						if (!this.finishEnvelopeAt) return;
-						let timeAtSample = currentTime;
-						for (let i = 0; i < out.length - 1; i++) {
+
+						for (let i = 0; i < out.length; i++) {
+							const timeAtSample = (this.processedSamples + i + 1) / numberOfSamplesPerSecond;
 							out[i] = Math.max(
 								0,
 								Math.min((this.finishEnvelopeAt - timeAtSample) / releaseInSeconds, 1)
 							);
-
-							timeAtSample += out.length / numberOfSamplesPerSecond;
 						}
 					});
 				});
@@ -136,6 +141,8 @@ export class Envelope extends AudioWorkletProcessor {
 		} else {
 			this.finishEnvelopeAt = null;
 		}
+
+		this.processedSamples += 128;
 
 		return true;
 	}
@@ -160,4 +167,5 @@ declare const AudioWorkletProcessor: {
 declare const registerProcessor: (name: string, value: object) => void;
 
 declare const currentTime: number;
+declare const currentFrame: number;
 declare const sampleRate: number;
