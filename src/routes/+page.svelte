@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { CustomAudioNodeWithWebApiAudioScheduledSourceNode } from '../audio/initialized';
 	import type { SerializedAudioElements } from '../audio/serialized';
 	import { loadCustomNodes } from '../audio/web-audio/utils';
 	import AudioCanvas from '../components/AudioCanvas.svelte';
+	import { createProject, type Projects } from '../ui/project';
 
 	const customNodesPromise = loadCustomNodes();
 
@@ -10,15 +10,16 @@
 
 	const projectsString = localStorage.getItem(audioGraphLocalStorageKey);
 
-	let projects = (
+	let projects: Projects =
 		projectsString !== null
 			? JSON.parse(projectsString)
 			: {
-					'Project 1': {}
-			  }
-	) as { [name: string]: SerializedAudioElements };
+					'Project 1': createProject('Project 1')
+			  };
 
-	$: projectNames = Object.keys(projects);
+	$: projectNames = Object.values(projects)
+		.sort((a, b) => b.lastChanged.valueOf() - a.lastChanged.valueOf())
+		.map((project) => project.name);
 
 	let chosenProjectName = '';
 
@@ -35,14 +36,25 @@
 	}
 
 	const handleChange = (event: CustomEvent<SerializedAudioElements>) => {
+		if (!chosenProject) return;
+
 		projects = {
 			...projects,
-			[chosenProjectName]: event.detail
+			[chosenProjectName]: {
+				...chosenProject,
+				lastChanged: new Date(Date.now()),
+				audioCanvas: event.detail
+			}
 		};
 	};
 
 	const handleNewProject = () => {
 		chosenProjectName = `Project ${projectNames.length + 1}`;
+
+		projects = {
+			...projects,
+			[chosenProjectName]: createProject(chosenProjectName)
+		};
 	};
 
 	const handleProjectChange = (event: CustomEvent<string>) => {
@@ -88,16 +100,18 @@
 {#await customNodesPromise}
 	Loading...
 {:then}
-	{#key chosenProjectName}
-		<AudioCanvas
-			{projectNames}
-			{chosenProjectName}
-			initialAudioCanvas={chosenProject ?? {}}
-			on:change={handleChange}
-			on:newProject={handleNewProject}
-			on:projectChange={handleProjectChange}
-			on:projectDelete={handleProjectDelete}
-			on:projectNameChange={handleProjectNameChange}
-		/>
-	{/key}
+	{#if chosenProject !== undefined}
+		{#key chosenProjectName}
+			<AudioCanvas
+				{projectNames}
+				{chosenProjectName}
+				project={chosenProject}
+				on:change={handleChange}
+				on:newProject={handleNewProject}
+				on:projectChange={handleProjectChange}
+				on:projectDelete={handleProjectDelete}
+				on:projectNameChange={handleProjectNameChange}
+			/>
+		{/key}
+	{/if}
 {/await}

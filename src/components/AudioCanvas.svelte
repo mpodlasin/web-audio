@@ -22,10 +22,13 @@
 	import { addDiff, addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
 	import ProjectsModal from './ProjectsModal.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import type { Project } from '../ui/project';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
-	export let initialAudioCanvas: SerializedAudioElements;
+	export let project: Project;
+
+	let initialAudioCanvas = project.audioCanvas;
 
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
