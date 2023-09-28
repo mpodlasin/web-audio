@@ -28,12 +28,7 @@ export const addNode = <S extends SerializedAudioElements>(
 					key,
 					{ base: value.defaultValue, inputs: [] }
 				])
-			),
-			...(type === 'oscillator'
-				? {
-						oscillatorType: 'sine'
-				  }
-				: {})
+			)
 		}
 	};
 };

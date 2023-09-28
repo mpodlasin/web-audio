@@ -12,7 +12,8 @@
 		removeConnection,
 		removeNode,
 		addConnectionToParameter,
-		plugsEqual
+		plugsEqual,
+		nodeTypes
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import Menu from './Menu.svelte';
@@ -440,14 +441,12 @@
 		{#if showMenu && menuKind === 'canvas'}
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
 				<Menu>
-					<Button on:click={handleCreateElementClick('oscillator')} title="Oscillator" />
-					<Button on:click={handleCreateElementClick('gain')} title="Gain" />
-					<Button on:click={handleCreateElementClick('trigger')} title="Trigger" />
-					<Button on:click={handleCreateElementClick('sequencer')} title="Sequencer" />
-					<Button on:click={handleCreateElementClick('midi')} title="MIDI" />
-					<Button on:click={handleCreateElementClick('envelope')} title="Envelope" />
-					<Button on:click={handleCreateElementClick('oscilloscope')} title="Oscilloscope" />
-					<Button on:click={handleCreateElementClick('destination')} title="Destination" />
+					{#each nodeTypes as nodeType (nodeType)}
+						<Button
+							on:click={handleCreateElementClick(nodeType)}
+							title={nodeType.replaceAll('-', ' ')}
+						/>
+					{/each}
 				</Menu>
 			</div>
 		{/if}

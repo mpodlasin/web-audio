@@ -86,7 +86,7 @@
 </script>
 
 <div class="node" bind:this={element}>
-	<div class="header">{node.type}</div>
+	<div class="header">{node.type.replaceAll('-', ' ')}</div>
 	<div class="parameters">
 		{#each parameters as nodeParameter (nodeParameter[0])}
 			<Knob

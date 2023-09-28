@@ -59,10 +59,34 @@ export class CustomAudioNodeWithWebApiAudioScheduledSourceNode<T extends AudioSc
 	}
 }
 
-export class CustomOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
-	constructor(oscillatorType: OscillatorType) {
+export class CustomSineOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
+	constructor() {
 		const oscillator = globalContext.createOscillator();
-		oscillator.type = oscillatorType;
+		oscillator.type = 'sine';
+		super(oscillator);
+	}
+}
+
+export class CustomSawOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
+	constructor() {
+		const oscillator = globalContext.createOscillator();
+		oscillator.type = 'sawtooth';
+		super(oscillator);
+	}
+}
+
+export class CustomSquareOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
+	constructor() {
+		const oscillator = globalContext.createOscillator();
+		oscillator.type = 'square';
+		super(oscillator);
+	}
+}
+
+export class CustomTriangleOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
+	constructor() {
+		const oscillator = globalContext.createOscillator();
+		oscillator.type = 'triangle';
 		super(oscillator);
 	}
 }

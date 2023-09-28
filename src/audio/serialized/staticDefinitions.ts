@@ -1,5 +1,24 @@
 import type { AllowedSerializedAudioElements } from './types';
 
+const oscillatorDefinition = {
+	inputs: [],
+	outputs: ['audio'],
+	parameters: {
+		frequency: {
+			minValue: 0,
+			maxValue: 10000,
+			unit: 'Hz',
+			defaultValue: 440
+		},
+		detune: {
+			minValue: -4800,
+			maxValue: 4800,
+			unit: 'cents',
+			defaultValue: 0
+		}
+	}
+};
+
 export const allowedSerializedAudioElementStaticDefinitions: {
 	[key in AllowedSerializedAudioElements['type']]: {
 		inputs: string[];
@@ -19,24 +38,10 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		outputs: ['frequency', 'trigger'],
 		parameters: {}
 	},
-	oscillator: {
-		inputs: [],
-		outputs: ['audio'],
-		parameters: {
-			frequency: {
-				minValue: 0,
-				maxValue: 10000,
-				unit: 'Hz',
-				defaultValue: 440
-			},
-			detune: {
-				minValue: -4800,
-				maxValue: 4800,
-				unit: 'cents',
-				defaultValue: 0
-			}
-		}
-	},
+	'sine-oscillator': oscillatorDefinition,
+	'saw-oscillator': oscillatorDefinition,
+	'square-oscillator': oscillatorDefinition,
+	'triangle-oscillator': oscillatorDefinition,
 	gain: {
 		inputs: ['audio'],
 		outputs: ['audio'],
@@ -94,3 +99,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		parameters: {}
 	}
 };
+
+export const nodeTypes = Object.keys(
+	allowedSerializedAudioElementStaticDefinitions
+) as (keyof typeof allowedSerializedAudioElementStaticDefinitions)[];

@@ -4,15 +4,17 @@ import {
 	type SerializedAudioElementWithId,
 	type SerializedAudioElementsWithIds,
 	type SerializedAudioElement,
-	type SerializedOscillatorNode,
 	type SerializedSequencerNode,
 	type SerializedAudioElements,
 	type Inputs
 } from '../serialized';
 import {
 	CustomGainNode,
-	CustomOscillatorNode,
 	CustomOscilloscopeNode,
+	CustomSawOscillatorNode,
+	CustomSineOscillatorNode,
+	CustomSquareOscillatorNode,
+	CustomTriangleOscillatorNode,
 	DestinationNode,
 	EnvelopeNode,
 	MidiNode,
@@ -363,8 +365,14 @@ function createCustomAudioNode(
 	audioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
 ): CustomAudioNode {
 	switch (audioElement.type) {
-		case 'oscillator':
-			return new CustomOscillatorNode((audioElement as SerializedOscillatorNode).oscillatorType);
+		case 'sine-oscillator':
+			return new CustomSineOscillatorNode();
+		case 'saw-oscillator':
+			return new CustomSawOscillatorNode();
+		case 'square-oscillator':
+			return new CustomSquareOscillatorNode();
+		case 'triangle-oscillator':
+			return new CustomTriangleOscillatorNode();
 		case 'gain':
 			return new CustomGainNode();
 		case 'destination':
@@ -402,7 +410,12 @@ function addIdsToAudioElements(
 }
 
 function accessParameter(audioNode: CustomAudioNode, parameterName: string): AudioParam {
-	if (audioNode instanceof CustomOscillatorNode) {
+	if (
+		audioNode instanceof CustomSineOscillatorNode ||
+		audioNode instanceof CustomSawOscillatorNode ||
+		audioNode instanceof CustomSquareOscillatorNode ||
+		audioNode instanceof CustomTriangleOscillatorNode
+	) {
 		switch (parameterName) {
 			case 'frequency':
 				return audioNode.webApiNode.frequency;

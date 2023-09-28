@@ -43,12 +43,25 @@ export type SerializedAudioParameter = {
 	inputs: { id: string; output: string }[];
 };
 
-export type SerializedOscillatorNode = SerializedAudioElement<
-	'oscillator',
+export type SerializedSineOscillatorNode = SerializedAudioElement<
+	'sine-oscillator',
 	'frequency' | 'detune'
-> & {
-	oscillatorType: OscillatorType;
-};
+>;
+
+export type SerializedSawOscillatorNode = SerializedAudioElement<
+	'saw-oscillator',
+	'frequency' | 'detune'
+>;
+
+export type SerializedSquareOscillatorNode = SerializedAudioElement<
+	'square-oscillator',
+	'frequency' | 'detune'
+>;
+
+export type SerializedTriangleOscillatorNode = SerializedAudioElement<
+	'triangle-oscillator',
+	'frequency' | 'detune'
+>;
 
 export type SerializedGainNode = SerializedAudioElement<'gain', 'gain'>;
 
@@ -82,7 +95,10 @@ export type SerializedEnvelopeNode = SerializedAudioElement<'envelope', never> &
 export type SerializedOscilloscopeNode = SerializedAudioElement<'oscilloscope', never>;
 
 export type AllowedSerializedAudioElements =
-	| SerializedOscillatorNode
+	| SerializedSineOscillatorNode
+	| SerializedSawOscillatorNode
+	| SerializedTriangleOscillatorNode
+	| SerializedSquareOscillatorNode
 	| SerializedGainNode
 	| SerializedDestinationNode
 	| SerializedTriggerNode

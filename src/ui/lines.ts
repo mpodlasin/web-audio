@@ -17,7 +17,7 @@ export const getLinesToDisplay = (
 						if (typeof input === 'string') {
 							const staticNodeDefinition =
 								allowedSerializedAudioElementStaticDefinitions[
-									audioGraphWithPositions[input]?.type ?? 'oscillator'
+									audioGraphWithPositions[input]?.type ?? 'sine-oscillator'
 								];
 							return [
 								[input, staticNodeDefinition.outputs[0] as string],
