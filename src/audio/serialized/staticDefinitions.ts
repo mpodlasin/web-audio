@@ -104,11 +104,13 @@ export const nodeTypes = Object.keys(
 	allowedSerializedAudioElementStaticDefinitions
 ) as (keyof typeof allowedSerializedAudioElementStaticDefinitions)[];
 
-export const categorizedNodeTypes: { [category: string]: AllowedSerializedAudioElements['type'][]} = {
-	"oscillators": ["sine-oscillator", "saw-oscillator", "square-oscillator", "triangle-oscillator"],
-	"gain": ["gain"],
-	"envelope": ["envelope"],
-	"visualization": ["oscilloscope"],
-	"sequencer": ["sequencer"],
-	"io": ["destination", "midi"],
-}
+export const categorizedNodeTypes: {
+	[category: string]: AllowedSerializedAudioElements['type'][];
+} = {
+	oscillators: ['sine-oscillator', 'saw-oscillator', 'square-oscillator', 'triangle-oscillator'],
+	gain: ['gain'],
+	envelope: ['envelope'],
+	visualization: ['oscilloscope'],
+	sequencer: ['sequencer'],
+	io: ['destination', 'midi']
+};

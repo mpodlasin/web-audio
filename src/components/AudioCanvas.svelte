@@ -14,9 +14,7 @@
 		addConnectionToParameter,
 		plugsEqual,
 		nodeTypes,
-
 		type Position
-
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import Menu from './Menu.svelte';
@@ -28,6 +26,8 @@
 	import { createEventDispatcher } from 'svelte';
 	import type { Project } from '../ui/project';
 	import Page from '../routes/+page.svelte';
+	import { normalizedVector } from '../ui/vectors';
+	import Line from './Line.svelte';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
@@ -354,33 +354,6 @@
 		showProjectsModal = false;
 		dispatcher('projectChange', event.detail);
 	};
-
-	const vector = (positionA: Position, positionB: Position): Position => {
-		return {
-			x: positionB.x - positionA.x,
-			y: positionB.y - positionA.y,
-		};
-	}
-
-	const normalize = (position: Position): Position => {
-		const { x, y } = position;
-
-		const length = Math.sqrt(x*x + y*y);
-
-		return {
-			x: x / length,
-			y: y / length,
-		}
-	}
-
-	const normalizedVector = (positionA: Position, positionB: Position): Position => {
-		const vect = vector(positionA, positionB);
-
-		return normalize(vect);
-	}
-
-	const cutLineOverlayConstant = 9;
-
 </script>
 
 <div
@@ -424,21 +397,10 @@
 		{/each}
 		<svg width="100vw" height="100vh">
 			{#each linesToDisplay as line}
-				<line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} class="visible" />
-				<line
+				<Line
+					{line}
+					{lineMenuPlugs}
 					on:contextmenu={handleLineLeftClick(line.line[0], line.line[1])}
-					x1={line.from.x + normalizedVector(line.from, line.to).x * cutLineOverlayConstant}
-					y1={line.from.y + normalizedVector(line.from, line.to).y * cutLineOverlayConstant}
-					x2={line.to.x - normalizedVector(line.from, line.to).x * cutLineOverlayConstant}
-					y2={line.to.y - normalizedVector(line.from, line.to).y * cutLineOverlayConstant}
-					stroke="transparent"
-					stroke-width="7"
-					stroke-linecap="round"
-					class="invisible"
-					class:chosen={lineMenuPlugs
-						? plugsEqual(lineMenuPlugs[0], line.line[0]) &&
-						  plugsEqual(lineMenuPlugs[1], line.line[1])
-						: false}
 				/>
 			{/each}
 
@@ -498,21 +460,7 @@
 		pointer-events: none;
 	}
 
-	line {
-		pointer-events: all;
-	}
-
 	line.visible {
 		stroke: var(--neutral-300);
-	}
-
-	line.invisible {
-		transition: stroke 0.2s;
-		opacity: 0.5;
-	}
-
-	line.invisible:hover,
-	line.chosen {
-		stroke: var(--primary-500);
 	}
 </style>

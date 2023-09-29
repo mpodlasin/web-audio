@@ -1,13 +1,21 @@
 import {
 	allowedSerializedAudioElementStaticDefinitions,
+	type Plug,
+	type Position,
 	type SerializedAudioElements
 } from '../audio/serialized';
 import type { PlugPositions } from './plugPositions';
 
+export interface LineToDisplay {
+	line: readonly [Plug, Plug];
+	from: Position;
+	to: Position;
+}
+
 export const getLinesToDisplay = (
 	audioGraphWithPositions: SerializedAudioElements,
 	plugPositions: PlugPositions
-) => {
+): LineToDisplay[] => {
 	const lines = Object.entries(audioGraphWithPositions).reduce(
 		(acc: (readonly [readonly [string, string], readonly [string, string]])[], [id, node]) => {
 			const staticToDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
