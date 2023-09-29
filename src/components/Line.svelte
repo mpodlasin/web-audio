@@ -35,6 +35,7 @@
 
 	line.visible {
 		stroke: var(--neutral-300);
+        pointer-events: none;
 	}
 
     line.invisible {
