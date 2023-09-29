@@ -25,9 +25,9 @@ const filterDefinition = {
 	inputs: ['audio'],
 	outputs: ['audio'],
 	parameters: {
-		frequency: frequencyParameter,
-	},
-}
+		frequency: frequencyParameter
+	}
+};
 
 export const allowedSerializedAudioElementStaticDefinitions: {
 	[key in AllowedSerializedAudioElements['type']]: {
@@ -79,6 +79,11 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		parameters: {}
 	},
 	oscilloscope: {
+		inputs: ['audio'],
+		outputs: ['audio'],
+		parameters: {}
+	},
+	convolution: {
 		inputs: ['audio'],
 		outputs: ['audio'],
 		parameters: {}

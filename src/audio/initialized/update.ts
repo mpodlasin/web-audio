@@ -9,6 +9,7 @@ import {
 	type Inputs
 } from '../serialized';
 import {
+	CustomConvolutionNode,
 	CustomGainNode,
 	CustomLowpassFilterNode,
 	CustomOscilloscopeNode,
@@ -390,6 +391,8 @@ function createCustomAudioNode(
 			return new MidiNode();
 		case 'oscilloscope':
 			return new CustomOscilloscopeNode();
+		case 'convolution':
+			return new CustomConvolutionNode();
 	}
 }
 

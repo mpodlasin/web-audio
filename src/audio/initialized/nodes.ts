@@ -1,6 +1,7 @@
 import { globalContext } from '../GlobalContext';
 import type { SerializedSequencerNote } from '../serialized';
 import { settings } from '../settings';
+import { generateReverb } from '../web-audio/reverbGeneration';
 import {
 	isCustomAudioNodeWithWebApiNode,
 	type CustomAudioNode,
@@ -148,6 +149,26 @@ export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkl
 export class DestinationNode extends GenericCustomAudioNodeWithWebApiNode<AudioDestinationNode> {
 	constructor() {
 		super(globalContext.destination);
+	}
+}
+
+export class CustomConvolutionNode extends GenericCustomAudioNodeWithWebApiNode<ConvolverNode> {
+	static async fetchReverb(convolver: ConvolverNode) {
+		generateReverb(
+			{
+				sampleRate: 48000,
+				decayTime: 10
+			},
+			async (response) => {
+				convolver.buffer = response;
+			}
+		);
+	}
+
+	constructor() {
+		super(globalContext.createConvolver());
+
+		CustomConvolutionNode.fetchReverb(this.webApiNode);
 	}
 }
 
