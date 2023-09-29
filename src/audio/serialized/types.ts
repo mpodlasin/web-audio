@@ -63,6 +63,8 @@ export type SerializedTriangleOscillatorNode = SerializedAudioElement<
 	'frequency' | 'detune'
 >;
 
+export type SerializedLowpassFilterNode = SerializedAudioElement<'lowpass-filter', 'frequency'>;
+
 export type SerializedGainNode = SerializedAudioElement<'gain', 'gain'>;
 
 export type SerializedDestinationNode = SerializedAudioElement<'destination', never>;
@@ -99,6 +101,7 @@ export type AllowedSerializedAudioElements =
 	| SerializedSawOscillatorNode
 	| SerializedTriangleOscillatorNode
 	| SerializedSquareOscillatorNode
+	| SerializedLowpassFilterNode
 	| SerializedGainNode
 	| SerializedDestinationNode
 	| SerializedTriggerNode

@@ -91,6 +91,14 @@ export class CustomTriangleOscillatorNode extends CustomAudioNodeWithWebApiAudio
 	}
 }
 
+export class CustomLowpassFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
+	constructor() {
+		const filter = globalContext.createBiquadFilter();
+		filter.type = 'lowpass';
+		super(filter);
+	}
+}
+
 export class CustomGainNode extends GenericCustomAudioNodeWithWebApiNode<GainNode> {
 	constructor() {
 		super(globalContext.createGain());

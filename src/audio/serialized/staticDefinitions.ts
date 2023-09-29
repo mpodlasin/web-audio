@@ -21,6 +21,14 @@ const oscillatorDefinition = {
 	}
 };
 
+const filterDefinition = {
+	inputs: ['audio'],
+	outputs: ['audio'],
+	parameters: {
+		frequency: frequencyParameter,
+	},
+}
+
 export const allowedSerializedAudioElementStaticDefinitions: {
 	[key in AllowedSerializedAudioElements['type']]: {
 		inputs: string[];
@@ -53,6 +61,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	'saw-oscillator': oscillatorDefinition,
 	'square-oscillator': oscillatorDefinition,
 	'triangle-oscillator': oscillatorDefinition,
+	'lowpass-filter': filterDefinition,
 	gain: {
 		inputs: ['audio'],
 		outputs: ['audio'],

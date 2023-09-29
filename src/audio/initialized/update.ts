@@ -10,6 +10,7 @@ import {
 } from '../serialized';
 import {
 	CustomGainNode,
+	CustomLowpassFilterNode,
 	CustomOscilloscopeNode,
 	CustomSawOscillatorNode,
 	CustomSineOscillatorNode,
@@ -373,6 +374,8 @@ function createCustomAudioNode(
 			return new CustomSquareOscillatorNode();
 		case 'triangle-oscillator':
 			return new CustomTriangleOscillatorNode();
+		case 'lowpass-filter':
+			return new CustomLowpassFilterNode();
 		case 'gain':
 			return new CustomGainNode();
 		case 'destination':
@@ -414,6 +417,13 @@ function accessParameter(audioNode: CustomAudioNode, parameterName: string): Aud
 				return audioNode.webApiNode.frequency;
 			case 'detune':
 				return audioNode.webApiNode.detune;
+		}
+	}
+
+	if (audioNode instanceof CustomLowpassFilterNode) {
+		switch (parameterName) {
+			case 'frequency':
+				return audioNode.webApiNode.frequency;
 		}
 	}
 
