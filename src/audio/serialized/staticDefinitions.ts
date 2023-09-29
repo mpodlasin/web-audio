@@ -1,15 +1,17 @@
 import type { AllowedSerializedAudioElements } from './types';
 
+const frequencyParameter = {
+	minValue: 0,
+	maxValue: 10000,
+	unit: 'Hz',
+	defaultValue: 440
+};
+
 const oscillatorDefinition = {
 	inputs: [],
 	outputs: ['audio'],
 	parameters: {
-		frequency: {
-			minValue: 0,
-			maxValue: 10000,
-			unit: 'Hz',
-			defaultValue: 440
-		},
+		frequency: frequencyParameter,
 		detune: {
 			minValue: -4800,
 			maxValue: 4800,
@@ -34,9 +36,18 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	};
 } = {
 	sequencer: {
-		inputs: [],
-		outputs: ['frequency', 'trigger'],
-		parameters: {}
+		inputs: ['trigger'],
+		outputs: ['frequency'],
+		parameters: {
+			frequency1: frequencyParameter,
+			frequency2: frequencyParameter,
+			frequency3: frequencyParameter,
+			frequency4: frequencyParameter,
+			frequency5: frequencyParameter,
+			frequency6: frequencyParameter,
+			frequency7: frequencyParameter,
+			frequency8: frequencyParameter
+		}
 	},
 	'sine-oscillator': oscillatorDefinition,
 	'saw-oscillator': oscillatorDefinition,

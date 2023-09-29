@@ -598,8 +598,9 @@ describe('AudioCanvas', () => {
 			expect(audioNodeDatabase['1']).toBeDefined();
 			expect(audioNodeDatabase['2']).toBeDefined();
 
-			expect((audioNodeDatabase['2'] as SequencerNode).getFrequencyDestinations()).toHaveLength(1);
-			expect((audioNodeDatabase['2'] as SequencerNode).getTriggerDestinations()).toHaveLength(0);
+			expect((audioNodeDatabase['2'] as SequencerNode).webApiNode.connect).toHaveBeenCalledWith(
+				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).webApiNode.detune
+			);
 		});
 
 		it('removes sequencer connected to oscillator', () => {

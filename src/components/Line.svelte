@@ -29,16 +29,16 @@
 />
 
 <style>
-    line {
+	line {
 		pointer-events: all;
 	}
 
 	line.visible {
 		stroke: var(--neutral-300);
-        pointer-events: none;
+		pointer-events: none;
 	}
 
-    line.invisible {
+	line.invisible {
 		transition: stroke 0.2s;
 		opacity: 0.5;
 	}

@@ -52,9 +52,11 @@ export const audioContextMock = {
 
 export class AudioWorkletNodeMock {
 	public connect: jest.Mock;
+	public disconnect: jest.Mock;
 
 	constructor() {
 		this.connect = jest.fn();
+		this.disconnect = jest.fn();
 	}
 }
 

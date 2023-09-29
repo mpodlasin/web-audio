@@ -379,17 +379,10 @@ function createCustomAudioNode(
 			return new DestinationNode();
 		case 'trigger':
 			return new TriggerNode();
-		case 'envelope': {
+		case 'envelope':
 			return new EnvelopeNode();
-		}
-		case 'sequencer': {
-			const sequencerNode = audioElement as SerializedSequencerNode;
-			return new SequencerNode(
-				sequencerNode.tempoInBpm,
-				sequencerNode.notes,
-				sequencerNode.loopLength
-			);
-		}
+		case 'sequencer':
+			return new SequencerNode();
 		case 'midi':
 			return new MidiNode();
 		case 'oscilloscope':
@@ -431,7 +424,11 @@ function accessParameter(audioNode: CustomAudioNode, parameterName: string): Aud
 		}
 	}
 
-	if (audioNode instanceof EnvelopeNode || audioNode instanceof TriggerNode) {
+	if (
+		audioNode instanceof EnvelopeNode ||
+		audioNode instanceof TriggerNode ||
+		audioNode instanceof SequencerNode
+	) {
 		const param = audioNode.webApiNode.parameters.get(parameterName);
 
 		if (param) return param;
