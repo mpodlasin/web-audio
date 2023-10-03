@@ -67,13 +67,15 @@ export type SerializedLowpassFilterNode = SerializedAudioElement<'lowpass-filter
 
 export type SerializedGainNode = SerializedAudioElement<'gain', 'gain'>;
 
-export type SerializedMultiplyNode = SerializedAudioElement<'multiply', 'factor'>
+export type SerializedMultiplyNode = SerializedAudioElement<'multiply', 'factor'>;
 
 export type SerializedDestinationNode = SerializedAudioElement<'destination', never>;
 
 export type SerializedTriggerNode = SerializedAudioElement<'trigger', never> & {
 	tempoInBpm: number;
 };
+
+export type SerializedPanNode = SerializedAudioElement<'pan', 'pan'>;
 
 export type SerializedSequencerNode = SerializedAudioElement<'sequencer', never> & {
 	tempoInBpm: number;
@@ -120,4 +122,5 @@ export type AllowedSerializedAudioElements =
 	| SerializedConvolutionNode
 	| SerializedDelayNode
 	| SerializedPitchQuantizerNode
-	| SerializedMultiplyNode;
+	| SerializedMultiplyNode
+	| SerializedPanNode;

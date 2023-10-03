@@ -104,7 +104,18 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			factor: {
 				minValue: 0,
 				maxValue: 10000,
-				defaultValue: 1,
+				defaultValue: 1
+			}
+		}
+	},
+	pan: {
+		inputs: ['audio'],
+		outputs: ['audio'],
+		parameters: {
+			pan: {
+				minValue: -1,
+				maxValue: 1,
+				defaultValue: 0
 			}
 		}
 	},

@@ -14,6 +14,7 @@ import {
 	CustomLowpassFilterNode,
 	CustomMultiplyNode,
 	CustomOscilloscopeNode,
+	CustomPanNode,
 	CustomSawOscillatorNode,
 	CustomSineOscillatorNode,
 	CustomSquareOscillatorNode,
@@ -401,6 +402,8 @@ function createCustomAudioNode(
 			return new CustomDelayNode();
 		case 'pitch-quantizer':
 			return new PitchQuantizerNode();
+		case 'pan':
+			return new CustomPanNode();
 	}
 }
 
@@ -428,6 +431,13 @@ function accessParameter(audioNode: CustomAudioNode, parameterName: string): Aud
 				return audioNode.webApiNode.frequency;
 			case 'detune':
 				return audioNode.webApiNode.detune;
+		}
+	}
+
+	if (audioNode instanceof CustomPanNode) {
+		switch (parameterName) {
+			case 'pan':
+				return audioNode.webApiNode.pan;
 		}
 	}
 

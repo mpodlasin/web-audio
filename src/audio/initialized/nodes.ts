@@ -92,6 +92,12 @@ export class CustomTriangleOscillatorNode extends CustomAudioNodeWithWebApiAudio
 	}
 }
 
+export class CustomPanNode extends GenericCustomAudioNodeWithWebApiNode<StereoPannerNode> {
+	constructor() {
+		super(globalContext.createStereoPanner());
+	}
+}
+
 export class CustomLowpassFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
 	constructor() {
 		const filter = globalContext.createBiquadFilter();
