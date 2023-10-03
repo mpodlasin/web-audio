@@ -66,13 +66,21 @@
 <div class="wrapper">
 	<div class="title">{parameterName}</div>
 	<div
-		class="knob"
-		on:mousedown={handleMouseDown}
-		on:mouseup={handleMouseUp}
-		style="transform: rotate({angle}deg)"
+		class="knob-wrapper"
+		style="background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from -90deg, var(--primary-500) {((angle +
+			90) /
+			180) *
+			50}%, var(--neutral-900) 0);"
 	>
-		<div class="knob-pointer" />
-		<div class:visible={isControlled} class="controlled-knob-circle" bind:this={knob} />
+		<div
+			class="knob"
+			on:mousedown={handleMouseDown}
+			on:mouseup={handleMouseUp}
+			style="transform: rotate({angle}deg)"
+		>
+			<div class="knob-pointer" />
+			<div class:visible={isControlled} class="controlled-knob-circle" bind:this={knob} />
+		</div>
 	</div>
 	{#if numberParameter !== null}
 		<div class="value">
@@ -93,6 +101,7 @@
 		gap: 16px;
 		min-width: 80px;
 	}
+
 	.knob {
 		width: 35px;
 		height: 35px;
@@ -100,6 +109,15 @@
 		background-color: var(--neutral-500);
 		border: 2px solid var(--neutral-300);
 		position: relative;
+	}
+
+	.knob-wrapper {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 50px;
+		height: 50px;
+		border-radius: 50%;
 	}
 
 	.knob-pointer {
