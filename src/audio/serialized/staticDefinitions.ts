@@ -97,6 +97,17 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			}
 		}
 	},
+	multiply: {
+		inputs: ['audio'],
+		outputs: ['audio'],
+		parameters: {
+			factor: {
+				minValue: 0,
+				maxValue: 10000,
+				defaultValue: 1,
+			}
+		}
+	},
 	delay: {
 		inputs: ['audio'],
 		outputs: ['audio'],

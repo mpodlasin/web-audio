@@ -12,6 +12,7 @@ import {
 	CustomDelayNode,
 	CustomGainNode,
 	CustomLowpassFilterNode,
+	CustomMultiplyNode,
 	CustomOscilloscopeNode,
 	CustomSawOscillatorNode,
 	CustomSineOscillatorNode,
@@ -380,6 +381,8 @@ function createCustomAudioNode(
 			return new CustomLowpassFilterNode();
 		case 'gain':
 			return new CustomGainNode();
+		case 'multiply':
+			return new CustomMultiplyNode();
 		case 'destination':
 			return new DestinationNode();
 		case 'trigger':
@@ -425,6 +428,13 @@ function accessParameter(audioNode: CustomAudioNode, parameterName: string): Aud
 				return audioNode.webApiNode.frequency;
 			case 'detune':
 				return audioNode.webApiNode.detune;
+		}
+	}
+
+	if (audioNode instanceof CustomMultiplyNode) {
+		switch (parameterName) {
+			case 'factor':
+				return audioNode.webApiNode.gain;
 		}
 	}
 

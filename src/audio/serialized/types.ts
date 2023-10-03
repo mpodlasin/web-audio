@@ -67,6 +67,8 @@ export type SerializedLowpassFilterNode = SerializedAudioElement<'lowpass-filter
 
 export type SerializedGainNode = SerializedAudioElement<'gain', 'gain'>;
 
+export type SerializedMultiplyNode = SerializedAudioElement<'multiply', 'factor'>
+
 export type SerializedDestinationNode = SerializedAudioElement<'destination', never>;
 
 export type SerializedTriggerNode = SerializedAudioElement<'trigger', never> & {
@@ -117,4 +119,5 @@ export type AllowedSerializedAudioElements =
 	| SerializedOscilloscopeNode
 	| SerializedConvolutionNode
 	| SerializedDelayNode
-	| SerializedPitchQuantizerNode;
+	| SerializedPitchQuantizerNode
+	| SerializedMultiplyNode;
