@@ -156,7 +156,7 @@ export class CustomConvolutionNode extends GenericCustomAudioNodeWithWebApiNode<
 	static async fetchReverb(convolver: ConvolverNode) {
 		generateReverb(
 			{
-				sampleRate: 48000,
+				sampleRate: settings.sampleRate,
 				decayTime: 10
 			},
 			async (response) => {

@@ -1,1 +1,5 @@
-export const globalContext = new AudioContext();
+import { settings } from "./settings";
+
+export const globalContext = new AudioContext({
+    sampleRate: settings.sampleRate,
+});
