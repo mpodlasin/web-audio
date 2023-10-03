@@ -7,6 +7,12 @@ const frequencyParameter = {
 	defaultValue: 440
 };
 
+const buttonParameter = {
+	minValue: 0,
+	maxValue: 1,
+	defaultValue: 0
+};
+
 const oscillatorDefinition = {
 	inputs: [],
 	outputs: ['audio'],
@@ -57,6 +63,24 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			frequency8: frequencyParameter
 		}
 	},
+	'pitch-quantizer': {
+		inputs: ['frequency'],
+		outputs: ['frequency'],
+		parameters: {
+			A: buttonParameter,
+			'A#': buttonParameter,
+			B: buttonParameter,
+			C: buttonParameter,
+			'C#': buttonParameter,
+			D: buttonParameter,
+			'D#': buttonParameter,
+			E: buttonParameter,
+			F: buttonParameter,
+			'F#': buttonParameter,
+			G: buttonParameter,
+			'G#': buttonParameter
+		}
+	},
 	'sine-oscillator': oscillatorDefinition,
 	'saw-oscillator': oscillatorDefinition,
 	'square-oscillator': oscillatorDefinition,
@@ -80,7 +104,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			delayTime: {
 				minValue: 0,
 				maxValue: 1,
-				defaultValue: 0,
+				defaultValue: 0
 			}
 		}
 	},

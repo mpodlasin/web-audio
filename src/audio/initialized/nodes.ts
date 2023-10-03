@@ -124,6 +124,12 @@ export class SequencerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWor
 	}
 }
 
+export class PitchQuantizerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	constructor() {
+		super(new AudioWorkletNode(globalContext, 'pitch-quantizer'));
+	}
+}
+
 export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor() {
 		super(new AudioWorkletNode(globalContext, 'trigger'));

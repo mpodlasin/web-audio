@@ -100,6 +100,8 @@ export type SerializedConvolutionNode = SerializedAudioElement<'convolution', ne
 
 export type SerializedDelayNode = SerializedAudioElement<'delay', 'delayTime'>;
 
+export type SerializedPitchQuantizerNode = SerializedAudioElement<'pitch-quantizer', never>;
+
 export type AllowedSerializedAudioElements =
 	| SerializedSineOscillatorNode
 	| SerializedSawOscillatorNode
@@ -114,4 +116,5 @@ export type AllowedSerializedAudioElements =
 	| SerializedMidiNode
 	| SerializedOscilloscopeNode
 	| SerializedConvolutionNode
-	| SerializedDelayNode;
+	| SerializedDelayNode
+	| SerializedPitchQuantizerNode;

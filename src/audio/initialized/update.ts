@@ -4,7 +4,6 @@ import {
 	type SerializedAudioElementWithId,
 	type SerializedAudioElementsWithIds,
 	type SerializedAudioElement,
-	type SerializedSequencerNode,
 	type SerializedAudioElements,
 	type Inputs
 } from '../serialized';
@@ -21,6 +20,7 @@ import {
 	DestinationNode,
 	EnvelopeNode,
 	MidiNode,
+	PitchQuantizerNode,
 	SequencerNode,
 	TriggerNode
 } from './nodes';
@@ -396,6 +396,8 @@ function createCustomAudioNode(
 			return new CustomConvolutionNode();
 		case 'delay':
 			return new CustomDelayNode();
+		case 'pitch-quantizer':
+			return new PitchQuantizerNode();
 	}
 }
 
@@ -450,7 +452,8 @@ function accessParameter(audioNode: CustomAudioNode, parameterName: string): Aud
 	if (
 		audioNode instanceof EnvelopeNode ||
 		audioNode instanceof TriggerNode ||
-		audioNode instanceof SequencerNode
+		audioNode instanceof SequencerNode ||
+		audioNode instanceof PitchQuantizerNode
 	) {
 		const param = audioNode.webApiNode.parameters.get(parameterName);
 
