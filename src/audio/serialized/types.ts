@@ -98,6 +98,8 @@ export type SerializedOscilloscopeNode = SerializedAudioElement<'oscilloscope', 
 
 export type SerializedConvolutionNode = SerializedAudioElement<'convolution', never>;
 
+export type SerializedDelayNode = SerializedAudioElement<'delay', 'delayTime'>;
+
 export type AllowedSerializedAudioElements =
 	| SerializedSineOscillatorNode
 	| SerializedSawOscillatorNode
@@ -111,4 +113,5 @@ export type AllowedSerializedAudioElements =
 	| SerializedSequencerNode
 	| SerializedMidiNode
 	| SerializedOscilloscopeNode
-	| SerializedConvolutionNode;
+	| SerializedConvolutionNode
+	| SerializedDelayNode;

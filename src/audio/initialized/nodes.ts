@@ -159,7 +159,7 @@ export class CustomConvolutionNode extends GenericCustomAudioNodeWithWebApiNode<
 				sampleRate: settings.sampleRate,
 				decayTime: 10
 			},
-			async (response) => {
+			(response) => {
 				convolver.buffer = response;
 			}
 		);
@@ -169,6 +169,12 @@ export class CustomConvolutionNode extends GenericCustomAudioNodeWithWebApiNode<
 		super(globalContext.createConvolver());
 
 		CustomConvolutionNode.fetchReverb(this.webApiNode);
+	}
+}
+
+export class CustomDelayNode extends GenericCustomAudioNodeWithWebApiNode<DelayNode> {
+	constructor() {
+		super(globalContext.createDelay());
 	}
 }
 

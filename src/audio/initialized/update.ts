@@ -10,6 +10,7 @@ import {
 } from '../serialized';
 import {
 	CustomConvolutionNode,
+	CustomDelayNode,
 	CustomGainNode,
 	CustomLowpassFilterNode,
 	CustomOscilloscopeNode,
@@ -393,6 +394,8 @@ function createCustomAudioNode(
 			return new CustomOscilloscopeNode();
 		case 'convolution':
 			return new CustomConvolutionNode();
+		case 'delay':
+			return new CustomDelayNode();
 	}
 }
 
@@ -427,6 +430,13 @@ function accessParameter(audioNode: CustomAudioNode, parameterName: string): Aud
 		switch (parameterName) {
 			case 'frequency':
 				return audioNode.webApiNode.frequency;
+		}
+	}
+
+	if (audioNode instanceof CustomDelayNode) {
+		switch (parameterName) {
+			case 'delayTime':
+				return audioNode.webApiNode.delayTime;
 		}
 	}
 
