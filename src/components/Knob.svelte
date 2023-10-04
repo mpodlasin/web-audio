@@ -70,15 +70,15 @@
 	}
 
 	const bufferLength = audioParamAnalyser?.frequencyBinCount;
-	const dataArray = new Uint8Array(bufferLength ?? 0);
+	const dataArray = new Float32Array(bufferLength ?? 0);
 
-	let animatedValue = numberParameter;
+	let animatedValue = 0;
 
 	function animateAudioParam() {
 		if (audioParamAnalyser && isControlled) {
-			audioParamAnalyser.getByteTimeDomainData(dataArray);
+			audioParamAnalyser.getFloatTimeDomainData(dataArray);
 
-			animatedValue = ((dataArray[0] ?? 0) - 128) / 128;
+			animatedValue = dataArray[0] ?? 0;
 
 			requestAnimationFrame(animateAudioParam);
 		}
