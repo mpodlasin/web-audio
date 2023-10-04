@@ -106,6 +106,8 @@ export type SerializedDelayNode = SerializedAudioElement<'delay', 'delayTime'>;
 
 export type SerializedPitchQuantizerNode = SerializedAudioElement<'pitch-quantizer', never>;
 
+export type SerializedBipolarToUnipolar = SerializedAudioElement<'bipolar-to-unipolar', never>;
+
 export type AllowedSerializedAudioElements =
 	| SerializedSineOscillatorNode
 	| SerializedSawOscillatorNode
@@ -123,4 +125,5 @@ export type AllowedSerializedAudioElements =
 	| SerializedDelayNode
 	| SerializedPitchQuantizerNode
 	| SerializedMultiplyNode
-	| SerializedPanNode;
+	| SerializedPanNode
+	| SerializedBipolarToUnipolar;

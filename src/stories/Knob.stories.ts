@@ -25,7 +25,7 @@ export const Primary: Story = {
 		parameter: { base: 0.5, inputs: [] },
 		minValue: 0,
 		maxValue: 1,
-		audioParamAnalyser: undefined,
+		audioParamAnalyser: undefined
 	}
 };
 
@@ -35,6 +35,6 @@ export const Controlled: Story = {
 		parameter: { base: 0.5, inputs: [{ id: '1', output: 'frequency' }] },
 		minValue: 0,
 		maxValue: 1,
-		audioParamAnalyser: undefined,
+		audioParamAnalyser: undefined
 	}
 };

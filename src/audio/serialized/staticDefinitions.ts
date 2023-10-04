@@ -108,6 +108,11 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			}
 		}
 	},
+	'bipolar-to-unipolar': {
+		inputs: ['audio'],
+		outputs: ['audio'],
+		parameters: {}
+	},
 	pan: {
 		inputs: ['audio'],
 		outputs: ['audio'],

@@ -128,6 +128,12 @@ export class CustomPanNode extends GenericCustomAudioNodeWithWebApiNode<StereoPa
 	}
 }
 
+export class CustomBipolarToUnipolarNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	constructor() {
+		super(new AudioWorkletNode(globalContext, 'scaler'));
+	}
+}
+
 export class CustomLowpassFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
 	constructor() {
 		const filter = globalContext.createBiquadFilter();

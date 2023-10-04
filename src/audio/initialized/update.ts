@@ -8,6 +8,7 @@ import {
 	type Inputs
 } from '../serialized';
 import {
+	CustomBipolarToUnipolarNode,
 	CustomConvolutionNode,
 	CustomDelayNode,
 	CustomGainNode,
@@ -406,6 +407,8 @@ function createCustomAudioNode(
 			return new PitchQuantizerNode();
 		case 'pan':
 			return new CustomPanNode();
+		case 'bipolar-to-unipolar':
+			return new CustomBipolarToUnipolarNode();
 	}
 }
 
