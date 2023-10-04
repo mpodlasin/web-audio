@@ -33,14 +33,11 @@
 	$: chosenProject = projects[chosenProjectName];
 
 	$: {
-		console.log('saving to local storage');
 		localStorage.setItem(audioGraphLocalStorageKey, JSON.stringify(projects));
 	}
 
 	const handleChange = (event: CustomEvent<SerializedAudioElements>) => {
 		if (!chosenProject) return;
-
-		console.log('change', chosenProjectName);
 
 		projects = {
 			...projects,
