@@ -18,7 +18,8 @@
 			  };
 
 	$: projectNames = Object.values(projects)
-		.sort((a, b) => b.lastChanged.valueOf() - a.lastChanged.valueOf())
+		.slice()
+		.sort((a, b) => new Date(b.lastChanged).valueOf() - new Date(a.lastChanged).valueOf())
 		.map((project) => project.name);
 
 	let chosenProjectName = '';
@@ -32,17 +33,20 @@
 	$: chosenProject = projects[chosenProjectName];
 
 	$: {
+		console.log('saving to local storage');
 		localStorage.setItem(audioGraphLocalStorageKey, JSON.stringify(projects));
 	}
 
 	const handleChange = (event: CustomEvent<SerializedAudioElements>) => {
 		if (!chosenProject) return;
 
+		console.log('change', chosenProjectName);
+
 		projects = {
 			...projects,
 			[chosenProjectName]: {
 				...chosenProject,
-				lastChanged: new Date(Date.now()),
+				lastChanged: new Date(Date.now()).toISOString(),
 				audioCanvas: event.detail
 			}
 		};

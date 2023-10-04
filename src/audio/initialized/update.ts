@@ -21,6 +21,7 @@ import {
 	CustomTriangleOscillatorNode,
 	DestinationNode,
 	EnvelopeNode,
+	GenericCustomAudioNodeWithWebApiNode,
 	MidiNode,
 	PitchQuantizerNode,
 	SequencerNode,
@@ -30,7 +31,8 @@ import {
 	isCustomAudioScheduledSourceNode,
 	type CustomAudioNode,
 	isCustomAudioNodeWithWebApiNode,
-	type AudioNodeDatabase
+	type AudioNodeDatabase,
+	type CustomAudioParam
 } from './types';
 
 export const updateAudioCanvas = (
@@ -221,7 +223,7 @@ export const updateAudioCanvas = (
 			const removedInputNode = audioNodeDatabase[nodeId];
 
 			if (removedInputNode && audioElementNode) {
-				removedInputNode.disconnect(accessParameter(audioElementNode, parameterName));
+				removedInputNode.disconnect(audioElementNode.getParameter(parameterName));
 			}
 		});
 	});
@@ -264,7 +266,7 @@ function setParameterValue(
 	const parameterValue = audioElementA.parameters?.[parameterName];
 
 	if (audioNodeA !== undefined && parameterValue !== undefined) {
-		accessParameter(audioNodeA, parameterName).value = parameterValue.base;
+		audioNodeA.getParameter(parameterName).audioParam.value = parameterValue.base;
 	}
 }
 
@@ -295,7 +297,7 @@ function connectAudioElementsToParameter(
 
 			if (audioNodeA !== undefined && audioNodeB !== undefined) {
 				audioNodeB.connect(
-					accessParameter(audioNodeA, parameterName),
+					audioNodeA.getParameter(parameterName),
 					output ?? staticDefinitionAudioElementB.outputs[0]
 				);
 			}
@@ -419,63 +421,46 @@ function addIdsToAudioElements(
 	return audioElementsWithIds;
 }
 
-function accessParameter(audioNode: CustomAudioNode, parameterName: string): AudioParam {
-	if (
-		audioNode instanceof CustomSineOscillatorNode ||
-		audioNode instanceof CustomSawOscillatorNode ||
-		audioNode instanceof CustomSquareOscillatorNode ||
-		audioNode instanceof CustomTriangleOscillatorNode
-	) {
+export function accessParameter(audioNode: AudioNode, parameterName: string): AudioParam {
+	if (audioNode instanceof OscillatorNode) {
 		switch (parameterName) {
 			case 'frequency':
-				return audioNode.webApiNode.frequency;
+				return audioNode.frequency;
 			case 'detune':
-				return audioNode.webApiNode.detune;
+				return audioNode.detune;
 		}
 	}
 
-	if (audioNode instanceof CustomPanNode) {
+	if (audioNode instanceof StereoPannerNode) {
 		switch (parameterName) {
 			case 'pan':
-				return audioNode.webApiNode.pan;
+				return audioNode.pan;
 		}
 	}
 
-	if (audioNode instanceof CustomMultiplyNode) {
-		switch (parameterName) {
-			case 'factor':
-				return audioNode.webApiNode.gain;
-		}
-	}
-
-	if (audioNode instanceof CustomLowpassFilterNode) {
-		switch (parameterName) {
-			case 'frequency':
-				return audioNode.webApiNode.frequency;
-		}
-	}
-
-	if (audioNode instanceof CustomDelayNode) {
-		switch (parameterName) {
-			case 'delayTime':
-				return audioNode.webApiNode.delayTime;
-		}
-	}
-
-	if (audioNode instanceof CustomGainNode) {
+	if (audioNode instanceof GainNode) {
 		switch (parameterName) {
 			case 'gain':
-				return audioNode.webApiNode.gain;
+				return audioNode.gain;
 		}
 	}
 
-	if (
-		audioNode instanceof EnvelopeNode ||
-		audioNode instanceof TriggerNode ||
-		audioNode instanceof SequencerNode ||
-		audioNode instanceof PitchQuantizerNode
-	) {
-		const param = audioNode.webApiNode.parameters.get(parameterName);
+	if (audioNode instanceof BiquadFilterNode) {
+		switch (parameterName) {
+			case 'frequency':
+				return audioNode.frequency;
+		}
+	}
+
+	if (audioNode instanceof DelayNode) {
+		switch (parameterName) {
+			case 'delayTime':
+				return audioNode.delayTime;
+		}
+	}
+
+	if (audioNode instanceof AudioWorkletNode) {
+		const param = audioNode.parameters.get(parameterName);
 
 		if (param) return param;
 	}

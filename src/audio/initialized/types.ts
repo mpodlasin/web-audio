@@ -2,9 +2,35 @@ export type AudioNodeDatabase = {
 	[key: string]: CustomAudioNode;
 };
 
+export interface CustomAudioParam {
+	audioParam: AudioParam;
+	analyser: AnalyserNode;
+}
+
+export function isCustomAudioParam(
+	customAudioParam: unknown
+): customAudioParam is CustomAudioParam {
+	return (
+		typeof customAudioParam === 'object' &&
+		customAudioParam !== null &&
+		'audioParam' in customAudioParam &&
+		'analyser' in customAudioParam
+	);
+}
+
 export interface CustomAudioNode {
-	connect(destination: CustomAudioNode | AudioParam, output?: string): void;
-	disconnect(desination: CustomAudioNode | AudioParam, output?: string): void;
+	getParameter(parameterName: string): CustomAudioParam;
+	connect(destination: CustomAudioNode | AudioParam | CustomAudioParam, output?: string): void;
+	disconnect(desination: CustomAudioNode | AudioParam | CustomAudioParam, output?: string): void;
+}
+
+export function isCustomAudioNode(customAudioNode: unknown): customAudioNode is CustomAudioNode {
+	return (
+		typeof customAudioNode === 'object' &&
+		customAudioNode !== null &&
+		'connect' in customAudioNode &&
+		'disconnect' in customAudioNode
+	);
 }
 
 export interface CustomAudioScheduledSourceNode extends CustomAudioNode {

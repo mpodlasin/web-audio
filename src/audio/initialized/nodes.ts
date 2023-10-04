@@ -1,5 +1,4 @@
 import { globalContext } from '../GlobalContext';
-import type { SerializedSequencerNote } from '../serialized';
 import { settings } from '../settings';
 import { generateReverb } from '../web-audio/reverbGeneration';
 import {
@@ -7,43 +6,74 @@ import {
 	type CustomAudioNode,
 	type CustomAudioNodeWithWebApiNode,
 	type CustomAudioScheduledSourceNode,
-	isCustomAudioScheduledSourceNode
+	isCustomAudioScheduledSourceNode,
+	type CustomAudioParam,
+	isCustomAudioParam
 } from './types';
+import { accessParameter } from './update';
 
 export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 	implements CustomAudioNodeWithWebApiNode<T>
 {
 	readonly webApiNode: T;
-	private desinations: CustomAudioNode[] = [];
 
 	constructor(webApiNode: T) {
 		this.webApiNode = webApiNode;
 	}
 
-	connect(destination: CustomAudioNode | AudioParam): void {
+	private parameterAnalysers: { [parameterName: string]: AnalyserNode } = {};
+
+	getParameter(parameterName: string): CustomAudioParam {
+		if (!this.parameterAnalysers[parameterName]) {
+			this.parameterAnalysers[parameterName] = globalContext.createAnalyser();
+		}
+
+		const analyser = this.parameterAnalysers[parameterName];
+
+		if (!analyser) throw new Error();
+
+		return {
+			audioParam: accessParameter(this.webApiNode, parameterName),
+			analyser
+		};
+	}
+
+	connect(destination: CustomAudioNode | AudioParam | CustomAudioParam): void {
 		if (destination instanceof AudioParam) {
 			this.webApiNode.connect(destination);
+
+			return;
+		}
+
+		if (isCustomAudioParam(destination)) {
+			this.webApiNode.connect(destination.audioParam);
+			this.webApiNode.connect(destination.analyser);
+
 			return;
 		}
 
 		if (isCustomAudioNodeWithWebApiNode(destination)) {
 			this.webApiNode.connect(destination.webApiNode);
 		}
-
-		this.desinations.push(destination);
 	}
 
-	disconnect(destination: CustomAudioNode | AudioParam): void {
+	disconnect(destination: CustomAudioNode | AudioParam | CustomAudioParam): void {
 		if (destination instanceof AudioParam) {
 			this.webApiNode.disconnect(destination);
+
+			return;
+		}
+
+		if (isCustomAudioParam(destination)) {
+			this.webApiNode.disconnect(destination.audioParam);
+			this.webApiNode.disconnect(destination.analyser);
+
 			return;
 		}
 
 		if (isCustomAudioNodeWithWebApiNode(destination)) {
 			this.webApiNode.disconnect(destination.webApiNode);
 		}
-
-		this.desinations = this.desinations.filter((d) => d !== destination);
 	}
 }
 
@@ -115,6 +145,14 @@ export class CustomGainNode extends GenericCustomAudioNodeWithWebApiNode<GainNod
 export class CustomMultiplyNode extends GenericCustomAudioNodeWithWebApiNode<GainNode> {
 	constructor() {
 		super(globalContext.createGain());
+	}
+
+	getParameter(parameterName: string): CustomAudioParam {
+		if (parameterName === 'factor') {
+			return super.getParameter('gain');
+		} else {
+			return super.getParameter(parameterName);
+		}
 	}
 }
 
@@ -202,6 +240,10 @@ export class MidiNode {
 	private frequencyDestinations: Destination[] = [];
 	private triggerDestinations: Destination[] = [];
 	private midiAccess: MIDIAccess | null = null;
+
+	getParameter(parameterName: string): CustomAudioParam {
+		throw new Error('MidiNode does not have any parameters');
+	}
 
 	connect(destination: CustomAudioNode | AudioParam, output: 'frequency' | 'trigger'): void {
 		if (output === 'frequency') {

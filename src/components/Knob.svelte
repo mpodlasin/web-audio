@@ -4,6 +4,7 @@
 
 	export let parameterName: string;
 	export let parameter: SerializedAudioParameter;
+	export let audioParamAnalyser: AnalyserNode | undefined;
 	export let minValue: number;
 	export let maxValue: number;
 	export let unit: string | null = null;
@@ -61,13 +62,38 @@
 			});
 		}
 	}
+
+	$: {
+		if (audioParamAnalyser && isControlled) {
+			animateAudioParam();
+		}
+	}
+
+	const bufferLength = audioParamAnalyser?.frequencyBinCount;
+	const dataArray = new Uint8Array(bufferLength ?? 0);
+
+	let animatedValue = numberParameter;
+
+	function animateAudioParam() {
+		if (audioParamAnalyser && isControlled) {
+			audioParamAnalyser.getByteTimeDomainData(dataArray);
+
+			animatedValue = ((dataArray[0] ?? 0) - 128) / 128;
+
+			requestAnimationFrame(animateAudioParam);
+		}
+	}
+
+	$: animatedValueWithBase = animatedValue + numberParameter;
+
+	$: highlightAngle = (180 * (animatedValueWithBase - minValue)) / (maxValue - minValue) - 90;
 </script>
 
 <div class="wrapper">
 	<div class="title">{parameterName}</div>
 	<div
 		class="knob-wrapper"
-		style="background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from -90deg, var(--primary-500) {((angle +
+		style="background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from -90deg, var(--primary-500) {((highlightAngle +
 			90) /
 			180) *
 			50}%, var(--neutral-900) 0);"

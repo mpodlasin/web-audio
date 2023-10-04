@@ -2,8 +2,8 @@ import type { SerializedAudioElements } from '../audio/serialized';
 
 export interface Project {
 	name: string;
-	created: Date;
-	lastChanged: Date;
+	created: string;
+	lastChanged: string;
 	audioCanvas: SerializedAudioElements;
 }
 
@@ -13,7 +13,7 @@ export interface Projects {
 
 export const createProject = (name: string): Project => ({
 	name,
-	created: new Date(Date.now()),
-	lastChanged: new Date(Date.now()),
+	created: new Date(Date.now()).toISOString(),
+	lastChanged: new Date(Date.now()).toISOString(),
 	audioCanvas: {}
 });

@@ -24,7 +24,8 @@ export const Primary: Story = {
 		parameterName: 'frequency',
 		parameter: { base: 0.5, inputs: [] },
 		minValue: 0,
-		maxValue: 1
+		maxValue: 1,
+		audioParamAnalyser: undefined,
 	}
 };
 
@@ -33,6 +34,7 @@ export const Controlled: Story = {
 		parameterName: 'frequency',
 		parameter: { base: 0.5, inputs: [{ id: '1', output: 'frequency' }] },
 		minValue: 0,
-		maxValue: 1
+		maxValue: 1,
+		audioParamAnalyser: undefined,
 	}
 };

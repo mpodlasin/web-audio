@@ -4,7 +4,9 @@
 		allowedSerializedAudioElementStaticDefinitions,
 		type AllowedSerializedAudioElements,
 		type SerializedAudioParameter,
-		CustomOscilloscopeNode
+		CustomOscilloscopeNode,
+		isCustomAudioNode,
+		accessParameter
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
@@ -17,6 +19,13 @@
 
 	$: staticDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
 	$: parameters = Object.entries(node.parameters ?? {}) as [string, SerializedAudioParameter][];
+	$: audioParams = parameters.flatMap(([name]) => {
+		if (isCustomAudioNode(instantiatedNode)) {
+			return [[name, instantiatedNode.getParameter(name).analyser] as const];
+		} else {
+			return [];
+		}
+	});
 
 	const dispatcher = createEventDispatcher();
 
@@ -90,6 +99,7 @@
 	<div class="parameters">
 		{#each parameters as nodeParameter (nodeParameter[0])}
 			<Knob
+				audioParamAnalyser={audioParams.find((a) => a[0] === nodeParameter[0])?.[1]}
 				parameterName={nodeParameter[0]}
 				parameter={nodeParameter[1]}
 				on:knob={handleKnob}

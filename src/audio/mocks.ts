@@ -28,6 +28,16 @@ export class OscillatorNodeMock {
 	}
 }
 
+export class AnalyserNodeMock {
+	public connect: jest.Mock;
+	public disconnect: jest.Mock;
+
+	constructor() {
+		this.connect = jest.fn();
+		this.disconnect = jest.fn();
+	}
+}
+
 export class GainNodeMock {
 	public connect: jest.Mock;
 	public disconnect: jest.Mock;
@@ -40,6 +50,18 @@ export class GainNodeMock {
 	}
 }
 
+export class StereoPannerNodeMock {
+	public connect: jest.Mock;
+	public disconnect: jest.Mock;
+	public pan: AudioParamMock;
+
+	constructor() {
+		this.connect = jest.fn();
+		this.disconnect = jest.fn();
+		this.pan = new AudioParamMock();
+	}
+}
+
 export const destinationMock = {
 	connect: jest.fn()
 };
@@ -47,6 +69,7 @@ export const destinationMock = {
 export const audioContextMock = {
 	createOscillator: jest.fn(() => new OscillatorNodeMock()),
 	createGain: jest.fn(() => new GainNodeMock()),
+	createAnalyser: jest.fn(() => new AnalyserNodeMock()),
 	destination: destinationMock
 };
 
@@ -92,6 +115,11 @@ Object.defineProperty(window, 'AudioWorkletNode', {
 Object.defineProperty(window, 'AudioWorkletProcessor', {
 	writable: true,
 	value: AudioWorkletProcessorMock
+});
+
+Object.defineProperty(window, 'StereoPannerNode', {
+	writable: true,
+	value: StereoPannerNodeMock
 });
 
 Object.defineProperty(window, 'registerProcessor', {
