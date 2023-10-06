@@ -8,6 +8,7 @@
 	export let minValue: number;
 	export let maxValue: number;
 	export let unit: string | null = null;
+	export let polarity: 'uni' | 'bi';
 
 	$: numberParameter = parameter.base;
 	$: isControlled = parameter.inputs.length > 0;
@@ -87,17 +88,29 @@
 	$: animatedValueWithBase = animatedValue + numberParameter;
 
 	$: highlightAngle = (180 * (animatedValueWithBase - minValue)) / (maxValue - minValue) - 90;
+
+	let highlightStyle = '';
+
+	$: {
+		if (polarity === 'uni') {
+			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from -90deg, var(--primary-500) ${
+				((highlightAngle + 90) / 180) * 50
+			}%, var(--neutral-900) 0);`;
+		} else if (polarity === 'bi' && animatedValueWithBase >= 0) {
+			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from 0deg, var(--primary-500) ${
+				((highlightAngle + 90) / 180) * 50 - 25
+			}%, var(--neutral-900) 0);`;
+		} else if (polarity === 'bi' && animatedValueWithBase < 0) {
+			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${highlightAngle}deg, var(--primary-500) ${
+				25 - ((highlightAngle + 90) / 180) * 50
+			}%, var(--neutral-900) 0);`;
+		}
+	}
 </script>
 
 <div class="wrapper">
 	<div class="title">{parameterName}</div>
-	<div
-		class="knob-wrapper"
-		style="background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from -90deg, var(--primary-500) {((highlightAngle +
-			90) /
-			180) *
-			50}%, var(--neutral-900) 0);"
-	>
+	<div class="knob-wrapper" style={highlightStyle}>
 		<div
 			class="knob"
 			on:mousedown={handleMouseDown}

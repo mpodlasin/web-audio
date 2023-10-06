@@ -106,6 +106,7 @@
 				minValue={staticDefinition.parameters[nodeParameter[0]]?.minValue ?? 0}
 				maxValue={staticDefinition.parameters[nodeParameter[0]]?.maxValue ?? Infinity}
 				unit={staticDefinition.parameters[nodeParameter[0]]?.unit ?? null}
+				polarity={staticDefinition.parameters[nodeParameter[0]]?.polarity ?? 'uni'}
 				on:change={handleParameterChange}
 				on:mouseup={handleKnobMouseUp}
 			/>

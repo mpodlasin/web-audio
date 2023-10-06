@@ -4,13 +4,15 @@ const frequencyParameter = {
 	minValue: 0,
 	maxValue: 10000,
 	unit: 'Hz',
-	defaultValue: 440
+	defaultValue: 440,
+	polarity: 'uni' as const
 };
 
 const buttonParameter = {
 	minValue: 0,
 	maxValue: 1,
-	defaultValue: 0
+	defaultValue: 0,
+	polarity: 'uni' as const
 };
 
 const oscillatorDefinition = {
@@ -22,7 +24,8 @@ const oscillatorDefinition = {
 			minValue: -4800,
 			maxValue: 4800,
 			unit: 'cents',
-			defaultValue: 0
+			defaultValue: 0,
+			polarity: 'bi' as const
 		}
 	}
 };
@@ -45,6 +48,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				maxValue: number;
 				unit?: string;
 				defaultValue?: number;
+				polarity: 'uni' | 'bi';
 			};
 		};
 	};
@@ -93,7 +97,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			gain: {
 				minValue: 0,
 				maxValue: 1,
-				defaultValue: 1
+				defaultValue: 1,
+				polarity: 'uni'
 			}
 		}
 	},
@@ -104,7 +109,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			factor: {
 				minValue: 0,
 				maxValue: 10000,
-				defaultValue: 1
+				defaultValue: 1,
+				polarity: 'uni'
 			}
 		}
 	},
@@ -120,7 +126,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			pan: {
 				minValue: -1,
 				maxValue: 1,
-				defaultValue: 0
+				defaultValue: 0,
+				polarity: 'bi'
 			}
 		}
 	},
@@ -131,7 +138,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			delayTime: {
 				minValue: 0,
 				maxValue: 1,
-				defaultValue: 0
+				defaultValue: 0,
+				polarity: 'uni'
 			}
 		}
 	},
@@ -158,7 +166,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				defaultValue: 120,
 				minValue: 0,
 				maxValue: 1000,
-				unit: 'BPM'
+				unit: 'BPM',
+				polarity: 'uni'
 			}
 		}
 	},
@@ -170,13 +179,15 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				minValue: 0,
 				maxValue: 5 * 1000,
 				unit: 'ms',
-				defaultValue: 0
+				defaultValue: 0,
+				polarity: 'uni'
 			},
 			release: {
 				minValue: 0,
 				maxValue: 5 * 1000,
 				unit: 'ms',
-				defaultValue: 200
+				defaultValue: 200,
+				polarity: 'uni'
 			}
 		}
 	},
