@@ -44,10 +44,11 @@
 	function handleMouseMove(event: MouseEvent) {
 		event.preventDefault();
 		if (isDragging) {
+			const factor = event.shiftKey ? 5000 : 500;
 			const { y } = knob.getBoundingClientRect();
 			const { clientY } = event;
 			const dy = y - clientY;
-			const value = previousValue + (dy * (maxValue - minValue)) / 500;
+			const value = previousValue + (dy * (maxValue - minValue)) / factor;
 
 			const normalizedValue = Math.min(Math.max(value, minValue), maxValue);
 
