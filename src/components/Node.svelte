@@ -109,6 +109,7 @@
 				polarity={staticDefinition.parameters[nodeParameter[0]]?.polarity ?? 'uni'}
 				on:change={handleParameterChange}
 				on:mouseup={handleKnobMouseUp}
+				on:knob={handleKnob}
 			/>
 		{/each}
 	</div>
