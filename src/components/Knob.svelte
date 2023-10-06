@@ -113,7 +113,27 @@
 		if (event.detail === 2) {
 			dispatcher('change', { parameterName, value: defaultValue });
 		}
-	}
+	};
+
+	let numberParameterInput = false;
+	let editedNumber = numberParameter;
+
+	const handleParameterValueClick = (event: MouseEvent) => {
+		if (event.detail === 2) {
+			numberParameterInput = true;
+			editedNumber = Number(numberParameter.toFixed(2));
+		}
+	};
+
+	const handleInputEnter = (event: KeyboardEvent) => {
+		if (event.key === 'Enter') {
+			numberParameterInput = false;
+			dispatcher('change', {
+				parameterName,
+				value: editedNumber
+			});
+		}
+	};
 </script>
 
 <div class="wrapper">
@@ -131,8 +151,11 @@
 			<div class:visible={isControlled} class="controlled-knob-circle" bind:this={knob} />
 		</div>
 	</div>
-	{#if numberParameter !== null}
-		<div class="value">
+	{#if numberParameterInput}
+		<!-- svelte-ignore a11y-autofocus -->
+		<input autofocus type="number" bind:value={editedNumber} on:keydown={handleInputEnter} />
+	{:else if numberParameter !== null}
+		<div class="value" on:click={handleParameterValueClick} on:keypress={() => {}}>
 			{numberParameter.toFixed(2)}
 			{#if unit}
 				{' '}{unit}
@@ -203,5 +226,24 @@
 
 	.value {
 		font-size: 10px;
+	}
+
+	input {
+		background-color: var(--neutral-700);
+		border: 1px solid var(--neutral-300);
+		color: var(--neutral-300);
+		max-width: 60px;
+		outline: none;
+		font-size: 10px;
+	}
+
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+		margin: 0;
+	}
+	input[type='number'] {
+		appearance: textfield;
+		-moz-appearance: textfield;
 	}
 </style>
