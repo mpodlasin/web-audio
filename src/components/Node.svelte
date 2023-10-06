@@ -102,7 +102,7 @@
 				audioParamAnalyser={audioParams.find((a) => a[0] === nodeParameter[0])?.[1]}
 				parameterName={nodeParameter[0]}
 				parameter={nodeParameter[1]}
-				on:knob={handleKnob}
+				defaultValue={staticDefinition.parameters[nodeParameter[0]]?.defaultValue ?? 0}
 				minValue={staticDefinition.parameters[nodeParameter[0]]?.minValue ?? 0}
 				maxValue={staticDefinition.parameters[nodeParameter[0]]?.maxValue ?? Infinity}
 				unit={staticDefinition.parameters[nodeParameter[0]]?.unit ?? null}

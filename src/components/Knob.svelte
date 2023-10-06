@@ -5,6 +5,7 @@
 	export let parameterName: string;
 	export let parameter: SerializedAudioParameter;
 	export let audioParamAnalyser: AnalyserNode | undefined;
+	export let defaultValue: number;
 	export let minValue: number;
 	export let maxValue: number;
 	export let unit: string | null = null;
@@ -106,6 +107,12 @@
 			}%, var(--neutral-900) 0);`;
 		}
 	}
+
+	const handleClick = (event: MouseEvent) => {
+		if (event.detail === 2) {
+			dispatcher('change', { parameterName, value: defaultValue });
+		}
+	}
 </script>
 
 <div class="wrapper">
@@ -115,6 +122,8 @@
 			class="knob"
 			on:mousedown={handleMouseDown}
 			on:mouseup={handleMouseUp}
+			on:click={handleClick}
+			on:keypress={() => {}}
 			style="transform: rotate({angle}deg)"
 		>
 			<div class="knob-pointer" />
