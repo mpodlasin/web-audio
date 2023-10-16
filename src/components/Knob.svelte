@@ -135,8 +135,18 @@
 		if (event.detail === 2) {
 			numberParameterInput = true;
 			editedNumber = Number(numberParameter.toFixed(2));
+
+			setTimeout(() => {
+				window.addEventListener('click', closeInput);
+			})
 		}
 	};
+
+	const closeInput = () => {
+		numberParameterInput = false;
+
+		window.removeEventListener('click', closeInput);
+	}
 
 	const handleInputEnter = (event: KeyboardEvent) => {
 		if (event.key === 'Enter') {
@@ -242,13 +252,14 @@
 
 	.value {
 		font-size: 10px;
+		border: 2px solid transparent;
 	}
 
 	input {
 		background-color: var(--neutral-700);
 		border: 1px solid var(--neutral-300);
 		color: var(--neutral-300);
-		max-width: 60px;
+		max-width: 50px;
 		outline: none;
 		font-size: 10px;
 	}
