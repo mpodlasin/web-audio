@@ -10,9 +10,22 @@
 	export let maxValue: number;
 	export let unit: string | null = null;
 	export let polarity: 'uni' | 'bi';
+	export let draggingLine: boolean;
+
+	let hoveringOver = false;
+
+	$: hoveringOverWhileDraggingLine = hoveringOver && draggingLine;
 
 	$: numberParameter = parameter.base;
-	$: isControlled = parameter.inputs.length > 0;
+	$: isControlled = parameter.inputs.length > 0 || hoveringOverWhileDraggingLine;
+
+	const handleMouseEnter = () => {
+		hoveringOver = true;
+	}
+
+	const handleMouseLeave = () => {
+		hoveringOver = false;
+	}
 
 	const dispatcher = createEventDispatcher();
 
@@ -143,6 +156,8 @@
 			class="knob"
 			on:mousedown={handleMouseDown}
 			on:mouseup={handleMouseUp}
+			on:mouseenter={handleMouseEnter}
+			on:mouseleave={handleMouseLeave}
 			on:click={handleClick}
 			on:keypress={() => {}}
 			style="transform: rotate({angle}deg)"

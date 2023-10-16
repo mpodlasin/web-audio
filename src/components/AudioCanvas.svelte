@@ -385,6 +385,7 @@
 				running={playing}
 				instantiatedNode={audioNodeDatabase[id]}
 				position={node.ui?.position ?? { x: 0, y: 0 }}
+				{draggingLine}
 				on:drag={handleDragNode}
 				on:nodePlugAndKnobPositions={handleNodePlugPositions}
 				on:nodeParameterChange={handleNodeParameterChange}

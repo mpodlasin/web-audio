@@ -6,7 +6,6 @@
 		type SerializedAudioParameter,
 		CustomOscilloscopeNode,
 		isCustomAudioNode,
-		accessParameter
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
@@ -16,6 +15,7 @@
 	export let node: AllowedSerializedAudioElements;
 	export let instantiatedNode: unknown;
 	export let running: boolean;
+	export let draggingLine: boolean;
 
 	$: staticDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
 	$: parameters = Object.entries(node.parameters ?? {}) as [string, SerializedAudioParameter][];
@@ -107,6 +107,7 @@
 				maxValue={staticDefinition.parameters[nodeParameter[0]]?.maxValue ?? Infinity}
 				unit={staticDefinition.parameters[nodeParameter[0]]?.unit ?? null}
 				polarity={staticDefinition.parameters[nodeParameter[0]]?.polarity ?? 'uni'}
+				{draggingLine}
 				on:change={handleParameterChange}
 				on:mouseup={handleKnobMouseUp}
 				on:knob={handleKnob}

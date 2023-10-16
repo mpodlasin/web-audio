@@ -13,6 +13,7 @@
 		y: number;
 	};
 	export let running: boolean;
+	export let draggingLine: boolean;
 
 	let internalClickPosition = {
 		x: 0,
@@ -63,6 +64,7 @@
 		{node}
 		{instantiatedNode}
 		{running}
+		{draggingLine}
 		on:nodePlugAndKnobPositions
 		on:nodeParameterChange
 		on:nodePlugClick
