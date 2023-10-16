@@ -228,11 +228,12 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
-		visibility: hidden;
+		opacity: 0;
+		transition: opacity 0.2s;
 	}
 
 	.visible {
-		visibility: visible;
+		opacity: 1;
 	}
 
 	.title {
