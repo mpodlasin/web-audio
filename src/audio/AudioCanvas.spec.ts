@@ -16,7 +16,6 @@ import {
 	addConnectionToParameter,
 	SequencerNode,
 	CustomSquareOscillatorNode,
-	CustomSawOscillatorNode
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -655,15 +654,9 @@ describe('AudioCanvas', () => {
 
 			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
 
-			jest.resetAllMocks();
-
-			const newAudioElements = { ...audioElements };
-
-			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
-
 			expect(
 				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).webApiNode.connect
-			).not.toHaveBeenCalled();
+			).toHaveBeenCalledTimes(1);
 			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.connect).not.toHaveBeenCalled();
 			expect(
 				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).webApiNode.disconnect
@@ -671,6 +664,101 @@ describe('AudioCanvas', () => {
 			expect(
 				(audioNodeDatabase['2'] as CustomGainNode).webApiNode.disconnect
 			).not.toHaveBeenCalled();
+
+			const newAudioElements = { ...audioElements };
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(
+				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).webApiNode.connect
+			).toHaveBeenCalledTimes(1);
+			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.connect).not.toHaveBeenCalled();
+			expect(
+				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).webApiNode.disconnect
+			).not.toHaveBeenCalled();
+			expect(
+				(audioNodeDatabase['2'] as CustomGainNode).webApiNode.disconnect
+			).not.toHaveBeenCalled();
+		});
+
+		it('removes only one line from inputs', () => {
+			const audioElements = {
+				'1': {
+					type: 'square-oscillator' as const,
+					parameters: {
+						frequency: { base: 333, inputs: [] },
+						detune: { base: 0, inputs: [] }
+					}
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: ['1'],
+					parameters: {
+						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio'}] }
+					}
+				}
+			};
+
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
+
+			const newAudioElements = removeConnection(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'audio'
+				},
+				{
+					type: 'input',
+					nodeId: '2',
+					id: 'audio'
+				}
+			);
+
+			expect(newAudioElements['2'].inputs.length).toBe(0);
+			expect(newAudioElements['2'].parameters.gain.inputs.length).toBe(1);
+		});
+
+		it('removes only one line from parameters', () => {
+			const audioElements = {
+				'1': {
+					type: 'square-oscillator' as const,
+					parameters: {
+						frequency: { base: 333, inputs: [] },
+						detune: { base: 0, inputs: [] }
+					}
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: ['1'],
+					parameters: {
+						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio'}] }
+					}
+				}
+			};
+
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
+
+			const newAudioElements = removeConnection(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'audio'
+				},
+				{
+					type: 'input',
+					nodeId: '2',
+					id: 'gain'
+				}
+			);
+
+			expect(newAudioElements['2'].inputs.length).toBe(1);
+			expect(newAudioElements['2'].parameters.gain.inputs.length).toBe(0);
 		});
 	});
 });

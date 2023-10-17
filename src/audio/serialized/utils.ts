@@ -224,24 +224,26 @@ export const removeConnection = <S extends SerializedAudioElements>(
 			throw new Error(`Audio element with id ${endingPlug.nodeId} not found`);
 		}
 
+		const endingNodeStaticDefinition = allowedSerializedAudioElementStaticDefinitions[endingNode.type];
+
 		newAudioGraph = {
 			...audioGraph,
 			[endingPlug.nodeId]: {
 				...endingNode,
 				inputs: (endingNode.inputs ?? []).filter((input) => {
 					if (typeof input === 'string') {
-						return input !== startingPlug.nodeId;
+						return input !== startingPlug.nodeId || endingNodeStaticDefinition.inputs[0] !== endingPlug.id
 					} else {
-						return false;
+						return input.output !== endingPlug.id || input.id !== startingPlug.nodeId;
 					}
 				}),
 				parameters: Object.fromEntries(
-					Object.entries(endingNode.parameters ?? {}).map(([key, value]) => {
+					Object.entries(endingNode.parameters ?? {}).map(([parameterName, value]) => {
 						return [
-							key,
+							parameterName,
 							{
 								...value,
-								inputs: value.inputs.filter((input) => input.id !== startingPlug.nodeId)
+								inputs: parameterName === endingPlug.id ?  value.inputs.filter((input) => input.id !== startingPlug.nodeId) : value.inputs,
 							}
 						];
 					})
