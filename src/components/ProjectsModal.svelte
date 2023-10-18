@@ -41,12 +41,11 @@
 
 		showMoreMenuForProject = projectName;
 
-		window.addEventListener('click', closeMoreMenu);
+		window.addEventListener('click', closeMoreMenu, { once: true });
 	};
 
 	const closeMoreMenu = () => {
 		showMoreMenuForProject = '';
-		window.removeEventListener('click', closeMoreMenu);
 	};
 
 	const handleDeleteProject = (projectName: string) => (event: MouseEvent) => {

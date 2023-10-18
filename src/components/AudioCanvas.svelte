@@ -207,13 +207,11 @@
 		positionOfStartingPlug =
 			plugPositions[nodeId]?.[type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'][id]!;
 
-		window.addEventListener('mouseup', stopDragging);
+		window.addEventListener('mouseup', stopDragging, { once: true });
 	};
 
 	const stopDragging = () => {
 		draggingLine = false;
-
-		window.removeEventListener('mouseup', stopDragging);
 	};
 
 	const handlePlugUp = (
@@ -298,7 +296,7 @@
 		menuKind = 'canvas';
 		lineMenuPlugs = null;
 
-		window.addEventListener('click', closeMenu);
+		window.addEventListener('click', closeMenu, { once: true });
 	};
 
 	const handleLineLeftClick = (fromPlug: Plug, toPlug: Plug) => (event: MouseEvent) => {
@@ -310,7 +308,7 @@
 		lineMenuPlugs = [fromPlug, toPlug];
 		menuPosition = { x: event.clientX, y: event.clientY };
 
-		window.addEventListener('click', closeMenu);
+		window.addEventListener('click', closeMenu, { once: true });
 	};
 
 	const handleNodeLeftClick = (nodeId: string) => (event: MouseEvent) => {
@@ -322,15 +320,13 @@
 		lineMenuPlugs = null;
 		menuNodeId = nodeId;
 
-		window.addEventListener('click', closeMenu);
+		window.addEventListener('click', closeMenu, { once: true });
 	};
 
 	const closeMenu = () => {
-		showMenu = false;
-		lineMenuPlugs = null;
-
-		window.removeEventListener('click', closeMenu);
-	};
+			showMenu = false;
+			lineMenuPlugs = null;
+		};
 
 	let showProjectsModal = false;
 
