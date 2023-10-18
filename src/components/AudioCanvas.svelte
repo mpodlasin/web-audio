@@ -24,6 +24,7 @@
 	import type { Project } from '../ui/project';
 	import Line from './Line.svelte';
 	import ContextMenu from './ContextMenu.svelte';
+	import { dragNode } from '../ui/dragNode';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
@@ -95,60 +96,7 @@
 	let plugPositions: PlugPositions = {};
 
 	const handleDragNode = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
-		const { x, y, id } = event.detail;
-		const node = audioGraphWithPositions[id];
-
-		if (node) {
-			const oldX = node.ui?.position.x ?? 0;
-			const oldY = node.ui?.position.y ?? 0;
-
-			const diffX = x - oldX;
-			const diffY = y - oldY;
-
-			const prevPositions = plugPositions[id];
-
-			if (!prevPositions) return;
-
-			plugPositions[id] = addDiff(prevPositions, diffX, diffY);
-
-			if (audioGraphHistory.length >= 2) {
-				audioGraphHistory = [
-					...audioGraphHistory,
-					{
-						...audioGraphHistory.at(-1),
-						[id]: {
-							...(audioGraphHistory.at(-1)?.[id] as any),
-							ui: {
-								position: {
-									x,
-									y
-								}
-							}
-						}
-					}
-				];
-			} else {
-				const onlyElement = audioGraphHistory[0];
-
-				if (onlyElement) {
-					audioGraphHistory = [
-						onlyElement,
-						{
-							...onlyElement,
-							[id]: {
-								...(onlyElement[id] as any),
-								ui: {
-									position: {
-										x,
-										y
-									}
-								}
-							}
-						}
-					];
-				}
-			}
-		}
+		audioGraphHistory = dragNode(event.detail, audioGraphHistory, plugPositions);
 	};
 
 	const handleNodePlugPositions = (event: CustomEvent) => {
