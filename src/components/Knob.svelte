@@ -21,11 +21,11 @@
 
 	const handleMouseEnter = () => {
 		hoveringOver = true;
-	}
+	};
 
 	const handleMouseLeave = () => {
 		hoveringOver = false;
-	}
+	};
 
 	const dispatcher = createEventDispatcher();
 
@@ -138,7 +138,7 @@
 
 			setTimeout(() => {
 				window.addEventListener('click', closeInput);
-			})
+			});
 		}
 	};
 
@@ -146,7 +146,7 @@
 		numberParameterInput = false;
 
 		window.removeEventListener('click', closeInput);
-	}
+	};
 
 	const handleInputEnter = (event: KeyboardEvent) => {
 		if (event.key === 'Enter') {

@@ -5,7 +5,7 @@
 		type AllowedSerializedAudioElements,
 		type SerializedAudioParameter,
 		CustomOscilloscopeNode,
-		isCustomAudioNode,
+		isCustomAudioNode
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';

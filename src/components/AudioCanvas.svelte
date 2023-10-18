@@ -11,10 +11,7 @@
 		type Plug,
 		removeConnection,
 		removeNode,
-		addConnectionToParameter,
-		plugsEqual,
-		nodeTypes,
-		type Position
+		addConnectionToParameter
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import Menu from './Menu.svelte';
@@ -25,9 +22,8 @@
 	import ProjectsModal from './ProjectsModal.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import type { Project } from '../ui/project';
-	import Page from '../routes/+page.svelte';
-	import { normalizedVector } from '../ui/vectors';
 	import Line from './Line.svelte';
+	import ContextMenu from './ContextMenu.svelte';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
@@ -182,15 +178,16 @@
 		updateAudioCanvas(audioGraphWithPositions, previousAudioGraphWithPositions, audioNodeDatabase);
 	}
 
-	const handleCreateElementClick =
-		(type: keyof typeof allowedSerializedAudioElementStaticDefinitions) => (event: MouseEvent) => {
-			event.preventDefault();
+	const handleCreateElementClick = (
+		event: CustomEvent<keyof typeof allowedSerializedAudioElementStaticDefinitions>
+	) => {
+		event.preventDefault();
 
-			audioGraphHistory = [
-				...audioGraphHistory,
-				addNode(audioGraphWithPositions, type, menuPosition)
-			];
-		};
+		audioGraphHistory = [
+			...audioGraphHistory,
+			addNode(audioGraphWithPositions, event.detail, menuPosition)
+		];
+	};
 
 	/* -------------------------------------------------------------------------- */
 	/* LINE DRAGGING */
@@ -434,14 +431,7 @@
 
 		{#if showMenu && menuKind === 'canvas'}
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
-				<Menu>
-					{#each nodeTypes as nodeType (nodeType)}
-						<Button
-							on:click={handleCreateElementClick(nodeType)}
-							title={nodeType.replaceAll('-', ' ')}
-						/>
-					{/each}
-				</Menu>
+				<ContextMenu on:create={handleCreateElementClick} />
 			</div>
 		{/if}
 	</div>

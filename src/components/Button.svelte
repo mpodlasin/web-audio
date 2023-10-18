@@ -15,6 +15,8 @@
 
 		transition: background-color 0.2s;
 		cursor: pointer;
+
+		white-space: nowrap;
 	}
 
 	button:hover {

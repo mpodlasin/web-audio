@@ -15,7 +15,7 @@ import {
 	removeNode,
 	addConnectionToParameter,
 	SequencerNode,
-	CustomSquareOscillatorNode,
+	CustomSquareOscillatorNode
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -694,7 +694,7 @@ describe('AudioCanvas', () => {
 					type: 'gain' as const,
 					inputs: ['1'],
 					parameters: {
-						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio'}] }
+						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
 					}
 				}
 			};
@@ -734,7 +734,7 @@ describe('AudioCanvas', () => {
 					type: 'gain' as const,
 					inputs: ['1'],
 					parameters: {
-						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio'}] }
+						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
 					}
 				}
 			};
