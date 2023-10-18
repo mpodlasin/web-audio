@@ -324,9 +324,9 @@
 	};
 
 	const closeMenu = () => {
-			showMenu = false;
-			lineMenuPlugs = null;
-		};
+		showMenu = false;
+		lineMenuPlugs = null;
+	};
 
 	let showProjectsModal = false;
 
