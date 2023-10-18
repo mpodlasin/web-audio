@@ -10,6 +10,7 @@
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
 	import OscilloscopeNode from './OscilloscopeNode.svelte';
+	import OnOffButton from './OnOffButton.svelte';
 
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
@@ -98,20 +99,28 @@
 	<div class="header">{node.type.replaceAll('-', ' ')}</div>
 	<div class="parameters">
 		{#each parameters as nodeParameter (nodeParameter[0])}
-			<Knob
-				audioParamAnalyser={audioParams.find((a) => a[0] === nodeParameter[0])?.[1]}
-				parameterName={nodeParameter[0]}
-				parameter={nodeParameter[1]}
-				defaultValue={staticDefinition.parameters[nodeParameter[0]]?.defaultValue ?? 0}
-				minValue={staticDefinition.parameters[nodeParameter[0]]?.minValue ?? 0}
-				maxValue={staticDefinition.parameters[nodeParameter[0]]?.maxValue ?? Infinity}
-				unit={staticDefinition.parameters[nodeParameter[0]]?.unit ?? null}
-				polarity={staticDefinition.parameters[nodeParameter[0]]?.polarity ?? 'uni'}
-				{draggingLine}
-				on:change={handleParameterChange}
-				on:mouseup={handleKnobMouseUp}
-				on:knob={handleKnob}
-			/>
+			{#if staticDefinition.parameters[nodeParameter[0]]?.binary}
+				<OnOffButton
+					active={nodeParameter[1].base === 1}
+					label={nodeParameter[0]}
+					on:change={handleParameterChange}
+				/>
+			{:else}
+				<Knob
+					audioParamAnalyser={audioParams.find((a) => a[0] === nodeParameter[0])?.[1]}
+					parameterName={nodeParameter[0]}
+					parameter={nodeParameter[1]}
+					defaultValue={staticDefinition.parameters[nodeParameter[0]]?.defaultValue ?? 0}
+					minValue={staticDefinition.parameters[nodeParameter[0]]?.minValue ?? 0}
+					maxValue={staticDefinition.parameters[nodeParameter[0]]?.maxValue ?? Infinity}
+					unit={staticDefinition.parameters[nodeParameter[0]]?.unit ?? null}
+					polarity={staticDefinition.parameters[nodeParameter[0]]?.polarity ?? 'uni'}
+					{draggingLine}
+					on:change={handleParameterChange}
+					on:mouseup={handleKnobMouseUp}
+					on:knob={handleKnob}
+				/>
+			{/if}
 		{/each}
 	</div>
 	{#if node.type === 'oscilloscope' && instantiatedNode instanceof CustomOscilloscopeNode}

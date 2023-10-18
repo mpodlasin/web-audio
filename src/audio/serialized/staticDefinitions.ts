@@ -12,7 +12,8 @@ const buttonParameter = {
 	minValue: 0,
 	maxValue: 1,
 	defaultValue: 0,
-	polarity: 'uni' as const
+	polarity: 'uni' as const,
+	binary: true
 };
 
 const oscillatorDefinition = {
@@ -49,6 +50,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				unit?: string;
 				defaultValue?: number;
 				polarity: 'uni' | 'bi';
+				binary?: boolean;
 			};
 		};
 	};
@@ -208,7 +210,9 @@ export const categorizedNodeTypes: {
 	oscillators: ['sine-oscillator', 'saw-oscillator', 'square-oscillator', 'triangle-oscillator'],
 	gain: ['gain'],
 	envelope: ['envelope'],
-	visualization: ['oscilloscope'],
-	sequencer: ['sequencer'],
-	io: ['destination', 'midi']
+	effects: ['lowpass-filter', 'convolution', 'delay'],
+	pitch: ['sequencer', 'pitch-quantizer'],
+	math: ['multiply'],
+	io: ['destination', 'midi'],
+	visualization: ['oscilloscope']
 };
