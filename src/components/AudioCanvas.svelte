@@ -11,7 +11,8 @@
 		type Plug,
 		removeConnection,
 		removeNode,
-		addConnectionToParameter
+		addConnectionToParameter,
+		type Position
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import Menu from './Menu.svelte';
@@ -35,20 +36,45 @@
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
 	let audioGraphHistory: SerializedAudioElements[] = [{}, initialAudioCanvas];
-	let dragStartPosition: { x: number; y: number } | null = null;
+	let dragStartPosition: Position | null = null;
+
+	let selectNodesStartPosition: Position | null = null;
+	let selectNodesEndPosition: Position | null = null;
 
 	const handleDragCanvasStart = (event: MouseEvent) => {
-		dragStartPosition = {
+		event.preventDefault();
+		if (event.shiftKey) {
+			selectNodesStartPosition = {
+				x: event.clientX,
+				y: event.clientY
+			};
+		} else {
+			dragStartPosition = {
+				x: event.clientX,
+				y: event.clientY
+			};
+		}
+	};
+
+	const handleDragCanvasEnd = () => {
+		dragStartPosition = null;
+		selectNodesStartPosition = null;
+		selectNodesEndPosition = null;
+	};
+
+	const handleSelectNodesDrag = (event: MouseEvent) => {
+		selectNodesEndPosition = {
 			x: event.clientX,
 			y: event.clientY
 		};
 	};
 
-	const handleDragCanvasEnd = () => {
-		dragStartPosition = null;
-	};
-
 	const handleDragCanvas = (event: MouseEvent) => {
+		if (selectNodesStartPosition) {
+			handleSelectNodesDrag(event);
+			return;
+		}
+
 		if (!dragStartPosition) return;
 
 		const positionChange = {
@@ -337,6 +363,20 @@
 				on:contextmenu={handleNodeLeftClick(id)}
 			/>
 		{/each}
+		{#if selectNodesStartPosition && selectNodesEndPosition}
+			<div
+				class="select"
+				style="top: {Math.min(
+					selectNodesStartPosition.y,
+					selectNodesEndPosition.y
+				)}px; left: {Math.min(
+					selectNodesStartPosition.x,
+					selectNodesEndPosition.x
+				)}px; width: {Math.abs(
+					selectNodesEndPosition.x - selectNodesStartPosition.x
+				)}px; height: {Math.abs(selectNodesEndPosition.y - selectNodesStartPosition.y)}px;"
+			/>
+		{/if}
 		<svg width="100vw" height="100vh">
 			{#each linesToDisplay as line}
 				<Line
@@ -397,5 +437,12 @@
 
 	line.visible {
 		stroke: var(--neutral-300);
+	}
+
+	.select {
+		border: 1px solid var(--neutral-300);
+		position: absolute;
+		background-color: var(--neutral-500);
+		opacity: 0.3;
 	}
 </style>
