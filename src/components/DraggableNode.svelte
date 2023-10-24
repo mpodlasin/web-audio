@@ -14,6 +14,7 @@
 	};
 	export let running: boolean;
 	export let draggingLine: boolean;
+	export let selected: boolean;
 
 	let internalClickPosition = {
 		x: 0,
@@ -57,6 +58,8 @@
 	on:mouseup={handleMouseUp}
 	on:contextmenu={handleContextMenu}
 	on:contextmenu
+	class="wrapper"
+	class:selected
 	style="position: absolute; left: {position.x}px; top: {position.y}px;"
 >
 	<Node
@@ -73,3 +76,13 @@
 		on:knobMouseUp
 	/>
 </div>
+
+<style>
+	.wrapper {
+		border-radius: 8px;
+	}
+
+	.selected {
+		outline: 1px solid var(--neutral-300);
+	}
+</style>

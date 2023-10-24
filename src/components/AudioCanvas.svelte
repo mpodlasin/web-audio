@@ -19,7 +19,7 @@
 	import Button from './Button.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
 	import { getLinesToDisplay } from '../ui/lines';
-	import { addDiff, addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
+	import { addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
 	import ProjectsModal from './ProjectsModal.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import type { Project } from '../ui/project';
@@ -36,10 +36,16 @@
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
 	let audioGraphHistory: SerializedAudioElements[] = [{}, initialAudioCanvas];
-	let dragStartPosition: Position | null = null;
+	let dragPosition: Position | null = null;
 
 	let selectNodesStartPosition: Position | null = null;
 	let selectNodesEndPosition: Position | null = null;
+
+	const handleCanvasDoubleClick = (event: MouseEvent) => {
+		if (event.detail === 2) {
+			selectedNodeIds = [];
+		}
+	}
 
 	const handleDragCanvasStart = (event: MouseEvent) => {
 		event.preventDefault();
@@ -49,7 +55,7 @@
 				y: event.clientY
 			};
 		} else {
-			dragStartPosition = {
+			dragPosition = {
 				x: event.clientX,
 				y: event.clientY
 			};
@@ -57,7 +63,7 @@
 	};
 
 	const handleDragCanvasEnd = () => {
-		dragStartPosition = null;
+		dragPosition = null;
 		selectNodesStartPosition = null;
 		selectNodesEndPosition = null;
 	};
@@ -75,11 +81,11 @@
 			return;
 		}
 
-		if (!dragStartPosition) return;
+		if (!dragPosition) return;
 
 		const positionChange = {
-			x: dragStartPosition.x - event.clientX,
-			y: dragStartPosition.y - event.clientY
+			x: dragPosition.x - event.clientX,
+			y: dragPosition.y - event.clientY
 		};
 
 		const newAudioGraphWithPositions = Object.fromEntries(
@@ -104,7 +110,7 @@
 
 		plugPositions = addDiffToAllPositions(plugPositions, -positionChange.x, -positionChange.y);
 
-		dragStartPosition = {
+		dragPosition = {
 			x: event.clientX,
 			y: event.clientY
 		};
@@ -117,6 +123,32 @@
 
 	$: {
 		dispatcher('change', audioGraphWithPositions);
+	}
+
+	let selectedNodeIds: string[] = [];
+
+	$: {
+		if (selectNodesStartPosition && selectNodesEndPosition) {
+			const filteredIds = Object.entries(audioGraphWithPositions)
+				.filter(([_, node]) => {
+					const x = node.ui?.position.x ?? 0;
+					const y = node.ui?.position.y ?? 0;
+
+					if (!selectNodesEndPosition) {
+						return false;
+					}
+
+					if (!selectNodesStartPosition) {
+						return false;
+					}
+
+					return x < selectNodesEndPosition.x && y < selectNodesEndPosition?.y && selectNodesStartPosition?.x < x && selectNodesStartPosition?.y < y;
+				})
+				.map(([id]) => id)
+				.filter(id => !selectedNodeIds.some(selectedId => selectedId === id))
+
+			selectedNodeIds = [...selectedNodeIds, ...filteredIds]
+		}
 	}
 
 	let plugPositions: PlugPositions = {};
@@ -328,6 +360,8 @@
 	on:mousedown={handleDragCanvasStart}
 	on:mousemove={handleDragCanvas}
 	on:mouseup={handleDragCanvasEnd}
+	on:click={handleCanvasDoubleClick}
+	on:keypress={() => {}}
 >
 	<ProjectHeader
 		projectName={chosenProjectName}
@@ -350,6 +384,7 @@
 				{id}
 				{node}
 				running={playing}
+				selected={selectedNodeIds.some((selectedId) => selectedId === id)}
 				instantiatedNode={audioNodeDatabase[id]}
 				position={node.ui?.position ?? { x: 0, y: 0 }}
 				{draggingLine}
