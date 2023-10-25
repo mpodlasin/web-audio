@@ -174,7 +174,28 @@
 	let plugPositions: PlugPositions = {};
 
 	const handleDragNode = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
-		audioGraphHistory = dragNode(event.detail, audioGraphHistory, plugPositions);
+		if (selectedNodeIds.some(selectedId => selectedId === event.detail.id)) {
+			const draggedNode = audioGraphWithPositions[event.detail.id];
+
+			if (!draggedNode) return;
+
+			const diffX = (draggedNode.ui?.position.x ?? 0) - event.detail.x;
+			const diffY = (draggedNode.ui?.position.y ?? 0) - event.detail.y;
+
+			audioGraphHistory = selectedNodeIds.reduce((audioGraphHistory, id) => {
+				const node = audioGraphHistory.at(-1)?.[id];
+
+				if (!node) return audioGraphHistory;
+
+				return dragNode({
+					id,
+					x: (node.ui?.position.x ?? 0) - diffX,
+					y: (node.ui?.position.y ?? 0) - diffY,
+				}, audioGraphHistory, plugPositions);
+			}, audioGraphHistory)
+		} else {
+			audioGraphHistory = dragNode(event.detail, audioGraphHistory, plugPositions);
+		}
 	};
 
 	const handleNodePlugPositions = (event: CustomEvent) => {
