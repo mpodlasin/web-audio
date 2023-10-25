@@ -508,6 +508,7 @@
 <style>
 	.canvas {
 		background-color: var(--neutral-700);
+		overflow: hidden;
 	}
 
 	.create-node-menu {

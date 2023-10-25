@@ -208,11 +208,11 @@ export const categorizedNodeTypes: {
 	[category: string]: AllowedSerializedAudioElements['type'][];
 } = {
 	oscillators: ['sine-oscillator', 'saw-oscillator', 'square-oscillator', 'triangle-oscillator'],
-	gain: ['gain'],
+	gain: ['gain', 'pan'],
 	envelope: ['envelope'],
 	effects: ['lowpass-filter', 'convolution', 'delay'],
 	pitch: ['sequencer', 'pitch-quantizer'],
-	math: ['multiply'],
+	math: ['multiply', 'bipolar-to-unipolar'],
 	io: ['destination', 'midi'],
 	clock: ['trigger'],
 	visualization: ['oscilloscope']
