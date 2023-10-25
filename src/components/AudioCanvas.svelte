@@ -47,9 +47,29 @@
 		}
 	}
 
+	const isAlternativeKey = (event: MouseEvent) => event.altKey || event.metaKey;
+
+	const handleNodeClick = (id: string) => (event: MouseEvent) => {
+		event.preventDefault();
+		if (isAlternativeKey(event)) {
+			if (event.shiftKey) {
+				if (selectedNodeIds.some(selectedId => selectedId === id)) {
+				selectedNodeIds = selectedNodeIds.filter(selectedId => selectedId !== id);
+				} else {
+					selectedNodeIds = [...selectedNodeIds, id]
+				}
+			} else {
+				selectedNodeIds = [id];
+			}
+		}
+	}
+
 	const handleDragCanvasStart = (event: MouseEvent) => {
 		event.preventDefault();
-		if (event.shiftKey) {
+		if (isAlternativeKey(event)) {
+			if (!event.shiftKey) {
+				selectedNodeIds = [];
+			}
 			selectNodesStartPosition = {
 				x: event.clientX,
 				y: event.clientY
@@ -396,6 +416,7 @@
 				on:deleteNode={handleDeleteNode}
 				on:knobMouseUp={handleKnobMouseUp}
 				on:contextmenu={handleNodeLeftClick(id)}
+				on:click={handleNodeClick(id)}
 			/>
 		{/each}
 		{#if selectNodesStartPosition && selectNodesEndPosition}

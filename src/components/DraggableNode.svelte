@@ -58,6 +58,8 @@
 	on:mouseup={handleMouseUp}
 	on:contextmenu={handleContextMenu}
 	on:contextmenu
+	on:click
+	on:keypress
 	class="wrapper"
 	class:selected
 	style="position: absolute; left: {position.x}px; top: {position.y}px;"
