@@ -12,7 +12,10 @@
 		removeConnection,
 		removeNode,
 		addConnectionToParameter,
-		type Position
+		type Position,
+		type SerializedAudioElement,
+		type AllowedSerializedAudioElements,
+		insertExistingNode
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import Menu from './Menu.svelte';
@@ -45,7 +48,7 @@
 		if (event.detail === 2) {
 			selectedNodeIds = [];
 		}
-	}
+	};
 
 	const isAlternativeKey = (event: MouseEvent) => event.altKey || event.metaKey;
 
@@ -53,16 +56,16 @@
 		event.preventDefault();
 		if (isAlternativeKey(event)) {
 			if (event.shiftKey) {
-				if (selectedNodeIds.some(selectedId => selectedId === id)) {
-				selectedNodeIds = selectedNodeIds.filter(selectedId => selectedId !== id);
+				if (selectedNodeIds.some((selectedId) => selectedId === id)) {
+					selectedNodeIds = selectedNodeIds.filter((selectedId) => selectedId !== id);
 				} else {
-					selectedNodeIds = [...selectedNodeIds, id]
+					selectedNodeIds = [...selectedNodeIds, id];
 				}
 			} else {
 				selectedNodeIds = [id];
 			}
 		}
-	}
+	};
 
 	const handleDragCanvasStart = (event: MouseEvent) => {
 		event.preventDefault();
@@ -162,19 +165,24 @@
 						return false;
 					}
 
-					return x < selectNodesEndPosition.x && y < selectNodesEndPosition?.y && selectNodesStartPosition?.x < x && selectNodesStartPosition?.y < y;
+					return (
+						x < selectNodesEndPosition.x &&
+						y < selectNodesEndPosition?.y &&
+						selectNodesStartPosition?.x < x &&
+						selectNodesStartPosition?.y < y
+					);
 				})
 				.map(([id]) => id)
-				.filter(id => !selectedNodeIds.some(selectedId => selectedId === id))
+				.filter((id) => !selectedNodeIds.some((selectedId) => selectedId === id));
 
-			selectedNodeIds = [...selectedNodeIds, ...filteredIds]
+			selectedNodeIds = [...selectedNodeIds, ...filteredIds];
 		}
 	}
 
 	let plugPositions: PlugPositions = {};
 
 	const handleDragNode = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
-		if (selectedNodeIds.some(selectedId => selectedId === event.detail.id)) {
+		if (selectedNodeIds.some((selectedId) => selectedId === event.detail.id)) {
 			const draggedNode = audioGraphWithPositions[event.detail.id];
 
 			if (!draggedNode) return;
@@ -187,12 +195,16 @@
 
 				if (!node) return audioGraphHistory;
 
-				return dragNode({
-					id,
-					x: (node.ui?.position.x ?? 0) - diffX,
-					y: (node.ui?.position.y ?? 0) - diffY,
-				}, audioGraphHistory, plugPositions);
-			}, audioGraphHistory)
+				return dragNode(
+					{
+						id,
+						x: (node.ui?.position.x ?? 0) - diffX,
+						y: (node.ui?.position.y ?? 0) - diffY
+					},
+					audioGraphHistory,
+					plugPositions
+				);
+			}, audioGraphHistory);
 		} else {
 			audioGraphHistory = dragNode(event.detail, audioGraphHistory, plugPositions);
 		}
@@ -310,13 +322,39 @@
 		showMenu = false;
 	};
 
+	let copiedNodes: AllowedSerializedAudioElements[] = [];
+
+	const handleCopyNode = () => {
+		if (selectedNodeIds.some((id) => id === menuNodeId)) {
+			copiedNodes = selectedNodeIds.flatMap((id) => {
+				const node = audioGraphWithPositions[id];
+
+				if (node) return [node];
+				return [];
+			});
+		} else {
+			const node = audioGraphWithPositions[menuNodeId];
+
+			if (!node) return;
+
+			copiedNodes = [node];
+		}
+	};
+
+	const handlePasteClick = () => {
+		const newAudioGraph = copiedNodes.reduce((audioGraph, node) => {
+			return insertExistingNode(audioGraph, node, menuPosition);
+		}, audioGraphWithPositions);
+
+		audioGraphHistory = [...audioGraphHistory, newAudioGraph];
+	};
+
 	const handleDeleteNode = () => {
-		if (selectedNodeIds.some(selectedId => selectedId === menuNodeId)) {
-			const newAudioGraph = selectedNodeIds.reduce(removeNode, audioGraphWithPositions)
+		if (selectedNodeIds.some((selectedId) => selectedId === menuNodeId)) {
+			const newAudioGraph = selectedNodeIds.reduce(removeNode, audioGraphWithPositions);
 
 			audioGraphHistory = [...audioGraphHistory, newAudioGraph];
 		} else {
-
 			audioGraphHistory = [...audioGraphHistory, removeNode(audioGraphWithPositions, menuNodeId)];
 		}
 	};
@@ -492,14 +530,18 @@
 		{#if showMenu && menuKind === 'node'}
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
 				<Menu>
-					<Button on:click={handleDeleteNode} title={selectedNodeIds.some(id => id === menuNodeId) ? `Delete ${selectedNodeIds.length}` : "Delete"} variant="danger" />
+					{#if selectedNodeIds.some((id) => menuNodeId === id)}
+						<div class="nodes-selected-header">{selectedNodeIds.length} nodes selected:</div>
+					{/if}
+					<Button on:click={handleCopyNode} title="Copy" />
+					<Button on:click={handleDeleteNode} title="Delete" variant="danger" />
 				</Menu>
 			</div>
 		{/if}
 
 		{#if showMenu && menuKind === 'canvas'}
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
-				<ContextMenu on:create={handleCreateElementClick} />
+				<ContextMenu on:create={handleCreateElementClick} on:paste={handlePasteClick} />
 			</div>
 		{/if}
 	</div>
@@ -529,5 +571,9 @@
 		position: absolute;
 		background-color: var(--neutral-500);
 		opacity: 0.3;
+	}
+
+	.nodes-selected-header {
+		font-size: 14px;
 	}
 </style>

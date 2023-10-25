@@ -1,17 +1,38 @@
 import { allowedSerializedAudioElementStaticDefinitions } from './staticDefinitions';
 import type { AllowedSerializedAudioElements, Position, SerializedAudioElements } from './types';
 
+const generateId = (audioGraph: SerializedAudioElements) => {
+	const idsSoFar = Object.keys(audioGraph);
+
+	return Object.keys(audioGraph).length === 0
+		? 1
+		: Math.max(...idsSoFar.map((id) => parseInt(id, 10))) + 1;
+};
+
+export const insertExistingNode = (
+	audioGraph: SerializedAudioElements,
+	node: AllowedSerializedAudioElements,
+	position: Position
+) => {
+	const nextId = generateId(audioGraph);
+
+	return {
+		...audioGraph,
+		[nextId]: {
+			...node,
+			ui: {
+				position
+			}
+		}
+	};
+};
+
 export const addNode = <S extends SerializedAudioElements>(
 	audioGraph: S,
 	type: AllowedSerializedAudioElements['type'],
 	position?: Position
 ): S => {
-	const idsSoFar = Object.keys(audioGraph);
-
-	const nextId =
-		Object.keys(audioGraph).length === 0
-			? 1
-			: Math.max(...idsSoFar.map((id) => parseInt(id, 10))) + 1;
+	const nextId = generateId(audioGraph);
 
 	const staticNodeDefinition = allowedSerializedAudioElementStaticDefinitions[type];
 

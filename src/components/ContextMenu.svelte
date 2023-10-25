@@ -29,28 +29,35 @@
 	const handleNodeClick = (nodeType: string) => (event: MouseEvent) => {
 		dispatcher('create', nodeType);
 	};
+
+	const handlePasteClick = () => {
+		dispatcher('paste');
+	};
 </script>
 
 <Menu>
-	{#each Object.entries(categorizedNodeTypes) as [nodeType, nodeTypes] (nodeType)}
-		<div
-			class="menu-section"
-			on:mouseenter={handleMouseEnter(nodeType)}
-			on:mouseleave={handleMouseLeave}
-		>
-			<div>{nodeType}</div>
-			<div class="submenu" class:visible={hoveredOverNodeType === nodeType}>
-				<Menu>
-					{#each nodeTypes as innerNodeType (innerNodeType)}
-						<Button
-							on:click={handleNodeClick(innerNodeType)}
-							title={innerNodeType.replaceAll('-', ' ')}
-						/>
-					{/each}
-				</Menu>
+	<div class="create-section">
+		{#each Object.entries(categorizedNodeTypes) as [nodeType, nodeTypes] (nodeType)}
+			<div
+				class="menu-section"
+				on:mouseenter={handleMouseEnter(nodeType)}
+				on:mouseleave={handleMouseLeave}
+			>
+				<div>{nodeType}</div>
+				<div class="submenu" class:visible={hoveredOverNodeType === nodeType}>
+					<Menu>
+						{#each nodeTypes as innerNodeType (innerNodeType)}
+							<Button
+								on:click={handleNodeClick(innerNodeType)}
+								title={innerNodeType.replaceAll('-', ' ')}
+							/>
+						{/each}
+					</Menu>
+				</div>
 			</div>
-		</div>
-	{/each}
+		{/each}
+	</div>
+	<Button title="Paste" on:click={handlePasteClick} />
 </Menu>
 
 <style>
@@ -78,5 +85,9 @@
 	.submenu.visible {
 		opacity: 1;
 		pointer-events: all;
+	}
+
+	.create-section {
+		border-bottom: 1px solid var(--neutral-500);
 	}
 </style>
