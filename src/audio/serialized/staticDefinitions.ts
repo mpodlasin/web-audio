@@ -214,5 +214,6 @@ export const categorizedNodeTypes: {
 	pitch: ['sequencer', 'pitch-quantizer'],
 	math: ['multiply'],
 	io: ['destination', 'midi'],
+	clock: ['trigger'],
 	visualization: ['oscilloscope']
 };
