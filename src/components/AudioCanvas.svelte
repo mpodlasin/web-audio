@@ -29,6 +29,7 @@
 	import Line from './Line.svelte';
 	import ContextMenu from './ContextMenu.svelte';
 	import { dragNode } from '../ui/dragNode';
+	import MenuButton from './MenuButton.svelte';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
@@ -510,7 +511,9 @@
 		{#if showMenu && menuKind === 'line'}
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
 				<Menu>
-					<Button on:click={handleDeleteConnection} title="Delete" variant="danger" />
+					<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
+						>Delete</MenuButton
+					>
 				</Menu>
 			</div>
 		{/if}
@@ -521,8 +524,10 @@
 					{#if selectedNodeIds.some((id) => menuNodeId === id)}
 						<div class="nodes-selected-header">{selectedNodeIds.length} nodes selected:</div>
 					{/if}
-					<Button on:click={handleCopyNode} title="Copy" />
-					<Button on:click={handleDeleteNode} title="Delete" variant="danger" />
+					<MenuButton on:click={handleCopyNode}>Copy</MenuButton>
+					<MenuButton on:click={handleDeleteNode} on:keypress={() => {}} variant="danger"
+						>Delete</MenuButton
+					>
 				</Menu>
 			</div>
 		{/if}

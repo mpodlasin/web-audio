@@ -3,6 +3,7 @@
 	import { categorizedNodeTypes } from '../audio/serialized';
 	import ChevronRight from '../icons/Chevron_Right.svg?component';
 	import Menu from './Menu.svelte';
+	import MenuButton from './MenuButton.svelte';
 
 	const dispatcher = createEventDispatcher();
 
@@ -38,55 +39,36 @@
 <Menu>
 	<div class="create-section">
 		{#each Object.entries(categorizedNodeTypes) as [nodeType, nodeTypes] (nodeType)}
-			<div
-				class="menu-section"
-				on:mouseenter={handleMouseEnter(nodeType)}
-				on:mouseleave={handleMouseLeave}
-			>
-				<div>{nodeType}</div>
-				<div class="icon"><ChevronRight /></div>
-				<div class="submenu" class:visible={hoveredOverNodeType === nodeType}>
-					<Menu>
-						{#each nodeTypes as innerNodeType (innerNodeType)}
-							<div
-								class="menu-button"
-								on:click={handleNodeClick(innerNodeType)}
-								on:keydown={() => {}}
-							>
-								{innerNodeType.replaceAll('-', ' ')}
-							</div>
-						{/each}
-					</Menu>
+			<MenuButton>
+				<div
+					class="menu-section"
+					on:mouseenter={handleMouseEnter(nodeType)}
+					on:mouseleave={handleMouseLeave}
+				>
+					<div>{nodeType}</div>
+					<div class="icon"><ChevronRight /></div>
+					<div class="submenu" class:visible={hoveredOverNodeType === nodeType}>
+						<Menu>
+							{#each nodeTypes as innerNodeType (innerNodeType)}
+								<MenuButton on:click={handleNodeClick(innerNodeType)} on:keydown={() => {}}>
+									{innerNodeType.replaceAll('-', ' ')}
+								</MenuButton>
+							{/each}
+						</Menu>
+					</div>
 				</div>
-			</div>
+			</MenuButton>
 		{/each}
 	</div>
-	<div class="menu-button" on:click={handlePasteClick} on:keypress={() => {}}>paste</div>
+	<MenuButton on:click={handlePasteClick} on:keypress={() => {}}>paste</MenuButton>
 </Menu>
 
 <style>
-	.menu-section,
-	.menu-button {
-		padding: 4px 8px;
-		position: relative;
-		font-size: 14px;
-		border-radius: 4px;
-		transition: background-color 0.2s;
-		cursor: pointer;
-		white-space: nowrap;
-	}
-
 	.menu-section {
-		padding-right: 0;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		gap: 8px;
-	}
-
-	.menu-section:hover,
-	.menu-button:hover {
-		background-color: var(--neutral-700);
 	}
 
 	.submenu {
@@ -106,6 +88,9 @@
 	.create-section {
 		border-bottom: 1px solid var(--neutral-500);
 		padding-bottom: 8px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
 	}
 
 	.icon {
