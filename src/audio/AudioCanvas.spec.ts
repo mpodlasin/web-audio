@@ -790,5 +790,37 @@ describe('AudioCanvas', () => {
 			expect(newAudioElements['4']?.inputs?.[0]).toBe('3');
 			expect(newAudioElements['4']?.parameters?.['gain'].inputs[0]?.id).toBe('3');
 		});
+
+		it('adds copied node to inputs and parameters of other nodes', () => {
+			const audioElements = {
+				'1': {
+					type: 'square-oscillator' as const,
+					parameters: {
+						frequency: { base: 333, inputs: [] },
+						detune: { base: 0, inputs: [] }
+					}
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: ['1'],
+					parameters: {
+						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
+					}
+				}
+			};
+
+			const newAudioElements = insertExistingNodes(audioElements, ['1'], { x: 0, y: 0 });
+
+			expect(newAudioElements['3']).toBeDefined();
+			expect(newAudioElements['3']?.type).toBe('square-oscillator');
+
+			expect(newAudioElements['2']?.inputs?.length).toBe(2);
+			expect(newAudioElements['2']?.inputs).toEqual(['1', '3']);
+			expect(newAudioElements['2']?.parameters?.['gain'].inputs.length).toBe(2);
+			expect(newAudioElements['2']?.parameters?.['gain'].inputs['1']).toEqual({
+				id: '3',
+				output: 'audio'
+			});
+		});
 	});
 });

@@ -83,8 +83,65 @@ export const insertExistingNodes = (
 		return [idMap[id], rewrittenNode] as const;
 	});
 
+	const rewrittenAudioGraph = Object.fromEntries(
+		Object.entries(audioGraph).map(([id, node]) => {
+			return [
+				id,
+				{
+					...node,
+					inputs: node.inputs?.flatMap<string | { id: string; output: string }>((input) => {
+						if (typeof input === 'string') {
+							const foundId = ids.find((id) => id === input);
+
+							if (foundId) {
+								return [input, idMap[foundId] ?? ''];
+							}
+						} else {
+							const foundId = ids.find((id) => id === input.id);
+
+							if (foundId) {
+								return [input, { id: idMap[foundId] ?? '', output: input.output }];
+							}
+						}
+
+						return [];
+					}),
+					parameters: Object.fromEntries(
+						Object.entries(node.parameters ?? {}).map(([parameterName, parameterValue]) => {
+							return [
+								parameterName,
+								{
+									...parameterValue,
+									inputs: parameterValue.inputs.flatMap<string | { id: string; output: string }>(
+										(input) => {
+											if (typeof input === 'string') {
+												const foundId = ids.find((id) => id === input);
+
+												if (foundId) {
+													return [input, idMap[foundId] ?? ''];
+												}
+											} else {
+												const foundId = ids.find((id) => id === input.id);
+
+												if (foundId) {
+													return [input, { id: idMap[foundId] ?? '', output: input.output }];
+												}
+											}
+
+											return [];
+										}
+									)
+								}
+							];
+						})
+					)
+				}
+			];
+		})
+	);
+
 	return {
-		...audioGraph,
+		...rewrittenAudioGraph,
 		...Object.fromEntries(nodesWithRewrittenIds)
 	};
 };
