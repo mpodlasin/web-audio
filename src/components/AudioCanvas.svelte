@@ -290,7 +290,14 @@
 	};
 
 	const handleDeleteNode = () => {
-		audioGraphHistory = [...audioGraphHistory, removeNode(audioGraphWithPositions, menuNodeId)];
+		if (selectedNodeIds.some(selectedId => selectedId === menuNodeId)) {
+			const newAudioGraph = selectedNodeIds.reduce(removeNode, audioGraphWithPositions)
+
+			audioGraphHistory = [...audioGraphHistory, newAudioGraph];
+		} else {
+
+			audioGraphHistory = [...audioGraphHistory, removeNode(audioGraphWithPositions, menuNodeId)];
+		}
 	};
 
 	let playing = false;
@@ -464,7 +471,7 @@
 		{#if showMenu && menuKind === 'node'}
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
 				<Menu>
-					<Button on:click={handleDeleteNode} title="Delete" variant="danger" />
+					<Button on:click={handleDeleteNode} title={selectedNodeIds.some(id => id === menuNodeId) ? `Delete ${selectedNodeIds.length}` : "Delete"} variant="danger" />
 				</Menu>
 			</div>
 		{/if}
