@@ -15,7 +15,7 @@
 		type Position,
 		type SerializedAudioElement,
 		type AllowedSerializedAudioElements,
-		insertExistingNode
+		insertExistingNodes
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import Menu from './Menu.svelte';
@@ -322,30 +322,18 @@
 		showMenu = false;
 	};
 
-	let copiedNodes: AllowedSerializedAudioElements[] = [];
+	let copiedNodes: string[] = [];
 
 	const handleCopyNode = () => {
 		if (selectedNodeIds.some((id) => id === menuNodeId)) {
-			copiedNodes = selectedNodeIds.flatMap((id) => {
-				const node = audioGraphWithPositions[id];
-
-				if (node) return [node];
-				return [];
-			});
+			copiedNodes = selectedNodeIds;
 		} else {
-			const node = audioGraphWithPositions[menuNodeId];
-
-			if (!node) return;
-
-			copiedNodes = [node];
+			copiedNodes = [menuNodeId];
 		}
 	};
 
 	const handlePasteClick = () => {
-		const newAudioGraph = copiedNodes.reduce((audioGraph, node) => {
-			return insertExistingNode(audioGraph, node, menuPosition);
-		}, audioGraphWithPositions);
-
+		const newAudioGraph = insertExistingNodes(audioGraphWithPositions, copiedNodes, menuPosition);
 		audioGraphHistory = [...audioGraphHistory, newAudioGraph];
 	};
 

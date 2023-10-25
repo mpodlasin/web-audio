@@ -15,7 +15,8 @@ import {
 	removeNode,
 	addConnectionToParameter,
 	SequencerNode,
-	CustomSquareOscillatorNode
+	CustomSquareOscillatorNode,
+	insertExistingNodes
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -759,6 +760,35 @@ describe('AudioCanvas', () => {
 
 			expect(newAudioElements['2'].inputs.length).toBe(1);
 			expect(newAudioElements['2'].parameters.gain.inputs.length).toBe(0);
+		});
+
+		it('adds existing nodes while rewritting ids (copy/paste functionality)', () => {
+			const audioElements = {
+				'1': {
+					type: 'square-oscillator' as const,
+					parameters: {
+						frequency: { base: 333, inputs: [] },
+						detune: { base: 0, inputs: [] }
+					}
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: ['1'],
+					parameters: {
+						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
+					}
+				}
+			};
+
+			const newAudioElements = insertExistingNodes(audioElements, ['1', '2'], { x: 0, y: 0 });
+
+			expect(newAudioElements['3']).toBeDefined();
+			expect(newAudioElements['3']?.type).toBe('square-oscillator');
+
+			expect(newAudioElements['4']).toBeDefined();
+			expect(newAudioElements['4']?.type).toBe('gain');
+			expect(newAudioElements['4']?.inputs?.[0]).toBe('3');
+			expect(newAudioElements['4']?.parameters?.['gain'].inputs[0]?.id).toBe('3');
 		});
 	});
 });

@@ -9,21 +9,83 @@ const generateId = (audioGraph: SerializedAudioElements) => {
 		: Math.max(...idsSoFar.map((id) => parseInt(id, 10))) + 1;
 };
 
-export const insertExistingNode = (
+export const insertExistingNodes = (
 	audioGraph: SerializedAudioElements,
-	node: AllowedSerializedAudioElements,
+	ids: string[],
 	position: Position
-) => {
-	const nextId = generateId(audioGraph);
+): SerializedAudioElements => {
+	const idMap = Object.fromEntries(
+		ids.map((id, index) => [id, `${generateId(audioGraph) + index}`])
+	);
 
-	return {
-		...audioGraph,
-		[nextId]: {
+	const idsAndNodes = ids.flatMap((id) => {
+		const node = audioGraph[id];
+
+		if (node) {
+			return [[id, node] as const];
+		}
+
+		return [];
+	});
+
+	const nodesWithRewrittenIds = idsAndNodes.map(([id, node]) => {
+		const rewrittenInputs = node.inputs?.map((input) => {
+			if (typeof input === 'string') {
+				if (ids.some((id) => id === input)) {
+					return idMap[input] ?? '';
+				}
+
+				return input;
+			}
+
+			if (ids.some((id) => id === input.id)) {
+				return {
+					...input,
+					id: idMap[input.id] ?? ''
+				};
+			}
+
+			return input;
+		});
+
+		const rewrittenParameters =
+			node.parameters !== undefined
+				? Object.fromEntries(
+						Object.entries(node.parameters).map(([parameterName, parameterValue]) => {
+							return [
+								parameterName,
+								{
+									...parameterValue,
+									inputs: parameterValue.inputs.map((input) => {
+										if (ids.some((id) => id === input.id)) {
+											return {
+												...input,
+												id: idMap[input.id] ?? ''
+											};
+										}
+
+										return input;
+									})
+								}
+							];
+						})
+				  )
+				: undefined;
+
+		const rewrittenNode = {
 			...node,
+			inputs: rewrittenInputs,
+			parameters: rewrittenParameters,
 			ui: {
 				position
 			}
-		}
+		};
+		return [idMap[id], rewrittenNode] as const;
+	});
+
+	return {
+		...audioGraph,
+		...Object.fromEntries(nodesWithRewrittenIds)
 	};
 };
 
