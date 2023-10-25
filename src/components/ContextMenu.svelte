@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
 	import { categorizedNodeTypes } from '../audio/serialized';
-	import Button from './Button.svelte';
+	import ChevronRight from '../icons/Chevron_Right.svg?component';
 	import Menu from './Menu.svelte';
 
 	const dispatcher = createEventDispatcher();
@@ -44,32 +44,48 @@
 				on:mouseleave={handleMouseLeave}
 			>
 				<div>{nodeType}</div>
+				<div class="icon"><ChevronRight /></div>
 				<div class="submenu" class:visible={hoveredOverNodeType === nodeType}>
 					<Menu>
 						{#each nodeTypes as innerNodeType (innerNodeType)}
-							<Button
+							<div
+								class="menu-button"
 								on:click={handleNodeClick(innerNodeType)}
-								title={innerNodeType.replaceAll('-', ' ')}
-							/>
+								on:keydown={() => {}}
+							>
+								{innerNodeType.replaceAll('-', ' ')}
+							</div>
 						{/each}
 					</Menu>
 				</div>
 			</div>
 		{/each}
 	</div>
-	<Button title="Paste" on:click={handlePasteClick} />
+	<div class="menu-button" on:click={handlePasteClick} on:keypress={() => {}}>paste</div>
 </Menu>
 
 <style>
-	.menu-section {
+	.menu-section,
+	.menu-button {
 		padding: 4px 8px;
 		position: relative;
 		font-size: 14px;
 		border-radius: 4px;
 		transition: background-color 0.2s;
+		cursor: pointer;
+		white-space: nowrap;
 	}
 
-	.menu-section:hover {
+	.menu-section {
+		padding-right: 0;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 8px;
+	}
+
+	.menu-section:hover,
+	.menu-button:hover {
 		background-color: var(--neutral-700);
 	}
 
@@ -89,5 +105,15 @@
 
 	.create-section {
 		border-bottom: 1px solid var(--neutral-500);
+		padding-bottom: 8px;
+	}
+
+	.icon {
+		display: flex;
+		align-items: center;
+	}
+
+	.icon :global(svg path) {
+		stroke: var(--neutral-500);
 	}
 </style>
