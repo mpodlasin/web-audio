@@ -11,6 +11,7 @@
 	export let unit: string | null = null;
 	export let polarity: 'uni' | 'bi';
 	export let draggingLine: boolean;
+	export let linear: boolean = false;
 
 	let hoveringOver = false;
 
@@ -52,7 +53,16 @@
 		});
 	}
 
-	$: angle = (180 * (numberParameter - minValue)) / (maxValue - minValue) - 90;
+	$: normalizedNumberParameter =
+		polarity === 'uni'
+			? numberParameter / (maxValue - minValue)
+			: (numberParameter / (maxValue - minValue)) * 2;
+
+	$: mappedNumberParameter = linear
+		? normalizedNumberParameter
+		: Math.cbrt(normalizedNumberParameter);
+
+	$: angle = polarity === 'uni' ? 180 * mappedNumberParameter - 90 : 90 * mappedNumberParameter;
 
 	function handleMouseMove(event: MouseEvent) {
 		event.preventDefault();
@@ -62,7 +72,6 @@
 			const { clientY } = event;
 			const dy = y - clientY;
 			const value = previousValue + (dy * (maxValue - minValue)) / factor;
-
 			const normalizedValue = Math.min(Math.max(value, minValue), maxValue);
 
 			dispatcher('change', { parameterName, value: normalizedValue });
@@ -100,9 +109,17 @@
 		}
 	}
 
-	$: animatedValueWithBase = animatedValue + numberParameter;
+	$: animatedValueWithBase = animatedValue + mappedNumberParameter;
 
-	$: highlightAngle = (180 * (animatedValueWithBase - minValue)) / (maxValue - minValue) - 90;
+	$: normalizedAnimatedValueWithBase = Math.max(
+		minValue,
+		Math.min(maxValue, animatedValueWithBase)
+	);
+
+	$: highlightAngle =
+		polarity === 'uni'
+			? 180 * normalizedAnimatedValueWithBase - 90
+			: 90 * normalizedAnimatedValueWithBase;
 
 	let highlightStyle = '';
 
@@ -111,11 +128,11 @@
 			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from -90deg, var(--primary-500) ${
 				((highlightAngle + 90) / 180) * 50
 			}%, var(--neutral-900) 0);`;
-		} else if (polarity === 'bi' && animatedValueWithBase >= 0) {
+		} else if (polarity === 'bi' && normalizedAnimatedValueWithBase >= 0) {
 			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from 0deg, var(--primary-500) ${
 				((highlightAngle + 90) / 180) * 50 - 25
 			}%, var(--neutral-900) 0);`;
-		} else if (polarity === 'bi' && animatedValueWithBase < 0) {
+		} else if (polarity === 'bi' && normalizedAnimatedValueWithBase < 0) {
 			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${highlightAngle}deg, var(--primary-500) ${
 				25 - ((highlightAngle + 90) / 180) * 50
 			}%, var(--neutral-900) 0);`;

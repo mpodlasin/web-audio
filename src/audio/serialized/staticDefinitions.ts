@@ -51,6 +51,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				defaultValue?: number;
 				polarity: 'uni' | 'bi';
 				binary?: boolean;
+				linear?: boolean;
 			};
 		};
 	};

@@ -8,12 +8,7 @@ const meta = {
 	title: 'UI/Knob',
 	component: Knob,
 	tags: ['autodocs'],
-	argTypes: {
-		parameterName: { control: 'text' },
-		parameter: { control: 'number' },
-		minValue: { control: 'number' },
-		maxValue: { control: 'number' }
-	}
+	argTypes: {}
 } satisfies Meta<Knob>;
 
 export default meta;
@@ -25,6 +20,9 @@ export const Primary: Story = {
 		parameter: { base: 0.5, inputs: [] },
 		minValue: 0,
 		maxValue: 1,
+		defaultValue: 0.5,
+		polarity: 'uni',
+		draggingLine: false,
 		audioParamAnalyser: undefined
 	}
 };
@@ -35,6 +33,9 @@ export const Controlled: Story = {
 		parameter: { base: 0.5, inputs: [{ id: '1', output: 'frequency' }] },
 		minValue: 0,
 		maxValue: 1,
+		defaultValue: 0.5,
+		polarity: 'uni',
+		draggingLine: false,
 		audioParamAnalyser: undefined
 	}
 };
