@@ -71,8 +71,12 @@
 			const { y } = knob.getBoundingClientRect();
 			const { clientY } = event;
 			const dy = y - clientY;
-			const value = previousValue + (dy * (maxValue - minValue)) / factor;
-			const normalizedValue = Math.min(Math.max(value, minValue), maxValue);
+			const normalizedValueChange = dy / factor;
+			const valueChange = normalizedValueChange * (maxValue - minValue);
+			const newValue = previousValue + valueChange;
+			const normalizedNewValue = newValue / (maxValue - minValue);
+			const mappedNewValue = Math.pow(normalizedNewValue, 3);
+			const normalizedValue = Math.min(Math.max(mappedNewValue * (maxValue - minValue), minValue), maxValue);
 
 			dispatcher('change', { parameterName, value: normalizedValue });
 		}
