@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { SerializedAudioParameter } from '../audio/AudioCanvas';
+	import type { Position, SerializedAudioParameter } from '../audio/AudioCanvas';
 	import { createEventDispatcher } from 'svelte';
 
 	export let parameterName: string;
@@ -33,15 +33,22 @@
 	let knob: HTMLDivElement;
 
 	let isDragging = false;
+	let draggingStartPosition: Position | null = null;
 	let previousValue = numberParameter ?? 0;
 
 	function handleMouseDown(event: MouseEvent) {
 		event.stopPropagation();
 		isDragging = true;
+		draggingStartPosition = {
+			x: event.clientX,
+			y: event.clientY,
+		}
+
 		window.addEventListener('mousemove', handleMouseMove);
 
 		window.addEventListener('mouseup', () => {
 			isDragging = false;
+			draggingStartPosition = null;
 			previousValue = numberParameter ?? 0;
 			window.removeEventListener('mousemove', handleMouseMove);
 		});
@@ -66,19 +73,21 @@
 
 	function handleMouseMove(event: MouseEvent) {
 		event.preventDefault();
-		if (isDragging) {
+
+		if (isDragging && draggingStartPosition) {
 			const factor = event.shiftKey ? 5000 : 500;
-			const { y } = knob.getBoundingClientRect();
+			const { y } = draggingStartPosition
 			const { clientY } = event;
 			const dy = y - clientY;
 			const normalizedValueChange = dy / factor;
-			const valueChange = normalizedValueChange * (maxValue - minValue);
-			const newValue = previousValue + valueChange;
-			const normalizedNewValue = newValue / (maxValue - minValue);
-			const mappedNewValue = Math.pow(normalizedNewValue, 3);
-			const normalizedValue = Math.min(Math.max(mappedNewValue * (maxValue - minValue), minValue), maxValue);
 
-			dispatcher('change', { parameterName, value: normalizedValue });
+			const normalizedPreviousValue = previousValue / (maxValue - minValue);
+
+			const newNormalizedValue = normalizedPreviousValue + normalizedValueChange;
+
+			const newValue = Math.pow(newNormalizedValue, 3) * (maxValue - minValue);
+
+			dispatcher('change', { parameterName, value: Math.max(minValue, Math.min(maxValue, newValue)) });
 		}
 	}
 
