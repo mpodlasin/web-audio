@@ -2,6 +2,8 @@
 	import type { Position, SerializedAudioParameter } from '../audio/AudioCanvas';
 	import { createEventDispatcher } from 'svelte';
 
+	type Polarity = "uni" | "bi";
+
 	export let parameterName: string;
 	export let parameter: SerializedAudioParameter;
 	export let audioParamAnalyser: AnalyserNode | undefined;
@@ -9,7 +11,7 @@
 	export let minValue: number;
 	export let maxValue: number;
 	export let unit: string | null = null;
-	export let polarity: 'uni' | 'bi';
+	export let polarity: Polarity;
 	export let draggingLine: boolean;
 	export let linear: boolean = false;
 
@@ -34,7 +36,6 @@
 
 	let isDragging = false;
 	let draggingStartPosition: Position | null = null;
-	let previousValue = numberParameter ?? 0;
 
 	function handleMouseDown(event: MouseEvent) {
 		event.stopPropagation();
@@ -43,13 +44,13 @@
 			x: event.clientX,
 			y: event.clientY,
 		}
+		previousAngle = angle;
 
 		window.addEventListener('mousemove', handleMouseMove);
 
 		window.addEventListener('mouseup', () => {
 			isDragging = false;
 			draggingStartPosition = null;
-			previousValue = numberParameter ?? 0;
 			window.removeEventListener('mousemove', handleMouseMove);
 		});
 	}
@@ -60,32 +61,47 @@
 		});
 	}
 
-	$: normalizedNumberParameter =
-		polarity === 'uni'
+	const normalizeNumberParameter = (numberParameter: number, polarity: Polarity) => polarity === 'uni'
 			? numberParameter / (maxValue - minValue)
 			: (numberParameter / (maxValue - minValue)) * 2;
 
-	$: mappedNumberParameter = linear
-		? normalizedNumberParameter
-		: Math.cbrt(normalizedNumberParameter);
+	const denormalizeNumberParameter = (normalizedNumberParameter: number, polarity: Polarity) => 
+		polarity === 'uni' ? normalizedNumberParameter * (maxValue - minValue)
+		: normalizedNumberParameter * (maxValue - minValue) / 2;
 
-	$: angle = polarity === 'uni' ? 180 * mappedNumberParameter - 90 : 90 * mappedNumberParameter;
+	$: normalizedNumberParameter = normalizeNumberParameter(numberParameter, polarity);
+
+	const mapNumberParameter = (numberParameter: number, linear: boolean) => linear
+		? numberParameter
+		: Math.cbrt(numberParameter);
+
+	const demapNumberParameter = (mappedNumberParameter: number, linear: boolean) => linear ?
+		mappedNumberParameter :
+		Math.pow(mappedNumberParameter, 3);
+
+	$: mappedNumberParameter = mapNumberParameter(normalizedNumberParameter, linear);
+
+	const mapToAngle = (numberParameter: number, polarity: Polarity) => polarity === 'uni' ? 180 * numberParameter - 90 : 90 * numberParameter;
+
+	const demapFromAngle = (angle: number, polarity: Polarity) => polarity === 'uni' ? (angle + 90) / 180 : angle / 90;
+
+	$: angle = mapToAngle(mappedNumberParameter, polarity);
+
+	let previousAngle = angle ?? 0;
 
 	function handleMouseMove(event: MouseEvent) {
 		event.preventDefault();
 
 		if (isDragging && draggingStartPosition) {
-			const factor = event.shiftKey ? 5000 : 500;
+			const factor = event.shiftKey ? 10 : 3;
 			const { y } = draggingStartPosition
 			const { clientY } = event;
 			const dy = y - clientY;
 			const normalizedValueChange = dy / factor;
 
-			const normalizedPreviousValue = previousValue / (maxValue - minValue);
+			const newAngle = previousAngle + normalizedValueChange;
 
-			const newNormalizedValue = normalizedPreviousValue + normalizedValueChange;
-
-			const newValue = Math.pow(newNormalizedValue, 3) * (maxValue - minValue);
+			const newValue = denormalizeNumberParameter(demapNumberParameter(demapFromAngle(newAngle, polarity), linear), polarity);
 
 			dispatcher('change', { parameterName, value: Math.max(minValue, Math.min(maxValue, newValue)) });
 		}
