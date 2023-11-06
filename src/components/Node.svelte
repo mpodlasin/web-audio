@@ -115,6 +115,7 @@
 					maxValue={staticDefinition.parameters[nodeParameter[0]]?.maxValue ?? Infinity}
 					unit={staticDefinition.parameters[nodeParameter[0]]?.unit ?? null}
 					polarity={staticDefinition.parameters[nodeParameter[0]]?.polarity ?? 'uni'}
+					linear={staticDefinition.parameters[nodeParameter[0]]?.linear}
 					{draggingLine}
 					on:change={handleParameterChange}
 					on:mouseup={handleKnobMouseUp}
