@@ -81,11 +81,15 @@
 
 	$: mappedNumberParameter = mapNumberParameter(normalizedNumberParameter, linear);
 
+	const angleSpread = 250;
+
 	const mapToAngle = (numberParameter: number, polarity: Polarity) =>
-		polarity === 'uni' ? 180 * numberParameter - 90 : 90 * numberParameter;
+		polarity === 'uni'
+			? angleSpread * numberParameter - angleSpread / 2
+			: (angleSpread / 2) * numberParameter;
 
 	const demapFromAngle = (angle: number, polarity: Polarity) =>
-		polarity === 'uni' ? (angle + 90) / 180 : angle / 90;
+		polarity === 'uni' ? (angle + angleSpread / 2) / angleSpread : angle / (angleSpread / 2);
 
 	$: angle = mapToAngle(mappedNumberParameter, polarity);
 
@@ -153,25 +157,24 @@
 		Math.min(maxValue, animatedValueWithBase)
 	);
 
-	$: highlightAngle =
-		polarity === 'uni'
-			? 180 * normalizedAnimatedValueWithBase - 90
-			: 90 * normalizedAnimatedValueWithBase;
-
 	let highlightStyle = '';
 
 	$: {
 		if (polarity === 'uni') {
-			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from -90deg, var(--primary-500) ${
-				((highlightAngle + 90) / 180) * 50
+			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${
+				-angleSpread / 2
+			}deg, var(--primary-500) ${
+				normalizedAnimatedValueWithBase * (angleSpread / 360) * 100
 			}%, var(--neutral-900) 0);`;
 		} else if (polarity === 'bi' && normalizedAnimatedValueWithBase >= 0) {
 			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from 0deg, var(--primary-500) ${
-				((highlightAngle + 90) / 180) * 50 - 25
+				normalizedAnimatedValueWithBase * (angleSpread / 2 / 360) * 100
 			}%, var(--neutral-900) 0);`;
 		} else if (polarity === 'bi' && normalizedAnimatedValueWithBase < 0) {
-			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${highlightAngle}deg, var(--primary-500) ${
-				25 - ((highlightAngle + 90) / 180) * 50
+			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${
+				normalizedAnimatedValueWithBase * (angleSpread / 2)
+			}deg, var(--primary-500) ${
+				-normalizedAnimatedValueWithBase * (angleSpread / 2 / 360) * 100
 			}%, var(--neutral-900) 0);`;
 		}
 	}

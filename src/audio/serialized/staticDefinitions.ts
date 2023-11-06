@@ -102,7 +102,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				maxValue: 1,
 				defaultValue: 1,
 				polarity: 'uni',
-				linear: true,
+				linear: true
 			}
 		}
 	},
@@ -131,7 +131,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				minValue: -1,
 				maxValue: 1,
 				defaultValue: 0,
-				polarity: 'bi'
+				polarity: 'bi',
+				linear: true
 			}
 		}
 	},
