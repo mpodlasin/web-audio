@@ -2,7 +2,7 @@
 	import type { Position, SerializedAudioParameter } from '../audio/AudioCanvas';
 	import { createEventDispatcher } from 'svelte';
 
-	type Polarity = "uni" | "bi";
+	type Polarity = 'uni' | 'bi';
 
 	export let parameterName: string;
 	export let parameter: SerializedAudioParameter;
@@ -42,8 +42,8 @@
 		isDragging = true;
 		draggingStartPosition = {
 			x: event.clientX,
-			y: event.clientY,
-		}
+			y: event.clientY
+		};
 		previousAngle = angle;
 
 		window.addEventListener('mousemove', handleMouseMove);
@@ -61,29 +61,31 @@
 		});
 	}
 
-	const normalizeNumberParameter = (numberParameter: number, polarity: Polarity) => polarity === 'uni'
+	const normalizeNumberParameter = (numberParameter: number, polarity: Polarity) =>
+		polarity === 'uni'
 			? numberParameter / (maxValue - minValue)
 			: (numberParameter / (maxValue - minValue)) * 2;
 
-	const denormalizeNumberParameter = (normalizedNumberParameter: number, polarity: Polarity) => 
-		polarity === 'uni' ? normalizedNumberParameter * (maxValue - minValue)
-		: normalizedNumberParameter * (maxValue - minValue) / 2;
+	const denormalizeNumberParameter = (normalizedNumberParameter: number, polarity: Polarity) =>
+		polarity === 'uni'
+			? normalizedNumberParameter * (maxValue - minValue)
+			: (normalizedNumberParameter * (maxValue - minValue)) / 2;
 
 	$: normalizedNumberParameter = normalizeNumberParameter(numberParameter, polarity);
 
-	const mapNumberParameter = (numberParameter: number, linear: boolean) => linear
-		? numberParameter
-		: Math.cbrt(numberParameter);
+	const mapNumberParameter = (numberParameter: number, linear: boolean) =>
+		linear ? numberParameter : Math.cbrt(numberParameter);
 
-	const demapNumberParameter = (mappedNumberParameter: number, linear: boolean) => linear ?
-		mappedNumberParameter :
-		Math.pow(mappedNumberParameter, 3);
+	const demapNumberParameter = (mappedNumberParameter: number, linear: boolean) =>
+		linear ? mappedNumberParameter : Math.pow(mappedNumberParameter, 3);
 
 	$: mappedNumberParameter = mapNumberParameter(normalizedNumberParameter, linear);
 
-	const mapToAngle = (numberParameter: number, polarity: Polarity) => polarity === 'uni' ? 180 * numberParameter - 90 : 90 * numberParameter;
+	const mapToAngle = (numberParameter: number, polarity: Polarity) =>
+		polarity === 'uni' ? 180 * numberParameter - 90 : 90 * numberParameter;
 
-	const demapFromAngle = (angle: number, polarity: Polarity) => polarity === 'uni' ? (angle + 90) / 180 : angle / 90;
+	const demapFromAngle = (angle: number, polarity: Polarity) =>
+		polarity === 'uni' ? (angle + 90) / 180 : angle / 90;
 
 	$: angle = mapToAngle(mappedNumberParameter, polarity);
 
@@ -94,16 +96,22 @@
 
 		if (isDragging && draggingStartPosition) {
 			const factor = event.shiftKey ? 10 : 3;
-			const { y } = draggingStartPosition
+			const { y } = draggingStartPosition;
 			const { clientY } = event;
 			const dy = y - clientY;
 			const normalizedValueChange = dy / factor;
 
 			const newAngle = previousAngle + normalizedValueChange;
 
-			const newValue = denormalizeNumberParameter(demapNumberParameter(demapFromAngle(newAngle, polarity), linear), polarity);
+			const newValue = denormalizeNumberParameter(
+				demapNumberParameter(demapFromAngle(newAngle, polarity), linear),
+				polarity
+			);
 
-			dispatcher('change', { parameterName, value: Math.max(minValue, Math.min(maxValue, newValue)) });
+			dispatcher('change', {
+				parameterName,
+				value: Math.max(minValue, Math.min(maxValue, newValue))
+			});
 		}
 	}
 
