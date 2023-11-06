@@ -81,7 +81,7 @@
 
 	$: mappedNumberParameter = mapNumberParameter(normalizedNumberParameter, linear);
 
-	const angleSpread = 250;
+	const angleSpread = 270;
 
 	const mapToAngle = (numberParameter: number, polarity: Polarity) =>
 		polarity === 'uni'
