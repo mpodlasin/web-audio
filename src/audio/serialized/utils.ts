@@ -2,7 +2,9 @@ import { allowedSerializedAudioElementStaticDefinitions } from './staticDefiniti
 import type { AllowedSerializedAudioElements, Position, SerializedAudioElements } from './types';
 
 const generateId = (audioGraph: SerializedAudioElements, offset = 0) => {
-	return self.crypto.randomUUID ? self.crypto.randomUUID() : `${Object.keys(audioGraph).length + 1 + offset}`
+	return self.crypto.randomUUID
+		? self.crypto.randomUUID()
+		: `${Object.keys(audioGraph).length + 1 + offset}`;
 };
 
 export const insertExistingNodes = (
@@ -10,9 +12,7 @@ export const insertExistingNodes = (
 	ids: string[],
 	position: Position
 ): SerializedAudioElements => {
-	const idMap = Object.fromEntries(
-		ids.map((id, index) => [id, generateId(audioGraph, index)])
-	);
+	const idMap = Object.fromEntries(ids.map((id, index) => [id, generateId(audioGraph, index)]));
 
 	const idsAndNodes = ids.flatMap((id) => {
 		const node = audioGraph[id];

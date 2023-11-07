@@ -844,14 +844,14 @@ describe('AudioCanvas', () => {
 					inputs: [],
 					parameters: {
 						factor: {
-							base: 0, inputs: []
+							base: 0,
+							inputs: []
 						}
-					},
-				},
+					}
+				}
 			};
 
-			const newAudioElements = insertExistingNodes(audioElements, ['3'], {x: 0, y: 0});
-
+			const newAudioElements = insertExistingNodes(audioElements, ['3'], { x: 0, y: 0 });
 
 			expect(newAudioElements['2']?.inputs?.length).toBe(1);
 			expect(newAudioElements['2']?.parameters?.['gain'].inputs.length).toBe(1);
