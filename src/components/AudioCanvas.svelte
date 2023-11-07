@@ -30,6 +30,7 @@
 	import ContextMenu from './ContextMenu.svelte';
 	import { dragNode } from '../ui/dragNode';
 	import MenuButton from './MenuButton.svelte';
+	import { globalContext } from '../audio/GlobalContext';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
@@ -349,6 +350,7 @@
 	};
 
 	let playing = false;
+	let calledPlayAudioCanvas = false;
 
 	const handlePlayChange = (event: CustomEvent<{ playing: boolean }>) => {
 		playing = event.detail.playing;
@@ -356,7 +358,13 @@
 
 	$: {
 		if (playing) {
-			playAudioCanvas(audioNodeDatabase);
+			globalContext.resume();
+			if (!calledPlayAudioCanvas) {
+				playAudioCanvas(audioNodeDatabase);
+				calledPlayAudioCanvas = true;
+			}
+		} else {
+			globalContext.suspend();
 		}
 	}
 
