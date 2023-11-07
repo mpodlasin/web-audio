@@ -822,5 +822,39 @@ describe('AudioCanvas', () => {
 				output: 'audio'
 			});
 		});
+
+		it('does not remove existing lines when copy pasting a node', () => {
+			const audioElements = {
+				'1': {
+					type: 'square-oscillator' as const,
+					parameters: {
+						frequency: { base: 333, inputs: [] },
+						detune: { base: 0, inputs: [] }
+					}
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: ['1'],
+					parameters: {
+						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
+					}
+				},
+				'3': {
+					type: 'multiply' as const,
+					inputs: [],
+					parameters: {
+						factor: {
+							base: 0, inputs: []
+						}
+					},
+				},
+			};
+
+			const newAudioElements = insertExistingNodes(audioElements, ['3'], {x: 0, y: 0});
+
+
+			expect(newAudioElements['2']?.inputs?.length).toBe(1);
+			expect(newAudioElements['2']?.parameters?.['gain'].inputs.length).toBe(1);
+		});
 	});
 });

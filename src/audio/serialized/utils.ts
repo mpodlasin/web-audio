@@ -1,8 +1,8 @@
 import { allowedSerializedAudioElementStaticDefinitions } from './staticDefinitions';
 import type { AllowedSerializedAudioElements, Position, SerializedAudioElements } from './types';
 
-const generateId = () => {
-	return self.crypto.randomUUID();
+const generateId = (audioGraph: SerializedAudioElements, offset = 0) => {
+	return self.crypto.randomUUID ? self.crypto.randomUUID() : `${Object.keys(audioGraph).length + 1 + offset}`
 };
 
 export const insertExistingNodes = (
@@ -11,7 +11,7 @@ export const insertExistingNodes = (
 	position: Position
 ): SerializedAudioElements => {
 	const idMap = Object.fromEntries(
-		ids.map((id) => [id, generateId()])
+		ids.map((id, index) => [id, generateId(audioGraph, index)])
 	);
 
 	const idsAndNodes = ids.flatMap((id) => {
@@ -91,16 +91,18 @@ export const insertExistingNodes = (
 
 							if (foundId) {
 								return [input, idMap[foundId] ?? ''];
+							} else {
+								return [input];
 							}
 						} else {
 							const foundId = ids.find((id) => id === input.id);
 
 							if (foundId) {
 								return [input, { id: idMap[foundId] ?? '', output: input.output }];
+							} else {
+								return [input];
 							}
 						}
-
-						return [];
 					}),
 					parameters: Object.fromEntries(
 						Object.entries(node.parameters ?? {}).map(([parameterName, parameterValue]) => {
@@ -124,7 +126,7 @@ export const insertExistingNodes = (
 												}
 											}
 
-											return [];
+											return [input];
 										}
 									)
 								}
@@ -147,7 +149,7 @@ export const addNode = <S extends SerializedAudioElements>(
 	type: AllowedSerializedAudioElements['type'],
 	position?: Position
 ): S => {
-	const nextId = generateId();
+	const nextId = generateId(audioGraph);
 
 	const staticNodeDefinition = allowedSerializedAudioElementStaticDefinitions[type];
 
