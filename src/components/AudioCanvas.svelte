@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {
 		type AudioNodeDatabase,
-		playAudioCanvas,
 		type SerializedAudioElements,
 		allowedSerializedAudioElementStaticDefinitions,
 		updateAudioCanvas,
@@ -13,13 +12,10 @@
 		removeNode,
 		addConnectionToParameter,
 		type Position,
-		type SerializedAudioElement,
-		type AllowedSerializedAudioElements,
 		insertExistingNodes
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import Menu from './Menu.svelte';
-	import Button from './Button.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
 	import { getLinesToDisplay } from '../ui/lines';
 	import { addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
@@ -350,7 +346,6 @@
 	};
 
 	let playing = false;
-	let calledPlayAudioCanvas = false;
 
 	const handlePlayChange = (event: CustomEvent<{ playing: boolean }>) => {
 		playing = event.detail.playing;
@@ -359,10 +354,6 @@
 	$: {
 		if (playing) {
 			globalContext.resume();
-			if (!calledPlayAudioCanvas) {
-				playAudioCanvas(audioNodeDatabase);
-				calledPlayAudioCanvas = true;
-			}
 		} else {
 			globalContext.suspend();
 		}

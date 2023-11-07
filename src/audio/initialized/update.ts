@@ -32,8 +32,7 @@ import {
 	isCustomAudioScheduledSourceNode,
 	type CustomAudioNode,
 	isCustomAudioNodeWithWebApiNode,
-	type AudioNodeDatabase,
-	type CustomAudioParam
+	type AudioNodeDatabase
 } from './types';
 
 export const updateAudioCanvas = (
@@ -74,6 +73,9 @@ export const updateAudioCanvas = (
 			const createdAudioNode = createCustomAudioNode(newAudioElement);
 
 			if (createdAudioNode !== null) {
+				if (isCustomAudioScheduledSourceNode(createdAudioNode)) {
+					createdAudioNode.start();
+				}
 				audioNodeDatabase[id] = createdAudioNode;
 			}
 		}
@@ -302,20 +304,6 @@ function connectAudioElementsToParameter(
 					output ?? staticDefinitionAudioElementB.outputs[0]
 				);
 			}
-		}
-	}
-}
-
-export function playAudioCanvas(audioNodeDatabase: AudioNodeDatabase): void {
-	for (const id in audioNodeDatabase) {
-		const audioNode = audioNodeDatabase[id];
-
-		if (audioNode === undefined) {
-			throw new Error(`Audio node with id ${id} not found`);
-		}
-
-		if (isCustomAudioScheduledSourceNode(audioNode)) {
-			audioNode.start();
 		}
 	}
 }
