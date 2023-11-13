@@ -126,3 +126,15 @@ Object.defineProperty(window, 'registerProcessor', {
 	writable: true,
 	value: registerProcessorMock
 });
+
+/* For audio processor nodes tests */
+
+Object.defineProperty(window, 'sampleRate', {
+	writable: true,
+	value: 44100,
+});
+
+Object.defineProperty(window, 'currentTime', {
+	writable: true,
+	value: 0,
+});
