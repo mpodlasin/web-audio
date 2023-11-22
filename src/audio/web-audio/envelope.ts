@@ -44,6 +44,7 @@ export class Envelope extends AudioWorkletProcessor {
 		this.copyInputsToOutputs(inputList, outputList);
 		this.detectAttack(inputList, parameters, _currentFrame);
 		this.detectRelease(inputList, parameters, _currentFrame);
+		this.saveLastValueOfPreviousProcess(inputList);
 
 		if (this.attack) {
 			const attackLengthInSamples = lengthInSamples(this.attack);
@@ -53,9 +54,16 @@ export class Envelope extends AudioWorkletProcessor {
 				output.forEach((out) => {
 					for (let i = 0; i < out.length; i++) {
 						const sampleIndex = _currentFrame + i;
-
-						if (sampleIndex < end && attackLengthInSamples !== 0) {
+						if (start <= sampleIndex && sampleIndex < end && attackLengthInSamples !== 0) {
 							const formula = (sampleIndex - start) / attackLengthInSamples;
+
+							console.log({
+								start,
+								end,
+								i,
+								sampleIndex,
+								formula,
+							})
 
 							out[i] = Math.max(0, Math.min(formula, 1));
 						}
@@ -65,6 +73,14 @@ export class Envelope extends AudioWorkletProcessor {
 		}
 
 		return true;
+	}
+
+	saveLastValueOfPreviousProcess(inputList: Float32Array[][]) {
+		inputList.forEach(input => {
+			input.forEach(inp => {
+				this.lastValueOfPreviousProcess = inp[inp.length - 1] ?? 0
+			})
+		})
 	}
 
 	detectAttack(inputList: Float32Array[][], parameters: Record<string, Float32Array>, _currentFrame: number): void {
@@ -90,7 +106,7 @@ export class Envelope extends AudioWorkletProcessor {
 			const numberOfSamplesPerSecond = this._sampleRate;
 			const attackInMilliseconds = attack[0] ?? 0;
 			const attackInSeconds = attackInMilliseconds / 1000;
-			const attackInSamples = attackInSeconds * numberOfSamplesPerSecond;
+			const attackInSamples = Math.round(attackInSeconds * numberOfSamplesPerSecond);
 
 			this.attack = {
 				start: _currentFrame + attackIndex,
@@ -122,7 +138,7 @@ export class Envelope extends AudioWorkletProcessor {
 			const numberOfSamplesPerSecond = this._sampleRate;
 			const releaseInMilliseconds = release[0] ?? 0;
 			const releaseInSeconds = releaseInMilliseconds / 1000;
-			const releaseInSamples = releaseInSeconds * numberOfSamplesPerSecond;
+			const releaseInSamples = Math.round(releaseInSeconds * numberOfSamplesPerSecond);
 
 			this.release = {
 				start: _currentFrame + releaseIndex,
@@ -162,7 +178,5 @@ declare const AudioWorkletProcessor: {
 };
 
 declare const registerProcessor: (name: string, value: object) => void;
-
-declare const currentTime: number;
 declare const currentFrame: number;
 declare const sampleRate: number;
