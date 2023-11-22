@@ -131,10 +131,10 @@ Object.defineProperty(window, 'registerProcessor', {
 
 Object.defineProperty(window, 'sampleRate', {
 	writable: true,
-	value: 44100,
+	value: 44100
 });
 
 Object.defineProperty(window, 'currentTime', {
 	writable: true,
-	value: 0,
+	value: 0
 });

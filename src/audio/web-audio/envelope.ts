@@ -1,5 +1,9 @@
+type Event = { start: number, end: number }
+
+const lengthInSamples = (event: Event) => Math.round(event.end - event.start);
+
 export class Envelope extends AudioWorkletProcessor {
-	constructor() {
+	constructor(private _sampleRate: number = sampleRate) {
 		super();
 	}
 
@@ -27,124 +31,117 @@ export class Envelope extends AudioWorkletProcessor {
 	}
 
 	lastValueOfPreviousProcess = 0;
-	finishEnvelopeAt: number | null = null;
-	envelopeStartedAt: number | null = null;
 
-	processedSamples = 0;
+	attack: Event | null = null;
+	release: Event | null = null;
 
 	process(
 		inputList: Float32Array[][],
 		outputList: Float32Array[][],
-		parameters: Record<string, Float32Array>
+		parameters: Record<string, Float32Array>,
+		_currentFrame: number = currentFrame
 	) {
-		let triggerEnvelope = false;
+		this.copyInputsToOutputs(inputList, outputList);
+		this.detectAttack(inputList, parameters, _currentFrame);
+		this.detectRelease(inputList, parameters, _currentFrame);
 
-		const numberOfSamplesPerSecond = sampleRate;
+		if (this.attack) {
+			const attackLengthInSamples = lengthInSamples(this.attack);
+			const { start, end } = this.attack;
+
+			outputList.forEach((output) => {
+				output.forEach((out) => {
+					for (let i = 0; i < out.length; i++) {
+						const sampleIndex = _currentFrame + i;
+
+						if (sampleIndex < end && attackLengthInSamples !== 0) {
+							const formula = (sampleIndex - start) / attackLengthInSamples;
+
+							out[i] = Math.max(0, Math.min(formula, 1));
+						}
+					}
+				});
+			});
+		}
+
+		return true;
+	}
+
+	detectAttack(inputList: Float32Array[][], parameters: Record<string, Float32Array>, _currentFrame: number): void {
+		let attackIndex: number | null = null;
 
 		inputList.forEach((input) => {
 			input.forEach((inp) => {
 				if (this.lastValueOfPreviousProcess === 0 && inp[0] === 1) {
-					triggerEnvelope = true;
+					attackIndex = 0;
 				} else {
 					for (let i = 0; i < inp.length - 1; i++) {
 						if (inp[i] === 0 && inp[i + 1] === 1) {
-							triggerEnvelope = true;
+							attackIndex = i + 1;
 						}
 					}
 				}
 			});
 		});
 
-		if (triggerEnvelope) {
-			this.envelopeStartedAt = currentTime;
-		}
+		const attack = parameters.attack;
 
-		let triggerRelease = false;
+		if (attackIndex !== null && attack && attack.length > 0) {
+			const numberOfSamplesPerSecond = this._sampleRate;
+			const attackInMilliseconds = attack[0] ?? 0;
+			const attackInSeconds = attackInMilliseconds / 1000;
+			const attackInSamples = attackInSeconds * numberOfSamplesPerSecond;
+
+			this.attack = {
+				start: _currentFrame + attackIndex,
+				end: _currentFrame + attackIndex + attackInSamples,
+			};
+		}
+	}
+
+	detectRelease(inputList: Float32Array[][], parameters: Record<string, Float32Array>, _currentFrame: number): void {
+		let releaseIndex: number | null = null;
 
 		inputList.forEach((input) => {
 			input.forEach((inp) => {
 				if (this.lastValueOfPreviousProcess === 1 && inp[0] === 0) {
-					triggerRelease = true;
+					releaseIndex = 0;
 				} else {
 					for (let i = 0; i < inp.length - 1; i++) {
 						if (inp[i] === 1 && inp[i + 1] === 0) {
-							triggerRelease = true;
+							releaseIndex = i + 1;
 						}
 					}
 				}
 			});
 		});
 
-		inputList.forEach((input) => {
-			input.forEach((inp) => {
-				this.lastValueOfPreviousProcess = inp[inp.length - 1] ?? 0;
+		const release = parameters.release;
+
+		if (releaseIndex !== null && release && release.length > 0) {
+			const numberOfSamplesPerSecond = this._sampleRate;
+			const releaseInMilliseconds = release[0] ?? 0;
+			const releaseInSeconds = releaseInMilliseconds / 1000;
+			const releaseInSamples = releaseInSeconds * numberOfSamplesPerSecond;
+
+			this.release = {
+				start: _currentFrame + releaseIndex,
+				end: _currentFrame + releaseIndex + releaseInSamples,
+			};
+		}
+	}
+
+
+	copyInputsToOutputs(inputList: Float32Array[][],
+		outputList: Float32Array[][]) {
+		
+			outputList.forEach((output, firstIndex) => {
+				output.forEach((out, secondIndex) => {
+					for (let i = 0; i < out.length; i++) {
+						out[i] = inputList[firstIndex]?.[secondIndex]?.[i] ?? 0;
+					}
+				})
 			});
-		});
-
-		if (triggerRelease) {
-			const release = parameters.release;
-
-			if (release && release.length === 1) {
-				const releaseInMilliseconds = release[0] ?? 0;
-				const releaseInSeconds = releaseInMilliseconds / 1000;
-
-				this.finishEnvelopeAt = currentTime + releaseInSeconds;
-			}
-
-			this.envelopeStartedAt = null;
-		}
-
-		if (this.envelopeStartedAt && this.envelopeStartedAt < currentTime) {
-			const attack = parameters.attack;
-
-			if (attack && attack.length === 1) {
-				const attackInMilliseconds = attack[0] ?? 0;
-				const attackInSeconds = attackInMilliseconds / 1000;
-
-				outputList.forEach((output) => {
-					output.forEach((out) => {
-						if (!this.envelopeStartedAt) return;
-
-						for (let i = 0; i < out.length; i++) {
-							const timeAtSample = (this.processedSamples + i + 1) / numberOfSamplesPerSecond;
-							out[i] = Math.max(
-								0,
-								Math.min((timeAtSample - this.envelopeStartedAt) / attackInSeconds, 1)
-							);
-						}
-					});
-				});
-			}
-		}
-
-		if (this.finishEnvelopeAt && currentTime < this.finishEnvelopeAt) {
-			const release = parameters.release;
-
-			if (release && release.length === 1) {
-				const releaseInMilliseconds = release[0] ?? 0;
-				const releaseInSeconds = releaseInMilliseconds / 1000;
-
-				outputList.forEach((output) => {
-					output.forEach((out) => {
-						if (!this.finishEnvelopeAt) return;
-
-						for (let i = 0; i < out.length; i++) {
-							const timeAtSample = (this.processedSamples + i + 1) / numberOfSamplesPerSecond;
-							out[i] = Math.max(
-								0,
-								Math.min((this.finishEnvelopeAt - timeAtSample) / releaseInSeconds, 1)
-							);
-						}
-					});
-				});
-			}
-		} else {
-			this.finishEnvelopeAt = null;
-		}
-
-		this.processedSamples += 128;
-
-		return true;
 	}
 }
 
