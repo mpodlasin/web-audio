@@ -57,14 +57,6 @@ export class Envelope extends AudioWorkletProcessor {
 						if (start <= sampleIndex && sampleIndex < end && attackLengthInSamples !== 0) {
 							const formula = (sampleIndex - start) / attackLengthInSamples;
 
-							console.log({
-								start,
-								end,
-								i,
-								sampleIndex,
-								formula,
-							})
-
 							out[i] = Math.max(0, Math.min(formula, 1));
 						}
 					}
