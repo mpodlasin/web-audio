@@ -134,7 +134,7 @@ describe('envelope worklet', () => {
 				input,
 				output,
 				{
-					attack: new Float32Array([ 4 * 1000 / sampleLength  ]), // 2 samples
+					attack: new Float32Array([ 4 * 1000 / sampleLength  ]), // 4 samples
 					release: new Float32Array([0]),
 					running: new Float32Array([1])
 				},
@@ -144,5 +144,60 @@ describe('envelope worklet', () => {
 
 		expect([...(outputs[0]?.[0]?.[0] ?? [])]).toEqual([0, 0, 0, 0, 0.25, 0.5]);
 		expect([...(outputs[1]?.[0]?.[0] ?? [])]).toEqual([0.75, 1, 1, 0, 0, 0]);
+	});
+
+	it('performs release on one frame', () => {
+		const envelope = new Envelope(44100);
+
+		const inputs = [[[new Float32Array([0, 1, 1, 0, 0, 0])]]];
+
+		const outputs = [[[new Float32Array([0, 0, 0, 0, 0, 0])]]];
+
+		inputs.forEach((input, index) => {
+			const output = outputs[index];
+
+			if (!output) return;
+
+			envelope.process(
+				input,
+				output,
+				{
+					attack: new Float32Array([0]),
+					release: new Float32Array([2 * 1000 / 44100]), // 2 samples
+					running: new Float32Array([1])
+				},
+				index * 6
+			);
+		});
+
+		expect([...(outputs[0]?.[0]?.[0] ?? [])]).toEqual([0, 1, 1, 1, 0.5, 0]);
+	});
+
+	it('performs release on two frames', () => {
+		const envelope = new Envelope(44100);
+
+		const inputs = [[[new Float32Array([0, 0, 1, 1, 1, 0])]], [[new Float32Array([0, 0, 0, 0, 0, 0])]]];
+
+		const outputs = [[[new Float32Array([0, 0, 0, 0, 0, 0])]], [[new Float32Array([0, 0, 0, 0, 0, 0])]]];
+
+		inputs.forEach((input, index) => {
+			const output = outputs[index];
+
+			if (!output) return;
+
+			envelope.process(
+				input,
+				output,
+				{
+					attack: new Float32Array([0]),
+					release: new Float32Array([4 * 1000 / 44100]), // 2 samples
+					running: new Float32Array([1])
+				},
+				index * 6
+			);
+		});
+
+		expect([...(outputs[0]?.[0]?.[0] ?? [])]).toEqual([0, 0, 1, 1, 1, 1]);
+		expect([...(outputs[1]?.[0]?.[0] ?? [])]).toEqual([0.75, 0.5, 0.25, 0, 0, 0]);
 	});
 });
