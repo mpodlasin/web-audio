@@ -1,10 +1,13 @@
-type Event = { start: number, end: number }
+type Event = { start: number; end: number };
 
 const lengthInSamples = (event: Event) => Math.round(event.end - event.start);
 
 export class Envelope extends AudioWorkletProcessor {
-	constructor(private _sampleRate: number = sampleRate) {
-		super();
+	constructor(
+		options: AudioWorkletNodeOptions | undefined,
+		private _sampleRate: number = sampleRate
+	) {
+		super(options);
 	}
 
 	static get parameterDescriptors() {
@@ -79,8 +82,8 @@ export class Envelope extends AudioWorkletProcessor {
 		const releaseLengthInSamples = lengthInSamples(release);
 		const { start, end } = release;
 
-		outputList.forEach(output => {
-			output.forEach(out => {
+		outputList.forEach((output) => {
+			output.forEach((out) => {
 				for (let i = 0; i < out.length; i++) {
 					const sampleIndex = _currentFrame + i;
 
@@ -90,19 +93,23 @@ export class Envelope extends AudioWorkletProcessor {
 						out[i] = Math.max(0, Math.min(formula, 1));
 					}
 				}
-			})
-		})
+			});
+		});
 	}
 
 	saveLastValueOfPreviousProcess(inputList: Float32Array[][]) {
-		inputList.forEach(input => {
-			input.forEach(inp => {
-				this.lastValueOfPreviousProcess = inp[inp.length - 1] ?? 0
-			})
-		})
+		inputList.forEach((input) => {
+			input.forEach((inp) => {
+				this.lastValueOfPreviousProcess = inp[inp.length - 1] ?? 0;
+			});
+		});
 	}
 
-	detectAttack(inputList: Float32Array[][], parameters: Record<string, Float32Array>, _currentFrame: number): void {
+	detectAttack(
+		inputList: Float32Array[][],
+		parameters: Record<string, Float32Array>,
+		_currentFrame: number
+	): void {
 		let attackIndex: number | null = null;
 
 		inputList.forEach((input) => {
@@ -129,12 +136,16 @@ export class Envelope extends AudioWorkletProcessor {
 
 			this.attack = {
 				start: _currentFrame + attackIndex,
-				end: _currentFrame + attackIndex + attackInSamples,
+				end: _currentFrame + attackIndex + attackInSamples
 			};
 		}
 	}
 
-	detectRelease(inputList: Float32Array[][], parameters: Record<string, Float32Array>, _currentFrame: number): void {
+	detectRelease(
+		inputList: Float32Array[][],
+		parameters: Record<string, Float32Array>,
+		_currentFrame: number
+	): void {
 		let releaseIndex: number | null = null;
 
 		inputList.forEach((input) => {
@@ -161,22 +172,19 @@ export class Envelope extends AudioWorkletProcessor {
 
 			this.release = {
 				start: _currentFrame + releaseIndex,
-				end: _currentFrame + releaseIndex + releaseInSamples,
+				end: _currentFrame + releaseIndex + releaseInSamples
 			};
 		}
 	}
 
-
-	copyInputsToOutputs(inputList: Float32Array[][],
-		outputList: Float32Array[][]) {
-		
-			outputList.forEach((output, firstIndex) => {
-				output.forEach((out, secondIndex) => {
-					for (let i = 0; i < out.length; i++) {
-						out[i] = inputList[firstIndex]?.[secondIndex]?.[i] ?? 0;
-					}
-				})
+	copyInputsToOutputs(inputList: Float32Array[][], outputList: Float32Array[][]) {
+		outputList.forEach((output, firstIndex) => {
+			output.forEach((out, secondIndex) => {
+				for (let i = 0; i < out.length; i++) {
+					out[i] = inputList[firstIndex]?.[secondIndex]?.[i] ?? 0;
+				}
 			});
+		});
 	}
 }
 
