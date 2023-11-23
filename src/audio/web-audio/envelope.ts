@@ -51,22 +51,7 @@ export class Envelope extends AudioWorkletProcessor {
 		}
 
 		if (this.release) {
-			const releaseLengthInSamples = lengthInSamples(this.release);
-			const { start, end } = this.release;
-
-			outputList.forEach(output => {
-				output.forEach(out => {
-					for (let i = 0; i < out.length; i++) {
-						const sampleIndex = _currentFrame + i;
-
-						if (start <= sampleIndex && sampleIndex < end && releaseLengthInSamples !== 0) {
-							const formula = (end - sampleIndex) / releaseLengthInSamples;
-	
-							out[i] = Math.max(0, Math.min(formula, 1));
-						}
-					}
-				})
-			})
+			this.handleRelease(this.release, _currentFrame, outputList);
 		}
 
 		return true;
@@ -88,6 +73,25 @@ export class Envelope extends AudioWorkletProcessor {
 				}
 			});
 		});
+	}
+
+	handleRelease(release: Event, _currentFrame: number, outputList: Float32Array[][]) {
+		const releaseLengthInSamples = lengthInSamples(release);
+		const { start, end } = release;
+
+		outputList.forEach(output => {
+			output.forEach(out => {
+				for (let i = 0; i < out.length; i++) {
+					const sampleIndex = _currentFrame + i;
+
+					if (start <= sampleIndex && sampleIndex < end && releaseLengthInSamples !== 0) {
+						const formula = (end - sampleIndex) / releaseLengthInSamples;
+
+						out[i] = Math.max(0, Math.min(formula, 1));
+					}
+				}
+			})
+		})
 	}
 
 	saveLastValueOfPreviousProcess(inputList: Float32Array[][]) {
