@@ -91,7 +91,7 @@ export type SerializedSequencerNote = {
 	duration: number;
 };
 
-export type SerializedEnvelopeNode = SerializedAudioElement<'envelope', never> & {
+export type SerializedAREnvelopeNode = SerializedAudioElement<'ar-envelope', never> & {
 	attack: number;
 	decay: number;
 	sustain: number;
@@ -117,7 +117,7 @@ export type AllowedSerializedAudioElements =
 	| SerializedGainNode
 	| SerializedDestinationNode
 	| SerializedTriggerNode
-	| SerializedEnvelopeNode
+	| SerializedAREnvelopeNode
 	| SerializedSequencerNode
 	| SerializedMidiNode
 	| SerializedOscilloscopeNode

@@ -168,9 +168,9 @@ export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode
 	}
 }
 
-export class EnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+export class AREnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor() {
-		super(new AudioWorkletNode(globalContext, 'envelope'));
+		super(new AudioWorkletNode(globalContext, 'ar-envelope'));
 	}
 }
 

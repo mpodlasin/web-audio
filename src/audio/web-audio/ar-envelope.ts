@@ -2,7 +2,7 @@ type Event = { start: number; end: number };
 
 const lengthInSamples = (event: Event) => Math.round(event.end - event.start);
 
-export class Envelope extends AudioWorkletProcessor {
+export class AREnvelope extends AudioWorkletProcessor {
 	constructor(
 		options: AudioWorkletNodeOptions | undefined,
 		private _sampleRate: number = sampleRate
@@ -188,7 +188,7 @@ export class Envelope extends AudioWorkletProcessor {
 	}
 }
 
-registerProcessor('envelope', Envelope);
+registerProcessor('ar-envelope', AREnvelope);
 
 interface AudioWorkletProcessor {
 	readonly port: MessagePort;

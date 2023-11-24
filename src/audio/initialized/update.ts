@@ -21,7 +21,7 @@ import {
 	CustomSquareOscillatorNode,
 	CustomTriangleOscillatorNode,
 	DestinationNode,
-	EnvelopeNode,
+	AREnvelopeNode,
 	GenericCustomAudioNodeWithWebApiNode,
 	MidiNode,
 	PitchQuantizerNode,
@@ -379,8 +379,8 @@ function createCustomAudioNode(
 			return new DestinationNode();
 		case 'trigger':
 			return new TriggerNode();
-		case 'envelope':
-			return new EnvelopeNode();
+		case 'ar-envelope':
+			return new AREnvelopeNode();
 		case 'sequencer':
 			return new SequencerNode();
 		case 'midi':

@@ -176,7 +176,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			}
 		}
 	},
-	envelope: {
+	'ar-envelope': {
 		inputs: ['trigger'],
 		outputs: ['envelope'],
 		parameters: {
@@ -207,16 +207,57 @@ export const nodeTypes = Object.keys(
 	allowedSerializedAudioElementStaticDefinitions
 ) as (keyof typeof allowedSerializedAudioElementStaticDefinitions)[];
 
-export const categorizedNodeTypes: {
-	[category: string]: AllowedSerializedAudioElements['type'][];
-} = {
+export const readableNames: { [P in AllowedSerializedAudioElements['type']]: string } = {
+	'sine-oscillator': 'Sine',
+	'square-oscillator': 'Square',
+	'saw-oscillator': 'Saw',
+	'triangle-oscillator': 'Triangle',
+	'ar-envelope': 'AR',
+	'bipolar-to-unipolar': 'Bi -> Uni',
+	convolution: 'Convolution',
+	delay: 'Delay',
+	destination: 'Output',
+	gain: 'Gain',
+	'lowpass-filter': 'Lowpass',
+	midi: 'MIDI',
+	multiply: 'Mult',
+	oscilloscope: 'Oscilloscope',
+	pan: 'Pan',
+	'pitch-quantizer': 'Pitch Quantizer',
+	sequencer: 'Sequencer',
+	trigger: 'Trigger'
+};
+
+export const categorizedNodeTypes = {
 	oscillators: ['sine-oscillator', 'saw-oscillator', 'square-oscillator', 'triangle-oscillator'],
 	gain: ['gain', 'pan'],
-	envelope: ['envelope'],
+	envelope: ['ar-envelope'],
 	effects: ['lowpass-filter', 'convolution', 'delay'],
 	pitch: ['sequencer', 'pitch-quantizer'],
 	math: ['multiply', 'bipolar-to-unipolar'],
 	io: ['destination', 'midi'],
 	clock: ['trigger'],
 	visualization: ['oscilloscope']
+};
+
+const everyNodeIsIncludedInMenu = nodeTypes.every((nodeType) =>
+	Object.values(categorizedNodeTypes).some((category) =>
+		category.some((nodeTypeInCategory) => nodeTypeInCategory === nodeType)
+	)
+);
+
+if (!everyNodeIsIncludedInMenu) {
+	throw Error('AAAAAaaaaaa!!!!!!');
+}
+
+const readableCategoryNames: { [P in keyof typeof categorizedNodeTypes]: string } = {
+	oscillators: 'Oscillators',
+	gain: 'Gain',
+	envelope: 'Envelope',
+	effects: 'Effects',
+	pitch: 'Pitch',
+	math: 'Math',
+	io: 'I/O',
+	clock: 'Clock',
+	visualization: 'Visualization'
 };

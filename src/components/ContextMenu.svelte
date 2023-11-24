@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { categorizedNodeTypes } from '../audio/serialized';
+	import { categorizedNodeTypes, readableNames } from '../audio/serialized';
 	import ChevronRight from '../icons/Chevron_Right.svg?component';
 	import Menu from './Menu.svelte';
 	import MenuButton from './MenuButton.svelte';
@@ -51,7 +51,7 @@
 						<Menu>
 							{#each nodeTypes as innerNodeType (innerNodeType)}
 								<MenuButton on:click={handleNodeClick(innerNodeType)} on:keydown={() => {}}>
-									{innerNodeType.replaceAll('-', ' ')}
+									{readableNames[innerNodeType]}
 								</MenuButton>
 							{/each}
 						</Menu>

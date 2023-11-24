@@ -177,7 +177,7 @@ describe('AudioCanvas', () => {
 					loopLength: 4
 				},
 				'2': {
-					type: 'envelope' as const,
+					type: 'ar-envelope' as const,
 					inputs: [{ id: '1', output: 'trigger' }],
 					parameters: {},
 					attack: 0.1,

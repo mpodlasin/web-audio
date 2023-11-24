@@ -5,7 +5,8 @@
 		type AllowedSerializedAudioElements,
 		type SerializedAudioParameter,
 		CustomOscilloscopeNode,
-		isCustomAudioNode
+		isCustomAudioNode,
+		readableNames
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
@@ -96,7 +97,7 @@
 </script>
 
 <div class="node" bind:this={element}>
-	<div class="header">{node.type.replaceAll('-', ' ')}</div>
+	<div class="header">{readableNames[node.type]}</div>
 	<div class="parameters">
 		{#each parameters as nodeParameter (nodeParameter[0])}
 			{#if staticDefinition.parameters[nodeParameter[0]]?.binary}

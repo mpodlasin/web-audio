@@ -2,11 +2,11 @@
  * @jest-environment jsdom
  */
 import '../mocks';
-import { Envelope } from './envelope';
+import { AREnvelope } from './ar-envelope';
 
-describe('envelope worklet', () => {
+describe('ar-envelope worklet', () => {
 	it('passes signal unchanged with one frame', () => {
-		const envelope = new Envelope({}, 44100);
+		const envelope = new AREnvelope({}, 44100);
 
 		const inputs = [[[new Float32Array([0, 0, 1, 1, 0, 0])]]];
 
@@ -33,7 +33,7 @@ describe('envelope worklet', () => {
 	});
 
 	it('passess signal unchanged with two frames', () => {
-		const envelope = new Envelope({}, 44100);
+		const envelope = new AREnvelope({}, 44100);
 
 		const inputs = [
 			[[new Float32Array([0, 0, 1, 1, 1, 1])]],
@@ -67,7 +67,7 @@ describe('envelope worklet', () => {
 	});
 
 	it('passess signal unchanged with three frames', () => {
-		const envelope = new Envelope({}, 44100);
+		const envelope = new AREnvelope({}, 44100);
 
 		const inputs = [
 			[[new Float32Array([0, 0, 1, 1, 1, 1])]],
@@ -104,7 +104,7 @@ describe('envelope worklet', () => {
 	});
 
 	it('passess signal unchanged twice on three frames', () => {
-		const envelope = new Envelope({}, 44100);
+		const envelope = new AREnvelope({}, 44100);
 
 		const inputs = [
 			[[new Float32Array([0, 0, 1, 1, 1, 1])]],
@@ -142,7 +142,7 @@ describe('envelope worklet', () => {
 
 	it('performs attack on one frame', () => {
 		const sampleLength = 44100;
-		const envelope = new Envelope({}, sampleLength);
+		const envelope = new AREnvelope({}, sampleLength);
 
 		const inputs = [[[new Float32Array([0, 0, 1, 1, 1, 0])]]];
 
@@ -170,7 +170,7 @@ describe('envelope worklet', () => {
 
 	it('performs attack on two frames', () => {
 		const sampleLength = 44100;
-		const envelope = new Envelope({}, sampleLength);
+		const envelope = new AREnvelope({}, sampleLength);
 
 		const inputs = [
 			[[new Float32Array([0, 0, 0, 1, 1, 1])]],
@@ -204,7 +204,7 @@ describe('envelope worklet', () => {
 	});
 
 	it('performs release on one frame', () => {
-		const envelope = new Envelope({}, 44100);
+		const envelope = new AREnvelope({}, 44100);
 
 		const inputs = [[[new Float32Array([0, 1, 1, 0, 0, 0])]]];
 
@@ -231,7 +231,7 @@ describe('envelope worklet', () => {
 	});
 
 	it('performs release on two frames', () => {
-		const envelope = new Envelope({}, 44100);
+		const envelope = new AREnvelope({}, 44100);
 
 		const inputs = [
 			[[new Float32Array([0, 0, 1, 1, 1, 0])]],
@@ -265,7 +265,7 @@ describe('envelope worklet', () => {
 	});
 
 	it('performs attack and release on two frames', () => {
-		const envelope = new Envelope({}, 44100);
+		const envelope = new AREnvelope({}, 44100);
 
 		const inputs = [
 			[[new Float32Array([0, 0, 1, 1, 1, 1])]],
@@ -299,7 +299,7 @@ describe('envelope worklet', () => {
 	});
 
 	it('performs attack and release twice on three frames', () => {
-		const envelope = new Envelope({}, 44100);
+		const envelope = new AREnvelope({}, 44100);
 
 		const inputs = [
 			[[new Float32Array([0, 0, 1, 1, 1, 1])]],
