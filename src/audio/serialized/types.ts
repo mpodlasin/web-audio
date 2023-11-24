@@ -127,3 +127,5 @@ export type AllowedSerializedAudioElements =
 	| SerializedMultiplyNode
 	| SerializedPanNode
 	| SerializedBipolarToUnipolar;
+
+export type NodeType = AllowedSerializedAudioElements['type'];

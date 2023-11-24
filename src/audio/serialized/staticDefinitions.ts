@@ -1,4 +1,4 @@
-import type { AllowedSerializedAudioElements } from './types';
+import type { NodeType } from './types';
 
 const frequencyParameter = {
 	minValue: 0,
@@ -40,7 +40,7 @@ const filterDefinition = {
 };
 
 export const allowedSerializedAudioElementStaticDefinitions: {
-	[key in AllowedSerializedAudioElements['type']]: {
+	[key in NodeType]: {
 		inputs: string[];
 		outputs: string[];
 		parameters: {
@@ -205,9 +205,9 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 
 export const nodeTypes = Object.keys(
 	allowedSerializedAudioElementStaticDefinitions
-) as (keyof typeof allowedSerializedAudioElementStaticDefinitions)[];
+) as NodeType[];
 
-export const readableNames: { [P in AllowedSerializedAudioElements['type']]: string } = {
+export const readableNames: { [P in NodeType]: string } = {
 	'sine-oscillator': 'Sine',
 	'square-oscillator': 'Square',
 	'saw-oscillator': 'Saw',
@@ -229,15 +229,15 @@ export const readableNames: { [P in AllowedSerializedAudioElements['type']]: str
 };
 
 export const categorizedNodeTypes = {
-	oscillators: ['sine-oscillator', 'saw-oscillator', 'square-oscillator', 'triangle-oscillator'],
-	gain: ['gain', 'pan'],
-	envelope: ['ar-envelope'],
-	effects: ['lowpass-filter', 'convolution', 'delay'],
-	pitch: ['sequencer', 'pitch-quantizer'],
-	math: ['multiply', 'bipolar-to-unipolar'],
-	io: ['destination', 'midi'],
-	clock: ['trigger'],
-	visualization: ['oscilloscope']
+	oscillators: ['sine-oscillator', 'saw-oscillator', 'square-oscillator', 'triangle-oscillator'] as NodeType[],
+	gain: ['gain', 'pan'] as NodeType[],
+	envelope: ['ar-envelope'] as NodeType[],
+	effects: ['lowpass-filter', 'convolution', 'delay'] as NodeType[],
+	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
+	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
+	io: ['destination', 'midi'] as NodeType[],
+	clock: ['trigger'] as NodeType[],
+	visualization: ['oscilloscope'] as NodeType[],
 };
 
 const everyNodeIsIncludedInMenu = nodeTypes.every((nodeType) =>
