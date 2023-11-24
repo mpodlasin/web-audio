@@ -150,7 +150,10 @@
 		}
 	}
 
-	$: animatedValueWithBase = animatedValue + mappedNumberParameter;
+	$: normalizedAnimatedValue = normalizeNumberParameter(animatedValue, polarity);
+	$: mappedAnimatedValue = mapNumberParameter(normalizedAnimatedValue, linear);
+
+	$: animatedValueWithBase = mappedAnimatedValue + mappedNumberParameter;
 
 	$: normalizedAnimatedValueWithBase = Math.max(
 		minValue,
