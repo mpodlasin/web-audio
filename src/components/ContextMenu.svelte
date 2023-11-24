@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { categorizedNodeTypes, readableNames } from '../audio/serialized';
+	import { categorizedNodeTypes, readableCategoryNames, readableNames } from '../audio/serialized';
 	import ChevronRight from '../icons/Chevron_Right.svg?component';
 	import Menu from './Menu.svelte';
 	import MenuButton from './MenuButton.svelte';
@@ -45,7 +45,7 @@
 					on:mouseenter={handleMouseEnter(nodeType)}
 					on:mouseleave={handleMouseLeave}
 				>
-					<div>{nodeType}</div>
+					<div>{readableCategoryNames[nodeType]}</div>
 					<div class="icon"><ChevronRight /></div>
 					<div class="submenu" class:visible={hoveredOverNodeType === nodeType}>
 						<Menu>

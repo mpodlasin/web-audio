@@ -250,7 +250,7 @@ if (!everyNodeIsIncludedInMenu) {
 	throw Error('AAAAAaaaaaa!!!!!!');
 }
 
-const readableCategoryNames: { [P in keyof typeof categorizedNodeTypes]: string } = {
+export const readableCategoryNames: {[i: string]: string} = {
 	oscillators: 'Oscillators',
 	gain: 'Gain',
 	envelope: 'Envelope',
