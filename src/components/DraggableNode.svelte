@@ -8,6 +8,7 @@
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
 	export let instantiatedNode: unknown;
+	export let color: string | undefined;
 	export let position: {
 		x: number;
 		y: number;
@@ -70,6 +71,7 @@
 		{instantiatedNode}
 		{running}
 		{draggingLine}
+		{color}
 		on:nodePlugAndKnobPositions
 		on:nodeParameterChange
 		on:nodePlugClick

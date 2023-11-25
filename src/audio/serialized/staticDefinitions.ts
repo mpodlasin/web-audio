@@ -203,9 +203,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	}
 };
 
-export const nodeTypes = Object.keys(
-	allowedSerializedAudioElementStaticDefinitions
-) as NodeType[];
+export const nodeTypes = Object.keys(allowedSerializedAudioElementStaticDefinitions) as NodeType[];
 
 export const readableNames: { [P in NodeType]: string } = {
 	'sine-oscillator': 'Sine',
@@ -229,7 +227,12 @@ export const readableNames: { [P in NodeType]: string } = {
 };
 
 export const categorizedNodeTypes = {
-	oscillators: ['sine-oscillator', 'saw-oscillator', 'square-oscillator', 'triangle-oscillator'] as NodeType[],
+	oscillators: [
+		'sine-oscillator',
+		'saw-oscillator',
+		'square-oscillator',
+		'triangle-oscillator'
+	] as NodeType[],
 	gain: ['gain', 'pan'] as NodeType[],
 	envelope: ['ar-envelope'] as NodeType[],
 	effects: ['lowpass-filter', 'convolution', 'delay'] as NodeType[],
@@ -237,7 +240,7 @@ export const categorizedNodeTypes = {
 	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
 	clock: ['trigger'] as NodeType[],
-	visualization: ['oscilloscope'] as NodeType[],
+	visualization: ['oscilloscope'] as NodeType[]
 };
 
 const everyNodeIsIncludedInMenu = nodeTypes.every((nodeType) =>
@@ -250,7 +253,7 @@ if (!everyNodeIsIncludedInMenu) {
 	throw Error('AAAAAaaaaaa!!!!!!');
 }
 
-export const readableCategoryNames: {[i: string]: string} = {
+export const readableCategoryNames: { [i: string]: string } = {
 	oscillators: 'Oscillators',
 	gain: 'Gain',
 	envelope: 'Envelope',

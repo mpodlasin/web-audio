@@ -18,6 +18,7 @@
 	export let instantiatedNode: unknown;
 	export let running: boolean;
 	export let draggingLine: boolean;
+	export let color: string | undefined;
 
 	$: staticDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
 	$: parameters = Object.entries(node.parameters ?? {}) as [string, SerializedAudioParameter][];
@@ -96,7 +97,7 @@
 	};
 </script>
 
-<div class="node" bind:this={element}>
+<div class="node" bind:this={element} style={color ? `--primary-500: ${color};` : ''}>
 	<div class="header">{readableNames[node.type]}</div>
 	<div class="parameters">
 		{#each parameters as nodeParameter (nodeParameter[0])}

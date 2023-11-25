@@ -27,6 +27,9 @@
 	import { dragNode } from '../ui/dragNode';
 	import MenuButton from './MenuButton.svelte';
 	import { globalContext } from '../audio/GlobalContext';
+	import ChangeColorModal from './ChangeColorModal.svelte';
+	import Node from './Node.svelte';
+	import { changeNodeColor } from '../ui/changeNodeColor';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
@@ -427,6 +430,36 @@
 		showProjectsModal = false;
 		dispatcher('projectChange', event.detail);
 	};
+
+	let changeColorModalIsOpen = false;
+	let changedColorNodeId = '';
+	$: changedColorNode = audioGraphWithPositions[changedColorNodeId];
+	let changedNodeColor: string | undefined;
+
+	const openChangeColorModal = (nodeId: string) => () => {
+		changeColorModalIsOpen = true;
+		changedColorNodeId = nodeId;
+		changedNodeColor = audioGraphWithPositions[nodeId]?.ui?.primmaryColor;
+	};
+
+	const closeChangeColorModal = () => {
+		changeColorModalIsOpen = false;
+	};
+
+	const handleColorChange = (event: CustomEvent<string>) => {
+		changedNodeColor = event.detail;
+	};
+
+	const handleConfirmChange = () => {
+		if (!changedNodeColor) return;
+
+		audioGraphHistory = [
+			...audioGraphHistory,
+			changeNodeColor(changedColorNodeId, changedNodeColor, audioGraphWithPositions)
+		];
+
+		closeChangeColorModal();
+	};
 </script>
 
 <div
@@ -461,6 +494,7 @@
 				selected={selectedNodeIds.some((selectedId) => selectedId === id)}
 				instantiatedNode={audioNodeDatabase[id]}
 				position={node.ui?.position ?? { x: 0, y: 0 }}
+				color={node.ui?.primmaryColor}
 				{draggingLine}
 				on:drag={handleDragNode}
 				on:nodePlugAndKnobPositions={handleNodePlugPositions}
@@ -523,6 +557,7 @@
 					{#if selectedNodeIds.some((id) => menuNodeId === id)}
 						<div class="nodes-selected-header">{selectedNodeIds.length} nodes selected:</div>
 					{/if}
+					<MenuButton on:click={openChangeColorModal(menuNodeId)}>Color</MenuButton>
 					<MenuButton on:click={handleCopyNode}>Copy</MenuButton>
 					<MenuButton on:click={handleDeleteNode} on:keypress={() => {}} variant="danger"
 						>Delete</MenuButton
@@ -535,6 +570,29 @@
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
 				<ContextMenu on:create={handleCreateElementClick} on:paste={handlePasteClick} />
 			</div>
+		{/if}
+
+		{#if changeColorModalIsOpen}
+			<ChangeColorModal
+				value={changedNodeColor}
+				open
+				on:change={handleColorChange}
+				on:confirm={handleConfirmChange}
+				on:close={closeChangeColorModal}
+			>
+				<div slot="node">
+					{#if changedColorNode}
+						<Node
+							color={changedNodeColor}
+							node={changedColorNode}
+							id={changedColorNodeId}
+							instantiatedNode={null}
+							draggingLine={false}
+							running={playing}
+						/>
+					{/if}
+				</div>
+			</ChangeColorModal>
 		{/if}
 	</div>
 </div>

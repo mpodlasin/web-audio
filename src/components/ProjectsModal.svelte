@@ -2,27 +2,12 @@
 	import { createEventDispatcher } from 'svelte';
 	import Menu from './Menu.svelte';
 	import Button from './Button.svelte';
-	import Close from '../icons/Close_MD.svg?component';
 	import More from '../icons/More_Vertical.svg?component';
+	import Modal from './Modal.svelte';
 	export let projects: string[];
 	export let open: boolean;
-	let dialog: HTMLDialogElement;
 
 	const disaptcher = createEventDispatcher();
-
-	$: {
-		if (dialog) {
-			if (open) {
-				dialog.showModal();
-			} else {
-				dialog.close();
-			}
-		}
-	}
-
-	const handleClose = () => {
-		disaptcher('close');
-	};
 
 	const handleNewProject = () => {
 		disaptcher('newProject');
@@ -92,10 +77,7 @@
 	};
 </script>
 
-<dialog bind:this={dialog}>
-	<div class="close" on:click={handleClose} on:keypress={() => {}}>
-		<Close />
-	</div>
+<Modal on:close {open}>
 	Projects
 	<div class="projects">
 		{#each projects as project (project)}
@@ -121,25 +103,9 @@
 			<div class="plus">+</div>
 		</div>
 	</div>
-</dialog>
+</Modal>
 
 <style>
-	dialog {
-		background-color: var(--neutral-900);
-		color: var(--neutral-300);
-		border: 1px solid var(--neutral-500);
-		border-radius: 8px;
-		outline: none;
-		text-align: center;
-		min-height: 40vh;
-		padding: 32px;
-		position: relative;
-	}
-
-	dialog::backdrop {
-		backdrop-filter: blur(2px);
-	}
-
 	.projects {
 		display: grid;
 		grid-template-columns: repeat(3, 200px);
@@ -171,13 +137,6 @@
 	.project:hover,
 	.add:hover {
 		background-color: var(--neutral-700);
-		cursor: pointer;
-	}
-
-	.close {
-		position: absolute;
-		top: 32px;
-		right: 32px;
 		cursor: pointer;
 	}
 

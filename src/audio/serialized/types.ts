@@ -27,6 +27,7 @@ export type Position = {
 
 export type UIInformation = {
 	position: Position;
+	primmaryColor?: string;
 };
 
 export type SerializedAudioElementWithId<

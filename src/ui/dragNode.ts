@@ -32,6 +32,7 @@ export const dragNode = (
 					[id]: {
 						...(audioGraphHistoryCopy.at(-1)?.[id] as any),
 						ui: {
+							...(audioGraphHistoryCopy.at(-1)?.[id] as any).ui,
 							position: {
 								x,
 								y
@@ -51,6 +52,7 @@ export const dragNode = (
 						[id]: {
 							...(onlyElement[id] as any),
 							ui: {
+								...(onlyElement[id] as any).ui,
 								position: {
 									x,
 									y
