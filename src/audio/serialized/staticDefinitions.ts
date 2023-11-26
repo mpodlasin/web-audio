@@ -1,3 +1,4 @@
+import { equals } from '../../utils/equals';
 import type { NodeType } from './types';
 
 const frequencyParameter = {
@@ -263,4 +264,44 @@ export const readableCategoryNames: { [i: string]: string } = {
 	io: 'I/O',
 	clock: 'Clock',
 	visualization: 'Visualization'
+};
+
+const allCategoriesHaveReadableNames = Object.keys(categorizedNodeTypes).every(
+	(categoryName) => !!readableCategoryNames[categoryName]
+);
+
+if (!allCategoriesHaveReadableNames) {
+	throw Error('AAAAAaaaaaa!!!!!!');
+}
+
+export const defaultCategoryNodeColors: { [i: string]: string } = {
+	oscillators: '#45c7ff',
+	gain: '#ff4747',
+	envelope: '#47ff8e',
+	effects: '#4754ff',
+	pitch: '#ffe747',
+	math: '#b7c3e6',
+	io: '#b7c3e6',
+	clock: '#fd783f',
+	visualization: '#b7c3e6'
+};
+
+const allCategoriesHaveDefaultColors = Object.keys(categorizedNodeTypes).every(
+	(categoryName) => !!defaultCategoryNodeColors[categoryName]
+);
+
+if (!allCategoriesHaveDefaultColors) {
+	throw Error('AAAAAaaaaaa!!!!!!');
+}
+
+export const getDefaultColorForNode = (nodeType: string) => {
+	const category = Object.entries(categorizedNodeTypes)
+		.filter(([_, nodeTypes]) => nodeTypes.some(equals(nodeType)))
+		.map(([category]) => category)[0];
+
+	if (category) {
+		return defaultCategoryNodeColors[category];
+	} else {
+		return '#000000';
+	}
 };

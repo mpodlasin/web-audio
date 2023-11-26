@@ -1,4 +1,7 @@
-import { allowedSerializedAudioElementStaticDefinitions } from './staticDefinitions';
+import {
+	allowedSerializedAudioElementStaticDefinitions,
+	getDefaultColorForNode
+} from './staticDefinitions';
 import type { AllowedSerializedAudioElements, Position, SerializedAudioElements } from './types';
 
 const generateId = (audioGraph: SerializedAudioElements, offset = 0) => {
@@ -153,13 +156,16 @@ export const addNode = <S extends SerializedAudioElements>(
 
 	const staticNodeDefinition = allowedSerializedAudioElementStaticDefinitions[type];
 
+	const defaultColor = getDefaultColorForNode(type);
+
 	return {
 		...audioGraph,
 		[nextId]: {
 			type,
 			inputs: [],
 			ui: {
-				position
+				position,
+				primmaryColor: defaultColor
 			},
 			parameters: Object.fromEntries(
 				Object.entries(staticNodeDefinition.parameters).map(([key, value]) => [
