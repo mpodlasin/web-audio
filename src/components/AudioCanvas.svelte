@@ -453,10 +453,21 @@
 	const handleConfirmChange = () => {
 		if (!changedNodeColor) return;
 
-		audioGraphHistory = [
-			...audioGraphHistory,
-			changeNodeColor(changedColorNodeId, changedNodeColor, audioGraphWithPositions)
-		];
+		if (selectedNodeIds.some((selectedNodeId) => selectedNodeId === changedColorNodeId)) {
+			audioGraphHistory = [
+				...audioGraphHistory,
+				selectedNodeIds.reduce(
+					(audioGraph, nodeId) =>
+						changeNodeColor(nodeId, changedNodeColor ?? '#000000', audioGraph),
+					audioGraphWithPositions
+				)
+			];
+		} else {
+			audioGraphHistory = [
+				...audioGraphHistory,
+				changeNodeColor(changedColorNodeId, changedNodeColor, audioGraphWithPositions)
+			];
+		}
 
 		closeChangeColorModal();
 	};
