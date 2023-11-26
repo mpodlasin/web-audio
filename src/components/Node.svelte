@@ -175,7 +175,10 @@
 		text-transform: capitalize;
 		font-weight: bold;
 		text-align: center;
-		font-size: 14px;
+		font-size: 12px;
+
+		color: var(--primary-500);
+		text-transform: uppercase;
 	}
 
 	.parameters {
