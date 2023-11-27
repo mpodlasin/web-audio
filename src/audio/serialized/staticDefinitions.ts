@@ -310,8 +310,8 @@ export const getDefaultColorForNode = (nodeType: string) => {
 
 export const getCategoryReadableName = (nodeType: string) => {
 	const category = Object.entries(categorizedNodeTypes)
-	.filter(([_, nodeTypes]) => nodeTypes.some(equals(nodeType)))
-	.map(([category]) => category)[0];
+		.filter(([_, nodeTypes]) => nodeTypes.some(equals(nodeType)))
+		.map(([category]) => category)[0];
 
 	if (category) {
 		return readableCategoryNames[category];

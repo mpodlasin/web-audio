@@ -7,9 +7,7 @@
 		CustomOscilloscopeNode,
 		isCustomAudioNode,
 		readableNames,
-
 		getCategoryReadableName
-
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
@@ -34,7 +32,7 @@
 		}
 	});
 
-	$: categoryName = showCategory ? getCategoryReadableName(node.type) ?? "" : "";
+	$: categoryName = showCategory ? getCategoryReadableName(node.type) ?? '' : '';
 
 	const dispatcher = createEventDispatcher();
 
