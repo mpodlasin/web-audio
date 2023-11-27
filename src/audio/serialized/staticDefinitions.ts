@@ -18,6 +18,7 @@ const buttonParameter = {
 };
 
 const oscillatorDefinition = {
+	showCategory: true,
 	inputs: [],
 	outputs: ['audio'],
 	parameters: {
@@ -42,6 +43,7 @@ const filterDefinition = {
 
 export const allowedSerializedAudioElementStaticDefinitions: {
 	[key in NodeType]: {
+		showCategory?: boolean;
 		inputs: string[];
 		outputs: string[];
 		parameters: {
@@ -303,5 +305,17 @@ export const getDefaultColorForNode = (nodeType: string) => {
 		return defaultCategoryNodeColors[category];
 	} else {
 		return '#000000';
+	}
+};
+
+export const getCategoryReadableName = (nodeType: string) => {
+	const category = Object.entries(categorizedNodeTypes)
+	.filter(([_, nodeTypes]) => nodeTypes.some(equals(nodeType)))
+	.map(([category]) => category)[0];
+
+	if (category) {
+		return readableCategoryNames[category];
+	} else {
+		return null;
 	}
 };

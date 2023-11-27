@@ -6,7 +6,10 @@
 		type SerializedAudioParameter,
 		CustomOscilloscopeNode,
 		isCustomAudioNode,
-		readableNames
+		readableNames,
+
+		getCategoryReadableName
+
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
@@ -21,6 +24,7 @@
 	export let color: string | undefined;
 
 	$: staticDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
+	$: showCategory = staticDefinition.showCategory ?? false;
 	$: parameters = Object.entries(node.parameters ?? {}) as [string, SerializedAudioParameter][];
 	$: audioParams = parameters.flatMap(([name]) => {
 		if (isCustomAudioNode(instantiatedNode)) {
@@ -29,6 +33,8 @@
 			return [];
 		}
 	});
+
+	$: categoryName = showCategory ? getCategoryReadableName(node.type) ?? "" : "";
 
 	const dispatcher = createEventDispatcher();
 
@@ -98,7 +104,12 @@
 </script>
 
 <div class="node" bind:this={element} style={color ? `--primary-500: ${color};` : ''}>
-	<div class="header">{readableNames[node.type]}</div>
+	<div class="header">
+		{#if categoryName}
+			<span class="categoryName">{categoryName} / </span>
+		{/if}
+		{readableNames[node.type]}
+	</div>
 	<div class="parameters">
 		{#each parameters as nodeParameter (nodeParameter[0])}
 			{#if staticDefinition.parameters[nodeParameter[0]]?.binary}
@@ -200,5 +211,9 @@
 		flex-grow: 0;
 		flex-direction: row;
 		gap: 8px;
+	}
+
+	.categoryName {
+		color: var(--neutral-500);
 	}
 </style>
