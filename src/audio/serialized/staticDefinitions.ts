@@ -34,6 +34,7 @@ const oscillatorDefinition = {
 };
 
 const filterDefinition = {
+	showCategory: true,
 	inputs: ['audio'],
 	outputs: ['audio'],
 	parameters: {
@@ -180,6 +181,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	'ar-envelope': {
+		showCategory: true,
 		inputs: ['trigger'],
 		outputs: ['envelope'],
 		parameters: {
@@ -230,15 +232,16 @@ export const readableNames: { [P in NodeType]: string } = {
 };
 
 export const categorizedNodeTypes = {
-	oscillators: [
+	oscillator: [
 		'sine-oscillator',
 		'saw-oscillator',
 		'square-oscillator',
 		'triangle-oscillator'
 	] as NodeType[],
-	gain: ['gain', 'pan'] as NodeType[],
 	envelope: ['ar-envelope'] as NodeType[],
-	effects: ['lowpass-filter', 'convolution', 'delay'] as NodeType[],
+	filter: ['lowpass-filter'] as NodeType[],
+	effects: ['convolution', 'delay'] as NodeType[],
+	gain: ['gain', 'pan'] as NodeType[],
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
 	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
@@ -257,10 +260,11 @@ if (!everyNodeIsIncludedInMenu) {
 }
 
 export const readableCategoryNames: { [i: string]: string } = {
-	oscillators: 'Oscillators',
+	oscillator: 'Oscillator',
 	gain: 'Gain',
+	filter: 'Filter',
 	envelope: 'Envelope',
-	effects: 'Effects',
+	effects: 'Effect',
 	pitch: 'Pitch',
 	math: 'Math',
 	io: 'I/O',
@@ -277,7 +281,8 @@ if (!allCategoriesHaveReadableNames) {
 }
 
 export const defaultCategoryNodeColors: { [i: string]: string } = {
-	oscillators: '#45c7ff',
+	oscillator: '#45c7ff',
+	filter: '#4754ff',
 	gain: '#ff4747',
 	envelope: '#47ff8e',
 	effects: '#4754ff',
