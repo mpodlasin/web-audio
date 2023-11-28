@@ -69,6 +69,7 @@
 	};
 
 	const handleDragCanvasStart = (event: MouseEvent) => {
+		audioGraphHistory = [...audioGraphHistory, audioGraphWithPositions];
 		event.preventDefault();
 		if (isAlternativeKey(event)) {
 			if (!event.shiftKey) {
@@ -130,7 +131,7 @@
 			])
 		);
 
-		audioGraphHistory = [...audioGraphHistory, newAudioGraphWithPositions];
+		audioGraphHistory = [...audioGraphHistory.slice(0, -1), newAudioGraphWithPositions];
 
 		plugPositions = addDiffToAllPositions(plugPositions, -positionChange.x, -positionChange.y);
 
@@ -142,6 +143,8 @@
 
 	$: previousAudioGraphWithPositions = audioGraphHistory.at(-2) ?? {};
 	$: audioGraphWithPositions = audioGraphHistory.at(-1) ?? {};
+
+	$: console.log(audioGraphHistory.length);
 
 	const dispatcher = createEventDispatcher();
 
