@@ -471,6 +471,12 @@
 
 		closeChangeColorModal();
 	};
+
+	$: {
+		if (audioGraphHistory.length > 100) {
+			audioGraphHistory = audioGraphHistory.slice(audioGraphHistory.length - 100);
+		}
+	}
 </script>
 
 <div
