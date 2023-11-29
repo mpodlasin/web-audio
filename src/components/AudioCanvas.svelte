@@ -488,6 +488,16 @@
 			audioGraphHistory = audioGraphHistory.slice(audioGraphHistory.length - 100);
 		}
 	}
+
+	const handleCanvasKeypress = (event: KeyboardEvent) => {
+		if (event.key === 'z' && (event.ctrlKey || event.metaKey)) {
+			if (audioGraphHistory.length > 2) {
+				audioGraphHistory = audioGraphHistory.slice(0, -1);
+			}
+		}
+	};
+
+	window.addEventListener('keydown', handleCanvasKeypress);
 </script>
 
 <div
@@ -496,7 +506,7 @@
 	on:mousemove={handleDragCanvas}
 	on:mouseup={handleDragCanvasEnd}
 	on:click={handleCanvasDoubleClick}
-	on:keypress={() => {}}
+	on:keydown={() => {}}
 >
 	<ProjectHeader
 		projectName={chosenProjectName}
