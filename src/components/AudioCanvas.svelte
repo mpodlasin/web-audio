@@ -185,6 +185,13 @@
 
 	let plugPositions: PlugPositions = {};
 
+	const handleDragStart = () => {
+		audioGraphHistory = [
+			...audioGraphHistory,
+			audioGraphWithPositions,
+		]
+	}
+
 	const handleDragNode = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
 		if (selectedNodeIds.some((selectedId) => selectedId === event.detail.id)) {
 			const draggedNode = audioGraphWithPositions[event.detail.id];
@@ -517,6 +524,7 @@
 				color={node.ui?.primmaryColor}
 				{draggingLine}
 				on:drag={handleDragNode}
+				on:dragstart={handleDragStart}
 				on:nodePlugAndKnobPositions={handleNodePlugPositions}
 				on:nodeParameterChange={handleNodeParameterChange}
 				on:nodePlugClick={handlePlugClick}

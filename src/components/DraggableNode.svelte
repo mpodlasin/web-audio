@@ -24,12 +24,15 @@
 
 	const handleMouseDown = (event: MouseEvent) => {
 		event.stopPropagation();
+
 		if (event.button === 0) {
 			const rect = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
 			internalClickPosition = {
 				x: event.clientX - rect.left,
 				y: event.clientY - rect.top
 			};
+
+			disaptcher('dragstart');
 
 			window.addEventListener('mousemove', handleMouseMove);
 		}

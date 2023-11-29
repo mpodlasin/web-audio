@@ -26,13 +26,13 @@ export const dragNode = (
 
 		if (audioGraphHistoryCopy.length >= 2) {
 			audioGraphHistoryCopy = [
-				...audioGraphHistoryCopy,
+				...audioGraphHistoryCopy.slice(0, -1),
 				{
-					...audioGraphHistoryCopy.at(-1),
+					...audioGraphWithPositions,
 					[id]: {
-						...(audioGraphHistoryCopy.at(-1)?.[id] as any),
+						...node,
 						ui: {
-							...(audioGraphHistoryCopy.at(-1)?.[id] as any).ui,
+							...node.ui,
 							position: {
 								x,
 								y
@@ -45,22 +45,26 @@ export const dragNode = (
 			const onlyElement = audioGraphHistoryCopy[0];
 
 			if (onlyElement) {
-				audioGraphHistoryCopy = [
-					onlyElement,
-					{
-						...onlyElement,
-						[id]: {
-							...(onlyElement[id] as any),
-							ui: {
-								...(onlyElement[id] as any).ui,
-								position: {
-									x,
-									y
+				const node = onlyElement[id];
+
+				if (node) {
+					audioGraphHistoryCopy = [
+						onlyElement,
+						{
+							...onlyElement,
+							[id]: {
+								...node,
+								ui: {
+									...node.ui,
+									position: {
+										x,
+										y
+									}
 								}
 							}
 						}
-					}
-				];
+					];
+				}
 			}
 		}
 	}
