@@ -70,6 +70,10 @@
 		});
 	}
 
+	const handleParameterChangeStart = () => {
+		dispatcher('nodeParameterChangeStart');
+	};
+
 	const handleParameterChange = (event: any) => {
 		const parameterName = event.detail.parameterName;
 		const value = event.detail.value;
@@ -129,6 +133,7 @@
 					linear={staticDefinition.parameters[nodeParameter[0]]?.linear}
 					{draggingLine}
 					on:change={handleParameterChange}
+					on:mousedown={handleParameterChangeStart}
 					on:mouseup={handleKnobMouseUp}
 					on:knob={handleKnob}
 				/>

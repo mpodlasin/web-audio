@@ -76,6 +76,7 @@
 		{draggingLine}
 		{color}
 		on:nodePlugAndKnobPositions
+		on:nodeParameterChangeStart
 		on:nodeParameterChange
 		on:nodePlugClick
 		on:nodePlugUp

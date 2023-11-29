@@ -46,6 +46,8 @@
 		};
 		previousAngle = angle;
 
+		dispatcher('mousedown');
+
 		window.addEventListener('mousemove', handleMouseMove);
 
 		window.addEventListener('mouseup', () => {

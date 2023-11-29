@@ -186,11 +186,8 @@
 	let plugPositions: PlugPositions = {};
 
 	const handleDragStart = () => {
-		audioGraphHistory = [
-			...audioGraphHistory,
-			audioGraphWithPositions,
-		]
-	}
+		audioGraphHistory = [...audioGraphHistory, audioGraphWithPositions];
+	};
 
 	const handleDragNode = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
 		if (selectedNodeIds.some((selectedId) => selectedId === event.detail.id)) {
@@ -233,13 +230,17 @@
 
 	$: linesToDisplay = getLinesToDisplay(audioGraphWithPositions, plugPositions);
 
+	const handleNodeParameterChangeStart = () => {
+		audioGraphHistory = [...audioGraphHistory, audioGraphWithPositions];
+	};
+
 	const handleNodeParameterChange = (
 		event: CustomEvent<{ id: string; parameterName: string; value: number }>
 	) => {
 		const { id, parameterName, value } = event.detail;
 
 		audioGraphHistory = [
-			...audioGraphHistory,
+			...audioGraphHistory.slice(0, -1),
 			changeParameter(audioGraphWithPositions, id, parameterName, value)
 		];
 	};
@@ -526,6 +527,7 @@
 				on:drag={handleDragNode}
 				on:dragstart={handleDragStart}
 				on:nodePlugAndKnobPositions={handleNodePlugPositions}
+				on:nodeParameterChangeStart={handleNodeParameterChangeStart}
 				on:nodeParameterChange={handleNodeParameterChange}
 				on:nodePlugClick={handlePlugClick}
 				on:nodePlugUp={handlePlugUp}
