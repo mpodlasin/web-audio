@@ -144,8 +144,6 @@
 	$: previousAudioGraphWithPositions = audioGraphHistory.at(-2) ?? {};
 	$: audioGraphWithPositions = audioGraphHistory.at(-1) ?? {};
 
-	$: console.log(audioGraphHistory.length);
-
 	const dispatcher = createEventDispatcher();
 
 	$: {
