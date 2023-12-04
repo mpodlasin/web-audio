@@ -60,7 +60,7 @@
 			</MenuButton>
 		{/each}
 	</div>
-	<MenuButton on:click={handlePasteClick} on:keypress={() => {}}>paste</MenuButton>
+	<MenuButton on:click={handlePasteClick} on:keypress={() => {}}>Paste</MenuButton>
 </Menu>
 
 <style>
