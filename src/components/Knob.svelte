@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Position, SerializedAudioParameter } from '../audio/AudioCanvas';
 	import { createEventDispatcher } from 'svelte';
+	import AudioCanvas from './AudioCanvas.svelte';
 
 	type Polarity = 'uni' | 'bi';
 
@@ -152,14 +153,12 @@
 		}
 	}
 
-	$: normalizedAnimatedValue = normalizeNumberParameter(animatedValue, polarity);
-	$: mappedAnimatedValue = mapNumberParameter(normalizedAnimatedValue, linear);
-
-	$: animatedValueWithBase = mappedAnimatedValue + mappedNumberParameter;
-
-	$: normalizedAnimatedValueWithBase = Math.max(
+	$: sum = animatedValue + numberParameter;
+	$: normalizedSum = normalizeNumberParameter(sum, polarity);
+	$: mappedSum = mapNumberParameter(normalizedSum, linear);
+	$: clippedSum = Math.max(
 		minValue,
-		Math.min(maxValue, animatedValueWithBase)
+		Math.min(maxValue, mappedSum)
 	);
 
 	let highlightStyle = '';
@@ -169,17 +168,17 @@
 			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${
 				-angleSpread / 2
 			}deg, var(--primary-500) ${
-				normalizedAnimatedValueWithBase * (angleSpread / 360) * 100
+				clippedSum * (angleSpread / 360) * 100
 			}%, var(--neutral-900) 0);`;
-		} else if (polarity === 'bi' && normalizedAnimatedValueWithBase >= 0) {
+		} else if (polarity === 'bi' && clippedSum >= 0) {
 			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from 0deg, var(--primary-500) ${
-				normalizedAnimatedValueWithBase * (angleSpread / 2 / 360) * 100
+				clippedSum * (angleSpread / 2 / 360) * 100
 			}%, var(--neutral-900) 0);`;
-		} else if (polarity === 'bi' && normalizedAnimatedValueWithBase < 0) {
+		} else if (polarity === 'bi' && clippedSum < 0) {
 			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${
-				normalizedAnimatedValueWithBase * (angleSpread / 2)
+				clippedSum * (angleSpread / 2)
 			}deg, var(--primary-500) ${
-				-normalizedAnimatedValueWithBase * (angleSpread / 2 / 360) * 100
+				-clippedSum * (angleSpread / 2 / 360) * 100
 			}%, var(--neutral-900) 0);`;
 		}
 	}
