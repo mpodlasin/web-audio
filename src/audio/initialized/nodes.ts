@@ -22,19 +22,30 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 	}
 
 	private parameterAnalysers: { [parameterName: string]: AnalyserNode } = {};
+	private parameterMultipliers: { [parameterName: string]: GainNode } = {};
 
 	getParameter(parameterName: string): CustomAudioParam {
+		const audioParam = accessParameter(this.webApiNode, parameterName);
+
 		if (!this.parameterAnalysers[parameterName]) {
 			this.parameterAnalysers[parameterName] = globalContext.createAnalyser();
 		}
 
+		if (!this.parameterMultipliers[parameterName]) {
+			this.parameterMultipliers[parameterName] = globalContext.createGain();
+			this.parameterMultipliers[parameterName]?.connect(audioParam);
+		}
+
 		const analyser = this.parameterAnalysers[parameterName];
+		const multiplier = this.parameterMultipliers[parameterName];
 
 		if (!analyser) throw new Error();
+		if (!multiplier) throw new Error();
 
 		return {
-			audioParam: accessParameter(this.webApiNode, parameterName),
-			analyser
+			audioParam,
+			analyser,
+			multiplier
 		};
 	}
 
@@ -46,8 +57,8 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 		}
 
 		if (isCustomAudioParam(destination)) {
-			this.webApiNode.connect(destination.audioParam);
 			this.webApiNode.connect(destination.analyser);
+			this.webApiNode.connect(destination.multiplier);
 
 			return;
 		}
@@ -65,7 +76,7 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 		}
 
 		if (isCustomAudioParam(destination)) {
-			this.webApiNode.disconnect(destination.audioParam);
+			this.webApiNode.disconnect(destination.multiplier);
 			this.webApiNode.disconnect(destination.analyser);
 
 			return;

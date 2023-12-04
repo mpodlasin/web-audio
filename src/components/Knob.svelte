@@ -156,10 +156,7 @@
 	$: sum = animatedValue + numberParameter;
 	$: normalizedSum = normalizeNumberParameter(sum, polarity);
 	$: mappedSum = mapNumberParameter(normalizedSum, linear);
-	$: clippedSum = Math.max(
-		minValue,
-		Math.min(maxValue, mappedSum)
-	);
+	$: clippedSum = Math.max(minValue, Math.min(maxValue, mappedSum));
 
 	let highlightStyle = '';
 
@@ -167,9 +164,7 @@
 		if (polarity === 'uni') {
 			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${
 				-angleSpread / 2
-			}deg, var(--primary-500) ${
-				clippedSum * (angleSpread / 360) * 100
-			}%, var(--neutral-900) 0);`;
+			}deg, var(--primary-500) ${clippedSum * (angleSpread / 360) * 100}%, var(--neutral-900) 0);`;
 		} else if (polarity === 'bi' && clippedSum >= 0) {
 			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from 0deg, var(--primary-500) ${
 				clippedSum * (angleSpread / 2 / 360) * 100
