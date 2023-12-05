@@ -379,6 +379,7 @@
 	let menuKind: 'canvas' | 'node' | 'line' = 'canvas';
 	let lineMenuPlugs: [Plug, Plug] | null = null;
 	let menuNodeId: string = '';
+	let menuForLineMultiply: number | undefined = undefined;
 
 	const handleCanvasLeftClick = (event: MouseEvent) => {
 		event.preventDefault();
@@ -387,17 +388,19 @@
 		showMenu = true;
 		menuKind = 'canvas';
 		lineMenuPlugs = null;
+		menuForLineMultiply = undefined;
 
 		window.addEventListener('click', closeMenu, { once: true });
 	};
 
-	const handleLineLeftClick = (fromPlug: Plug, toPlug: Plug) => (event: MouseEvent) => {
+	const handleLineLeftClick = (fromPlug: Plug, toPlug: Plug, multiply: number | undefined) => (event: MouseEvent) => {
 		event.preventDefault();
 		event.stopPropagation();
 
 		showMenu = true;
 		menuKind = 'line';
 		lineMenuPlugs = [fromPlug, toPlug];
+		menuForLineMultiply = multiply;
 		menuPosition = { x: event.clientX, y: event.clientY };
 
 		window.addEventListener('click', closeMenu, { once: true });
@@ -410,6 +413,7 @@
 		showMenu = true;
 		menuKind = 'node';
 		lineMenuPlugs = null;
+		menuForLineMultiply = undefined;
 		menuNodeId = nodeId;
 
 		window.addEventListener('click', closeMenu, { once: true });
@@ -418,6 +422,7 @@
 	const closeMenu = () => {
 		showMenu = false;
 		lineMenuPlugs = null;
+		menuForLineMultiply = undefined;
 	};
 
 	let showProjectsModal = false;
@@ -564,7 +569,7 @@
 				<Line
 					{line}
 					{lineMenuPlugs}
-					on:contextmenu={handleLineLeftClick(line.line[0], line.line[1])}
+					on:contextmenu={handleLineLeftClick(line.line[0], line.line[1], line.multiply)}
 				/>
 			{/each}
 
@@ -582,6 +587,9 @@
 		{#if showMenu && menuKind === 'line'}
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
 				<Menu>
+					{#if menuForLineMultiply !== undefined}
+						<MenuButton>Mult: {menuForLineMultiply}</MenuButton>
+					{/if}
 					<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
 						>Delete</MenuButton
 					>
