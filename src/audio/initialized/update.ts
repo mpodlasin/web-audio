@@ -22,7 +22,6 @@ import {
 	CustomTriangleOscillatorNode,
 	DestinationNode,
 	AREnvelopeNode,
-	GenericCustomAudioNodeWithWebApiNode,
 	MidiNode,
 	PitchQuantizerNode,
 	SequencerNode,
@@ -182,8 +181,13 @@ export const updateAudioCanvas = (
 				oldAudioElement
 			);
 
-			// eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-			parametersWithChangedMultipliers.forEach(({ parameterName, inputId }) => {});
+			parametersWithChangedMultipliers.forEach(({ parameterName, inputId, value }) => {
+				const node = audioNodeDatabase[id];
+
+				if (node) {
+					node.getParameter(parameterName).getMultiplierForInput(inputId).gain.value = value;
+				}
+			});
 		}
 	});
 
@@ -294,6 +298,7 @@ function connectAudioElementsToParameter(
 		for (const input of parameterValue.inputs) {
 			const inputId = input.id;
 			const output = input.output;
+			const mult = input.multiply;
 
 			const audioElementB = audioElementsWithIds[inputId];
 
@@ -311,6 +316,9 @@ function connectAudioElementsToParameter(
 					audioNodeA.getParameter(parameterName),
 					output ?? staticDefinitionAudioElementB.outputs[0]
 				);
+
+				audioNodeA.getParameter(parameterName).getMultiplierForInput(inputId).gain.value =
+					mult ?? 1;
 			}
 		}
 	}
@@ -543,8 +551,8 @@ const getParametersWithChangedValues = (
 const getParametersWithChangedMultipliers = (
 	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
 	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
-): { parameterName: string; inputId: string }[] => {
-	const changedParameters: { parameterName: string; inputId: string }[] = [];
+): { parameterName: string; inputId: string; value: number }[] => {
+	const changedParameters: { parameterName: string; inputId: string; value: number }[] = [];
 
 	if (newAudioElement.parameters && oldAudioElement.parameters) {
 		for (const parameterName in newAudioElement.parameters) {
@@ -563,7 +571,11 @@ const getParametersWithChangedMultipliers = (
 				});
 
 				changedParameters.push(
-					...inputsWithDifferentMultiplies.map((input) => ({ inputId: input.id, parameterName }))
+					...inputsWithDifferentMultiplies.map((input) => ({
+						inputId: input.id,
+						parameterName,
+						value: input.multiply ?? 1
+					}))
 				);
 			}
 		}

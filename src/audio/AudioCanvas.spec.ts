@@ -16,7 +16,8 @@ import {
 	addConnectionToParameter,
 	SequencerNode,
 	CustomSquareOscillatorNode,
-	insertExistingNodes
+	insertExistingNodes,
+	changeParameterMultiply
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -922,7 +923,40 @@ describe('AudioCanvas', () => {
 			expect(
 				(audioNodeDatabase['2'] as CustomGainNode).getParameter('gain').getMultiplierForInput('1')
 					.gain.value
-			).toBe(1);
+			).toBe(0.2);
+		});
+
+		it('changes multiply value', () => {
+			const audioElements = {
+				'1': {
+					type: 'sine-oscillator' as const,
+					parameters: {
+						frequency: { base: 333, inputs: [] },
+						detune: { base: 0, inputs: [] }
+					}
+				},
+				'2': {
+					type: 'gain' as const,
+					inputs: ['1'],
+					parameters: {
+						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio', multiply: 0.2 }] }
+					}
+				}
+			};
+
+			const audioNodeDatabase: AudioNodeDatabase = {};
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
+
+			const newAudioElements = changeParameterMultiply(audioElements, '2', 'gain', '1', 0.5);
+
+			expect(newAudioElements['2'].parameters['gain'].inputs[0]?.multiply).toBe(0.5);
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(
+				(audioNodeDatabase['2'] as CustomGainNode).getParameter('gain').getMultiplierForInput('1')
+					.gain.value
+			).toBe(0.5);
 		});
 	});
 });
