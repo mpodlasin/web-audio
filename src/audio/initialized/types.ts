@@ -5,7 +5,7 @@ export type AudioNodeDatabase = {
 export interface CustomAudioParam {
 	audioParam: AudioParam;
 	analyser: AnalyserNode;
-	multiplier: GainNode;
+	getMultiplierForInput(inputId: string): GainNode;
 }
 
 export function isCustomAudioParam(

@@ -111,11 +111,14 @@ describe('AudioCanvas', () => {
 			expect(
 				(audioNodeDatabase['2'] as CustomSquareOscillatorNode).webApiNode.connect
 			).toHaveBeenCalledWith(
-				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).getParameter('frequency').multiplier
+				(audioNodeDatabase['1'] as CustomSquareOscillatorNode)
+					.getParameter('frequency')
+					.getMultiplierForInput('2')
 			);
 			expect(
-				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).getParameter('frequency').multiplier
-					.connect
+				(audioNodeDatabase['1'] as CustomSquareOscillatorNode)
+					.getParameter('frequency')
+					.getMultiplierForInput('2').connect
 			).toHaveBeenCalledWith(
 				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).getParameter('frequency').audioParam
 			);
@@ -470,11 +473,14 @@ describe('AudioCanvas', () => {
 			expect(audioNodeDatabase['1']).toBeDefined();
 			expect(audioNodeDatabase['2']).toBeDefined();
 			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.connect).toHaveBeenCalledWith(
-				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).getParameter('detune').multiplier
+				(audioNodeDatabase['1'] as CustomSquareOscillatorNode)
+					.getParameter('detune')
+					.getMultiplierForInput('2')
 			);
 			expect(
-				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).getParameter('detune').multiplier
-					.connect
+				(audioNodeDatabase['1'] as CustomSquareOscillatorNode)
+					.getParameter('detune')
+					.getMultiplierForInput('2').connect
 			).toHaveBeenCalledWith(
 				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).getParameter('detune').audioParam
 			);
@@ -524,7 +530,9 @@ describe('AudioCanvas', () => {
 			expect(audioNodeDatabase['1']).toBeDefined();
 			expect(audioNodeDatabase['2']).toBeDefined();
 			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.disconnect).toHaveBeenCalledWith(
-				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).getParameter('detune').multiplier
+				(audioNodeDatabase['1'] as CustomSquareOscillatorNode)
+					.getParameter('detune')
+					.getMultiplierForInput('2')
 			);
 			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
 			expect((audioNodeDatabase['1'] as CustomSquareOscillatorNode).webApiNode.type).toBe('square');
@@ -611,11 +619,14 @@ describe('AudioCanvas', () => {
 			expect(audioNodeDatabase['2']).toBeDefined();
 
 			expect((audioNodeDatabase['2'] as SequencerNode).webApiNode.connect).toHaveBeenCalledWith(
-				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).getParameter('detune').multiplier
+				(audioNodeDatabase['1'] as CustomSquareOscillatorNode)
+					.getParameter('detune')
+					.getMultiplierForInput('2')
 			);
 			expect(
-				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).getParameter('detune').multiplier
-					.connect
+				(audioNodeDatabase['1'] as CustomSquareOscillatorNode)
+					.getParameter('detune')
+					.getMultiplierForInput('2').connect
 			).toHaveBeenCalledWith(
 				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).getParameter('detune').audioParam
 			);
@@ -899,13 +910,19 @@ describe('AudioCanvas', () => {
 			expect(
 				(audioNodeDatabase['1'] as CustomSineOscillatorNode).webApiNode.connect
 			).toHaveBeenCalledWith(
-				(audioNodeDatabase['2'] as CustomGainNode).getParameter('gain').multiplier
+				(audioNodeDatabase['2'] as CustomGainNode).getParameter('gain').getMultiplierForInput('1')
 			);
 			expect(
-				(audioNodeDatabase['2'] as CustomGainNode).getParameter('gain').multiplier.connect
+				(audioNodeDatabase['2'] as CustomGainNode).getParameter('gain').getMultiplierForInput('1')
+					.connect
 			).toHaveBeenCalledWith(
 				(audioNodeDatabase['2'] as CustomGainNode).getParameter('gain').audioParam
 			);
+
+			expect(
+				(audioNodeDatabase['2'] as CustomGainNode).getParameter('gain').getMultiplierForInput('1')
+					.gain.value
+			).toBe(1);
 		});
 	});
 });

@@ -70,7 +70,7 @@ export const updateAudioCanvas = (
 		const oldAudioElement = oldAudioElements[id];
 
 		if (oldAudioElement === undefined) {
-			const createdAudioNode = createCustomAudioNode(newAudioElement);
+			const createdAudioNode = createCustomAudioNode(id, newAudioElement);
 
 			if (createdAudioNode !== null) {
 				if (isCustomAudioScheduledSourceNode(createdAudioNode)) {
@@ -176,6 +176,14 @@ export const updateAudioCanvas = (
 					audioNodeDatabase
 				);
 			});
+
+			const parametersWithChangedMultipliers = getParametersWithChangedMultipliers(
+				newAudioElement,
+				oldAudioElement
+			);
+
+			// eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+			parametersWithChangedMultipliers.forEach(({ parameterName, inputId }) => {});
 		}
 	});
 
@@ -358,45 +366,46 @@ function disconnectAudioElements(
 }
 
 function createCustomAudioNode(
+	id: string,
 	audioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
 ): CustomAudioNode {
 	switch (audioElement.type) {
 		case 'sine-oscillator':
-			return new CustomSineOscillatorNode();
+			return new CustomSineOscillatorNode(id);
 		case 'saw-oscillator':
-			return new CustomSawOscillatorNode();
+			return new CustomSawOscillatorNode(id);
 		case 'square-oscillator':
-			return new CustomSquareOscillatorNode();
+			return new CustomSquareOscillatorNode(id);
 		case 'triangle-oscillator':
-			return new CustomTriangleOscillatorNode();
+			return new CustomTriangleOscillatorNode(id);
 		case 'lowpass-filter':
-			return new CustomLowpassFilterNode();
+			return new CustomLowpassFilterNode(id);
 		case 'gain':
-			return new CustomGainNode();
+			return new CustomGainNode(id);
 		case 'multiply':
-			return new CustomMultiplyNode();
+			return new CustomMultiplyNode(id);
 		case 'destination':
-			return new DestinationNode();
+			return new DestinationNode(id);
 		case 'trigger':
-			return new TriggerNode();
+			return new TriggerNode(id);
 		case 'ar-envelope':
-			return new AREnvelopeNode();
+			return new AREnvelopeNode(id);
 		case 'sequencer':
-			return new SequencerNode();
+			return new SequencerNode(id);
 		case 'midi':
 			return new MidiNode();
 		case 'oscilloscope':
-			return new CustomOscilloscopeNode();
+			return new CustomOscilloscopeNode(id);
 		case 'convolution':
-			return new CustomConvolutionNode();
+			return new CustomConvolutionNode(id);
 		case 'delay':
-			return new CustomDelayNode();
+			return new CustomDelayNode(id);
 		case 'pitch-quantizer':
-			return new PitchQuantizerNode();
+			return new PitchQuantizerNode(id);
 		case 'pan':
-			return new CustomPanNode();
+			return new CustomPanNode(id);
 		case 'bipolar-to-unipolar':
-			return new CustomBipolarToUnipolarNode();
+			return new CustomBipolarToUnipolarNode(id);
 	}
 }
 
@@ -524,6 +533,38 @@ const getParametersWithChangedValues = (
 				newParameterValue.base !== oldParameterValue.base
 			) {
 				changedParameters.push(parameterName);
+			}
+		}
+	}
+
+	return changedParameters;
+};
+
+const getParametersWithChangedMultipliers = (
+	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
+	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
+): { parameterName: string; inputId: string }[] => {
+	const changedParameters: { parameterName: string; inputId: string }[] = [];
+
+	if (newAudioElement.parameters && oldAudioElement.parameters) {
+		for (const parameterName in newAudioElement.parameters) {
+			const newParameterValue = newAudioElement.parameters[parameterName];
+			const oldParameterValue = oldAudioElement.parameters[parameterName];
+
+			if (newParameterValue !== undefined && oldParameterValue !== undefined) {
+				const inputsWithDifferentMultiplies = newParameterValue.inputs.filter((newInput) => {
+					const oldInput = oldParameterValue.inputs.find((input) => input.id === newInput.id);
+
+					if (oldInput) {
+						return oldInput.multiply !== newInput.multiply;
+					}
+
+					return false;
+				});
+
+				changedParameters.push(
+					...inputsWithDifferentMultiplies.map((input) => ({ inputId: input.id, parameterName }))
+				);
 			}
 		}
 	}

@@ -17,12 +17,16 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 {
 	readonly webApiNode: T;
 
-	constructor(webApiNode: T) {
+	constructor(webApiNode: T, private id: string) {
 		this.webApiNode = webApiNode;
 	}
 
 	private parameterAnalysers: { [parameterName: string]: AnalyserNode } = {};
-	private parameterMultipliers: { [parameterName: string]: GainNode } = {};
+	private parameterMultipliers: {
+		[parameterName: string]: {
+			[inputId: string]: GainNode;
+		};
+	} = {};
 
 	getParameter(parameterName: string): CustomAudioParam {
 		const audioParam = accessParameter(this.webApiNode, parameterName);
@@ -31,21 +35,36 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 			this.parameterAnalysers[parameterName] = globalContext.createAnalyser();
 		}
 
-		if (!this.parameterMultipliers[parameterName]) {
-			this.parameterMultipliers[parameterName] = globalContext.createGain();
-			this.parameterMultipliers[parameterName]?.connect(audioParam);
-		}
-
 		const analyser = this.parameterAnalysers[parameterName];
-		const multiplier = this.parameterMultipliers[parameterName];
 
 		if (!analyser) throw new Error();
-		if (!multiplier) throw new Error();
 
 		return {
 			audioParam,
 			analyser,
-			multiplier
+			getMultiplierForInput: (inputId: string) => {
+				if (!this.parameterMultipliers[parameterName]) {
+					this.parameterMultipliers[parameterName] = {};
+				}
+
+				const multipliersForParameter = this.parameterMultipliers[parameterName];
+
+				if (!multipliersForParameter) throw new Error();
+
+				if (!multipliersForParameter[inputId]) {
+					const multiplier = globalContext.createGain();
+					multiplier.connect(audioParam);
+					multiplier.connect(analyser);
+					multiplier.gain.value = 1;
+					multipliersForParameter[inputId] = multiplier;
+				}
+
+				const multiplierForParameterAndInputId = multipliersForParameter[inputId];
+
+				if (!multiplierForParameterAndInputId) throw new Error();
+
+				return multiplierForParameterAndInputId;
+			}
 		};
 	}
 
@@ -57,8 +76,7 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 		}
 
 		if (isCustomAudioParam(destination)) {
-			this.webApiNode.connect(destination.analyser);
-			this.webApiNode.connect(destination.multiplier);
+			this.webApiNode.connect(destination.getMultiplierForInput(this.id));
 
 			return;
 		}
@@ -76,8 +94,7 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 		}
 
 		if (isCustomAudioParam(destination)) {
-			this.webApiNode.disconnect(destination.multiplier);
-			this.webApiNode.disconnect(destination.analyser);
+			this.webApiNode.disconnect(destination.getMultiplierForInput(this.id));
 
 			return;
 		}
@@ -102,66 +119,66 @@ export class CustomAudioNodeWithWebApiAudioScheduledSourceNode<T extends AudioSc
 }
 
 export class CustomSineOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
-	constructor() {
+	constructor(id: string) {
 		const oscillator = globalContext.createOscillator();
 		oscillator.type = 'sine';
-		super(oscillator);
+		super(oscillator, id);
 	}
 }
 
 export class CustomSawOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
-	constructor() {
+	constructor(id: string) {
 		const oscillator = globalContext.createOscillator();
 		oscillator.type = 'sawtooth';
-		super(oscillator);
+		super(oscillator, id);
 	}
 }
 
 export class CustomSquareOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
-	constructor() {
+	constructor(id: string) {
 		const oscillator = globalContext.createOscillator();
 		oscillator.type = 'square';
-		super(oscillator);
+		super(oscillator, id);
 	}
 }
 
 export class CustomTriangleOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
-	constructor() {
+	constructor(id: string) {
 		const oscillator = globalContext.createOscillator();
 		oscillator.type = 'triangle';
-		super(oscillator);
+		super(oscillator, id);
 	}
 }
 
 export class CustomPanNode extends GenericCustomAudioNodeWithWebApiNode<StereoPannerNode> {
-	constructor() {
-		super(globalContext.createStereoPanner());
+	constructor(id: string) {
+		super(globalContext.createStereoPanner(), id);
 	}
 }
 
 export class CustomBipolarToUnipolarNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
-	constructor() {
-		super(new AudioWorkletNode(globalContext, 'scaler'));
+	constructor(id: string) {
+		super(new AudioWorkletNode(globalContext, 'scaler'), id);
 	}
 }
 
 export class CustomLowpassFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
-	constructor() {
+	constructor(id: string) {
 		const filter = globalContext.createBiquadFilter();
 		filter.type = 'lowpass';
-		super(filter);
+		super(filter, id);
 	}
 }
 
 export class CustomGainNode extends GenericCustomAudioNodeWithWebApiNode<GainNode> {
-	constructor() {
-		super(globalContext.createGain());
+	constructor(id: string) {
+		super(globalContext.createGain(), id);
 	}
 }
 
 export class CustomMultiplyNode extends GenericCustomAudioNodeWithWebApiNode<GainNode> {
-	constructor() {
-		super(globalContext.createGain());
+	constructor(id: string) {
+		super(globalContext.createGain(), id);
 	}
 
 	getParameter(parameterName: string): CustomAudioParam {
@@ -174,32 +191,32 @@ export class CustomMultiplyNode extends GenericCustomAudioNodeWithWebApiNode<Gai
 }
 
 export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode<AnalyserNode> {
-	constructor() {
-		super(globalContext.createAnalyser());
+	constructor(id: string) {
+		super(globalContext.createAnalyser(), id);
 	}
 }
 
 export class AREnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
-	constructor() {
-		super(new AudioWorkletNode(globalContext, 'ar-envelope'));
+	constructor(id: string) {
+		super(new AudioWorkletNode(globalContext, 'ar-envelope'), id);
 	}
 }
 
 export class SequencerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
-	constructor() {
-		super(new AudioWorkletNode(globalContext, 'sequencer'));
+	constructor(id: string) {
+		super(new AudioWorkletNode(globalContext, 'sequencer'), id);
 	}
 }
 
 export class PitchQuantizerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
-	constructor() {
-		super(new AudioWorkletNode(globalContext, 'pitch-quantizer'));
+	constructor(id: string) {
+		super(new AudioWorkletNode(globalContext, 'pitch-quantizer'), id);
 	}
 }
 
 export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
-	constructor() {
-		super(new AudioWorkletNode(globalContext, 'trigger'));
+	constructor(id: string) {
+		super(new AudioWorkletNode(globalContext, 'trigger'), id);
 	}
 
 	start() {
@@ -220,8 +237,8 @@ export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkl
 }
 
 export class DestinationNode extends GenericCustomAudioNodeWithWebApiNode<AudioDestinationNode> {
-	constructor() {
-		super(globalContext.destination);
+	constructor(id: string) {
+		super(globalContext.destination, id);
 	}
 }
 
@@ -238,16 +255,16 @@ export class CustomConvolutionNode extends GenericCustomAudioNodeWithWebApiNode<
 		);
 	}
 
-	constructor() {
-		super(globalContext.createConvolver());
+	constructor(id: string) {
+		super(globalContext.createConvolver(), id);
 
 		CustomConvolutionNode.fetchReverb(this.webApiNode);
 	}
 }
 
 export class CustomDelayNode extends GenericCustomAudioNodeWithWebApiNode<DelayNode> {
-	constructor() {
-		super(globalContext.createDelay());
+	constructor(id: string) {
+		super(globalContext.createDelay(), id);
 	}
 }
 
@@ -258,7 +275,7 @@ export class MidiNode {
 	private triggerDestinations: Destination[] = [];
 	private midiAccess: MIDIAccess | null = null;
 
-	getParameter(parameterName: string): CustomAudioParam {
+	getParameter(): CustomAudioParam {
 		throw new Error('MidiNode does not have any parameters');
 	}
 
@@ -283,6 +300,7 @@ export class MidiNode {
 			this.midiAccess = midiAccess;
 
 			this.midiAccess.inputs.forEach((input) => {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				input.addEventListener('midimessage', this.handleMidiMessage.bind(this) as any);
 			});
 		});
@@ -291,6 +309,7 @@ export class MidiNode {
 	stop(): void {
 		if (this.midiAccess !== null) {
 			this.midiAccess.inputs.forEach((input) => {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				input.removeEventListener('midimessage', this.handleMidiMessage.bind(this) as any);
 			});
 		}
