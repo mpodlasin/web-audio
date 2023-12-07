@@ -18,7 +18,10 @@ export const getLinesToDisplay = (
 	plugPositions: PlugPositions
 ): LineToDisplay[] => {
 	const lines = Object.entries(audioGraphWithPositions).reduce(
-		(acc: (readonly [readonly [string, string], readonly [string, string], number | undefined])[], [id, node]) => {
+		(
+			acc: (readonly [readonly [string, string], readonly [string, string], number | undefined])[],
+			[id, node]
+		) => {
 			const staticToDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
 
 			const mapped = node.inputs
@@ -31,13 +34,13 @@ export const getLinesToDisplay = (
 							return [
 								[input, staticNodeDefinition.outputs[0] as string],
 								[id, staticToDefinition.inputs[0] as string],
-								undefined,
+								undefined
 							] as const;
 						} else {
 							return [
 								[input.id, input.output],
 								[id, staticToDefinition.inputs[0] as string],
-								undefined,
+								undefined
 							] as const;
 						}
 				  })
@@ -46,11 +49,7 @@ export const getLinesToDisplay = (
 			const mappedParams = node.parameters
 				? Object.entries(node.parameters).flatMap(([key, value]) => {
 						return value.inputs.map((input) => {
-							return [
-								[input.id, input.output],
-								[id, key],
-								input.multiply,
-							] as const;
+							return [[input.id, input.output], [id, key], input.multiply] as const;
 						});
 				  })
 				: [];

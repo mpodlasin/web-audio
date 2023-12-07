@@ -1,13 +1,9 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { plugsEqual } from '../audio/serialized';
 	import { normalizedVector } from '../ui/vectors';
-	import type { Plug } from '../audio/serialized';
 	import type { LineToDisplay } from '../ui/lines';
 	export let line: LineToDisplay;
-	export let lineMenuPlugs: [Plug, Plug] | null;
-
-	const dispatcher = createEventDispatcher();
+	export let chosenLine: LineToDisplay | null;
 
 	const cutLineOverlayConstant = 9;
 </script>
@@ -23,8 +19,8 @@
 	stroke-width="7"
 	stroke-linecap="round"
 	class="invisible"
-	class:chosen={lineMenuPlugs
-		? plugsEqual(lineMenuPlugs[0], line.line[0]) && plugsEqual(lineMenuPlugs[1], line.line[1])
+	class:chosen={chosenLine
+		? plugsEqual(chosenLine.line[0], line.line[0]) && plugsEqual(chosenLine.line[1], line.line[1])
 		: false}
 />
 

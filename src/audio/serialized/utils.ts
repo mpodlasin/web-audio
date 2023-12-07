@@ -332,7 +332,8 @@ export const addConnectionToParameter = <S extends SerializedAudioElements>(
 							...(parameter?.inputs ?? []),
 							{
 								id: startingPlug.nodeId,
-								output: startingPlug.id
+								output: startingPlug.id,
+								multiply: 1
 							}
 						]
 					}

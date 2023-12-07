@@ -466,7 +466,7 @@ describe('AudioCanvas', () => {
 			);
 
 			expect(newAudioElements['1']?.parameters.detune.inputs).toEqual([
-				{ id: '2', output: 'audio' }
+				{ id: '2', output: 'audio', multiply: 1 }
 			]);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
@@ -611,7 +611,7 @@ describe('AudioCanvas', () => {
 			);
 
 			expect(newAudioElements['1']?.parameters.detune.inputs).toEqual([
-				{ id: '2', output: 'frequency' }
+				{ id: '2', output: 'frequency', multiply: 1 }
 			]);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);

@@ -12,12 +12,15 @@
 		removeNode,
 		addConnectionToParameter,
 		type Position,
-		insertExistingNodes
+		insertExistingNodes,
+
+		changeParameterMultiply
+
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import Menu from './Menu.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
-	import { getLinesToDisplay } from '../ui/lines';
+	import { getLinesToDisplay, type LineToDisplay } from '../ui/lines';
 	import { addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
 	import ProjectsModal from './ProjectsModal.svelte';
 	import { createEventDispatcher } from 'svelte';
@@ -30,6 +33,8 @@
 	import ChangeColorModal from './ChangeColorModal.svelte';
 	import Node from './Node.svelte';
 	import { changeNodeColor } from '../ui/changeNodeColor';
+	import Modal from './Modal.svelte';
+	import Knob from './Knob.svelte';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
@@ -69,7 +74,7 @@
 	};
 
 	const handleDragCanvasStart = (event: MouseEvent) => {
-		audioGraphHistory = [...audioGraphHistory, audioGraphWithPositions];
+		audioGraphHistory = [...audioGraphHistory, audioGraph];
 		event.preventDefault();
 		if (isAlternativeKey(event)) {
 			if (!event.shiftKey) {
@@ -114,7 +119,7 @@
 		};
 
 		const newAudioGraphWithPositions = Object.fromEntries(
-			Object.entries(audioGraphWithPositions).map(([id, node]) => [
+			Object.entries(audioGraph).map(([id, node]) => [
 				id,
 				{
 					...node,
@@ -141,20 +146,20 @@
 		};
 	};
 
-	$: previousAudioGraphWithPositions = audioGraphHistory.at(-2) ?? {};
-	$: audioGraphWithPositions = audioGraphHistory.at(-1) ?? {};
+	$: previousAudioGraph = audioGraphHistory.at(-2) ?? {};
+	$: audioGraph = audioGraphHistory.at(-1) ?? {};
 
 	const dispatcher = createEventDispatcher();
 
 	$: {
-		dispatcher('change', audioGraphWithPositions);
+		dispatcher('change', audioGraph);
 	}
 
 	let selectedNodeIds: string[] = [];
 
 	$: {
 		if (selectNodesStartPosition && selectNodesEndPosition) {
-			const filteredIds = Object.entries(audioGraphWithPositions)
+			const filteredIds = Object.entries(audioGraph)
 				.filter(([_, node]) => {
 					const x = node.ui?.position.x ?? 0;
 					const y = node.ui?.position.y ?? 0;
@@ -184,12 +189,12 @@
 	let plugPositions: PlugPositions = {};
 
 	const handleDragStart = () => {
-		audioGraphHistory = [...audioGraphHistory, audioGraphWithPositions];
+		audioGraphHistory = [...audioGraphHistory, audioGraph];
 	};
 
 	const handleDragNode = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
 		if (selectedNodeIds.some((selectedId) => selectedId === event.detail.id)) {
-			const draggedNode = audioGraphWithPositions[event.detail.id];
+			const draggedNode = audioGraph[event.detail.id];
 
 			if (!draggedNode) return;
 
@@ -226,10 +231,10 @@
 		};
 	};
 
-	$: linesToDisplay = getLinesToDisplay(audioGraphWithPositions, plugPositions);
+	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions);
 
 	const handleNodeParameterChangeStart = () => {
-		audioGraphHistory = [...audioGraphHistory, audioGraphWithPositions];
+		audioGraphHistory = [...audioGraphHistory, audioGraph];
 	};
 
 	const handleNodeParameterChange = (
@@ -239,12 +244,12 @@
 
 		audioGraphHistory = [
 			...audioGraphHistory.slice(0, -1),
-			changeParameter(audioGraphWithPositions, id, parameterName, value)
+			changeParameter(audioGraph, id, parameterName, value)
 		];
 	};
 
 	$: {
-		updateAudioCanvas(audioGraphWithPositions, previousAudioGraphWithPositions, audioNodeDatabase);
+		updateAudioCanvas(audioGraph, previousAudioGraph, audioNodeDatabase);
 	}
 
 	const handleCreateElementClick = (
@@ -254,7 +259,7 @@
 
 		audioGraphHistory = [
 			...audioGraphHistory,
-			addNode(audioGraphWithPositions, event.detail, menuPosition)
+			addNode(audioGraph, event.detail, menuPosition)
 		];
 	};
 
@@ -291,7 +296,7 @@
 
 		audioGraphHistory = [
 			...audioGraphHistory,
-			addConnection(audioGraphWithPositions, startingPlug, event.detail)
+			addConnection(audioGraph, startingPlug, event.detail)
 		];
 
 		stopDragging();
@@ -303,7 +308,7 @@
 
 		audioGraphHistory = [
 			...audioGraphHistory,
-			addConnectionToParameter(audioGraphWithPositions, startingPlug, {
+			addConnectionToParameter(audioGraph, startingPlug, {
 				nodeId: event.detail.nodeId,
 				type: 'input',
 				id: event.detail.parameterName
@@ -322,11 +327,11 @@
 	/* ----------------------------------------------------------- */
 
 	const handleDeleteConnection = () => {
-		if (!lineMenuPlugs) return;
+		if (!chosenLine) return;
 
 		audioGraphHistory = [
 			...audioGraphHistory,
-			removeConnection(audioGraphWithPositions, lineMenuPlugs[0], lineMenuPlugs[1])
+			removeConnection(audioGraph, chosenLine.line[0], chosenLine.line[1])
 		];
 
 		showMenu = false;
@@ -343,17 +348,17 @@
 	};
 
 	const handlePasteClick = () => {
-		const newAudioGraph = insertExistingNodes(audioGraphWithPositions, copiedNodes, menuPosition);
+		const newAudioGraph = insertExistingNodes(audioGraph, copiedNodes, menuPosition);
 		audioGraphHistory = [...audioGraphHistory, newAudioGraph];
 	};
 
 	const handleDeleteNode = () => {
 		if (selectedNodeIds.some((selectedId) => selectedId === menuNodeId)) {
-			const newAudioGraph = selectedNodeIds.reduce(removeNode, audioGraphWithPositions);
+			const newAudioGraph = selectedNodeIds.reduce(removeNode, audioGraph);
 
 			audioGraphHistory = [...audioGraphHistory, newAudioGraph];
 		} else {
-			audioGraphHistory = [...audioGraphHistory, removeNode(audioGraphWithPositions, menuNodeId)];
+			audioGraphHistory = [...audioGraphHistory, removeNode(audioGraph, menuNodeId)];
 		}
 	};
 
@@ -377,9 +382,10 @@
 	let menuPosition = { x: 0, y: 0 };
 	let showMenu = false;
 	let menuKind: 'canvas' | 'node' | 'line' = 'canvas';
-	let lineMenuPlugs: [Plug, Plug] | null = null;
+	let chosenLine: LineToDisplay | null = null;
 	let menuNodeId: string = '';
-	let menuForLineMultiply: number | undefined = undefined;
+
+	$: chosenLineMultiply = chosenLine?.multiply;
 
 	const handleCanvasLeftClick = (event: MouseEvent) => {
 		event.preventDefault();
@@ -387,24 +393,24 @@
 		menuPosition = { x: event.clientX, y: event.clientY };
 		showMenu = true;
 		menuKind = 'canvas';
-		lineMenuPlugs = null;
-		menuForLineMultiply = undefined;
+		chosenLine = null;
+		chosenLineMultiply = undefined;
 
 		window.addEventListener('click', closeMenu, { once: true });
 	};
 
-	const handleLineLeftClick = (fromPlug: Plug, toPlug: Plug, multiply: number | undefined) => (event: MouseEvent) => {
-		event.preventDefault();
-		event.stopPropagation();
+	const handleLineLeftClick =
+		(line: LineToDisplay) => (event: MouseEvent) => {
+			event.preventDefault();
+			event.stopPropagation();
 
-		showMenu = true;
-		menuKind = 'line';
-		lineMenuPlugs = [fromPlug, toPlug];
-		menuForLineMultiply = multiply;
-		menuPosition = { x: event.clientX, y: event.clientY };
+			showMenu = true;
+			menuKind = 'line';
+			chosenLine = line;
+			menuPosition = { x: event.clientX, y: event.clientY };
 
-		window.addEventListener('click', closeMenu, { once: true });
-	};
+			window.addEventListener('click', closeMenu, { once: true });
+		};
 
 	const handleNodeLeftClick = (nodeId: string) => (event: MouseEvent) => {
 		event.preventDefault();
@@ -412,8 +418,7 @@
 		menuPosition = { x: event.clientX, y: event.clientY };
 		showMenu = true;
 		menuKind = 'node';
-		lineMenuPlugs = null;
-		menuForLineMultiply = undefined;
+		chosenLine = null;
 		menuNodeId = nodeId;
 
 		window.addEventListener('click', closeMenu, { once: true });
@@ -421,8 +426,6 @@
 
 	const closeMenu = () => {
 		showMenu = false;
-		lineMenuPlugs = null;
-		menuForLineMultiply = undefined;
 	};
 
 	let showProjectsModal = false;
@@ -447,13 +450,13 @@
 
 	let changeColorModalIsOpen = false;
 	let changedColorNodeId = '';
-	$: changedColorNode = audioGraphWithPositions[changedColorNodeId];
+	$: changedColorNode = audioGraph[changedColorNodeId];
 	let changedNodeColor: string | undefined;
 
 	const openChangeColorModal = (nodeId: string) => () => {
 		changeColorModalIsOpen = true;
 		changedColorNodeId = nodeId;
-		changedNodeColor = audioGraphWithPositions[nodeId]?.ui?.primmaryColor;
+		changedNodeColor = audioGraph[nodeId]?.ui?.primmaryColor;
 	};
 
 	const closeChangeColorModal = () => {
@@ -473,13 +476,13 @@
 				selectedNodeIds.reduce(
 					(audioGraph, nodeId) =>
 						changeNodeColor(nodeId, changedNodeColor ?? '#000000', audioGraph),
-					audioGraphWithPositions
+					audioGraph
 				)
 			];
 		} else {
 			audioGraphHistory = [
 				...audioGraphHistory,
-				changeNodeColor(changedColorNodeId, changedNodeColor, audioGraphWithPositions)
+				changeNodeColor(changedColorNodeId, changedNodeColor, audioGraph)
 			];
 		}
 
@@ -501,6 +504,33 @@
 	};
 
 	window.addEventListener('keydown', handleCanvasKeypress);
+
+	let showMultiplyModal = false;
+
+	const openMultiplyModal = () => {
+		showMultiplyModal = true;
+	};
+
+	const handleMultiplyValueChangeStart = () => {
+		audioGraphHistory = [
+			...audioGraphHistory,
+			audioGraph,
+		]
+	}
+
+	const handleMultiplyValueChange = (event: CustomEvent<{parameterName: string; value: number;}>) => {
+		const { parameterName, value } = event.detail;
+
+		if (!chosenLine) return;
+
+		const nodeId = chosenLine.line[1].nodeId;
+		const inputId = chosenLine.line[0].nodeId;
+
+		audioGraphHistory = [
+			...audioGraphHistory.slice(0, -1),
+			changeParameterMultiply(audioGraph, nodeId, parameterName, inputId, value),
+		];
+	};
 </script>
 
 <div
@@ -527,7 +557,7 @@
 		on:projectNameChange
 	/>
 	<div class="audio-canvas" on:contextmenu={handleCanvasLeftClick} on:mousemove={handleLineDrag}>
-		{#each Object.entries(audioGraphWithPositions) as [id, node] (id)}
+		{#each Object.entries(audioGraph) as [id, node] (id)}
 			<DraggableNode
 				{id}
 				{node}
@@ -568,8 +598,8 @@
 			{#each linesToDisplay as line}
 				<Line
 					{line}
-					{lineMenuPlugs}
-					on:contextmenu={handleLineLeftClick(line.line[0], line.line[1], line.multiply)}
+					{chosenLine}
+					on:contextmenu={handleLineLeftClick(line)}
 				/>
 			{/each}
 
@@ -587,8 +617,8 @@
 		{#if showMenu && menuKind === 'line'}
 			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
 				<Menu>
-					{#if menuForLineMultiply !== undefined}
-						<MenuButton>Mult: {menuForLineMultiply}</MenuButton>
+					{#if chosenLineMultiply !== undefined}
+						<MenuButton on:click={openMultiplyModal}>Mult: {chosenLineMultiply}</MenuButton>
 					{/if}
 					<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
 						>Delete</MenuButton
@@ -639,6 +669,25 @@
 					{/if}
 				</div>
 			</ChangeColorModal>
+		{/if}
+
+		{#if showMultiplyModal}
+			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
+				<Menu>
+					<Knob
+						parameterName="mult"
+						parameter={{ base: chosenLineMultiply ?? 1, inputs: [] }}
+						defaultValue={1}
+						minValue={0}
+						maxValue={10_000}
+						polarity="uni"
+						draggingLine={false}
+						audioParamAnalyser={undefined}
+						on:change={handleMultiplyValueChange}
+						on:mousedown={handleMultiplyValueChangeStart}
+					/>
+				</Menu>
+			</div>
 		{/if}
 	</div>
 </div>
