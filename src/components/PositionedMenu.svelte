@@ -16,11 +16,11 @@
 	};
 </script>
 
-<div class="background" on:click={handleBackgroundClick} on:keypress={() => {}}>
+<div class="background" on:mousedown={handleBackgroundClick} on:keypress={() => {}}>
 	<div
 		class="menu"
 		style="left: {position.x}px; top: {position.y}px;"
-		on:click={handleMenuClick}
+		on:mousedown={handleMenuClick}
 		on:keypress={() => {}}
 	>
 		<Menu>
