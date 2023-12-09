@@ -449,6 +449,14 @@ export const changeParameterMultiply = <S extends SerializedAudioElements>(
 		throw new Error(`Audio element with id ${nodeId} not found`);
 	}
 
+	const parameter = node.parameters?.[parameterName];
+
+	if (!parameter) {
+		throw new Error(
+			`Parameter with name ${parameterName} does not exist on node of type ${node.type}`
+		);
+	}
+
 	return {
 		...audioGraph,
 		[nodeId]: {
@@ -456,8 +464,8 @@ export const changeParameterMultiply = <S extends SerializedAudioElements>(
 			parameters: {
 				...node.parameters,
 				[parameterName]: {
-					...node.parameters?.[parameterName],
-					inputs: node.parameters?.[parameterName]?.inputs.map((input) => {
+					...parameter,
+					inputs: parameter.inputs.map((input) => {
 						if (input.id === inputId) {
 							return {
 								...input,

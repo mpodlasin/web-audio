@@ -1,9 +1,17 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { categorizedNodeTypes, readableCategoryNames, readableNames } from '../audio/serialized';
+	import {
+		categorizedNodeTypes,
+		readableCategoryNames,
+		readableNames,
+		type Position
+	} from '../audio/serialized';
 	import ChevronRight from '../icons/Chevron_Right.svg?component';
 	import Menu from './Menu.svelte';
 	import MenuButton from './MenuButton.svelte';
+	import PositionedMenu from './PositionedMenu.svelte';
+
+	export let position: Position;
 
 	const dispatcher = createEventDispatcher();
 
@@ -36,7 +44,7 @@
 	};
 </script>
 
-<Menu>
+<PositionedMenu {position} on:close>
 	<div class="create-section">
 		{#each Object.entries(categorizedNodeTypes) as [nodeType, nodeTypes] (nodeType)}
 			<MenuButton>
@@ -61,7 +69,7 @@
 		{/each}
 	</div>
 	<MenuButton on:click={handlePasteClick} on:keypress={() => {}}>Paste</MenuButton>
-</Menu>
+</PositionedMenu>
 
 <style>
 	.menu-section {

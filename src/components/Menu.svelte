@@ -1,7 +1,7 @@
 <script lang="ts">
 </script>
 
-<div class="wrapper">
+<div on:click on:keydown on:mouseup class="wrapper">
 	<slot />
 </div>
 

@@ -51,11 +51,15 @@
 
 		window.addEventListener('mousemove', handleMouseMove);
 
-		window.addEventListener('mouseup', () => {
-			isDragging = false;
-			draggingStartPosition = null;
-			window.removeEventListener('mousemove', handleMouseMove);
-		});
+		window.addEventListener(
+			'mouseup',
+			() => {
+				isDragging = false;
+				draggingStartPosition = null;
+				window.removeEventListener('mousemove', handleMouseMove);
+			},
+			{ once: true }
+		);
 	}
 
 	function handleMouseUp() {

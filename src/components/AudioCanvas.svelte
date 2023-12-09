@@ -7,18 +7,14 @@
 		addNode,
 		addConnection,
 		changeParameter,
-		type Plug,
 		removeConnection,
 		removeNode,
 		addConnectionToParameter,
 		type Position,
 		insertExistingNodes,
-
 		changeParameterMultiply
-
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
-	import Menu from './Menu.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
 	import { getLinesToDisplay, type LineToDisplay } from '../ui/lines';
 	import { addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
@@ -35,6 +31,7 @@
 	import { changeNodeColor } from '../ui/changeNodeColor';
 	import Modal from './Modal.svelte';
 	import Knob from './Knob.svelte';
+	import PositionedMenu from './PositionedMenu.svelte';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
@@ -257,10 +254,7 @@
 	) => {
 		event.preventDefault();
 
-		audioGraphHistory = [
-			...audioGraphHistory,
-			addNode(audioGraph, event.detail, menuPosition)
-		];
+		audioGraphHistory = [...audioGraphHistory, addNode(audioGraph, event.detail, menuPosition)];
 	};
 
 	/* -------------------------------------------------------------------------- */
@@ -381,7 +375,7 @@
 
 	let menuPosition = { x: 0, y: 0 };
 	let showMenu = false;
-	let menuKind: 'canvas' | 'node' | 'line' = 'canvas';
+	let menuKind: 'canvas' | 'node' | 'line' | 'line-multiply' = 'canvas';
 	let chosenLine: LineToDisplay | null = null;
 	let menuNodeId: string = '';
 
@@ -395,22 +389,17 @@
 		menuKind = 'canvas';
 		chosenLine = null;
 		chosenLineMultiply = undefined;
-
-		window.addEventListener('click', closeMenu, { once: true });
 	};
 
-	const handleLineLeftClick =
-		(line: LineToDisplay) => (event: MouseEvent) => {
-			event.preventDefault();
-			event.stopPropagation();
+	const handleLineLeftClick = (line: LineToDisplay) => (event: MouseEvent) => {
+		event.preventDefault();
+		event.stopPropagation();
 
-			showMenu = true;
-			menuKind = 'line';
-			chosenLine = line;
-			menuPosition = { x: event.clientX, y: event.clientY };
-
-			window.addEventListener('click', closeMenu, { once: true });
-		};
+		showMenu = true;
+		menuKind = 'line';
+		chosenLine = line;
+		menuPosition = { x: event.clientX, y: event.clientY };
+	};
 
 	const handleNodeLeftClick = (nodeId: string) => (event: MouseEvent) => {
 		event.preventDefault();
@@ -420,12 +409,11 @@
 		menuKind = 'node';
 		chosenLine = null;
 		menuNodeId = nodeId;
-
-		window.addEventListener('click', closeMenu, { once: true });
 	};
 
 	const closeMenu = () => {
 		showMenu = false;
+		chosenLine = null;
 	};
 
 	let showProjectsModal = false;
@@ -505,21 +493,20 @@
 
 	window.addEventListener('keydown', handleCanvasKeypress);
 
-	let showMultiplyModal = false;
+	const openLineMultiplyMenu = (event: MouseEvent) => {
+		event.stopPropagation();
 
-	const openMultiplyModal = () => {
-		showMultiplyModal = true;
+		menuKind = 'line-multiply';
 	};
 
-	const handleMultiplyValueChangeStart = () => {
-		audioGraphHistory = [
-			...audioGraphHistory,
-			audioGraph,
-		]
-	}
+	const handleMultiplyValueChangeStart = (event: CustomEvent) => {
+		audioGraphHistory = [...audioGraphHistory, audioGraph];
+	};
 
-	const handleMultiplyValueChange = (event: CustomEvent<{parameterName: string; value: number;}>) => {
-		const { parameterName, value } = event.detail;
+	const handleMultiplyValueChange = (
+		event: CustomEvent<{ parameterName: string; value: number }>
+	) => {
+		const { value } = event.detail;
 
 		if (!chosenLine) return;
 
@@ -528,8 +515,9 @@
 
 		audioGraphHistory = [
 			...audioGraphHistory.slice(0, -1),
-			changeParameterMultiply(audioGraph, nodeId, parameterName, inputId, value),
+			changeParameterMultiply(audioGraph, nodeId, chosenLine.line[1].id, inputId, value)
 		];
+		chosenLineMultiply = value;
 	};
 </script>
 
@@ -596,11 +584,7 @@
 		{/if}
 		<svg width="100vw" height="100vh">
 			{#each linesToDisplay as line}
-				<Line
-					{line}
-					{chosenLine}
-					on:contextmenu={handleLineLeftClick(line)}
-				/>
+				<Line {line} {chosenLine} on:contextmenu={handleLineLeftClick(line)} />
 			{/each}
 
 			{#if draggingLine}
@@ -615,37 +599,55 @@
 		</svg>
 
 		{#if showMenu && menuKind === 'line'}
-			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
-				<Menu>
-					{#if chosenLineMultiply !== undefined}
-						<MenuButton on:click={openMultiplyModal}>Mult: {chosenLineMultiply}</MenuButton>
-					{/if}
-					<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
-						>Delete</MenuButton
+			<PositionedMenu position={menuPosition} on:close={closeMenu}>
+				{#if chosenLineMultiply !== undefined}
+					<MenuButton on:click={openLineMultiplyMenu}
+						>Mult: {chosenLineMultiply.toFixed(2)}</MenuButton
 					>
-				</Menu>
-			</div>
+				{/if}
+				<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
+					>Delete</MenuButton
+				>
+			</PositionedMenu>
 		{/if}
 
 		{#if showMenu && menuKind === 'node'}
-			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
-				<Menu>
-					{#if selectedNodeIds.some((id) => menuNodeId === id)}
-						<div class="nodes-selected-header">{selectedNodeIds.length} nodes selected:</div>
-					{/if}
-					<MenuButton on:click={openChangeColorModal(menuNodeId)}>Color</MenuButton>
-					<MenuButton on:click={handleCopyNode}>Copy</MenuButton>
-					<MenuButton on:click={handleDeleteNode} on:keypress={() => {}} variant="danger"
-						>Delete</MenuButton
-					>
-				</Menu>
-			</div>
+			<PositionedMenu position={menuPosition} on:close={closeMenu}>
+				{#if selectedNodeIds.some((id) => menuNodeId === id)}
+					<div class="nodes-selected-header">{selectedNodeIds.length} nodes selected:</div>
+				{/if}
+				<MenuButton on:click={openChangeColorModal(menuNodeId)}>Color</MenuButton>
+				<MenuButton on:click={handleCopyNode}>Copy</MenuButton>
+				<MenuButton on:click={handleDeleteNode} on:keypress={() => {}} variant="danger"
+					>Delete</MenuButton
+				>
+			</PositionedMenu>
 		{/if}
 
 		{#if showMenu && menuKind === 'canvas'}
-			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
-				<ContextMenu on:create={handleCreateElementClick} on:paste={handlePasteClick} />
-			</div>
+			<ContextMenu
+				position={menuPosition}
+				on:create={handleCreateElementClick}
+				on:paste={handlePasteClick}
+				on:close={closeMenu}
+			/>
+		{/if}
+
+		{#if showMenu && menuKind === 'line-multiply'}
+			<PositionedMenu position={menuPosition} on:close={closeMenu}>
+				<Knob
+					parameterName="mult"
+					parameter={{ base: chosenLineMultiply ?? 1, inputs: [] }}
+					defaultValue={1}
+					minValue={0}
+					maxValue={10_000}
+					polarity="uni"
+					draggingLine={false}
+					audioParamAnalyser={undefined}
+					on:change={handleMultiplyValueChange}
+					on:mousedown={handleMultiplyValueChangeStart}
+				/>
+			</PositionedMenu>
 		{/if}
 
 		{#if changeColorModalIsOpen}
@@ -670,25 +672,6 @@
 				</div>
 			</ChangeColorModal>
 		{/if}
-
-		{#if showMultiplyModal}
-			<div class="create-node-menu" style="left: {menuPosition.x}px; top: {menuPosition.y}px;">
-				<Menu>
-					<Knob
-						parameterName="mult"
-						parameter={{ base: chosenLineMultiply ?? 1, inputs: [] }}
-						defaultValue={1}
-						minValue={0}
-						maxValue={10_000}
-						polarity="uni"
-						draggingLine={false}
-						audioParamAnalyser={undefined}
-						on:change={handleMultiplyValueChange}
-						on:mousedown={handleMultiplyValueChangeStart}
-					/>
-				</Menu>
-			</div>
-		{/if}
 	</div>
 </div>
 
@@ -696,10 +679,6 @@
 	.canvas {
 		background-color: var(--neutral-700);
 		overflow: hidden;
-	}
-
-	.create-node-menu {
-		position: absolute;
 	}
 
 	svg {
