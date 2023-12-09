@@ -255,6 +255,8 @@
 		event.preventDefault();
 
 		audioGraphHistory = [...audioGraphHistory, addNode(audioGraph, event.detail, menuPosition)];
+
+		closeMenu();
 	};
 
 	/* -------------------------------------------------------------------------- */
@@ -328,7 +330,7 @@
 			removeConnection(audioGraph, chosenLine.line[0], chosenLine.line[1])
 		];
 
-		showMenu = false;
+		closeMenu();
 	};
 
 	let copiedNodes: string[] = [];
@@ -339,11 +341,13 @@
 		} else {
 			copiedNodes = [menuNodeId];
 		}
+		closeMenu();
 	};
 
 	const handlePasteClick = () => {
 		const newAudioGraph = insertExistingNodes(audioGraph, copiedNodes, menuPosition);
 		audioGraphHistory = [...audioGraphHistory, newAudioGraph];
+		closeMenu();
 	};
 
 	const handleDeleteNode = () => {
@@ -354,6 +358,7 @@
 		} else {
 			audioGraphHistory = [...audioGraphHistory, removeNode(audioGraph, menuNodeId)];
 		}
+		closeMenu();
 	};
 
 	let playing = false;
@@ -445,6 +450,7 @@
 		changeColorModalIsOpen = true;
 		changedColorNodeId = nodeId;
 		changedNodeColor = audioGraph[nodeId]?.ui?.primmaryColor;
+		closeMenu();
 	};
 
 	const closeChangeColorModal = () => {
