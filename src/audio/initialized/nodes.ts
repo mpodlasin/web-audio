@@ -86,7 +86,12 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 		}
 	}
 
-	disconnect(destination: CustomAudioNode | AudioParam | CustomAudioParam): void {
+	disconnect(destination: CustomAudioNode | AudioParam | CustomAudioParam | undefined): void {
+		if (destination === undefined) {
+			this.webApiNode.disconnect();
+			return;
+		}
+
 		if (destination instanceof AudioParam) {
 			this.webApiNode.disconnect(destination);
 
@@ -118,35 +123,191 @@ export class CustomAudioNodeWithWebApiAudioScheduledSourceNode<T extends AudioSc
 	}
 }
 
-export class CustomSineOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
-	constructor(id: string) {
-		const oscillator = globalContext.createOscillator();
-		oscillator.type = 'sine';
-		super(oscillator, id);
+export class CustomOscillatorNode implements CustomAudioScheduledSourceNode {
+	public output: GainNode;
+	public leftOscillator: OscillatorNode;
+	public rightOscillator: OscillatorNode;
+	public frequency: ConstantSourceNode;
+	public detune: ConstantSourceNode;
+
+	private parameterAnalysers: { [parameterName: string]: AnalyserNode } = {};
+	private parameterMultipliers: {
+		[parameterName: string]: {
+			[inputId: string]: GainNode;
+		};
+	} = {};
+
+	constructor(private id: string, type: OscillatorType) {
+		const leftOscillator = globalContext.createOscillator();
+		leftOscillator.type = type;
+		leftOscillator.frequency.value = 0;
+
+		const rightOscillator = globalContext.createOscillator();
+		rightOscillator.type = type;
+		rightOscillator.frequency.value = 0;
+
+		const leftPan = globalContext.createStereoPanner();
+		leftPan.pan.value = -1;
+
+		const rightPan = globalContext.createStereoPanner();
+		rightPan.pan.value = 1;
+
+		const gain = globalContext.createGain();
+
+		const frequency = globalContext.createConstantSource();
+
+		frequency.connect(leftOscillator.frequency);
+		frequency.connect(rightOscillator.frequency);
+
+		const detune = globalContext.createConstantSource();
+
+		const minusOne = globalContext.createGain();
+		minusOne.gain.value = -1;
+
+		detune.connect(minusOne);
+
+		minusOne.connect(leftOscillator.detune);
+		detune.connect(rightOscillator.detune)
+
+		leftOscillator.connect(leftPan);
+		rightOscillator.connect(rightPan);
+
+		leftPan.connect(gain);
+		rightPan.connect(gain);
+	
+		this.detune = detune;
+		this.frequency = frequency;
+		this.output = gain;
+		this.leftOscillator = leftOscillator;
+		this.rightOscillator = rightOscillator;
+	}
+
+	start(when?: number | undefined): void {
+		this.frequency.start(when);
+		this.detune.start(when);
+		this.leftOscillator.start(when);
+		this.rightOscillator.start(when);
+	}
+
+	stop(when?: number | undefined): void {
+		this.frequency.stop(when);
+		this.detune.stop(when);
+		this.leftOscillator.stop(when);
+		this.rightOscillator.stop(when);
+	}
+
+	getParameter(parameterName: string): CustomAudioParam {
+		let audioParam: AudioParam;
+		if (parameterName === 'frequency' ) {
+			audioParam = this.frequency.offset;
+		} else if (parameterName === 'detune') {
+			audioParam = this.detune.offset;
+		} else {
+			throw new Error(`Unknown property ${parameterName}`);
+		}
+
+		if (!this.parameterAnalysers[parameterName]) {
+			this.parameterAnalysers[parameterName] = globalContext.createAnalyser();
+		}
+
+		const analyser = this.parameterAnalysers[parameterName];
+
+		if (!analyser) throw new Error();
+
+		return {
+			audioParam,
+			analyser,
+			getMultiplierForInput: (inputId: string) => {
+				if (!this.parameterMultipliers[parameterName]) {
+					this.parameterMultipliers[parameterName] = {};
+				}
+
+				const multipliersForParameter = this.parameterMultipliers[parameterName];
+
+				if (!multipliersForParameter) throw new Error();
+
+				if (!multipliersForParameter[inputId]) {
+					const multiplier = globalContext.createGain();
+					multiplier.connect(audioParam);
+					multiplier.connect(analyser);
+					multiplier.gain.value = 1;
+					multipliersForParameter[inputId] = multiplier;
+				}
+
+				const multiplierForParameterAndInputId = multipliersForParameter[inputId];
+
+				if (!multiplierForParameterAndInputId) throw new Error();
+
+				return multiplierForParameterAndInputId;
+			}
+		};
+	}
+
+	connect(destination: CustomAudioNode | AudioParam | CustomAudioParam): void {
+		if (destination instanceof AudioParam) {
+			this.output.connect(destination);
+
+			return;
+		}
+
+		if (isCustomAudioParam(destination)) {
+			this.output.connect(destination.getMultiplierForInput(this.id));
+
+			return;
+		}
+
+		if (isCustomAudioNodeWithWebApiNode(destination)) {
+			this.output.connect(destination.webApiNode);
+		}
+	}
+
+	disconnect(destination: CustomAudioNode | AudioParam | CustomAudioParam | undefined): void {
+		if (destination === undefined) {
+			this.output.disconnect();
+			
+			return;
+		}
+
+		if (destination instanceof AudioParam) {
+			this.output.disconnect(destination);
+
+			return;
+		}
+
+		if (isCustomAudioParam(destination)) {
+			this.output.disconnect(destination.getMultiplierForInput(this.id));
+
+			return;
+		}
+
+		if (isCustomAudioNodeWithWebApiNode(destination)) {
+			this.output.disconnect(destination.webApiNode);
+		}
 	}
 }
 
-export class CustomSawOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
+
+export class CustomSineOscillatorNode extends CustomOscillatorNode {
 	constructor(id: string) {
-		const oscillator = globalContext.createOscillator();
-		oscillator.type = 'sawtooth';
-		super(oscillator, id);
+		super(id, 'sine');
 	}
 }
 
-export class CustomSquareOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
+export class CustomSawOscillatorNode extends CustomOscillatorNode {
 	constructor(id: string) {
-		const oscillator = globalContext.createOscillator();
-		oscillator.type = 'square';
-		super(oscillator, id);
+		super(id, 'sawtooth');
 	}
 }
 
-export class CustomTriangleOscillatorNode extends CustomAudioNodeWithWebApiAudioScheduledSourceNode<OscillatorNode> {
+export class CustomSquareOscillatorNode extends CustomOscillatorNode {
 	constructor(id: string) {
-		const oscillator = globalContext.createOscillator();
-		oscillator.type = 'triangle';
-		super(oscillator, id);
+		super(id, 'square');
+	}
+}
+
+export class CustomTriangleOscillatorNode extends CustomOscillatorNode {
+	constructor(id: string) {
+		super(id, 'triangle');
 	}
 }
 

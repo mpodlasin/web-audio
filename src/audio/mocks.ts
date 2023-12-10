@@ -50,6 +50,22 @@ export class GainNodeMock {
 	}
 }
 
+export class ConstantSourceNodeMock {
+	public connect: jest.Mock;
+	public disconnect: jest.Mock;
+	public offset: AudioParamMock;
+	public start: jest.Mock;
+	public stop: jest.Mock;
+
+	constructor() {
+		this.connect = jest.fn();
+		this.disconnect = jest.fn();
+		this.offset = new AudioParamMock();
+		this.start = jest.fn();
+		this.stop = jest.fn();
+	}
+}
+
 export class StereoPannerNodeMock {
 	public connect: jest.Mock;
 	public disconnect: jest.Mock;
@@ -70,6 +86,8 @@ export const audioContextMock = {
 	createOscillator: jest.fn(() => new OscillatorNodeMock()),
 	createGain: jest.fn(() => new GainNodeMock()),
 	createAnalyser: jest.fn(() => new AnalyserNodeMock()),
+	createStereoPanner: jest.fn(() => new StereoPannerNodeMock),
+	createConstantSource: jest.fn(() => new ConstantSourceNodeMock),
 	destination: destinationMock
 };
 

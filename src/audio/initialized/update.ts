@@ -54,9 +54,7 @@ export const updateAudioCanvas = (
 					}
 				}
 
-				if (isCustomAudioNodeWithWebApiNode(node)) {
-					node.webApiNode.disconnect();
-				}
+				node.disconnect(undefined);
 			}
 
 			delete audioNodeDatabase[id];

@@ -22,7 +22,7 @@ export function isCustomAudioParam(
 export interface CustomAudioNode {
 	getParameter(parameterName: string): CustomAudioParam;
 	connect(destination: CustomAudioNode | AudioParam | CustomAudioParam, output?: string): void;
-	disconnect(desination: CustomAudioNode | AudioParam | CustomAudioParam, output?: string): void;
+	disconnect(desination: CustomAudioNode | AudioParam | CustomAudioParam | undefined, output?: string): void;
 }
 
 export function isCustomAudioNode(customAudioNode: unknown): customAudioNode is CustomAudioNode {
