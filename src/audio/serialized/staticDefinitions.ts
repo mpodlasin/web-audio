@@ -171,7 +171,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		inputs: [],
 		outputs: ['trigger'],
 		parameters: {
-			tempoInBPM: {
+			tempo: {
 				defaultValue: 120,
 				minValue: 0,
 				maxValue: 1000,

@@ -1,12 +1,15 @@
 export class Trigger extends AudioWorkletProcessor {
-	constructor() {
-		super();
+	constructor(
+		options: AudioWorkletNodeOptions | undefined,
+		private _sampleRate: number = sampleRate
+	) {
+		super(options);
 	}
 
 	static get parameterDescriptors() {
 		return [
 			{
-				name: 'tempoInBPM',
+				name: 'tempo',
 				defaultValue: 120,
 				minValue: 0,
 				maxValue: 1000
@@ -21,11 +24,12 @@ export class Trigger extends AudioWorkletProcessor {
 	}
 
 	process(
-		inputList: Float32Array[][],
+		_: Float32Array[][],
 		outputList: Float32Array[][],
-		parameters: Record<string, Float32Array>
+		parameters: Record<string, Float32Array>,
+		_currentFrame: number = currentFrame
 	) {
-		const tempoInBPM = parameters.tempoInBPM;
+		const tempoInBPM = parameters.tempo;
 		const running = parameters.running;
 
 		if (!tempoInBPM) return true;
@@ -37,13 +41,13 @@ export class Trigger extends AudioWorkletProcessor {
 				output.forEach((out) => {
 					const tempoArray = out.map(() => tempoInBPM[0] ?? 0);
 
-					this.createOutputs(out, tempoArray);
+					this.createOutputs(out, tempoArray, _currentFrame);
 				});
 			});
 		} else {
 			outputList.forEach((output) => {
 				output.forEach((out) => {
-					this.createOutputs(out, tempoInBPM);
+					this.createOutputs(out, tempoInBPM, _currentFrame);
 				});
 			});
 		}
@@ -51,28 +55,15 @@ export class Trigger extends AudioWorkletProcessor {
 		return true;
 	}
 
-	lastCycleEnd = 0;
-	lastOutput = -1;
-
-	private createOutputs(out: Float32Array, tempoInBPM: Float32Array) {
+	private createOutputs(out: Float32Array, tempoInBPM: Float32Array, _currentFrame: number) {
 		for (let i = 0; i < out.length; i++) {
-			const tempoPerSecond = (tempoInBPM[i] ?? 0) / 60;
-			const durationInSeconds = 1 / tempoPerSecond;
-			const cycleStart = (currentTime - this.lastCycleEnd) % durationInSeconds;
-			const sampleLengthInSeconds = 1 / sampleRate;
+			const tempo = tempoInBPM[i] ?? 0;
+			const tempoInSamples = Math.round((this._sampleRate * 60) / tempo);
 
-			const now = cycleStart + i * sampleLengthInSeconds;
+			const sampleIndex = _currentFrame + i;
 
-			if (now <= durationInSeconds / 2) {
+			if (sampleIndex % tempoInSamples === 0) {
 				out[i] = 1;
-				if (this.lastOutput === 0) {
-					this.lastCycleEnd = currentTime;
-				}
-
-				this.lastOutput = 1;
-			} else {
-				out[i] = 0;
-				this.lastOutput = 0;
 			}
 		}
 	}
@@ -96,5 +87,5 @@ declare const AudioWorkletProcessor: {
 
 declare const registerProcessor: (name: string, value: object) => void;
 
-declare const currentTime: number;
+declare const currentFrame: number;
 declare const sampleRate: number;
