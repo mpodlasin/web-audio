@@ -14,7 +14,7 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(sequencerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(pitchQuantizerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl)
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');

@@ -215,7 +215,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				maxValue: 60,
 				unit: 's',
 				defaultValue: 1,
-				polarity: 'uni',
+				polarity: 'uni'
 			}
 		}
 	}
@@ -242,7 +242,7 @@ export const readableNames: { [P in NodeType]: string } = {
 	'pitch-quantizer': 'Pitch Quantizer',
 	sequencer: 'Sequencer',
 	trigger: 'Trigger',
-	'gate-length': 'Gate Length',
+	'gate-length': 'Gate Length'
 };
 
 export const categorizedNodeTypes = {
