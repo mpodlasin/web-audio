@@ -109,6 +109,8 @@ export type SerializedPitchQuantizerNode = SerializedAudioElement<'pitch-quantiz
 
 export type SerializedBipolarToUnipolar = SerializedAudioElement<'bipolar-to-unipolar', never>;
 
+export type SerializedGateLengthNode = SerializedAudioElement<'gate-length', 'length'>;
+
 export type AllowedSerializedAudioElements =
 	| SerializedSineOscillatorNode
 	| SerializedSawOscillatorNode
@@ -127,6 +129,7 @@ export type AllowedSerializedAudioElements =
 	| SerializedPitchQuantizerNode
 	| SerializedMultiplyNode
 	| SerializedPanNode
-	| SerializedBipolarToUnipolar;
+	| SerializedBipolarToUnipolar
+	| SerializedGateLengthNode;
 
 export type NodeType = AllowedSerializedAudioElements['type'];

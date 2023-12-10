@@ -205,6 +205,19 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		inputs: [],
 		outputs: ['frequency', 'trigger'],
 		parameters: {}
+	},
+	'gate-length': {
+		inputs: ['trigger'],
+		outputs: ['trigger'],
+		parameters: {
+			length: {
+				minValue: 0,
+				maxValue: 60,
+				unit: 's',
+				defaultValue: 1,
+				polarity: 'uni',
+			}
+		}
 	}
 };
 
@@ -228,7 +241,8 @@ export const readableNames: { [P in NodeType]: string } = {
 	pan: 'Pan',
 	'pitch-quantizer': 'Pitch Quantizer',
 	sequencer: 'Sequencer',
-	trigger: 'Trigger'
+	trigger: 'Trigger',
+	'gate-length': 'Gate Length',
 };
 
 export const categorizedNodeTypes = {
@@ -245,7 +259,7 @@ export const categorizedNodeTypes = {
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
 	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
-	clock: ['trigger'] as NodeType[],
+	clock: ['trigger', 'gate-length'] as NodeType[],
 	visualization: ['oscilloscope'] as NodeType[]
 };
 
@@ -256,7 +270,7 @@ const everyNodeIsIncludedInMenu = nodeTypes.every((nodeType) =>
 );
 
 if (!everyNodeIsIncludedInMenu) {
-	throw Error('AAAAAaaaaaa!!!!!!');
+	throw Error('Not every node is included in menu!');
 }
 
 export const readableCategoryNames: { [i: string]: string } = {
@@ -277,7 +291,7 @@ const allCategoriesHaveReadableNames = Object.keys(categorizedNodeTypes).every(
 );
 
 if (!allCategoriesHaveReadableNames) {
-	throw Error('AAAAAaaaaaa!!!!!!');
+	throw Error('Not all categories have readable names!');
 }
 
 export const defaultCategoryNodeColors: { [i: string]: string } = {
@@ -298,7 +312,7 @@ const allCategoriesHaveDefaultColors = Object.keys(categorizedNodeTypes).every(
 );
 
 if (!allCategoriesHaveDefaultColors) {
-	throw Error('AAAAAaaaaaa!!!!!!');
+	throw Error('Not all categories have default colors!');
 }
 
 export const getDefaultColorForNode = (nodeType: string) => {

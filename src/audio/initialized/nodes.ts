@@ -257,6 +257,12 @@ export class CustomPanNode extends GenericCustomAudioNodeWithWebApiNode<StereoPa
 	}
 }
 
+export class CustomGateLengthNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	constructor(id: string) {
+		super(new AudioWorkletNode(globalContext, 'gate-length'), id);
+	}
+}
+
 export class CustomBipolarToUnipolarNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
 		super(new AudioWorkletNode(globalContext, 'scaler'), id);

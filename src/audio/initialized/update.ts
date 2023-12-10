@@ -25,7 +25,8 @@ import {
 	MidiNode,
 	PitchQuantizerNode,
 	SequencerNode,
-	TriggerNode
+	TriggerNode,
+	CustomGateLengthNode
 } from './nodes';
 import {
 	isCustomAudioScheduledSourceNode,
@@ -412,6 +413,8 @@ function createCustomAudioNode(
 			return new CustomPanNode(id);
 		case 'bipolar-to-unipolar':
 			return new CustomBipolarToUnipolarNode(id);
+		case 'gate-length':
+			return new CustomGateLengthNode(id);
 	}
 }
 
