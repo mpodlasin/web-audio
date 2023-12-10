@@ -86,8 +86,8 @@ export const audioContextMock = {
 	createOscillator: jest.fn(() => new OscillatorNodeMock()),
 	createGain: jest.fn(() => new GainNodeMock()),
 	createAnalyser: jest.fn(() => new AnalyserNodeMock()),
-	createStereoPanner: jest.fn(() => new StereoPannerNodeMock),
-	createConstantSource: jest.fn(() => new ConstantSourceNodeMock),
+	createStereoPanner: jest.fn(() => new StereoPannerNodeMock()),
+	createConstantSource: jest.fn(() => new ConstantSourceNodeMock()),
 	destination: destinationMock
 };
 

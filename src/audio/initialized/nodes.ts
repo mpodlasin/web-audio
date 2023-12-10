@@ -12,14 +12,8 @@ import {
 } from './types';
 import { accessParameter } from './update';
 
-export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
-	implements CustomAudioNodeWithWebApiNode<T>
-{
-	readonly webApiNode: T;
-
-	constructor(webApiNode: T, private id: string) {
-		this.webApiNode = webApiNode;
-	}
+abstract class GenericCustomAudioNode implements CustomAudioNode {
+	constructor(private id: string) {}
 
 	private parameterAnalysers: { [parameterName: string]: AnalyserNode } = {};
 	private parameterMultipliers: {
@@ -28,8 +22,12 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 		};
 	} = {};
 
+	abstract getOutputNode(): AudioNode;
+
+	abstract getAudioParam(parameterName: string): AudioParam;
+
 	getParameter(parameterName: string): CustomAudioParam {
-		const audioParam = accessParameter(this.webApiNode, parameterName);
+		const audioParam = this.getAudioParam(parameterName);
 
 		if (!this.parameterAnalysers[parameterName]) {
 			this.parameterAnalysers[parameterName] = globalContext.createAnalyser();
@@ -70,43 +68,63 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 
 	connect(destination: CustomAudioNode | AudioParam | CustomAudioParam): void {
 		if (destination instanceof AudioParam) {
-			this.webApiNode.connect(destination);
+			this.getOutputNode().connect(destination);
 
 			return;
 		}
 
 		if (isCustomAudioParam(destination)) {
-			this.webApiNode.connect(destination.getMultiplierForInput(this.id));
+			this.getOutputNode().connect(destination.getMultiplierForInput(this.id));
 
 			return;
 		}
 
 		if (isCustomAudioNodeWithWebApiNode(destination)) {
-			this.webApiNode.connect(destination.webApiNode);
+			this.getOutputNode().connect(destination.webApiNode);
 		}
 	}
 
 	disconnect(destination: CustomAudioNode | AudioParam | CustomAudioParam | undefined): void {
 		if (destination === undefined) {
-			this.webApiNode.disconnect();
+			this.getOutputNode().disconnect();
 			return;
 		}
 
 		if (destination instanceof AudioParam) {
-			this.webApiNode.disconnect(destination);
+			this.getOutputNode().disconnect(destination);
 
 			return;
 		}
 
 		if (isCustomAudioParam(destination)) {
-			this.webApiNode.disconnect(destination.getMultiplierForInput(this.id));
+			this.getOutputNode().disconnect(destination.getMultiplierForInput(this.id));
 
 			return;
 		}
 
 		if (isCustomAudioNodeWithWebApiNode(destination)) {
-			this.webApiNode.disconnect(destination.webApiNode);
+			this.getOutputNode().disconnect(destination.webApiNode);
 		}
+	}
+}
+
+export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
+	extends GenericCustomAudioNode
+	implements CustomAudioNodeWithWebApiNode<T>
+{
+	readonly webApiNode: T;
+
+	constructor(webApiNode: T, id: string) {
+		super(id);
+		this.webApiNode = webApiNode;
+	}
+
+	getOutputNode(): AudioNode {
+		return this.webApiNode;
+	}
+
+	getAudioParam(parameterName: string): AudioParam {
+		return accessParameter(this.webApiNode, parameterName);
 	}
 }
 
@@ -123,21 +141,19 @@ export class CustomAudioNodeWithWebApiAudioScheduledSourceNode<T extends AudioSc
 	}
 }
 
-export class CustomOscillatorNode implements CustomAudioScheduledSourceNode {
-	public output: GainNode;
-	public leftOscillator: OscillatorNode;
-	public rightOscillator: OscillatorNode;
-	public frequency: ConstantSourceNode;
-	public detune: ConstantSourceNode;
+export class CustomOscillatorNode
+	extends GenericCustomAudioNode
+	implements CustomAudioScheduledSourceNode
+{
+	readonly output: GainNode;
+	readonly leftOscillator: OscillatorNode;
+	readonly rightOscillator: OscillatorNode;
+	readonly frequency: ConstantSourceNode;
+	readonly detune: ConstantSourceNode;
 
-	private parameterAnalysers: { [parameterName: string]: AnalyserNode } = {};
-	private parameterMultipliers: {
-		[parameterName: string]: {
-			[inputId: string]: GainNode;
-		};
-	} = {};
+	constructor(id: string, type: OscillatorType) {
+		super(id);
 
-	constructor(private id: string, type: OscillatorType) {
 		const leftOscillator = globalContext.createOscillator();
 		leftOscillator.type = type;
 		leftOscillator.frequency.value = 0;
@@ -167,14 +183,14 @@ export class CustomOscillatorNode implements CustomAudioScheduledSourceNode {
 		detune.connect(minusOne);
 
 		minusOne.connect(leftOscillator.detune);
-		detune.connect(rightOscillator.detune)
+		detune.connect(rightOscillator.detune);
 
 		leftOscillator.connect(leftPan);
 		rightOscillator.connect(rightPan);
 
 		leftPan.connect(gain);
 		rightPan.connect(gain);
-	
+
 		this.detune = detune;
 		this.frequency = frequency;
 		this.output = gain;
@@ -196,96 +212,20 @@ export class CustomOscillatorNode implements CustomAudioScheduledSourceNode {
 		this.rightOscillator.stop(when);
 	}
 
-	getParameter(parameterName: string): CustomAudioParam {
-		let audioParam: AudioParam;
-		if (parameterName === 'frequency' ) {
-			audioParam = this.frequency.offset;
+	getOutputNode(): AudioNode {
+		return this.output;
+	}
+
+	getAudioParam(parameterName: string): AudioParam {
+		if (parameterName === 'frequency') {
+			return this.frequency.offset;
 		} else if (parameterName === 'detune') {
-			audioParam = this.detune.offset;
+			return this.detune.offset;
 		} else {
-			throw new Error(`Unknown property ${parameterName}`);
-		}
-
-		if (!this.parameterAnalysers[parameterName]) {
-			this.parameterAnalysers[parameterName] = globalContext.createAnalyser();
-		}
-
-		const analyser = this.parameterAnalysers[parameterName];
-
-		if (!analyser) throw new Error();
-
-		return {
-			audioParam,
-			analyser,
-			getMultiplierForInput: (inputId: string) => {
-				if (!this.parameterMultipliers[parameterName]) {
-					this.parameterMultipliers[parameterName] = {};
-				}
-
-				const multipliersForParameter = this.parameterMultipliers[parameterName];
-
-				if (!multipliersForParameter) throw new Error();
-
-				if (!multipliersForParameter[inputId]) {
-					const multiplier = globalContext.createGain();
-					multiplier.connect(audioParam);
-					multiplier.connect(analyser);
-					multiplier.gain.value = 1;
-					multipliersForParameter[inputId] = multiplier;
-				}
-
-				const multiplierForParameterAndInputId = multipliersForParameter[inputId];
-
-				if (!multiplierForParameterAndInputId) throw new Error();
-
-				return multiplierForParameterAndInputId;
-			}
-		};
-	}
-
-	connect(destination: CustomAudioNode | AudioParam | CustomAudioParam): void {
-		if (destination instanceof AudioParam) {
-			this.output.connect(destination);
-
-			return;
-		}
-
-		if (isCustomAudioParam(destination)) {
-			this.output.connect(destination.getMultiplierForInput(this.id));
-
-			return;
-		}
-
-		if (isCustomAudioNodeWithWebApiNode(destination)) {
-			this.output.connect(destination.webApiNode);
-		}
-	}
-
-	disconnect(destination: CustomAudioNode | AudioParam | CustomAudioParam | undefined): void {
-		if (destination === undefined) {
-			this.output.disconnect();
-			
-			return;
-		}
-
-		if (destination instanceof AudioParam) {
-			this.output.disconnect(destination);
-
-			return;
-		}
-
-		if (isCustomAudioParam(destination)) {
-			this.output.disconnect(destination.getMultiplierForInput(this.id));
-
-			return;
-		}
-
-		if (isCustomAudioNodeWithWebApiNode(destination)) {
-			this.output.disconnect(destination.webApiNode);
+			throw Error(`Unknown parameter ${parameterName}`);
 		}
 	}
 }
-
 
 export class CustomSineOscillatorNode extends CustomOscillatorNode {
 	constructor(id: string) {
