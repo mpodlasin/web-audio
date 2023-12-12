@@ -8,7 +8,8 @@ import {
 	type CustomAudioScheduledSourceNode,
 	isCustomAudioScheduledSourceNode,
 	type CustomAudioParam,
-	isCustomAudioParam
+	isCustomAudioParam,
+	isCustomAudioNode
 } from './types';
 import { accessParameter } from './update';
 
@@ -25,6 +26,8 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 	abstract getOutputNode(): AudioNode;
 
 	abstract getAudioParam(parameterName: string): AudioParam;
+
+	abstract getInputNode(): AudioNode | null;
 
 	getParameter(parameterName: string): CustomAudioParam {
 		const audioParam = this.getAudioParam(parameterName);
@@ -73,14 +76,17 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 			return;
 		}
 
+		if (isCustomAudioNode(destination)) {
+			const inputNode = destination.getInputNode();
+			if (inputNode) {
+				this.getOutputNode().connect(inputNode);
+			}
+		}
+
 		if (isCustomAudioParam(destination)) {
 			this.getOutputNode().connect(destination.getMultiplierForInput(this.id));
 
 			return;
-		}
-
-		if (isCustomAudioNodeWithWebApiNode(destination)) {
-			this.getOutputNode().connect(destination.webApiNode);
 		}
 	}
 
@@ -117,6 +123,10 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 	constructor(webApiNode: T, id: string) {
 		super(id);
 		this.webApiNode = webApiNode;
+	}
+
+	getInputNode(): AudioNode {
+		return this.webApiNode;
 	}
 
 	getOutputNode(): AudioNode {
@@ -212,6 +222,10 @@ export class CustomOscillatorNode
 		this.rightOscillator.stop(when);
 	}
 
+	getInputNode(): AudioNode | null {
+		return null;
+	}
+
 	getOutputNode(): AudioNode {
 		return this.output;
 	}
@@ -300,6 +314,49 @@ export class CustomMultiplyNode extends GenericCustomAudioNodeWithWebApiNode<Gai
 export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode<AnalyserNode> {
 	constructor(id: string) {
 		super(globalContext.createAnalyser(), id);
+	}
+}
+
+export class ADEnvelopeNode
+	extends GenericCustomAudioNode
+	implements CustomAudioNode
+{
+	readonly gateLength: AudioWorkletNode;
+	readonly arEnvelope: AudioWorkletNode;
+
+	constructor(id: string) {
+		super(id);
+
+		const gateLength = new AudioWorkletNode(globalContext, 'gate-length');
+
+		const lengthParameter = gateLength.parameters.get('length');
+
+		if (lengthParameter) {
+			lengthParameter.value = 0;
+		}
+
+		const arEnvelope = new AudioWorkletNode(globalContext, 'ar-envelope');
+
+		gateLength.connect(arEnvelope);
+
+		this.gateLength = gateLength;
+		this.arEnvelope = arEnvelope;
+	}
+
+	getAudioParam(parameterName: string): AudioParam {
+		if (parameterName === 'decay') {
+			return accessParameter(this.arEnvelope, 'release');
+		}
+
+		return accessParameter(this.arEnvelope, parameterName);
+	}
+
+	getInputNode(): AudioNode | null {
+		return this.gateLength;
+	}
+
+	getOutputNode(): AudioNode {
+		return this.arEnvelope;
 	}
 }
 

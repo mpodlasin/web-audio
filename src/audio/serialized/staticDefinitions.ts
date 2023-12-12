@@ -201,6 +201,27 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			}
 		}
 	},
+	'ad-envelope': {
+		showCategory: true,
+		inputs: ['trigger'],
+		outputs: ['envelope'],
+		parameters: {
+			attack: {
+				minValue: 0,
+				maxValue: 5 * 1000,
+				unit: 'ms',
+				defaultValue: 0,
+				polarity: 'uni'
+			},
+			decay: {
+				minValue: 0,
+				maxValue: 5 * 1000,
+				unit: 'ms',
+				defaultValue: 200,
+				polarity: 'uni'
+			}
+		}
+	},
 	midi: {
 		inputs: [],
 		outputs: ['frequency', 'trigger'],
@@ -229,6 +250,7 @@ export const readableNames: { [P in NodeType]: string } = {
 	'saw-oscillator': 'Saw',
 	'triangle-oscillator': 'Triangle',
 	'ar-envelope': 'AR',
+	'ad-envelope': 'AD',
 	'bipolar-to-unipolar': 'Bi -> Uni',
 	convolution: 'Convolution',
 	delay: 'Delay',
@@ -252,7 +274,7 @@ export const categorizedNodeTypes = {
 		'square-oscillator',
 		'triangle-oscillator'
 	] as NodeType[],
-	envelope: ['ar-envelope'] as NodeType[],
+	envelope: ['ar-envelope', 'ad-envelope'] as NodeType[],
 	filter: ['lowpass-filter'] as NodeType[],
 	effects: ['convolution', 'delay'] as NodeType[],
 	gain: ['gain', 'pan'] as NodeType[],

@@ -41,16 +41,19 @@ export class GateLength extends AudioWorkletProcessor {
 			if (!length) return true;
 
 			const lengthInSeconds = length[0] ?? 0;
-			const lengthInSamples = Math.round(lengthInSeconds * this._sampleRate);
+			let lengthInSamples = Math.round(lengthInSeconds * this._sampleRate);
+
+			if (lengthInSamples === 0) lengthInSamples = 1;
 
 			this.triggerEvent = {
 				start: _currentFrame + triggerIndex,
-				end: _currentFrame + lengthInSamples
+				end: _currentFrame + triggerIndex + lengthInSamples
 			};
 		}
 
 		if (this.triggerEvent) {
 			const { start, end } = this.triggerEvent;
+
 			outputs.forEach((output) => {
 				output.forEach((out) => {
 					for (let i = 0; i < out.length; i++) {

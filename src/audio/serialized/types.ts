@@ -99,6 +99,8 @@ export type SerializedAREnvelopeNode = SerializedAudioElement<'ar-envelope', nev
 	release: number;
 };
 
+export type SerializedADEnvelopeNode = SerializedAudioElement<'ad-envelope', never>;
+
 export type SerializedOscilloscopeNode = SerializedAudioElement<'oscilloscope', never>;
 
 export type SerializedConvolutionNode = SerializedAudioElement<'convolution', never>;
@@ -120,6 +122,7 @@ export type AllowedSerializedAudioElements =
 	| SerializedGainNode
 	| SerializedDestinationNode
 	| SerializedTriggerNode
+	| SerializedADEnvelopeNode
 	| SerializedAREnvelopeNode
 	| SerializedSequencerNode
 	| SerializedMidiNode

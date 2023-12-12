@@ -20,6 +20,8 @@ export function isCustomAudioParam(
 }
 
 export interface CustomAudioNode {
+	getOutputNode(): AudioNode;
+	getInputNode(): AudioNode | null;
 	getParameter(parameterName: string): CustomAudioParam;
 	connect(destination: CustomAudioNode | AudioParam | CustomAudioParam, output?: string): void;
 	disconnect(
@@ -33,7 +35,10 @@ export function isCustomAudioNode(customAudioNode: unknown): customAudioNode is 
 		typeof customAudioNode === 'object' &&
 		customAudioNode !== null &&
 		'connect' in customAudioNode &&
-		'disconnect' in customAudioNode
+		'disconnect' in customAudioNode &&
+		'getParameter' in customAudioNode &&
+		'getInputNode' in customAudioNode &&
+		'getOutputNode' in customAudioNode
 	);
 }
 

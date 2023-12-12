@@ -26,7 +26,8 @@ import {
 	PitchQuantizerNode,
 	SequencerNode,
 	TriggerNode,
-	CustomGateLengthNode
+	CustomGateLengthNode,
+	ADEnvelopeNode
 } from './nodes';
 import {
 	isCustomAudioScheduledSourceNode,
@@ -397,10 +398,12 @@ function createCustomAudioNode(
 			return new TriggerNode(id);
 		case 'ar-envelope':
 			return new AREnvelopeNode(id);
+		case 'ad-envelope':
+			return new ADEnvelopeNode(id);
 		case 'sequencer':
 			return new SequencerNode(id);
 		case 'midi':
-			return new MidiNode();
+			return new MidiNode() as any;
 		case 'oscilloscope':
 			return new CustomOscilloscopeNode(id);
 		case 'convolution':
