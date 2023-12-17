@@ -1,5 +1,9 @@
 type Event = { start: number; end: number; type: 'attack' | 'release' };
 
+const eventEqual = (a: Event, b: Event) => {
+	return a.start === b.start && a.end === b.end && a.type === b.type;
+}
+
 const lengthInSamples = (event: Event) => Math.round(event.end - event.start);
 
 export class AREnvelope extends AudioWorkletProcessor {
@@ -42,6 +46,13 @@ export class AREnvelope extends AudioWorkletProcessor {
 	get releases() {
 		return this.events.filter((event) => event.type === 'release');
 	}
+	get sortedEvents() {
+		return [
+			...this.events,
+		].sort((a, b) => {
+			return a.start - b.start;
+		});
+	}
 
 	process(
 		inputList: Float32Array[][],
@@ -54,15 +65,55 @@ export class AREnvelope extends AudioWorkletProcessor {
 		this.detectReleases(inputList, parameters, _currentFrame);
 		this.saveLastValueOfPreviousProcess(inputList);
 
-		for (const event of this.events) {
-			if (event.type === 'attack') {
-				this.handleAttack(event, _currentFrame, outputList);
-			} else {
-				this.handleRelease(event, _currentFrame, outputList);
-			}
-		}
+		this.createOutputs(outputList, _currentFrame);
 
 		return true;
+	}
+
+	createOutputs(outputList: Float32Array[][], _currentFrame: number) {
+		outputList.forEach(output => {
+			output.forEach(out => {
+				for (let i = 0; i < out.length; i++) {
+					const sampleIndex = _currentFrame + i;
+
+					const events = this.events.filter(event => event.start <= sampleIndex && sampleIndex <= event.end);
+
+					if (events.length === 1) {
+						for (const event of events) {
+							const eventLength = lengthInSamples(event);
+							if (eventLength > 0) {
+								if (event.type === 'attack') {
+									out[i] = this.attackFormula(sampleIndex, event);
+									continue;
+								} else {
+									out[i] = this.releaseFormula(sampleIndex, event);
+									continue;
+								}
+							}
+						}
+					} else {
+						const attacks = events.filter(event => event.type === 'attack');
+						const releases = events.filter(event => event.type === 'release');
+
+						const attack = attacks.at(-1);
+						const release = releases.at(-1);
+
+						if (attack && release) {
+							if (attack.start < release.start) {
+								out[i] = this.releaseFormula(sampleIndex, release) * this.attackFormula(release.start, attack);
+								continue;
+							}
+
+							if (release.start < attack.end) {
+
+								this.events = this.events.filter(event => !eventEqual(event, release));
+								continue;
+							}
+						}
+					}
+				}
+			});
+		})
 	}
 
 	attackFormula(sampleIndex: number, attack: Event) {
@@ -71,45 +122,6 @@ export class AREnvelope extends AudioWorkletProcessor {
 
 	releaseFormula(sampleIndex: number, release: Event) {
 		return (release.end - sampleIndex) / lengthInSamples(release);
-	}
-
-	handleAttack(attack: Event, _currentFrame: number, outputList: Float32Array[][]) {
-		const attackLengthInSamples = lengthInSamples(attack);
-		const { start, end } = attack;
-		const valueAtAttackStart = this.calculateValueAtStartOfAttack(start);
-
-		outputList.forEach((output) => {
-			output.forEach((out) => {
-				for (let i = 0; i < out.length; i++) {
-					const sampleIndex = _currentFrame + i;
-					if (start <= sampleIndex && sampleIndex < end && attackLengthInSamples !== 0) {
-						const formula = this.attackFormula(sampleIndex, attack) + valueAtAttackStart;
-
-						out[i] = Math.max(0, Math.min(formula, 1));
-					}
-				}
-			});
-		});
-	}
-
-	handleRelease(release: Event, _currentFrame: number, outputList: Float32Array[][]) {
-		const releaseLengthInSamples = lengthInSamples(release);
-		const { start, end } = release;
-		const valueAtReleaseStart = this.calculateValueAtStartOfRelease(start);
-
-		outputList.forEach((output) => {
-			output.forEach((out) => {
-				for (let i = 0; i < out.length; i++) {
-					const sampleIndex = _currentFrame + i;
-
-					if (start <= sampleIndex && sampleIndex < end && releaseLengthInSamples !== 0) {
-						const formula = this.releaseFormula(sampleIndex, release) * valueAtReleaseStart;
-
-						out[i] = Math.max(0, Math.min(formula, 1));
-					}
-				}
-			});
-		});
 	}
 
 	calculateValueAtStartOfAttack(attackStart: number) {
@@ -121,18 +133,6 @@ export class AREnvelope extends AudioWorkletProcessor {
 			return this.releaseFormula(attackStart, release);
 		} else {
 			return 0;
-		}
-	}
-
-	calculateValueAtStartOfRelease(releaseStart: number) {
-		const attack = this.attacks.find(
-			(attack) => attack.start < releaseStart && releaseStart < attack.end
-		);
-
-		if (attack) {
-			return this.attackFormula(releaseStart, attack);
-		} else {
-			return 1;
 		}
 	}
 
