@@ -318,24 +318,39 @@ export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode
 }
 
 export class ADEnvelopeNode extends GenericCustomAudioNode implements CustomAudioNode {
+	readonly attack: ConstantSourceNode;
 	readonly gateLength: AudioWorkletNode;
 	readonly arEnvelope: AudioWorkletNode;
 
 	constructor(id: string) {
 		super(id);
 
+		const attack = globalContext.createConstantSource();
+		attack.start();
+
+		const attackInSecondsGain = globalContext.createGain();
+
+		attackInSecondsGain.gain.value = 1 / 1000;
+
 		const gateLength = new AudioWorkletNode(globalContext, 'gate-length');
-
-		const lengthParameter = gateLength.parameters.get('length');
-
-		if (lengthParameter) {
-			lengthParameter.value = 0;
-		}
 
 		const arEnvelope = new AudioWorkletNode(globalContext, 'ar-envelope');
 
+		const envelopeAttackParameter = arEnvelope.parameters.get('attack');
+		const lengthParameter = gateLength.parameters.get('length');
+
+		if (envelopeAttackParameter) {
+			attack.connect(envelopeAttackParameter);
+		}
+
+		if (lengthParameter) {
+			attack.connect(attackInSecondsGain);
+			attackInSecondsGain.connect(lengthParameter);
+		}
+
 		gateLength.connect(arEnvelope);
 
+		this.attack = attack;
 		this.gateLength = gateLength;
 		this.arEnvelope = arEnvelope;
 	}
@@ -345,7 +360,11 @@ export class ADEnvelopeNode extends GenericCustomAudioNode implements CustomAudi
 			return accessParameter(this.arEnvelope, 'release');
 		}
 
-		return accessParameter(this.arEnvelope, parameterName);
+		if (parameterName === 'attack') {
+			return this.attack.offset;
+		}
+
+		throw new Error(`Parmeter ${parameterName} does not exist on AD Envelope node`);
 	}
 
 	getInputNode(): AudioNode | null {
