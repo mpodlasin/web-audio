@@ -1,8 +1,4 @@
-type Event = { start: number; end: number };
-
-const eventsAreEqual = (a: Event, b: Event): boolean => {
-	return a.start === b.start && a.end === b.end;
-}
+type Event = { start: number; end: number; type: 'attack' | 'release' };
 
 const lengthInSamples = (event: Event) => Math.round(event.end - event.start);
 
@@ -39,8 +35,13 @@ export class AREnvelope extends AudioWorkletProcessor {
 
 	lastValueOfPreviousProcess: number | null = null;
 
-	attacks: Event[] = [];
-	releases: Event[] = [];
+	events: Event[] = [];
+	get attacks() {
+		return this.events.filter((event) => event.type === 'attack');
+	}
+	get releases() {
+		return this.events.filter((event) => event.type === 'release');
+	}
 
 	process(
 		inputList: Float32Array[][],
@@ -53,16 +54,13 @@ export class AREnvelope extends AudioWorkletProcessor {
 		this.detectReleases(inputList, parameters, _currentFrame);
 		this.saveLastValueOfPreviousProcess(inputList);
 
-		for (const attack of this.attacks) {
-			this.handleAttack(attack, _currentFrame, outputList);
+		for (const event of this.events) {
+			if (event.type === 'attack') {
+				this.handleAttack(event, _currentFrame, outputList);
+			} else {
+				this.handleRelease(event, _currentFrame, outputList);
+			}
 		}
-
-		for (const release of this.releases) {
-			this.handleRelease(release, _currentFrame, outputList);
-		}
-
-		this.attacks = this.attacks.filter(attack => attack.end > _currentFrame);
-		this.releases = this.releases.filter(releases => releases.end > _currentFrame);
 
 		return true;
 	}
@@ -78,13 +76,14 @@ export class AREnvelope extends AudioWorkletProcessor {
 	handleAttack(attack: Event, _currentFrame: number, outputList: Float32Array[][]) {
 		const attackLengthInSamples = lengthInSamples(attack);
 		const { start, end } = attack;
+		const valueAtAttackStart = this.calculateValueAtStartOfAttack(start);
 
 		outputList.forEach((output) => {
 			output.forEach((out) => {
 				for (let i = 0; i < out.length; i++) {
 					const sampleIndex = _currentFrame + i;
 					if (start <= sampleIndex && sampleIndex < end && attackLengthInSamples !== 0) {
-						const formula = this.attackFormula(sampleIndex, attack);
+						const formula = this.attackFormula(sampleIndex, attack) + valueAtAttackStart;
 
 						out[i] = Math.max(0, Math.min(formula, 1));
 					}
@@ -114,7 +113,9 @@ export class AREnvelope extends AudioWorkletProcessor {
 	}
 
 	calculateValueAtStartOfAttack(attackStart: number) {
-		const release = this.releases.find(release => release.start < attackStart && attackStart < release.end);
+		const release = this.releases.find(
+			(release) => release.start < attackStart && attackStart < release.end
+		);
 
 		if (release) {
 			return this.releaseFormula(attackStart, release);
@@ -124,7 +125,9 @@ export class AREnvelope extends AudioWorkletProcessor {
 	}
 
 	calculateValueAtStartOfRelease(releaseStart: number) {
-		const attack = this.attacks.find(attack => attack.start < releaseStart && releaseStart < attack.end)
+		const attack = this.attacks.find(
+			(attack) => attack.start < releaseStart && releaseStart < attack.end
+		);
 
 		if (attack) {
 			return this.attackFormula(releaseStart, attack);
@@ -171,9 +174,10 @@ export class AREnvelope extends AudioWorkletProcessor {
 			const attackInSamples = Math.round(attackInSeconds * numberOfSamplesPerSecond);
 
 			for (const attackIndex of attackIndexes) {
-				this.attacks.push({
+				this.events.push({
+					type: 'attack',
 					start: _currentFrame + attackIndex,
-					end: _currentFrame + attackIndex + attackInSamples,
+					end: _currentFrame + attackIndex + attackInSamples
 				});
 			}
 		}
@@ -184,7 +188,7 @@ export class AREnvelope extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame: number
 	): void {
-		const releaseIndexes: number[] = []
+		const releaseIndexes: number[] = [];
 
 		inputList.forEach((input) => {
 			input.forEach((inp) => {
@@ -209,12 +213,11 @@ export class AREnvelope extends AudioWorkletProcessor {
 			const releaseInSamples = Math.round(releaseInSeconds * numberOfSamplesPerSecond);
 
 			for (const releaseIndex of releaseIndexes) {
-				this.releases.push(
-					{
-						start: _currentFrame + releaseIndex,
-						end: _currentFrame + releaseIndex + releaseInSamples
-					}
-				)
+				this.events.push({
+					type: 'release',
+					start: _currentFrame + releaseIndex,
+					end: _currentFrame + releaseIndex + releaseInSamples
+				});
 			}
 		}
 	}

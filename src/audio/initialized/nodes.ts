@@ -317,10 +317,7 @@ export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode
 	}
 }
 
-export class ADEnvelopeNode
-	extends GenericCustomAudioNode
-	implements CustomAudioNode
-{
+export class ADEnvelopeNode extends GenericCustomAudioNode implements CustomAudioNode {
 	readonly gateLength: AudioWorkletNode;
 	readonly arEnvelope: AudioWorkletNode;
 
