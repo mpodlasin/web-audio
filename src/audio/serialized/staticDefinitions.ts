@@ -254,6 +254,11 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				polarity: 'uni'
 			}
 		}
+	},
+	'measure-gate': {
+		inputs: ['trigger'],
+		outputs: ['value'],
+		parameters: {}
 	}
 };
 
@@ -281,7 +286,8 @@ export const readableNames: { [P in NodeType]: string } = {
 	'pitch-quantizer': 'Pitch Quantizer',
 	sequencer: 'Sequencer',
 	trigger: 'Trigger',
-	'gate-length': 'Gate Length'
+	'gate-length': 'Gate Length',
+	'measure-gate': 'Measure Gate'
 };
 
 export const categorizedNodeTypes = {
@@ -298,7 +304,7 @@ export const categorizedNodeTypes = {
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
 	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
-	clock: ['trigger', 'gate-length'] as NodeType[],
+	clock: ['trigger', 'gate-length', 'measure-gate'] as NodeType[],
 	visualization: ['oscilloscope'] as NodeType[]
 };
 

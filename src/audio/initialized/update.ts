@@ -29,7 +29,8 @@ import {
 	CustomGateLengthNode,
 	ADEnvelopeNode,
 	CustomHighpassFilterNode,
-	CustomBandpassFilterNode
+	CustomBandpassFilterNode,
+	MeasureGateNode
 } from './nodes';
 import {
 	isCustomAudioScheduledSourceNode,
@@ -424,6 +425,8 @@ function createCustomAudioNode(
 			return new CustomBipolarToUnipolarNode(id);
 		case 'gate-length':
 			return new CustomGateLengthNode(id);
+		case 'measure-gate':
+			return new MeasureGateNode(id);
 	}
 }
 

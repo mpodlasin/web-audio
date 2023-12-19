@@ -421,6 +421,12 @@ export class PitchQuantizerNode extends GenericCustomAudioNodeWithWebApiNode<Aud
 	}
 }
 
+export class MeasureGateNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	constructor(id: string) {
+		super(new AudioWorkletNode(globalContext, 'measure-gate'), id);
+	}
+}
+
 export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
 		super(new AudioWorkletNode(globalContext, 'trigger'), id);
@@ -476,7 +482,8 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 	constructor(id: string) {
 		super(id);
 
-		const delayMaxValue = allowedSerializedAudioElementStaticDefinitions['delay'].parameters['delayTime']?.maxValue
+		const delayMaxValue =
+			allowedSerializedAudioElementStaticDefinitions['delay'].parameters['delayTime']?.maxValue;
 		const delay = globalContext.createDelay(delayMaxValue);
 		const feedbackGain = globalContext.createGain();
 
