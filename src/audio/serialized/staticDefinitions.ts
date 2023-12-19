@@ -33,12 +33,18 @@ const oscillatorDefinition = {
 	}
 };
 
-const filterDefinition = {
+const filterWithResonanceDefinition = {
 	showCategory: true,
 	inputs: ['audio'],
 	outputs: ['audio'],
 	parameters: {
-		frequency: frequencyParameter
+		frequency: frequencyParameter,
+		resonance: {
+			minValue: 0,
+			maxValue: 770,
+			defaultValue: 0,
+			polarity: 'uni' as const,
+		},
 	}
 };
 
@@ -96,9 +102,9 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	'saw-oscillator': oscillatorDefinition,
 	'square-oscillator': oscillatorDefinition,
 	'triangle-oscillator': oscillatorDefinition,
-	'lowpass-filter': filterDefinition,
-	'highpass-filter': filterDefinition,
-	'bandpass-filter': filterDefinition,
+	'lowpass-filter': filterWithResonanceDefinition,
+	'highpass-filter': filterWithResonanceDefinition,
+	'bandpass-filter': filterWithResonanceDefinition,
 	gain: {
 		inputs: ['audio'],
 		outputs: ['audio'],

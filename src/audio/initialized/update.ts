@@ -467,6 +467,8 @@ export function accessParameter(audioNode: AudioNode, parameterName: string): Au
 		switch (parameterName) {
 			case 'frequency':
 				return audioNode.frequency;
+			case 'Q':
+				return audioNode.Q;
 		}
 	}
 

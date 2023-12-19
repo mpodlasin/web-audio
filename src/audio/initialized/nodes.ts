@@ -283,27 +283,37 @@ export class CustomBipolarToUnipolarNode extends GenericCustomAudioNodeWithWebAp
 	}
 }
 
-export class CustomBandpassFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
-	constructor(id: string) {
+export class CustomFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
+	constructor(id: string, type: BiquadFilterType) {
 		const filter = globalContext.createBiquadFilter();
-		filter.type = 'bandpass';
+		filter.type = type;
 		super(filter, id);
+	}
+
+	getParameter(parameterName: string): CustomAudioParam {
+		if (parameterName === 'resonance') {
+			return super.getParameter('Q');
+		}
+
+		return super.getParameter(parameterName);
 	}
 }
 
-export class CustomHighpassFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
+export class CustomBandpassFilterNode extends CustomFilterNode {
 	constructor(id: string) {
-		const filter = globalContext.createBiquadFilter();
-		filter.type = 'highpass';
-		super(filter, id);
+		super(id, 'bandpass');
 	}
 }
 
-export class CustomLowpassFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
+export class CustomLowpassFilterNode extends CustomFilterNode {
 	constructor(id: string) {
-		const filter = globalContext.createBiquadFilter();
-		filter.type = 'lowpass';
-		super(filter, id);
+		super(id, 'lowpass');
+	}
+}
+
+export class CustomHighpassFilterNode extends CustomFilterNode {
+	constructor(id: string) {
+		super(id, 'highpass');
 	}
 }
 
