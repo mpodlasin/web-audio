@@ -97,6 +97,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	'square-oscillator': oscillatorDefinition,
 	'triangle-oscillator': oscillatorDefinition,
 	'lowpass-filter': filterDefinition,
+	'highpass-filter': filterDefinition,
+	'bandpass-filter': filterDefinition,
 	gain: {
 		inputs: ['audio'],
 		outputs: ['audio'],
@@ -257,6 +259,8 @@ export const readableNames: { [P in NodeType]: string } = {
 	destination: 'Output',
 	gain: 'Gain',
 	'lowpass-filter': 'Lowpass',
+	'bandpass-filter': 'Bandpass',
+	'highpass-filter': 'Highpass',
 	midi: 'MIDI',
 	multiply: 'Mult',
 	oscilloscope: 'Oscilloscope',
@@ -275,7 +279,7 @@ export const categorizedNodeTypes = {
 		'triangle-oscillator'
 	] as NodeType[],
 	envelope: ['ar-envelope', 'ad-envelope'] as NodeType[],
-	filter: ['lowpass-filter'] as NodeType[],
+	filter: ['lowpass-filter', 'bandpass-filter', 'highpass-filter'] as NodeType[],
 	effects: ['convolution', 'delay'] as NodeType[],
 	gain: ['gain', 'pan'] as NodeType[],
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],

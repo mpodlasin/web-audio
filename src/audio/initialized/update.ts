@@ -27,7 +27,9 @@ import {
 	SequencerNode,
 	TriggerNode,
 	CustomGateLengthNode,
-	ADEnvelopeNode
+	ADEnvelopeNode,
+	CustomHighpassFilterNode,
+	CustomBandpassFilterNode
 } from './nodes';
 import {
 	isCustomAudioScheduledSourceNode,
@@ -388,6 +390,10 @@ function createCustomAudioNode(
 			return new CustomTriangleOscillatorNode(id);
 		case 'lowpass-filter':
 			return new CustomLowpassFilterNode(id);
+		case 'highpass-filter':
+			return new CustomHighpassFilterNode(id);
+		case 'bandpass-filter':
+			return new CustomBandpassFilterNode(id);
 		case 'gain':
 			return new CustomGainNode(id);
 		case 'multiply':
