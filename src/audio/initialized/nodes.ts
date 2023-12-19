@@ -1,4 +1,5 @@
 import { globalContext } from '../GlobalContext';
+import { allowedSerializedAudioElementStaticDefinitions } from '../serialized';
 import { settings } from '../settings';
 import { generateReverb } from '../web-audio/reverbGeneration';
 import {
@@ -475,7 +476,8 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 	constructor(id: string) {
 		super(id);
 
-		const delay = globalContext.createDelay();
+		const delayMaxValue = allowedSerializedAudioElementStaticDefinitions['delay'].parameters['delayTime']?.maxValue
+		const delay = globalContext.createDelay(delayMaxValue);
 		const feedbackGain = globalContext.createGain();
 
 		feedbackGain.gain.value = 0;
