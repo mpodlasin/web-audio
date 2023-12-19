@@ -468,9 +468,39 @@ export class CustomConvolutionNode extends GenericCustomAudioNodeWithWebApiNode<
 	}
 }
 
-export class CustomDelayNode extends GenericCustomAudioNodeWithWebApiNode<DelayNode> {
+export class CustomDelayNode extends GenericCustomAudioNode {
+	private delay: DelayNode;
+	private feedbackGain: GainNode;
+
 	constructor(id: string) {
-		super(globalContext.createDelay(), id);
+		super(id);
+
+		const delay = globalContext.createDelay();
+		const feedbackGain = globalContext.createGain();
+
+		feedbackGain.gain.value = 0;
+
+		feedbackGain.connect(delay);
+		delay.connect(feedbackGain);
+
+		this.delay = delay;
+		this.feedbackGain = feedbackGain;
+	}
+
+	getInputNode(): AudioNode | null {
+		return this.delay;
+	}
+
+	getOutputNode(): AudioNode {
+		return this.delay;
+	}
+
+	getAudioParam(parameterName: string): AudioParam {
+		if (parameterName === 'feedback') {
+			return this.feedbackGain.gain;
+		}
+
+		return accessParameter(this.delay, parameterName);
 	}
 }
 

@@ -43,8 +43,8 @@ const filterWithResonanceDefinition = {
 			minValue: 0,
 			maxValue: 770,
 			defaultValue: 0,
-			polarity: 'uni' as const,
-		},
+			polarity: 'uni' as const
+		}
 	}
 };
 
@@ -154,9 +154,16 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		parameters: {
 			delayTime: {
 				minValue: 0,
-				maxValue: 1,
+				maxValue: 10,
 				defaultValue: 0,
 				polarity: 'uni'
+			},
+			feedback: {
+				minValue: 0,
+				maxValue: 1,
+				defaultValue: 0,
+				polarity: 'uni',
+				linear: true
 			}
 		}
 	},
