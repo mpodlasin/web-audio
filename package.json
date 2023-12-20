@@ -11,7 +11,7 @@
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
 		"test:watch": "jest --watchAll",
-		"test": "jest",
+		"test": "jest --coverage",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
 	},
