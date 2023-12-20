@@ -15,14 +15,14 @@ export class MeasureGate extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame = currentFrame
 	) {
-		const triggerIndex = this.detectTrigger(inputs);
+		const triggerIndexes = this.detectTriggers(inputs);
 
 		outputs.forEach((output) => {
 			output.forEach((out) => {
 				for (let i = 0; i < out.length; i++) {
-					if (triggerIndex && i === triggerIndex) {
+					if (triggerIndexes.some((triggerIndex) => triggerIndex === i)) {
 						this.previousToLastTriggerIndex = this.lastTriggerIndex;
-						this.lastTriggerIndex = triggerIndex + _currentFrame;
+						this.lastTriggerIndex = i + _currentFrame;
 					}
 
 					out[i] = (this.lastTriggerIndex - this.previousToLastTriggerIndex) / this._sampleRate;
@@ -35,24 +35,24 @@ export class MeasureGate extends AudioWorkletProcessor {
 
 	lastValueOfPreviousProcess = 0;
 
-	detectTrigger(inputList: Float32Array[][]): number | null {
-		let triggerIndex: number | null = null;
+	detectTriggers(inputList: Float32Array[][]): number[] {
+		const triggerIndexes: number[] = [];
 
 		inputList.forEach((input) => {
 			input.forEach((inp) => {
 				if (this.lastValueOfPreviousProcess === 0 && inp[0] === 1) {
-					triggerIndex = 0;
-				} else {
-					for (let i = 0; i < inp.length - 1; i++) {
-						if (inp[i] === 0 && inp[i + 1] === 1) {
-							triggerIndex = i + 1;
-						}
+					triggerIndexes.push(0);
+				}
+
+				for (let i = 0; i < inp.length - 1; i++) {
+					if (inp[i] === 0 && inp[i + 1] === 1) {
+						triggerIndexes.push(i + 1);
 					}
 				}
 			});
 		});
 
-		return triggerIndex;
+		return triggerIndexes;
 	}
 }
 
