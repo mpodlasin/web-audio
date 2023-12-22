@@ -1,5 +1,5 @@
 import { globalContext } from '../GlobalContext';
-import { allowedSerializedAudioElementStaticDefinitions } from '../serialized';
+import { allowedSerializedAudioElementStaticDefinitions, plugsEqual } from '../serialized';
 import { settings } from '../settings';
 import { generateReverb } from '../web-audio/reverbGeneration';
 import {
@@ -476,37 +476,70 @@ export class CustomConvolutionNode extends GenericCustomAudioNodeWithWebApiNode<
 }
 
 export class CustomDelayNode extends GenericCustomAudioNode {
+	private input: GainNode;
 	private delay: DelayNode;
 	private feedbackGain: GainNode;
+	private output: GainNode;
+	private mix: ConstantSourceNode;
 
 	constructor(id: string) {
 		super(id);
-
 		const delayMaxValue =
 			allowedSerializedAudioElementStaticDefinitions['delay'].parameters['delayTime']?.maxValue;
 		const delay = globalContext.createDelay(delayMaxValue);
-		const feedbackGain = globalContext.createGain();
 
-		feedbackGain.gain.value = 0;
+		const mix = globalContext.createConstantSource();
+		const negate = globalContext.createGain();
+		const feedbackGain = globalContext.createGain();
+		const input = globalContext.createGain();
+		const output = globalContext.createGain();
+		const dryGain = globalContext.createGain();
+		const wetGain = globalContext.createGain();
+
+		input.gain.value = 1;
+		output.gain.value = 1;
+
+		negate.gain.value = -1;
+
+		dryGain.gain.value = 1;
+		wetGain.gain.value = 0;
+
+		mix.start();
+
+		input.connect(dryGain);
+		input.connect(delay).connect(wetGain);
+
+		mix.connect(wetGain.gain);
+		mix.connect(negate).connect(dryGain.gain);
 
 		feedbackGain.connect(delay);
 		delay.connect(feedbackGain);
 
+		wetGain.connect(output);
+		dryGain.connect(output);
+
+		this.mix = mix;
+		this.input = input;
 		this.delay = delay;
 		this.feedbackGain = feedbackGain;
+		this.output = output;
 	}
 
 	getInputNode(): AudioNode | null {
-		return this.delay;
+		return this.input;
 	}
 
 	getOutputNode(): AudioNode {
-		return this.delay;
+		return this.output;
 	}
 
 	getAudioParam(parameterName: string): AudioParam {
 		if (parameterName === 'feedback') {
 			return this.feedbackGain.gain;
+		}
+
+		if (parameterName === 'mix') {
+			return this.mix.offset;
 		}
 
 		return accessParameter(this.delay, parameterName);

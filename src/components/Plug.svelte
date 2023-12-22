@@ -33,7 +33,13 @@
 	};
 </script>
 
-<div title={id} class="plug" bind:this={plug} on:mousedown={handlePlugClick} on:mouseup={handlePlugUp} />
+<div
+	title={id}
+	class="plug"
+	bind:this={plug}
+	on:mousedown={handlePlugClick}
+	on:mouseup={handlePlugUp}
+/>
 
 <style>
 	.plug {
