@@ -187,7 +187,15 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	convolution: {
 		inputs: ['audio'],
 		outputs: ['audio'],
-		parameters: {}
+		parameters: {
+			mix: {
+				minValue: 0,
+				maxValue: 1,
+				defaultValue: 0.5,
+				polarity: 'uni',
+				linear: true
+			}
+		}
 	},
 	trigger: {
 		inputs: [],

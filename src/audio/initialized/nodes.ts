@@ -455,7 +455,7 @@ export class DestinationNode extends GenericCustomAudioNodeWithWebApiNode<AudioD
 	}
 }
 
-export class CustomConvolutionNode extends GenericCustomAudioNodeWithWebApiNode<ConvolverNode> {
+export class CustomConvolutionNode extends GenericCustomAudioNode {
 	static async fetchReverb(convolver: ConvolverNode) {
 		generateReverb(
 			{
@@ -468,10 +468,64 @@ export class CustomConvolutionNode extends GenericCustomAudioNodeWithWebApiNode<
 		);
 	}
 
-	constructor(id: string) {
-		super(globalContext.createConvolver(), id);
+	private input: GainNode;
+	private convolution: ConvolverNode;
+	private output: GainNode;
+	private mix: ConstantSourceNode;
 
-		CustomConvolutionNode.fetchReverb(this.webApiNode);
+	constructor(id: string) {
+		super(id);
+
+		const convolution = globalContext.createConvolver();
+
+		const mix = globalContext.createConstantSource();
+		const negate = globalContext.createGain();
+		const input = globalContext.createGain();
+		const output = globalContext.createGain();
+		const dryGain = globalContext.createGain();
+		const wetGain = globalContext.createGain();
+
+		input.gain.value = 1;
+		output.gain.value = 1;
+
+		negate.gain.value = -1;
+
+		dryGain.gain.value = 1;
+		wetGain.gain.value = 0;
+
+		mix.start();
+
+		input.connect(dryGain);
+		input.connect(convolution).connect(wetGain);
+
+		mix.connect(wetGain.gain);
+		mix.connect(negate).connect(dryGain.gain);
+
+		wetGain.connect(output);
+		dryGain.connect(output);
+
+		this.mix = mix;
+		this.input = input;
+		this.convolution = convolution;
+		this.output = output;
+
+		CustomConvolutionNode.fetchReverb(convolution);
+	}
+
+	getInputNode(): AudioNode | null {
+		return this.input;
+	}
+
+	getOutputNode(): AudioNode {
+		return this.output;
+	}
+
+	getAudioParam(parameterName: string): AudioParam {
+		if (parameterName === 'mix') {
+			return this.mix.offset;
+		}
+
+		return accessParameter(this.convolution, parameterName);
 	}
 }
 
