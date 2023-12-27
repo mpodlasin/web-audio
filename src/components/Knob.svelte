@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Position, SerializedAudioParameter } from '../audio/AudioCanvas';
 	import { createEventDispatcher } from 'svelte';
-	import AudioCanvas from './AudioCanvas.svelte';
 
 	type Polarity = 'uni' | 'bi';
 

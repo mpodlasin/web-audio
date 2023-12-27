@@ -14,12 +14,19 @@
 	};
 </script>
 
-<div>
+<div class="wrapper">
 	<button class:active on:click={handleClick} />
 	<div class="label">{label}</div>
 </div>
 
 <style>
+
+	.wrapper {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 8px;
+	}
 	button {
 		border: 1px solid var(--neutral-500);
 		height: 20px;
@@ -37,6 +44,5 @@
 	.label {
 		text-align: center;
 		font-size: 10px;
-		padding-top: 4px;
 	}
 </style>
