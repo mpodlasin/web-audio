@@ -119,6 +119,14 @@ export type SerializedGateLengthNode = SerializedAudioElement<'gate-length', 'le
 
 export type SerializedMeasureGateNode = SerializedAudioElement<'measure-gate', never>;
 
+export type SerializedSineLFONode = SerializedAudioElement<'sine-lfo', never>;
+
+export type SerializedSawLFONode = SerializedAudioElement<'saw-lfo', never>;
+
+export type SerializedTriangleLFONode = SerializedAudioElement<'triangle-lfo', never>;
+
+export type SerializedSquareLFONode = SerializedAudioElement<'square-lfo', never>;
+
 export type AllowedSerializedAudioElements =
 	| SerializedSineOscillatorNode
 	| SerializedSawOscillatorNode
@@ -142,6 +150,10 @@ export type AllowedSerializedAudioElements =
 	| SerializedPanNode
 	| SerializedBipolarToUnipolar
 	| SerializedGateLengthNode
-	| SerializedMeasureGateNode;
+	| SerializedMeasureGateNode
+	| SerializedSineLFONode
+	| SerializedSawLFONode
+	| SerializedTriangleLFONode
+	| SerializedSquareLFONode;
 
 export type NodeType = AllowedSerializedAudioElements['type'];

@@ -602,6 +602,102 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 
 export type Destination = CustomAudioNode | AudioParam;
 
+export class CustomLFONode
+	extends GenericCustomAudioNode
+	implements CustomAudioScheduledSourceNode
+{
+	private oscillator: OscillatorNode;
+	private mult: GainNode;
+	private scalerOn: ConstantSourceNode;
+	private minusOne: ConstantSourceNode;
+
+	constructor(id: string, type: OscillatorType) {
+		super(id);
+
+		const oscillator = globalContext.createOscillator();
+
+		const mult = globalContext.createGain();
+
+		const scaler = new AudioWorkletNode(globalContext, 'scaler');
+		const scalerOn = globalContext.createConstantSource();
+		const minusOne = globalContext.createConstantSource();
+		minusOne.offset.value = -1;
+		scalerOn.offset.value = 0;
+
+		oscillator.type = type;
+
+		oscillator.connect(scaler).connect(mult);
+
+		const aTo = scaler.parameters.get('a-to');
+
+		if (aTo) {
+			scalerOn.connect(minusOne.offset);
+			minusOne.connect(aTo);
+		}
+
+		this.oscillator = oscillator;
+		this.mult = mult;
+		this.scalerOn = scalerOn;
+		this.minusOne = minusOne;
+	}
+
+	getInputNode(): AudioNode | null {
+		return this.oscillator;
+	}
+
+	getOutputNode(): AudioNode {
+		return this.mult;
+	}
+
+	getAudioParam(parameterName: string): AudioParam {
+		if (parameterName === 'unipolar') {
+			return this.scalerOn.offset;
+		}
+
+		if (parameterName === 'multiply') {
+			return this.mult.gain;
+		}
+
+		return accessParameter(this.oscillator, parameterName);
+	}
+
+	start(when?: number | undefined): void {
+		this.oscillator.start(when);
+		this.scalerOn.start(when);
+		this.minusOne.start(when);
+	}
+
+	stop(when?: number | undefined): void {
+		this.oscillator.stop(when);
+		this.scalerOn.stop(when);
+		this.minusOne.stop(when);
+	}
+}
+
+export class CustomSineLFONode extends CustomLFONode {
+	constructor(id: string) {
+		super(id, 'sine');
+	}
+}
+
+export class CustomSawLFONode extends CustomLFONode {
+	constructor(id: string) {
+		super(id, 'sawtooth');
+	}
+}
+
+export class CustomTriangleLFONode extends CustomLFONode {
+	constructor(id: string) {
+		super(id, 'triangle');
+	}
+}
+
+export class CustomSquareLFONode extends CustomLFONode {
+	constructor(id: string) {
+		super(id, 'square');
+	}
+}
+
 export class MidiNode {
 	private frequencyDestinations: Destination[] = [];
 	private triggerDestinations: Destination[] = [];

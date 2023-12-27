@@ -17,6 +17,28 @@ const buttonParameter = {
 	binary: true
 };
 
+const lfoDefinition = {
+	showCategory: true,
+	inputs: [],
+	outputs: ['audio'],
+	parameters: {
+		frequency: {
+			minValue: 0,
+			maxValue: 10,
+			unit: 'Hz',
+			defaultValue: 1,
+			polarity: 'uni' as const
+		},
+		multiply: {
+			minValue: 0,
+			maxValue: 10000,
+			defaultValue: 1,
+			polarity: 'uni' as const
+		},
+		unipolar: buttonParameter
+	}
+};
+
 const oscillatorDefinition = {
 	showCategory: true,
 	inputs: [],
@@ -274,7 +296,11 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		inputs: ['trigger'],
 		outputs: ['value'],
 		parameters: {}
-	}
+	},
+	'saw-lfo': lfoDefinition,
+	'sine-lfo': lfoDefinition,
+	'square-lfo': lfoDefinition,
+	'triangle-lfo': lfoDefinition
 };
 
 export const nodeTypes = Object.keys(allowedSerializedAudioElementStaticDefinitions) as NodeType[];
@@ -302,7 +328,11 @@ export const readableNames: { [P in NodeType]: string } = {
 	sequencer: 'Sequencer',
 	trigger: 'Trigger',
 	'gate-length': 'Gate Length',
-	'measure-gate': 'Measure Gate'
+	'measure-gate': 'Measure Gate',
+	'saw-lfo': 'Saw',
+	'sine-lfo': 'Sine',
+	'square-lfo': 'Square',
+	'triangle-lfo': 'Triangle'
 };
 
 export const categorizedNodeTypes = {
@@ -312,6 +342,7 @@ export const categorizedNodeTypes = {
 		'square-oscillator',
 		'triangle-oscillator'
 	] as NodeType[],
+	lfo: ['sine-lfo', 'saw-lfo', 'square-lfo', 'triangle-lfo'],
 	envelope: ['ar-envelope', 'ad-envelope'] as NodeType[],
 	filter: ['lowpass-filter', 'bandpass-filter', 'highpass-filter'] as NodeType[],
 	effects: ['convolution', 'delay'] as NodeType[],
@@ -343,7 +374,8 @@ export const readableCategoryNames: { [i: string]: string } = {
 	math: 'Math',
 	io: 'I/O',
 	clock: 'Clock',
-	visualization: 'Visualization'
+	visualization: 'Visualization',
+	lfo: 'LFO'
 };
 
 const allCategoriesHaveReadableNames = Object.keys(categorizedNodeTypes).every(
@@ -364,7 +396,8 @@ export const defaultCategoryNodeColors: { [i: string]: string } = {
 	math: '#b7c3e6',
 	io: '#b7c3e6',
 	clock: '#fd783f',
-	visualization: '#b7c3e6'
+	visualization: '#b7c3e6',
+	lfo: '#45c7ff'
 };
 
 const allCategoriesHaveDefaultColors = Object.keys(categorizedNodeTypes).every(

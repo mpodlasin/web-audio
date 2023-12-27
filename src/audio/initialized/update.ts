@@ -30,12 +30,15 @@ import {
 	ADEnvelopeNode,
 	CustomHighpassFilterNode,
 	CustomBandpassFilterNode,
-	MeasureGateNode
+	MeasureGateNode,
+	CustomSawLFONode,
+	CustomSquareLFONode,
+	CustomTriangleLFONode,
+	CustomSineLFONode
 } from './nodes';
 import {
 	isCustomAudioScheduledSourceNode,
 	type CustomAudioNode,
-	isCustomAudioNodeWithWebApiNode,
 	type AudioNodeDatabase
 } from './types';
 
@@ -427,6 +430,14 @@ function createCustomAudioNode(
 			return new CustomGateLengthNode(id);
 		case 'measure-gate':
 			return new MeasureGateNode(id);
+		case 'saw-lfo':
+			return new CustomSawLFONode(id);
+		case 'square-lfo':
+			return new CustomSquareLFONode(id);
+		case 'triangle-lfo':
+			return new CustomTriangleLFONode(id);
+		case 'sine-lfo':
+			return new CustomSineLFONode(id);
 	}
 }
 
