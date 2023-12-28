@@ -34,7 +34,8 @@ import {
 	CustomSawLFONode,
 	CustomSquareLFONode,
 	CustomTriangleLFONode,
-	CustomSineLFONode
+	CustomSineLFONode,
+	CustomPatternNode
 } from './nodes';
 import {
 	isCustomAudioScheduledSourceNode,
@@ -438,6 +439,8 @@ function createCustomAudioNode(
 			return new CustomTriangleLFONode(id);
 		case 'sine-lfo':
 			return new CustomSineLFONode(id);
+		case 'pattern':
+			return new CustomPatternNode(id);
 	}
 }
 

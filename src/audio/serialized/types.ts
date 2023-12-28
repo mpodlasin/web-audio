@@ -127,6 +127,8 @@ export type SerializedTriangleLFONode = SerializedAudioElement<'triangle-lfo', n
 
 export type SerializedSquareLFONode = SerializedAudioElement<'square-lfo', never>;
 
+export type SerializedPatternNode = SerializedAudioElement<'pattern', never>;
+
 export type AllowedSerializedAudioElements =
 	| SerializedSineOscillatorNode
 	| SerializedSawOscillatorNode
@@ -154,6 +156,7 @@ export type AllowedSerializedAudioElements =
 	| SerializedSineLFONode
 	| SerializedSawLFONode
 	| SerializedTriangleLFONode
-	| SerializedSquareLFONode;
+	| SerializedSquareLFONode
+	| SerializedPatternNode;
 
 export type NodeType = AllowedSerializedAudioElements['type'];

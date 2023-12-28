@@ -301,7 +301,21 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	'saw-lfo': lfoDefinition,
 	'sine-lfo': lfoDefinition,
 	'square-lfo': lfoDefinition,
-	'triangle-lfo': lfoDefinition
+	'triangle-lfo': lfoDefinition,
+	pattern: {
+		inputs: ['trigger'],
+		outputs: ['trigger'],
+		parameters: {
+			step1: buttonParameter,
+			step2: buttonParameter,
+			step3: buttonParameter,
+			step4: buttonParameter,
+			step5: buttonParameter,
+			step6: buttonParameter,
+			step7: buttonParameter,
+			step8: buttonParameter
+		}
+	}
 };
 
 export const nodeTypes = Object.keys(allowedSerializedAudioElementStaticDefinitions) as NodeType[];
@@ -333,7 +347,8 @@ export const readableNames: { [P in NodeType]: string } = {
 	'saw-lfo': 'Saw',
 	'sine-lfo': 'Sine',
 	'square-lfo': 'Square',
-	'triangle-lfo': 'Triangle'
+	'triangle-lfo': 'Triangle',
+	pattern: 'Pattern'
 };
 
 export const categorizedNodeTypes = {
@@ -351,7 +366,7 @@ export const categorizedNodeTypes = {
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
 	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
-	clock: ['trigger', 'gate-length', 'measure-gate'] as NodeType[],
+	clock: ['trigger', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
 	visualization: ['oscilloscope'] as NodeType[]
 };
 

@@ -427,6 +427,19 @@ export class MeasureGateNode extends GenericCustomAudioNodeWithWebApiNode<AudioW
 	}
 }
 
+export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	constructor(id: string) {
+		const node = new AudioWorkletNode(globalContext, 'pattern');
+
+		const steps = node.parameters.get('steps');
+		if (steps) {
+			steps.value = 8;
+		}
+
+		super(node, id);
+	}
+}
+
 export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
 		super(new AudioWorkletNode(globalContext, 'trigger'), id);
