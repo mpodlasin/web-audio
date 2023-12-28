@@ -36,7 +36,7 @@ const lfoDefinition = {
 			polarity: 'uni' as const
 		},
 		unipolar: buttonParameter,
-		negate: buttonParameter,
+		negate: buttonParameter
 	}
 };
 
