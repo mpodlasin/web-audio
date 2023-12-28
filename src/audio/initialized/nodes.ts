@@ -610,6 +610,7 @@ export class CustomLFONode
 	private mult: GainNode;
 	private scalerOn: ConstantSourceNode;
 	private minusOne: ConstantSourceNode;
+	private negateOn: ConstantSourceNode;
 
 	constructor(id: string, type: OscillatorType) {
 		super(id);
@@ -617,6 +618,14 @@ export class CustomLFONode
 		const oscillator = globalContext.createOscillator();
 
 		const mult = globalContext.createGain();
+		const negate = globalContext.createGain();
+		const timesMinusTwo = globalContext.createGain();
+		const negateOn = globalContext.createConstantSource();
+
+		negateOn.connect(timesMinusTwo).connect(negate.gain);
+
+		timesMinusTwo.gain.value = -2;
+		negate.gain.value = 1;
 
 		const scaler = new AudioWorkletNode(globalContext, 'scaler');
 		const scalerOn = globalContext.createConstantSource();
@@ -626,7 +635,7 @@ export class CustomLFONode
 
 		oscillator.type = type;
 
-		oscillator.connect(scaler).connect(mult);
+		oscillator.connect(scaler).connect(negate).connect(mult);
 
 		const aTo = scaler.parameters.get('a-to');
 
@@ -639,6 +648,7 @@ export class CustomLFONode
 		this.mult = mult;
 		this.scalerOn = scalerOn;
 		this.minusOne = minusOne;
+		this.negateOn = negateOn;
 	}
 
 	getInputNode(): AudioNode | null {
@@ -650,6 +660,10 @@ export class CustomLFONode
 	}
 
 	getAudioParam(parameterName: string): AudioParam {
+		if (parameterName === 'negate') {
+			return this.negateOn.offset;
+		}
+
 		if (parameterName === 'unipolar') {
 			return this.scalerOn.offset;
 		}
@@ -665,12 +679,14 @@ export class CustomLFONode
 		this.oscillator.start(when);
 		this.scalerOn.start(when);
 		this.minusOne.start(when);
+		this.negateOn.start(when);
 	}
 
 	stop(when?: number | undefined): void {
 		this.oscillator.stop(when);
 		this.scalerOn.stop(when);
 		this.minusOne.stop(when);
+		this.negateOn.stop(when);
 	}
 }
 
