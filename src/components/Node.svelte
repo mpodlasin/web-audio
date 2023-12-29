@@ -237,6 +237,7 @@
 		padding: 4px;
 		padding-bottom: 8px;
 		border-bottom: 1px solid transparent;
+		transition: border-bottom-color 0.1s;
 	}
 
 	.highlight {
