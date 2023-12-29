@@ -94,14 +94,14 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		inputs: ['trigger'],
 		outputs: ['frequency'],
 		parameters: {
-			frequency1: frequencyParameter,
-			frequency2: frequencyParameter,
-			frequency3: frequencyParameter,
-			frequency4: frequencyParameter,
-			frequency5: frequencyParameter,
-			frequency6: frequencyParameter,
-			frequency7: frequencyParameter,
-			frequency8: frequencyParameter
+			frequency1: { ...frequencyParameter, highlightIndex: 0 },
+			frequency2: { ...frequencyParameter, highlightIndex: 1 },
+			frequency3: { ...frequencyParameter, highlightIndex: 2 },
+			frequency4: { ...frequencyParameter, highlightIndex: 3 },
+			frequency5: { ...frequencyParameter, highlightIndex: 4 },
+			frequency6: { ...frequencyParameter, highlightIndex: 5 },
+			frequency7: { ...frequencyParameter, highlightIndex: 6 },
+			frequency8: { ...frequencyParameter, highlightIndex: 7 }
 		}
 	},
 	'pitch-quantizer': {

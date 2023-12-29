@@ -1,5 +1,9 @@
 import { globalContext } from '../GlobalContext';
-import { allowedSerializedAudioElementStaticDefinitions, plugsEqual } from '../serialized';
+import {
+	allowedSerializedAudioElementStaticDefinitions,
+	plugsEqual,
+	type NodeType
+} from '../serialized';
 import { settings } from '../settings';
 import { generateReverb } from '../web-audio/reverbGeneration';
 import {
@@ -413,12 +417,6 @@ export class AREnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWo
 	}
 }
 
-export class SequencerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
-	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'sequencer'), id);
-	}
-}
-
 export class PitchQuantizerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
 		super(new AudioWorkletNode(globalContext, 'pitch-quantizer'), id);
@@ -431,36 +429,40 @@ export class MeasureGateNode extends GenericCustomAudioNodeWithWebApiNode<AudioW
 	}
 }
 
-export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+export class GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	private counterAnalyser: AnalyserNode;
+	private input: GainNode;
 
-	constructor(id: string) {
-		const node = new AudioWorkletNode(globalContext, 'pattern');
+	constructor(node: AudioWorkletNode, id: string, private type: NodeType) {
 		const counter = new AudioWorkletNode(globalContext, 'clock-counter');
 		const counterAnalyser = globalContext.createAnalyser();
+		const input = globalContext.createGain();
+
+		input.gain.value = 1;
 
 		const modulo = counter.parameters.get('modulo');
 
-		node.connect(counter).connect(counterAnalyser);
+		input.connect(counter).connect(counterAnalyser);
+		input.connect(node);
 
 		if (modulo) {
 			modulo.value = 8;
 		}
 
-		const steps = node.parameters.get('steps');
-		if (steps) {
-			steps.value = 8;
-		}
-
 		super(node, id);
 
 		this.counterAnalyser = counterAnalyser;
+		this.input = input;
 	}
 
 	lastValue = 0;
 
+	getInputNode(): AudioNode {
+		return this.input;
+	}
+
 	onHighlightParameter(callback: (parameterName: string) => void): void {
-		const staticParameters = allowedSerializedAudioElementStaticDefinitions['pattern'].parameters;
+		const staticParameters = allowedSerializedAudioElementStaticDefinitions[this.type].parameters;
 		const analyser = this.counterAnalyser;
 		analyser.fftSize = 2048;
 		const bufferLength = analyser.frequencyBinCount;
@@ -484,6 +486,18 @@ export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNode<Audi
 			requestAnimationFrame(highlightParameter);
 		};
 		highlightParameter();
+	}
+}
+
+export class SequencerNode extends GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight {
+	constructor(id: string) {
+		super(new AudioWorkletNode(globalContext, 'sequencer'), id, 'sequencer');
+	}
+}
+
+export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight {
+	constructor(id: string) {
+		super(new AudioWorkletNode(globalContext, 'pattern'), id, 'pattern');
 	}
 }
 
