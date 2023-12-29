@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Position, SerializedAudioParameter } from '../audio/AudioCanvas';
 	import { createEventDispatcher } from 'svelte';
+	import { rewriteStringWithNumber } from '../utils/rewriteStringWithNumber';
 
 	type Polarity = 'uni' | 'bi';
 
@@ -216,10 +217,11 @@
 			});
 		}
 	};
+	
 </script>
 
 <div class="wrapper">
-	<div class="title">{parameterName}</div>
+	<div class="title">{rewriteStringWithNumber(parameterName)}</div>
 	<div class="knob-wrapper" style={highlightStyle}>
 		<div
 			class="knob"

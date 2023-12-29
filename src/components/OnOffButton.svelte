@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
+	import { rewriteStringWithNumber } from '../utils/rewriteStringWithNumber';
 
 	export let label: string;
 	export let active: boolean;
@@ -16,7 +17,7 @@
 
 <div class="wrapper">
 	<button class:active on:click={handleClick} />
-	<div class="label">{label}</div>
+	<div class="label">{rewriteStringWithNumber(label)}</div>
 </div>
 
 <style>
