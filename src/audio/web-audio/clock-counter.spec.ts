@@ -21,7 +21,7 @@ describe('clock-counter worklet', () => {
 				input,
 				output,
 				{
-					modulo: new Float32Array([4]),
+					modulo: new Float32Array([4])
 				},
 				index * 6
 			);
@@ -30,7 +30,7 @@ describe('clock-counter worklet', () => {
 		expect([...(outputs[0]?.[0]?.[0] ?? [])]).toEqual([1, 1, 2, 2, 2, 3]);
 	});
 
-    it('works with modulo parameter', () => {
+	it('works with modulo parameter', () => {
 		const pattern = new ClockCounter({}, 44100);
 
 		const inputs = [[[new Float32Array([1, 0, 1, 0, 0, 1])]]];
@@ -46,7 +46,7 @@ describe('clock-counter worklet', () => {
 				input,
 				output,
 				{
-					modulo: new Float32Array([2]),
+					modulo: new Float32Array([2])
 				},
 				index * 6
 			);

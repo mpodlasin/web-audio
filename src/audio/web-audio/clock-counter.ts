@@ -11,8 +11,8 @@ export class ClockCounter extends AudioWorkletProcessor {
 			{
 				name: 'modulo',
 				minValue: 0,
-				maxValue: Number.POSITIVE_INFINITY,
-				defaultValue: 1,
+				maxValue: Number.MAX_SAFE_INTEGER,
+				defaultValue: 1
 			}
 		];
 	}
@@ -27,16 +27,16 @@ export class ClockCounter extends AudioWorkletProcessor {
 	) {
 		const triggerIndexes = this.detectTriggers(inputList);
 
-        const modulo = parameters.modulo?.[0] ?? 1;
+		const modulo = parameters.modulo?.[0] ?? 1;
 
 		outputList.forEach((output) => {
 			output.forEach((out) => {
 				for (let i = 0; i < out.length; i++) {
 					if (triggerIndexes.some((triggerIndex) => triggerIndex === i)) {
-                        this.count = (this.count + 1) % modulo;
+						this.count = (this.count + 1) % modulo;
 					}
 
-                    out[i] = this.count;
+					out[i] = this.count;
 				}
 			});
 		});

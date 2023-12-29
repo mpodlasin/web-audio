@@ -113,6 +113,10 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 			this.getOutputNode().disconnect(destination.webApiNode);
 		}
 	}
+
+	onHighlightParameter(callback: (parameterName: string) => void): void {
+		return;
+	}
 }
 
 export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
@@ -428,8 +432,20 @@ export class MeasureGateNode extends GenericCustomAudioNodeWithWebApiNode<AudioW
 }
 
 export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	private counterAnalyser: AnalyserNode;
+
 	constructor(id: string) {
 		const node = new AudioWorkletNode(globalContext, 'pattern');
+		const counter = new AudioWorkletNode(globalContext, 'clock-counter');
+		const counterAnalyser = globalContext.createAnalyser();
+
+		const modulo = counter.parameters.get('modulo');
+
+		node.connect(counter).connect(counterAnalyser);
+
+		if (modulo) {
+			modulo.value = 8;
+		}
 
 		const steps = node.parameters.get('steps');
 		if (steps) {
@@ -437,6 +453,37 @@ export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNode<Audi
 		}
 
 		super(node, id);
+
+		this.counterAnalyser = counterAnalyser;
+	}
+
+	lastValue = 0;
+
+	onHighlightParameter(callback: (parameterName: string) => void): void {
+		const staticParameters = allowedSerializedAudioElementStaticDefinitions['pattern'].parameters;
+		const analyser = this.counterAnalyser;
+		analyser.fftSize = 2048;
+		const bufferLength = analyser.frequencyBinCount;
+		const dataArray = new Float32Array(bufferLength);
+
+		const highlightParameter = () => {
+			analyser.getFloatTimeDomainData(dataArray);
+			const value = dataArray[0] ?? 0;
+
+			if (value !== this.lastValue) {
+				this.lastValue = value;
+
+				const parameterName = Object.entries(staticParameters).filter(([_, parameter]) => {
+					return parameter.highlightIndex === this.lastValue;
+				})?.[0]?.[0];
+
+				if (parameterName) {
+					callback(parameterName);
+				}
+			}
+			requestAnimationFrame(highlightParameter);
+		};
+		highlightParameter();
 	}
 }
 

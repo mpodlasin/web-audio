@@ -28,6 +28,7 @@ export interface CustomAudioNode {
 		desination: CustomAudioNode | AudioParam | CustomAudioParam | undefined,
 		output?: string
 	): void;
+	onHighlightParameter(callback: (parameterName: string) => void): void;
 }
 
 export function isCustomAudioNode(customAudioNode: unknown): customAudioNode is CustomAudioNode {

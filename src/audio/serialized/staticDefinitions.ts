@@ -85,6 +85,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				polarity: 'uni' | 'bi';
 				binary?: boolean;
 				linear?: boolean;
+				highlightIndex?: number;
 			};
 		};
 	};
@@ -306,14 +307,14 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		inputs: ['trigger'],
 		outputs: ['trigger'],
 		parameters: {
-			step1: buttonParameter,
-			step2: buttonParameter,
-			step3: buttonParameter,
-			step4: buttonParameter,
-			step5: buttonParameter,
-			step6: buttonParameter,
-			step7: buttonParameter,
-			step8: buttonParameter
+			step1: { ...buttonParameter, highlightIndex: 0 },
+			step2: { ...buttonParameter, highlightIndex: 1 },
+			step3: { ...buttonParameter, highlightIndex: 2 },
+			step4: { ...buttonParameter, highlightIndex: 3 },
+			step5: { ...buttonParameter, highlightIndex: 4 },
+			step6: { ...buttonParameter, highlightIndex: 5 },
+			step7: { ...buttonParameter, highlightIndex: 6 },
+			step8: { ...buttonParameter, highlightIndex: 7 }
 		}
 	}
 };
