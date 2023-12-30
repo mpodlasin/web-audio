@@ -3,7 +3,7 @@
 	import {
 		categorizedNodeTypes,
 		readableCategoryNames,
-		readableNames,
+		readableNames as _readableNames,
 		type Position
 	} from '../audio/serialized';
 	import ChevronRight from '../icons/Chevron_Right.svg?component';
@@ -12,6 +12,8 @@
 	import PositionedMenu from './PositionedMenu.svelte';
 
 	export let position: Position;
+
+	const readableNames = _readableNames as Record<string, string>;
 
 	const dispatcher = createEventDispatcher();
 
