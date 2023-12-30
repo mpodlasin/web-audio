@@ -205,6 +205,7 @@
 
 		color: var(--primary-500);
 		text-transform: uppercase;
+		white-space: nowrap;
 	}
 
 	.parameters {

@@ -27,6 +27,7 @@
 		align-items: center;
 		gap: 8px;
 	}
+
 	button {
 		border: 1px solid var(--neutral-500);
 		height: 20px;
@@ -44,5 +45,6 @@
 	.label {
 		text-align: center;
 		font-size: 10px;
+		white-space: nowrap;
 	}
 </style>
