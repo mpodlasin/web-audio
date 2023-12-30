@@ -328,7 +328,7 @@ export const readableNames: { [P in NodeType]: string } = {
 	'triangle-oscillator': 'Triangle',
 	'ar-envelope': 'AR',
 	'ad-envelope': 'AD',
-	'bipolar-to-unipolar': 'Bi -> Uni',
+	'bipolar-to-unipolar': 'Bi → Uni',
 	convolution: 'Convolution',
 	delay: 'Delay',
 	destination: 'Output',
