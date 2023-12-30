@@ -18,7 +18,7 @@ export class OscillatorNodeMock {
 	public stop: jest.Mock;
 
 	constructor() {
-		this.connect = jest.fn();
+		this.connect = jest.fn(a => a);
 		this.disconnect = jest.fn();
 		this.frequency = new AudioParamMock();
 		this.detune = new AudioParamMock();
@@ -33,7 +33,7 @@ export class AnalyserNodeMock {
 	public disconnect: jest.Mock;
 
 	constructor() {
-		this.connect = jest.fn();
+		this.connect = jest.fn(a => a);
 		this.disconnect = jest.fn();
 	}
 }
@@ -44,7 +44,7 @@ export class GainNodeMock {
 	public gain: AudioParamMock;
 
 	constructor() {
-		this.connect = jest.fn();
+		this.connect = jest.fn(a => a);
 		this.disconnect = jest.fn();
 		this.gain = new AudioParamMock();
 	}
@@ -58,7 +58,7 @@ export class ConstantSourceNodeMock {
 	public stop: jest.Mock;
 
 	constructor() {
-		this.connect = jest.fn();
+		this.connect = jest.fn(a => a);
 		this.disconnect = jest.fn();
 		this.offset = new AudioParamMock();
 		this.start = jest.fn();
@@ -72,7 +72,7 @@ export class StereoPannerNodeMock {
 	public pan: AudioParamMock;
 
 	constructor() {
-		this.connect = jest.fn();
+		this.connect = jest.fn(a => a);
 		this.disconnect = jest.fn();
 		this.pan = new AudioParamMock();
 	}
@@ -94,10 +94,11 @@ export const audioContextMock = {
 export class AudioWorkletNodeMock {
 	public connect: jest.Mock;
 	public disconnect: jest.Mock;
-
+	public parameters: Map<string, AudioParamMock>;
 	constructor() {
-		this.connect = jest.fn();
+		this.connect = jest.fn(a => a);
 		this.disconnect = jest.fn();
+		this.parameters = new Map();
 	}
 }
 
