@@ -788,29 +788,32 @@ export class CustomSquareLFONode extends CustomLFONode {
 	}
 }
 
-export class MidiNode {
-	private frequencyDestinations: Destination[] = [];
-	private triggerDestinations: Destination[] = [];
+export class MidiNode extends GenericCustomAudioNode {
 	private midiAccess: MIDIAccess | null = null;
 
-	getParameter(): CustomAudioParam {
+	private frequency: ConstantSourceNode;
+	private trigger: ConstantSourceNode;
+	
+	constructor(id: string) {
+		super(id);
+
+		const frequency = globalContext.createConstantSource();
+		const trigger = globalContext.createConstantSource();
+
+		this.frequency = frequency;
+		this.trigger = trigger;
+	}
+
+	getAudioParam(): AudioParam {
 		throw new Error('MidiNode does not have any parameters');
 	}
 
-	connect(destination: CustomAudioNode | AudioParam, output: 'frequency' | 'trigger'): void {
-		if (output === 'frequency') {
-			this.frequencyDestinations.push(destination);
-		} else {
-			this.triggerDestinations.push(destination);
-		}
+	getInputNode(): AudioNode | null {
+		return null;
 	}
 
-	disconnect(destination: CustomAudioNode | AudioParam, output: 'frequency' | 'trigger'): void {
-		if (output === 'frequency') {
-			this.frequencyDestinations = this.frequencyDestinations.filter((d) => d !== destination);
-		} else {
-			this.triggerDestinations = this.triggerDestinations.filter((d) => d !== destination);
-		}
+	getOutputNode(): AudioNode {
+		return this.frequency;
 	}
 
 	start(): void {
@@ -837,35 +840,16 @@ export class MidiNode {
 		const [status, note] = event.data;
 
 		if (status === 144) {
-			this.triggerDestinations.forEach((destination) => {
-				if (destination instanceof AudioParam) {
-					return;
-				}
-
-				if (isCustomAudioScheduledSourceNode(destination)) {
-					destination.start(globalContext.currentTime);
-				}
-			});
+			this.trigger.offset.value = 1;
 		}
 
 		if (status === 128) {
-			this.triggerDestinations.forEach((destination) => {
-				if (destination instanceof AudioParam) {
-					return;
-				}
-
-				if (isCustomAudioScheduledSourceNode(destination)) {
-					destination.stop(globalContext.currentTime);
-				}
-			});
+			this.trigger.offset.value = 0;
 		}
 
 		if (note) {
-			this.frequencyDestinations.forEach((destination) => {
-				if (destination instanceof AudioParam) {
-					destination.setValueAtTime(midiNoteToFrequency(note), globalContext.currentTime);
-				}
-			});
+			const freq = midiNoteToFrequency(note);
+			this.frequency.offset.value = freq;
 		}
 	}
 }

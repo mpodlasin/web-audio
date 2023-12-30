@@ -414,7 +414,7 @@ function createCustomAudioNode(
 		case 'sequencer':
 			return new SequencerNode(id);
 		case 'midi':
-			return new MidiNode() as any;
+			return new MidiNode(id);
 		case 'oscilloscope':
 			return new CustomOscilloscopeNode(id);
 		case 'convolution':
