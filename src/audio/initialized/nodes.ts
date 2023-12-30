@@ -1,9 +1,5 @@
 import { globalContext } from '../GlobalContext';
-import {
-	allowedSerializedAudioElementStaticDefinitions,
-	plugsEqual,
-	type NodeType
-} from '../serialized';
+import { allowedSerializedAudioElementStaticDefinitions, type NodeType } from '../serialized';
 import { settings } from '../settings';
 import { generateReverb } from '../web-audio/reverbGeneration';
 import {
@@ -11,10 +7,11 @@ import {
 	type CustomAudioNode,
 	type CustomAudioNodeWithWebApiNode,
 	type CustomAudioScheduledSourceNode,
-	isCustomAudioScheduledSourceNode,
 	type CustomAudioParam,
 	isCustomAudioParam,
-	isCustomAudioNode
+	isCustomAudioNode,
+	type Output,
+	type Destination
 } from './types';
 import { accessParameter } from './update';
 
@@ -28,11 +25,70 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 		};
 	} = {};
 
-	abstract getOutputNode(): AudioNode;
+	abstract getOutputNode(name?: string): AudioNode;
 
 	abstract getAudioParam(parameterName: string): AudioParam;
 
 	abstract getInputNode(): AudioNode | null;
+
+	getOutput(name?: string): Output {
+		const id = this.id;
+		const outputNode = this.getOutputNode(name);
+
+		return {
+			connect(destination: Destination) {
+				if (isCustomAudioNode(destination)) {
+					const inputNode = destination.getInputNode();
+					if (inputNode) {
+						outputNode.connect(inputNode);
+					}
+					return;
+				}
+
+				if (isCustomAudioParam(destination)) {
+					outputNode.connect(destination.getMultiplierForInput(id));
+					return;
+				}
+
+				if (destination instanceof AudioParam) {
+					outputNode.connect(destination);
+					return;
+				}
+
+				outputNode.connect(destination);
+			},
+
+			disconnect(destination: Destination | undefined) {
+				if (destination === undefined) {
+					outputNode.disconnect();
+					return;
+				}
+
+				if (destination instanceof AudioParam) {
+					outputNode.disconnect(destination);
+					return;
+				}
+
+				if (isCustomAudioParam(destination)) {
+					outputNode.disconnect(destination.getMultiplierForInput(id));
+					return;
+				}
+
+				if (isCustomAudioNode(destination)) {
+					const inputNode = destination.getInputNode();
+
+					if (inputNode) {
+						outputNode.disconnect(inputNode);
+					}
+
+					return;
+				}
+
+				outputNode.disconnect(destination);
+				return;
+			}
+		};
+	}
 
 	getParameter(parameterName: string): CustomAudioParam {
 		const audioParam = this.getAudioParam(parameterName);
@@ -76,7 +132,7 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 
 	connect(destination: CustomAudioNode | AudioParam | CustomAudioParam): void {
 		if (destination instanceof AudioParam) {
-			this.getOutputNode().connect(destination);
+			this.getOutput().connect(destination);
 
 			return;
 		}
@@ -84,12 +140,12 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 		if (isCustomAudioNode(destination)) {
 			const inputNode = destination.getInputNode();
 			if (inputNode) {
-				this.getOutputNode().connect(inputNode);
+				this.getOutput().connect(inputNode);
 			}
 		}
 
 		if (isCustomAudioParam(destination)) {
-			this.getOutputNode().connect(destination.getMultiplierForInput(this.id));
+			this.getOutput().connect(destination.getMultiplierForInput(this.id));
 
 			return;
 		}
@@ -97,24 +153,24 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 
 	disconnect(destination: CustomAudioNode | AudioParam | CustomAudioParam | undefined): void {
 		if (destination === undefined) {
-			this.getOutputNode().disconnect();
+			this.getOutput().disconnect();
 			return;
 		}
 
 		if (destination instanceof AudioParam) {
-			this.getOutputNode().disconnect(destination);
+			this.getOutput().disconnect(destination);
 
 			return;
 		}
 
 		if (isCustomAudioParam(destination)) {
-			this.getOutputNode().disconnect(destination.getMultiplierForInput(this.id));
+			this.getOutput().disconnect(destination.getMultiplierForInput(this.id));
 
 			return;
 		}
 
 		if (isCustomAudioNodeWithWebApiNode(destination)) {
-			this.getOutputNode().disconnect(destination.webApiNode);
+			this.getOutput().disconnect(destination.webApiNode);
 		}
 	}
 
@@ -674,8 +730,6 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 	}
 }
 
-export type Destination = CustomAudioNode | AudioParam;
-
 export class CustomLFONode
 	extends GenericCustomAudioNode
 	implements CustomAudioScheduledSourceNode
@@ -793,7 +847,7 @@ export class MidiNode extends GenericCustomAudioNode {
 
 	private frequency: ConstantSourceNode;
 	private trigger: ConstantSourceNode;
-	
+
 	constructor(id: string) {
 		super(id);
 

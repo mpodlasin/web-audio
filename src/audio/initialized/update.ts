@@ -1,11 +1,10 @@
-import {
-	allowedSerializedAudioElementStaticDefinitions,
-	type AllowedSerializedAudioElements,
-	type SerializedAudioElementWithId,
-	type SerializedAudioElementsWithIds,
-	type SerializedAudioElement,
-	type SerializedAudioElements,
-	type Inputs
+import type {
+	AllowedSerializedAudioElements,
+	SerializedAudioElementWithId,
+	SerializedAudioElementsWithIds,
+	SerializedAudioElement,
+	SerializedAudioElements,
+	Inputs
 } from '../serialized';
 import {
 	CustomBipolarToUnipolarNode,
@@ -313,16 +312,10 @@ function connectAudioElementsToParameter(
 				throw new Error(`Audio element with id ${inputId} not found`);
 			}
 
-			const staticDefinitionAudioElementB =
-				allowedSerializedAudioElementStaticDefinitions[audioElementB.type];
-
 			const audioNodeB = audioNodeDatabase[audioElementB.id];
 
 			if (audioNodeA !== undefined && audioNodeB !== undefined) {
-				audioNodeB.connect(
-					audioNodeA.getParameter(parameterName),
-					output ?? staticDefinitionAudioElementB.outputs[0]
-				);
+				audioNodeB.getOutput(output).connect(audioNodeA.getParameter(parameterName));
 
 				audioNodeA.getParameter(parameterName).getMultiplierForInput(inputId).gain.value =
 					mult ?? 1;
@@ -362,7 +355,11 @@ function connectAudioElements(
 	const audioNodeB = audioNodeDatabase[audioElementB.id];
 
 	if (audioNodeA !== undefined && audioNodeB !== undefined) {
-		audioNodeA.connect(audioNodeB, output);
+		const audioNodeBInput = audioNodeB.getInputNode();
+
+		if (audioNodeBInput) {
+			audioNodeA.getOutput(output).connect(audioNodeBInput);
+		}
 	}
 }
 

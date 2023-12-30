@@ -19,8 +19,15 @@ export function isCustomAudioParam(
 	);
 }
 
+export type Destination = CustomAudioNode | AudioParam | CustomAudioParam | AudioNode;
+
+export interface Output {
+	connect(destination: Destination): void;
+	disconnect(desination?: Destination): void;
+}
+
 export interface CustomAudioNode {
-	getOutputNode(): AudioNode;
+	getOutput(name?: string): Output;
 	getInputNode(): AudioNode | null;
 	getParameter(parameterName: string): CustomAudioParam;
 	connect(destination: CustomAudioNode | AudioParam | CustomAudioParam, output?: string): void;
@@ -39,7 +46,8 @@ export function isCustomAudioNode(customAudioNode: unknown): customAudioNode is 
 		'disconnect' in customAudioNode &&
 		'getParameter' in customAudioNode &&
 		'getInputNode' in customAudioNode &&
-		'getOutputNode' in customAudioNode
+		'getOutputNode' in customAudioNode &&
+		'onHighlightParameter' in customAudioNode
 	);
 }
 
