@@ -36,9 +36,9 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 
 		const outputs = staticDefinition.outputs;
 
-		outputs.forEach(output => {
+		outputs.forEach((output) => {
 			this.getOutput(output).disconnect();
-		})
+		});
 	}
 
 	getOutput(name?: string): Output {
@@ -213,13 +213,13 @@ export class CustomOscillatorNode
 	readonly frequency: ConstantSourceNode;
 	readonly detune: ConstantSourceNode;
 
-	static oscillatorTypeToNodeType: {[P in OscillatorType]: NodeType} = {
+	static oscillatorTypeToNodeType: { [P in OscillatorType]: NodeType } = {
 		custom: 'sine-oscillator',
 		sine: 'sine-oscillator',
 		sawtooth: 'saw-oscillator',
 		triangle: 'triangle-oscillator',
-		square: 'square-oscillator',
-	}
+		square: 'square-oscillator'
+	};
 
 	constructor(id: string, type: OscillatorType) {
 		super(id, CustomOscillatorNode.oscillatorTypeToNodeType[type]);
@@ -344,16 +344,16 @@ export class CustomBipolarToUnipolarNode extends GenericCustomAudioNodeWithWebAp
 }
 
 export class CustomFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
-	static filterTypeToNodeType: {[P in BiquadFilterType]: NodeType} = {
-		'highpass': 'highpass-filter',
-		'bandpass': 'bandpass-filter',
-		'lowpass': 'lowpass-filter',
-		'allpass': 'lowpass-filter',
-		'notch': 'lowpass-filter',
-		'highshelf': 'lowpass-filter',
-		'lowshelf': 'lowpass-filter',
-		'peaking': 'lowpass-filter',
-	}
+	static filterTypeToNodeType: { [P in BiquadFilterType]: NodeType } = {
+		highpass: 'highpass-filter',
+		bandpass: 'bandpass-filter',
+		lowpass: 'lowpass-filter',
+		allpass: 'lowpass-filter',
+		notch: 'lowpass-filter',
+		highshelf: 'lowpass-filter',
+		lowshelf: 'lowpass-filter',
+		peaking: 'lowpass-filter'
+	};
 
 	constructor(id: string, type: BiquadFilterType) {
 		const filter = globalContext.createBiquadFilter();
@@ -746,13 +746,13 @@ export class CustomLFONode
 	private minusOne: ConstantSourceNode;
 	private negateOn: ConstantSourceNode;
 
-	static oscillatorTypeToNodeType: {[P in OscillatorType]: NodeType} = {
+	static oscillatorTypeToNodeType: { [P in OscillatorType]: NodeType } = {
 		custom: 'sine-oscillator',
 		sine: 'sine-oscillator',
 		sawtooth: 'saw-oscillator',
 		triangle: 'triangle-oscillator',
-		square: 'square-oscillator',
-	}
+		square: 'square-oscillator'
+	};
 
 	constructor(id: string, type: OscillatorType) {
 		super(id, CustomLFONode.oscillatorTypeToNodeType[type]);
@@ -859,8 +859,8 @@ export class CustomSquareLFONode extends CustomLFONode {
 export class MidiNode extends GenericCustomAudioNode {
 	private midiAccess: MIDIAccess | null = null;
 
-	private frequency: ConstantSourceNode;
-	private trigger: ConstantSourceNode;
+	readonly frequency: ConstantSourceNode;
+	readonly trigger: ConstantSourceNode;
 
 	constructor(id: string) {
 		super(id, 'midi');
@@ -880,7 +880,11 @@ export class MidiNode extends GenericCustomAudioNode {
 		return null;
 	}
 
-	getOutputNode(): AudioNode {
+	getOutputNode(name?: string): AudioNode {
+		if (name === 'trigger') {
+			return this.trigger;
+		}
+
 		return this.frequency;
 	}
 

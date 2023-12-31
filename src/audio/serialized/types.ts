@@ -96,14 +96,9 @@ export type SerializedSequencerNote = {
 	duration: number;
 };
 
-export type SerializedAREnvelopeNode = SerializedAudioElement<'ar-envelope', never> & {
-	attack: number;
-	decay: number;
-	sustain: number;
-	release: number;
-};
+export type SerializedAREnvelopeNode = SerializedAudioElement<'ar-envelope', 'attack' | 'release'>;
 
-export type SerializedADEnvelopeNode = SerializedAudioElement<'ad-envelope', never>;
+export type SerializedADEnvelopeNode = SerializedAudioElement<'ad-envelope', 'attack' | 'decay'>;
 
 export type SerializedOscilloscopeNode = SerializedAudioElement<'oscilloscope', never>;
 

@@ -78,6 +78,28 @@ export class StereoPannerNodeMock {
 	}
 }
 
+export class BiquadFilterNodeMock {
+	public connect: jest.Mock;
+	public disconnect: jest.Mock;
+	public frequency: AudioParamMock;
+
+	constructor() {
+		this.connect = jest.fn((a) => a);
+		this.disconnect = jest.fn();
+		this.frequency = new AudioParamMock();
+	}
+}
+
+export class DelayNodeMock {
+	public connect: jest.Mock;
+	public disconnect: jest.Mock;
+
+	constructor() {
+		this.connect = jest.fn((a) => a);
+		this.disconnect = jest.fn();
+	}
+}
+
 export const destinationMock = {
 	connect: jest.fn()
 };
@@ -94,11 +116,15 @@ export const audioContextMock = {
 export class AudioWorkletNodeMock {
 	public connect: jest.Mock;
 	public disconnect: jest.Mock;
-	public parameters: Map<string, AudioParamMock>;
+	public parameters: Pick<Map<string, AudioParamMock>, 'get'>;
 	constructor() {
 		this.connect = jest.fn((a) => a);
 		this.disconnect = jest.fn();
-		this.parameters = new Map();
+		this.parameters = {
+			get() {
+				return new AudioParamMock();
+			}
+		};
 	}
 }
 
@@ -141,6 +167,16 @@ Object.defineProperty(window, 'StereoPannerNode', {
 	value: StereoPannerNodeMock
 });
 
+Object.defineProperty(window, 'BiquadFilterNode', {
+	writable: true,
+	value: BiquadFilterNodeMock
+});
+
+Object.defineProperty(window, 'DelayNode', {
+	writable: true,
+	value: DelayNodeMock
+});
+
 Object.defineProperty(window, 'registerProcessor', {
 	writable: true,
 	value: registerProcessorMock
@@ -156,4 +192,11 @@ Object.defineProperty(window, 'sampleRate', {
 Object.defineProperty(window, 'currentTime', {
 	writable: true,
 	value: 0
+});
+
+Object.defineProperty(window, 'navigator', {
+	writable: true,
+	value: {
+		requestMIDIAccess: () => Promise.resolve({ inputs: [] })
+	}
 });

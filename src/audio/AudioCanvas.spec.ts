@@ -17,7 +17,8 @@ import {
 	SequencerNode,
 	CustomSquareOscillatorNode,
 	insertExistingNodes,
-	changeParameterMultiply
+	changeParameterMultiply,
+	MidiNode
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -207,11 +208,10 @@ describe('AudioCanvas', () => {
 				'2': {
 					type: 'ar-envelope' as const,
 					inputs: [{ id: '1', output: 'trigger' }],
-					parameters: {},
-					attack: 0.1,
-					decay: 0.1,
-					sustain: 0.5,
-					release: 0.1
+					parameters: {
+						attack: { base: 0, inputs: [] },
+						release: { base: 0, inputs: [] }
+					}
 				},
 				'3': {
 					type: 'sine-oscillator' as const,
@@ -397,6 +397,53 @@ describe('AudioCanvas', () => {
 			expect((audioNodeDatabase['1'] as CustomSquareOscillatorNode).frequency.offset.value).toBe(
 				333
 			);
+		});
+
+		it('adds connection between midi trigger output and envelope', () => {
+			const audioElements = {
+				'1': {
+					type: 'midi' as const,
+					parameters: {}
+				},
+				'2': {
+					type: 'ar-envelope' as const,
+					inputs: [],
+					parameters: {
+						attack: { base: 0.5, inputs: [] },
+						release: { base: 0, inputs: [] }
+					}
+				}
+			};
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
+
+			const newAudioElements = addConnection(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'trigger'
+				},
+				{
+					type: 'input',
+					nodeId: '2',
+					id: 'trigger'
+				}
+			);
+
+			expect(newAudioElements['2']?.inputs).toEqual([{ id: '1', output: 'trigger' }]);
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeDefined();
+			expect(audioNodeDatabase['2']).toBeDefined();
+
+			expect(audioNodeDatabase['1']).toBeInstanceOf(MidiNode);
+
+			expect(
+				(audioNodeDatabase['1'] as MidiNode).getOutputNode('trigger').connect
+			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode());
 		});
 
 		it('removes connection between oscillator and gain', () => {
