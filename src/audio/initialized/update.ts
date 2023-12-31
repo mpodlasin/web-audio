@@ -106,6 +106,7 @@ export const updateAudioCanvas = (
 			addedInputs.forEach((input) => {
 				const inputId = typeof input === 'string' ? input : input.id;
 				const output = typeof input === 'string' ? undefined : input.output;
+				const inputName = typeof input === 'string' ? undefined : input.input;
 
 				const audioElementB = newAudioElements[inputId];
 
@@ -123,7 +124,8 @@ export const updateAudioCanvas = (
 						id
 					},
 					audioNodeDatabase,
-					output
+					output,
+					inputName
 				);
 			});
 		}
@@ -333,6 +335,7 @@ function findInputsAndConnectAudioElements(
 		for (const input of audioElementA.inputs) {
 			const inputId = typeof input === 'string' ? input : input.id;
 			const output = typeof input === 'string' ? undefined : input.output;
+			const inputName = typeof input === 'string' ? undefined : input.input;
 
 			const audioElementB = audioElementsWithIds[inputId];
 
@@ -340,7 +343,7 @@ function findInputsAndConnectAudioElements(
 				throw new Error(`Audio element with id ${inputId} not found`);
 			}
 
-			connectAudioElements(audioElementB, audioElementA, audioNodeDatabase, output);
+			connectAudioElements(audioElementB, audioElementA, audioNodeDatabase, output, inputName);
 		}
 	}
 }
@@ -349,13 +352,14 @@ function connectAudioElements(
 	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
 	audioElementB: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
 	audioNodeDatabase: AudioNodeDatabase,
-	output?: string
+	output?: string,
+	input?: string
 ): void {
 	const audioNodeA = audioNodeDatabase[audioElementA.id];
 	const audioNodeB = audioNodeDatabase[audioElementB.id];
 
 	if (audioNodeA !== undefined && audioNodeB !== undefined) {
-		const audioNodeBInput = audioNodeB.getInputNode();
+		const audioNodeBInput = audioNodeB.getInputNode(input);
 
 		if (audioNodeBInput) {
 			audioNodeA.getOutput(output).connect(audioNodeBInput);

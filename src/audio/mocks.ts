@@ -93,10 +93,12 @@ export class BiquadFilterNodeMock {
 export class DelayNodeMock {
 	public connect: jest.Mock;
 	public disconnect: jest.Mock;
+	public delayTime: AudioParamMock;
 
 	constructor() {
 		this.connect = jest.fn((a) => a);
 		this.disconnect = jest.fn();
+		this.delayTime = new AudioParamMock();
 	}
 }
 
@@ -110,6 +112,7 @@ export const audioContextMock = {
 	createAnalyser: jest.fn(() => new AnalyserNodeMock()),
 	createStereoPanner: jest.fn(() => new StereoPannerNodeMock()),
 	createConstantSource: jest.fn(() => new ConstantSourceNodeMock()),
+	createDelay: jest.fn(() => new DelayNodeMock()),
 	destination: destinationMock
 };
 

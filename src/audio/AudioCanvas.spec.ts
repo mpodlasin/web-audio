@@ -18,7 +18,9 @@ import {
 	CustomSquareOscillatorNode,
 	insertExistingNodes,
 	changeParameterMultiply,
-	MidiNode
+	MidiNode,
+	CustomDelayNode,
+	TriggerNode
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -381,7 +383,7 @@ describe('AudioCanvas', () => {
 				}
 			);
 
-			expect(newAudioElements['2']?.inputs).toEqual(['1']);
+			expect(newAudioElements['2']?.inputs).toEqual([{ id: '1', output: 'audio', input: 'audio' }]);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
@@ -432,7 +434,9 @@ describe('AudioCanvas', () => {
 				}
 			);
 
-			expect(newAudioElements['2']?.inputs).toEqual([{ id: '1', output: 'trigger' }]);
+			expect(newAudioElements['2']?.inputs).toEqual([
+				{ id: '1', output: 'trigger', input: 'trigger' }
+			]);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
@@ -444,6 +448,57 @@ describe('AudioCanvas', () => {
 			expect(
 				(audioNodeDatabase['1'] as MidiNode).getOutputNode('trigger').connect
 			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode());
+		});
+
+		it('adds connection between trigger and delay trigger input', () => {
+			const audioElements = {
+				'1': {
+					type: 'trigger' as const,
+					parameters: {
+						tempo: { base: 120, inputs: [] }
+					}
+				},
+				'2': {
+					type: 'delay' as const,
+					inputs: [],
+					parameters: {
+						delayTime: { base: 0.5, inputs: [] }
+					}
+				}
+			};
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
+
+			const newAudioElements = addConnection(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'trigger'
+				},
+				{
+					type: 'input',
+					nodeId: '2',
+					id: 'trigger'
+				}
+			);
+
+			expect(newAudioElements['2']?.inputs).toEqual([
+				{ id: '1', output: 'trigger', input: 'trigger' }
+			]);
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeDefined();
+			expect(audioNodeDatabase['2']).toBeDefined();
+
+			expect(audioNodeDatabase['1']).toBeInstanceOf(TriggerNode);
+			expect(audioNodeDatabase['2']).toBeInstanceOf(CustomDelayNode);
+
+			expect((audioNodeDatabase['1'] as TriggerNode).getOutputNode().connect).toHaveBeenCalledWith(
+				(audioNodeDatabase['2'] as CustomDelayNode).getInputNode('trigger')
+			);
 		});
 
 		it('removes connection between oscillator and gain', () => {

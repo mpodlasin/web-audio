@@ -173,7 +173,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	delay: {
-		inputs: ['audio'],
+		inputs: ['audio', 'trigger'],
 		outputs: ['audio'],
 		parameters: {
 			delayTime: {

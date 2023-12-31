@@ -28,7 +28,7 @@ export interface Output {
 
 export interface CustomAudioNode {
 	getOutput(name?: string): Output;
-	getInputNode(): AudioNode | null;
+	getInputNode(name?: string): AudioNode | null;
 	getParameter(parameterName: string): CustomAudioParam;
 	disconnect(): void;
 	onHighlightParameter(callback: (parameterName: string) => void): void;

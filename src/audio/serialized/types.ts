@@ -37,7 +37,7 @@ export type SerializedAudioElementWithId<
 	id: string;
 };
 
-export type Inputs = (string | { id: string; output: string })[];
+export type Inputs = (string | { id: string; output: string; input?: string })[];
 
 export type SerializedAudioParameter = {
 	base: number;
@@ -76,9 +76,7 @@ export type SerializedMultiplyNode = SerializedAudioElement<'multiply', 'factor'
 
 export type SerializedDestinationNode = SerializedAudioElement<'destination', never>;
 
-export type SerializedTriggerNode = SerializedAudioElement<'trigger', never> & {
-	tempoInBpm: number;
-};
+export type SerializedTriggerNode = SerializedAudioElement<'trigger', 'tempo'>;
 
 export type SerializedPanNode = SerializedAudioElement<'pan', 'pan'>;
 

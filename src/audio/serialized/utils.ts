@@ -242,18 +242,13 @@ export const addConnection = <S extends SerializedAudioElements>(
 			throw new Error(`Audio element with id ${endingPlug.nodeId} not found`);
 		}
 
-		const startingNodeStaticDefinition =
-			allowedSerializedAudioElementStaticDefinitions[startingNode.type];
-
 		newAudioGraph = {
 			...audioGraph,
 			[endingPlug.nodeId]: {
 				...endingNode,
 				inputs: [
 					...(endingNode.inputs ?? []),
-					startingNodeStaticDefinition.outputs[0] === startingPlug.id
-						? startingPlug.nodeId
-						: { id: startingPlug.nodeId, output: startingPlug.id }
+					{ id: startingPlug.nodeId, output: startingPlug.id, input: endingPlug.id }
 				]
 			}
 		};
