@@ -16,7 +16,7 @@ import {
 import { accessParameter } from './update';
 
 abstract class GenericCustomAudioNode implements CustomAudioNode {
-	constructor(private id: string) {}
+	constructor(private id: string, protected type: NodeType) {}
 
 	private parameterAnalysers: { [parameterName: string]: AnalyserNode } = {};
 	private parameterMultipliers: {
@@ -30,6 +30,16 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 	abstract getAudioParam(parameterName: string): AudioParam;
 
 	abstract getInputNode(): AudioNode | null;
+
+	disconnect(): void {
+		const staticDefinition = allowedSerializedAudioElementStaticDefinitions[this.type];
+
+		const outputs = staticDefinition.outputs;
+
+		outputs.forEach(output => {
+			this.getOutput(output).disconnect();
+		})
+	}
 
 	getOutput(name?: string): Output {
 		const id = this.id;
@@ -151,29 +161,6 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 		}
 	}
 
-	disconnect(destination: CustomAudioNode | AudioParam | CustomAudioParam | undefined): void {
-		if (destination === undefined) {
-			this.getOutput().disconnect();
-			return;
-		}
-
-		if (destination instanceof AudioParam) {
-			this.getOutput().disconnect(destination);
-
-			return;
-		}
-
-		if (isCustomAudioParam(destination)) {
-			this.getOutput().disconnect(destination.getMultiplierForInput(this.id));
-
-			return;
-		}
-
-		if (isCustomAudioNodeWithWebApiNode(destination)) {
-			this.getOutput().disconnect(destination.webApiNode);
-		}
-	}
-
 	onHighlightParameter(callback: (parameterName: string) => void): void {
 		return;
 	}
@@ -185,8 +172,8 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 {
 	readonly webApiNode: T;
 
-	constructor(webApiNode: T, id: string) {
-		super(id);
+	constructor(webApiNode: T, id: string, type: NodeType) {
+		super(id, type);
 		this.webApiNode = webApiNode;
 	}
 
@@ -226,8 +213,16 @@ export class CustomOscillatorNode
 	readonly frequency: ConstantSourceNode;
 	readonly detune: ConstantSourceNode;
 
+	static oscillatorTypeToNodeType: {[P in OscillatorType]: NodeType} = {
+		custom: 'sine-oscillator',
+		sine: 'sine-oscillator',
+		sawtooth: 'saw-oscillator',
+		triangle: 'triangle-oscillator',
+		square: 'square-oscillator',
+	}
+
 	constructor(id: string, type: OscillatorType) {
-		super(id);
+		super(id, CustomOscillatorNode.oscillatorTypeToNodeType[type]);
 
 		const leftOscillator = globalContext.createOscillator();
 		leftOscillator.type = type;
@@ -332,27 +327,38 @@ export class CustomTriangleOscillatorNode extends CustomOscillatorNode {
 
 export class CustomPanNode extends GenericCustomAudioNodeWithWebApiNode<StereoPannerNode> {
 	constructor(id: string) {
-		super(globalContext.createStereoPanner(), id);
+		super(globalContext.createStereoPanner(), id, 'pan');
 	}
 }
 
 export class CustomGateLengthNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'gate-length'), id);
+		super(new AudioWorkletNode(globalContext, 'gate-length'), id, 'gate-length');
 	}
 }
 
 export class CustomBipolarToUnipolarNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'scaler'), id);
+		super(new AudioWorkletNode(globalContext, 'scaler'), id, 'bipolar-to-unipolar');
 	}
 }
 
 export class CustomFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
+	static filterTypeToNodeType: {[P in BiquadFilterType]: NodeType} = {
+		'highpass': 'highpass-filter',
+		'bandpass': 'bandpass-filter',
+		'lowpass': 'lowpass-filter',
+		'allpass': 'lowpass-filter',
+		'notch': 'lowpass-filter',
+		'highshelf': 'lowpass-filter',
+		'lowshelf': 'lowpass-filter',
+		'peaking': 'lowpass-filter',
+	}
+
 	constructor(id: string, type: BiquadFilterType) {
 		const filter = globalContext.createBiquadFilter();
 		filter.type = type;
-		super(filter, id);
+		super(filter, id, CustomFilterNode.filterTypeToNodeType[type]);
 	}
 
 	getParameter(parameterName: string): CustomAudioParam {
@@ -384,13 +390,13 @@ export class CustomHighpassFilterNode extends CustomFilterNode {
 
 export class CustomGainNode extends GenericCustomAudioNodeWithWebApiNode<GainNode> {
 	constructor(id: string) {
-		super(globalContext.createGain(), id);
+		super(globalContext.createGain(), id, 'gain');
 	}
 }
 
 export class CustomMultiplyNode extends GenericCustomAudioNodeWithWebApiNode<GainNode> {
 	constructor(id: string) {
-		super(globalContext.createGain(), id);
+		super(globalContext.createGain(), id, 'multiply');
 	}
 
 	getParameter(parameterName: string): CustomAudioParam {
@@ -404,7 +410,7 @@ export class CustomMultiplyNode extends GenericCustomAudioNodeWithWebApiNode<Gai
 
 export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode<AnalyserNode> {
 	constructor(id: string) {
-		super(globalContext.createAnalyser(), id);
+		super(globalContext.createAnalyser(), id, 'oscilloscope');
 	}
 }
 
@@ -414,7 +420,7 @@ export class ADEnvelopeNode extends GenericCustomAudioNode implements CustomAudi
 	readonly arEnvelope: AudioWorkletNode;
 
 	constructor(id: string) {
-		super(id);
+		super(id, 'ad-envelope');
 
 		const attack = globalContext.createConstantSource();
 		attack.start();
@@ -469,19 +475,19 @@ export class ADEnvelopeNode extends GenericCustomAudioNode implements CustomAudi
 
 export class AREnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'ar-envelope'), id);
+		super(new AudioWorkletNode(globalContext, 'ar-envelope'), id, 'ar-envelope');
 	}
 }
 
 export class PitchQuantizerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'pitch-quantizer'), id);
+		super(new AudioWorkletNode(globalContext, 'pitch-quantizer'), id, 'pitch-quantizer');
 	}
 }
 
 export class MeasureGateNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'measure-gate'), id);
+		super(new AudioWorkletNode(globalContext, 'measure-gate'), id, 'measure-gate');
 	}
 }
 
@@ -489,7 +495,7 @@ export class GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight extends Ge
 	private counterAnalyser: AnalyserNode;
 	private input: GainNode;
 
-	constructor(node: AudioWorkletNode, id: string, private type: NodeType) {
+	constructor(node: AudioWorkletNode, id: string, type: NodeType) {
 		const counter = new AudioWorkletNode(globalContext, 'clock-counter');
 		const counterAnalyser = globalContext.createAnalyser();
 		const input = globalContext.createGain();
@@ -505,7 +511,7 @@ export class GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight extends Ge
 			modulo.value = 8;
 		}
 
-		super(node, id);
+		super(node, id, type);
 
 		this.counterAnalyser = counterAnalyser;
 		this.input = input;
@@ -559,7 +565,7 @@ export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNodeWithT
 
 export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'trigger'), id);
+		super(new AudioWorkletNode(globalContext, 'trigger'), id, 'trigger');
 	}
 
 	start() {
@@ -581,7 +587,7 @@ export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkl
 
 export class DestinationNode extends GenericCustomAudioNodeWithWebApiNode<AudioDestinationNode> {
 	constructor(id: string) {
-		super(globalContext.destination, id);
+		super(globalContext.destination, id, 'destination');
 	}
 }
 
@@ -604,7 +610,7 @@ export class CustomConvolutionNode extends GenericCustomAudioNode {
 	private mix: ConstantSourceNode;
 
 	constructor(id: string) {
-		super(id);
+		super(id, 'convolution');
 
 		const convolution = globalContext.createConvolver();
 
@@ -667,7 +673,7 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 	private mix: ConstantSourceNode;
 
 	constructor(id: string) {
-		super(id);
+		super(id, 'delay');
 		const delayMaxValue =
 			allowedSerializedAudioElementStaticDefinitions['delay'].parameters['delayTime']?.maxValue;
 		const delay = globalContext.createDelay(delayMaxValue);
@@ -740,8 +746,16 @@ export class CustomLFONode
 	private minusOne: ConstantSourceNode;
 	private negateOn: ConstantSourceNode;
 
+	static oscillatorTypeToNodeType: {[P in OscillatorType]: NodeType} = {
+		custom: 'sine-oscillator',
+		sine: 'sine-oscillator',
+		sawtooth: 'saw-oscillator',
+		triangle: 'triangle-oscillator',
+		square: 'square-oscillator',
+	}
+
 	constructor(id: string, type: OscillatorType) {
-		super(id);
+		super(id, CustomLFONode.oscillatorTypeToNodeType[type]);
 
 		const oscillator = globalContext.createOscillator();
 
@@ -849,7 +863,7 @@ export class MidiNode extends GenericCustomAudioNode {
 	private trigger: ConstantSourceNode;
 
 	constructor(id: string) {
-		super(id);
+		super(id, 'midi');
 
 		const frequency = globalContext.createConstantSource();
 		const trigger = globalContext.createConstantSource();

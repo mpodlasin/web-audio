@@ -62,7 +62,7 @@ export const updateAudioCanvas = (
 					}
 				}
 
-				node.disconnect(undefined);
+				node.disconnect();
 			}
 
 			delete audioNodeDatabase[id];
@@ -239,12 +239,12 @@ export const updateAudioCanvas = (
 
 		const removedInputs = getRemovedParameterInputs(newAudioElement, oldAudioElement);
 
-		removedInputs.forEach(([parameterName, nodeId]) => {
+		removedInputs.forEach(([parameterName, nodeId, output]) => {
 			const audioElementNode = audioNodeDatabase[id];
 			const removedInputNode = audioNodeDatabase[nodeId];
 
 			if (removedInputNode && audioElementNode) {
-				removedInputNode.disconnect(audioElementNode.getParameter(parameterName));
+				removedInputNode.getOutput(output).disconnect(audioElementNode.getParameter(parameterName));
 			}
 		});
 	});
@@ -373,7 +373,7 @@ function disconnectAudioElements(
 	const audioNodeB = audioNodeDatabase[audioElementB.id];
 
 	if (audioNodeA !== undefined && audioNodeB !== undefined) {
-		audioNodeA.disconnect(audioNodeB, output);
+		audioNodeA.getOutput(output).disconnect(audioNodeB);
 	}
 }
 
@@ -637,8 +637,8 @@ const getParametersWithAddedInputs = (
 const getRemovedParameterInputs = (
 	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
 	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
-): [string, string][] => {
-	const removedParameterInputs: [string, string][] = [];
+): [string, string, string][] => {
+	const removedParameterInputs: [string, string, string][] = [];
 
 	if (newAudioElement.parameters && oldAudioElement.parameters) {
 		for (const parameterName in oldAudioElement.parameters) {
@@ -649,7 +649,7 @@ const getRemovedParameterInputs = (
 				removedParameterInputs.push(
 					...oldParameterValue.inputs
 						.filter((input) => !newParameterValue.inputs.some((i) => i.id === input.id))
-						.map(({ id }) => [parameterName, id] as [string, string])
+						.map(({ id, output }) => [parameterName, id, output] as [string, string, string])
 				);
 			}
 		}
