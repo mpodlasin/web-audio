@@ -680,6 +680,55 @@ describe('AudioCanvas', () => {
 			expect(newAudioElements['3']?.inputs).toEqual([{ id: '2', output: 'audio', input: 'audio' }]);
 		});
 
+		it('removes input form one node when two are present', () => {
+			const audioElements = {
+				'1': {
+					type: 'sine-oscillator' as const,
+					parameters: {
+						frequency: { base: 0, inputs: [] },
+						detune: { base: 0, inputs: [] },
+					}
+				},
+				'2': {
+					type: 'sine-oscillator' as const,
+					parameters: {
+						frequency: { base: 0, inputs: [] },
+						detune: { base: 0, inputs: [] }
+					}
+				},
+				'3': {
+					type: 'delay' as const,
+					inputs: [
+						{ id: '1', output: 'audio', input: 'audio' },
+						{ id: '2', output: 'audio', input: 'audio' }
+					],
+					parameters: {
+						delayTime: { base: 0.5, inputs: [] }
+					}
+				}
+			};
+
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
+
+			const newAudioElements = removeConnection(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'audio'
+				},
+				{
+					type: 'input',
+					nodeId: '3',
+					id: 'audio'
+				}
+			);
+
+			expect(newAudioElements['3']?.inputs).toEqual([{ id: '2', output: 'audio', input: 'audio' }]);
+		});
+
 		it('adds connection between gain and oscillator detune parameter', () => {
 			const audioElements = {
 				'1': {
