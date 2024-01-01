@@ -39,7 +39,7 @@ export const getLinesToDisplay = (
 						} else {
 							return [
 								[input.id, input.output],
-								[id, staticToDefinition.inputs[0] as string],
+								[id, input.input ?? staticToDefinition.inputs[0] ?? ''],
 								undefined
 							] as const;
 						}
@@ -70,13 +70,9 @@ export const getLinesToDisplay = (
 			return [];
 		}
 
-		const toStaticNodeDefinition =
-			allowedSerializedAudioElementStaticDefinitions[
-				toNode.type as keyof typeof allowedSerializedAudioElementStaticDefinitions
-			];
 		const fromPlugPosition = plugPositions[fromId]?.outputPlugPositions[fromName];
 		const toPlugPosition =
-			plugPositions[toId]?.inputPlugPositions[toStaticNodeDefinition.inputs[0] as string];
+			plugPositions[toId]?.inputPlugPositions[toName];
 		const toParameterKnobPosition = plugPositions[toId]?.parameterKnobPositions[toName];
 
 		if (fromPlugPosition && toParameterKnobPosition) {
