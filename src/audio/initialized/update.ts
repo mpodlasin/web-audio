@@ -551,7 +551,13 @@ function getRemovedInputs(
 
 			if (
 				typeof input !== 'string' &&
-				!newAudioElement.inputs.some((i) => typeof i !== 'string' && i.id === input.id)
+				!newAudioElement.inputs.some(
+					(i) =>
+						typeof i !== 'string' &&
+						i.id === input.id &&
+						i.output === input.output &&
+						i.input === input.input
+				)
 			) {
 				removedInputs.push(input);
 			}
