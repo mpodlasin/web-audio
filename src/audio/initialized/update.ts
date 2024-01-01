@@ -211,6 +211,7 @@ export const updateAudioCanvas = (
 		removedInputs.forEach((input) => {
 			const inputId = typeof input === 'string' ? input : input.id;
 			const output = typeof input === 'string' ? undefined : input.output;
+			const inputName = typeof input === 'string' ? undefined : input.input;
 
 			const audioElementB = newAudioElements[inputId];
 
@@ -228,7 +229,8 @@ export const updateAudioCanvas = (
 					id
 				},
 				audioNodeDatabase,
-				output
+				output,
+				inputName
 			);
 		});
 	});
@@ -371,13 +373,18 @@ function disconnectAudioElements(
 	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
 	audioElementB: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
 	audioNodeDatabase: AudioNodeDatabase,
-	output?: string
+	output?: string,
+	input?: string
 ): void {
 	const audioNodeA = audioNodeDatabase[audioElementA.id];
 	const audioNodeB = audioNodeDatabase[audioElementB.id];
 
 	if (audioNodeA !== undefined && audioNodeB !== undefined) {
-		audioNodeA.getOutput(output).disconnect(audioNodeB);
+		const audioNodeBInput = audioNodeB.getInputNode(input);
+
+		if (audioNodeBInput) {
+			audioNodeA.getOutput(output).disconnect(audioNodeBInput);
+		}
 	}
 }
 

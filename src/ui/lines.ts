@@ -71,8 +71,7 @@ export const getLinesToDisplay = (
 		}
 
 		const fromPlugPosition = plugPositions[fromId]?.outputPlugPositions[fromName];
-		const toPlugPosition =
-			plugPositions[toId]?.inputPlugPositions[toName];
+		const toPlugPosition = plugPositions[toId]?.inputPlugPositions[toName];
 		const toParameterKnobPosition = plugPositions[toId]?.parameterKnobPositions[toName];
 
 		if (fromPlugPosition && toParameterKnobPosition) {

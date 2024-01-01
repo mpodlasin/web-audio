@@ -678,6 +678,12 @@ describe('AudioCanvas', () => {
 			);
 
 			expect(newAudioElements['3']?.inputs).toEqual([{ id: '2', output: 'audio', input: 'audio' }]);
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(
+				(audioNodeDatabase['1'] as TriggerNode).getOutputNode().disconnect
+			).toHaveBeenCalledWith(audioNodeDatabase['3']?.getInputNode('trigger'));
 		});
 
 		it('removes input form one node when two are present', () => {
@@ -686,7 +692,7 @@ describe('AudioCanvas', () => {
 					type: 'sine-oscillator' as const,
 					parameters: {
 						frequency: { base: 0, inputs: [] },
-						detune: { base: 0, inputs: [] },
+						detune: { base: 0, inputs: [] }
 					}
 				},
 				'2': {
@@ -730,9 +736,9 @@ describe('AudioCanvas', () => {
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
-			expect((audioNodeDatabase['1'] as CustomSineOscillatorNode).getOutputNode().disconnect).toHaveBeenCalledWith(
-				audioNodeDatabase['3']?.getInputNode('audio')
-			);
+			expect(
+				(audioNodeDatabase['1'] as CustomSineOscillatorNode).getOutputNode().disconnect
+			).toHaveBeenCalledWith(audioNodeDatabase['3']?.getInputNode('audio'));
 		});
 
 		it('adds connection between gain and oscillator detune parameter', () => {

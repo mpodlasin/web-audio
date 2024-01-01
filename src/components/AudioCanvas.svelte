@@ -230,8 +230,6 @@
 
 	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions);
 
-	$: console.log(linesToDisplay);
-
 	const handleNodeParameterChangeStart = () => {
 		audioGraphHistory = [...audioGraphHistory, audioGraph];
 	};
@@ -291,7 +289,7 @@
 	) => {
 		if (!draggingLine) return;
 		if (!startingPlug) return;
-		
+
 		audioGraphHistory = [
 			...audioGraphHistory,
 			addConnection(audioGraph, startingPlug, event.detail)
