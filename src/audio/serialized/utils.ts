@@ -378,7 +378,7 @@ export const removeConnection = <S extends SerializedAudioElements>(
 							endingNodeStaticDefinition.inputs[0] !== endingPlug.id
 						);
 					} else {
-						return input.output !== endingPlug.id || input.id !== startingPlug.nodeId;
+						return input.output !== startingPlug.id || input.id !== startingPlug.nodeId;
 					}
 				}),
 				parameters: Object.fromEntries(

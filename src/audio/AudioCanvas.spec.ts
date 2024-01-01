@@ -741,6 +741,60 @@ describe('AudioCanvas', () => {
 			).toHaveBeenCalledWith(audioNodeDatabase['3']?.getInputNode('audio'));
 		});
 
+		it('removes "weird" connection between trigger node and delays audio input', () => {
+			const audioElements = {
+				'1': {
+					type: 'trigger' as const,
+					parameters: {
+						tempo: { base: 120, inputs: [] }
+					}
+				},
+				'2': {
+					type: 'sine-oscillator' as const,
+					parameters: {
+						frequency: { base: 0, inputs: [] },
+						detune: { base: 0, inputs: [] }
+					}
+				},
+				'3': {
+					type: 'delay' as const,
+					inputs: [
+						{ id: '1', output: 'trigger', input: 'audio' },
+						{ id: '2', output: 'audio', input: 'audio' }
+					],
+					parameters: {
+						delayTime: { base: 0.5, inputs: [] }
+					}
+				}
+			};
+
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
+
+			const newAudioElements = removeConnection(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'trigger'
+				},
+				{
+					type: 'input',
+					nodeId: '3',
+					id: 'audio'
+				}
+			);
+
+			expect(newAudioElements['3']?.inputs).toEqual([{ id: '2', output: 'audio', input: 'audio' }]);
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(
+				(audioNodeDatabase['1'] as TriggerNode).getOutputNode().disconnect
+			).toHaveBeenCalledWith(audioNodeDatabase['3']?.getInputNode('audio'));
+		});
+
 		it('adds connection between gain and oscillator detune parameter', () => {
 			const audioElements = {
 				'1': {
