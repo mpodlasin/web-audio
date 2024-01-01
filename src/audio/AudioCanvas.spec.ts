@@ -501,6 +501,84 @@ describe('AudioCanvas', () => {
 			);
 		});
 
+		it('adds connections to both inputs of delay', () => {
+			const audioElements = {
+				'1': {
+					type: 'trigger' as const,
+					parameters: {
+						tempo: { base: 120, inputs: [] }
+					}
+				},
+				'2': {
+					type: 'sine-oscillator' as const,
+					parameters: {
+						frequency: { base: 0, inputs: [] },
+						detune: { base: 0, inputs: [] }
+					}
+				},
+				'3': {
+					type: 'delay' as const,
+					inputs: [],
+					parameters: {
+						delayTime: { base: 0.5, inputs: [] }
+					}
+				}
+			};
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
+
+			const intermediateAudioElements = addConnection(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'trigger'
+				},
+				{
+					type: 'input',
+					nodeId: '3',
+					id: 'trigger'
+				}
+			);
+
+			const newAudioElements = addConnection(
+				intermediateAudioElements,
+				{
+					type: 'output',
+					nodeId: '2',
+					id: 'audio'
+				},
+				{
+					type: 'input',
+					nodeId: '3',
+					id: 'audio'
+				}
+			);
+
+			expect(newAudioElements['3']?.inputs).toEqual([
+				{ id: '1', output: 'trigger', input: 'trigger' },
+				{ id: '2', output: 'audio', input: 'audio' }
+			]);
+
+			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+
+			expect(audioNodeDatabase['1']).toBeDefined();
+			expect(audioNodeDatabase['2']).toBeDefined();
+			expect(audioNodeDatabase['3']).toBeDefined();
+
+			expect(audioNodeDatabase['1']).toBeInstanceOf(TriggerNode);
+			expect(audioNodeDatabase['2']).toBeInstanceOf(CustomSineOscillatorNode);
+			expect(audioNodeDatabase['3']).toBeInstanceOf(CustomDelayNode);
+
+			expect(
+				(audioNodeDatabase['2'] as CustomSineOscillatorNode).getOutputNode().connect
+			).toHaveBeenCalledWith((audioNodeDatabase['3'] as CustomDelayNode).getInputNode());
+			expect((audioNodeDatabase['1'] as TriggerNode).getOutputNode().connect).toHaveBeenCalledWith(
+				(audioNodeDatabase['3'] as CustomDelayNode).getInputNode('trigger')
+			);
+		});
+
 		it('removes connection between oscillator and gain', () => {
 			const audioElements = {
 				'1': {
@@ -552,6 +630,54 @@ describe('AudioCanvas', () => {
 			expect((audioNodeDatabase['1'] as CustomSquareOscillatorNode).frequency.offset.value).toBe(
 				333
 			);
+		});
+
+		it('removes connection between trigger and delay trigger input', () => {
+			const audioElements = {
+				'1': {
+					type: 'trigger' as const,
+					parameters: {
+						tempo: { base: 120, inputs: [] }
+					}
+				},
+				'2': {
+					type: 'sine-oscillator' as const,
+					parameters: {
+						frequency: { base: 0, inputs: [] },
+						detune: { base: 0, inputs: [] }
+					}
+				},
+				'3': {
+					type: 'delay' as const,
+					inputs: [
+						{ id: '1', output: 'trigger', input: 'trigger' },
+						{ id: '2', output: 'audio', input: 'audio' }
+					],
+					parameters: {
+						delayTime: { base: 0.5, inputs: [] }
+					}
+				}
+			};
+
+			const audioNodeDatabase: AudioNodeDatabase = {};
+
+			updateAudioCanvas(audioElements, {}, audioNodeDatabase);
+
+			const newAudioElements = removeConnection(
+				audioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'trigger'
+				},
+				{
+					type: 'input',
+					nodeId: '3',
+					id: 'trigger'
+				}
+			);
+
+			expect(newAudioElements['3']?.inputs).toEqual([{ id: '2', output: 'audio', input: 'audio' }]);
 		});
 
 		it('adds connection between gain and oscillator detune parameter', () => {
