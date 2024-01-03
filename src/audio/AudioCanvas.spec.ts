@@ -834,6 +834,16 @@ describe('AudioCanvas', () => {
 				}
 			);
 
+			expect(intermediateAudioElements['2']?.inputs).toEqual([
+				{ id: '1', output: 'trigger', input: 'trigger' }
+			]);
+
+			updateAudioCanvas(intermediateAudioElements, audioElements, audioNodeDatabase);
+
+			expect((audioNodeDatabase['1'] as TriggerNode).getOutputNode().connect).toHaveBeenCalledWith(
+				audioNodeDatabase['2']?.getInputNode('trigger')
+			);
+
 			const newAudioElements = addConnection(
 				intermediateAudioElements,
 				{
@@ -846,22 +856,18 @@ describe('AudioCanvas', () => {
 					nodeId: '2',
 					id: 'audio'
 				}
-			)
+			);
 
 			expect(newAudioElements['2']?.inputs).toEqual([
 				{ id: '1', output: 'trigger', input: 'trigger' },
 				{ id: '1', output: 'trigger', input: 'audio' }
 			]);
 
-			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			updateAudioCanvas(newAudioElements, intermediateAudioElements, audioNodeDatabase);
 
-			expect(
-				(audioNodeDatabase['1'] as TriggerNode).getOutputNode().connect
-			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode('trigger'));
-
-			expect(
-				(audioNodeDatabase['1'] as TriggerNode).getOutputNode().connect
-			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode('audio'));
+			expect((audioNodeDatabase['1'] as TriggerNode).getOutputNode().connect).toHaveBeenCalledWith(
+				audioNodeDatabase['2']?.getInputNode('audio')
+			);
 		});
 
 		it('removes two connections from trigger to delay', () => {
@@ -924,7 +930,7 @@ describe('AudioCanvas', () => {
 					nodeId: '2',
 					id: 'trigger'
 				}
-			)
+			);
 
 			expect(newerAudioElements['2']?.inputs).toEqual([]);
 

@@ -228,62 +228,33 @@ export const addConnection = <S extends SerializedAudioElements>(
 		throw new Error(`You tried connecting a node to itself`);
 	}
 
-	let newAudioGraph: S;
-
-	if (endingPlug.type === 'input' && startingPlug.type === 'output') {
-		const startingNode = audioGraph[startingPlug.nodeId];
-		const endingNode = audioGraph[endingPlug.nodeId];
-
-		if (startingNode === undefined) {
-			throw new Error(`Audio element with id ${startingPlug.nodeId} not found`);
-		}
-
-		if (endingNode === undefined) {
-			throw new Error(`Audio element with id ${endingPlug.nodeId} not found`);
-		}
-
-		newAudioGraph = {
-			...audioGraph,
-			[endingPlug.nodeId]: {
-				...endingNode,
-				inputs: [
-					...(endingNode.inputs ?? []),
-					{ id: startingPlug.nodeId, output: startingPlug.id, input: endingPlug.id }
-				]
-			}
-		};
-	} else if (endingPlug.type === 'output' && startingPlug.type === 'input') {
-		const startingNode = audioGraph[startingPlug.nodeId];
-		const endingNode = audioGraph[endingPlug.nodeId];
-
-		if (startingNode === undefined) {
-			throw new Error(`Audio element with id ${startingPlug.nodeId} not found`);
-		}
-
-		if (endingNode === undefined) {
-			throw new Error(`Audio element with id ${endingPlug.nodeId} not found`);
-		}
-
-		const endingNodeStaticDefinition =
-			allowedSerializedAudioElementStaticDefinitions[endingNode.type];
-
-		newAudioGraph = {
-			...audioGraph,
-			[startingPlug.nodeId]: {
-				...startingNode,
-				inputs: [
-					...(startingNode.inputs ?? []),
-					endingNodeStaticDefinition.outputs[0] === endingPlug.id
-						? endingPlug.nodeId
-						: { id: endingPlug.nodeId, output: endingPlug.id }
-				]
-			}
-		};
-	} else {
-		newAudioGraph = { ...audioGraph };
+	if (endingPlug.type === 'output' && startingPlug.type == 'input') {
+		const temp = startingPlug;
+		startingPlug = endingPlug;
+		endingPlug = temp;
 	}
 
-	return newAudioGraph;
+	const startingNode = audioGraph[startingPlug.nodeId];
+	const endingNode = audioGraph[endingPlug.nodeId];
+
+	if (startingNode === undefined) {
+		throw new Error(`Audio element with id ${startingPlug.nodeId} not found`);
+	}
+
+	if (endingNode === undefined) {
+		throw new Error(`Audio element with id ${endingPlug.nodeId} not found`);
+	}
+
+	return {
+		...audioGraph,
+		[endingPlug.nodeId]: {
+			...endingNode,
+			inputs: [
+				...(endingNode.inputs ?? []),
+				{ id: startingPlug.nodeId, output: startingPlug.id, input: endingPlug.id }
+			]
+		}
+	};
 };
 
 export const addConnectionToParameter = <S extends SerializedAudioElements>(
