@@ -527,7 +527,13 @@ function getAddedInputs(
 
 			if (
 				typeof input !== 'string' &&
-				!oldAudioElement.inputs.some((i) => typeof i !== 'string' && i.id === input.id && i.output === input.output && i.input === input.input)
+				!oldAudioElement.inputs.some(
+					(i) =>
+						typeof i !== 'string' &&
+						i.id === input.id &&
+						i.output === input.output &&
+						i.input === input.input
+				)
 			) {
 				addedInputs.push(input);
 			}

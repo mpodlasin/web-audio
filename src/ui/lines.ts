@@ -15,7 +15,8 @@ export interface LineToDisplay {
 
 export const getLinesToDisplay = (
 	audioGraphWithPositions: SerializedAudioElements,
-	plugPositions: PlugPositions
+	plugPositions: PlugPositions,
+	{ top, left }: { top: number; left: number }
 ): LineToDisplay[] => {
 	const lines = Object.entries(audioGraphWithPositions).reduce(
 		(
@@ -91,12 +92,12 @@ export const getLinesToDisplay = (
 					] as const,
 					multiply,
 					from: {
-						x: fromPlugPosition.x,
-						y: fromPlugPosition.y
+						x: fromPlugPosition.x - left,
+						y: fromPlugPosition.y - top
 					},
 					to: {
-						x: toParameterKnobPosition.x,
-						y: toParameterKnobPosition.y
+						x: toParameterKnobPosition.x - left,
+						y: toParameterKnobPosition.y - top
 					}
 				}
 			];
@@ -118,12 +119,12 @@ export const getLinesToDisplay = (
 						}
 					] as const,
 					from: {
-						x: fromPlugPosition.x,
-						y: fromPlugPosition.y
+						x: fromPlugPosition.x - left,
+						y: fromPlugPosition.y - top
 					},
 					to: {
-						x: toPlugPosition.x,
-						y: toPlugPosition.y
+						x: toPlugPosition.x - left,
+						y: toPlugPosition.y - top
 					}
 				}
 			];

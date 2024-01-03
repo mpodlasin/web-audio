@@ -29,13 +29,21 @@
 	import ChangeColorModal from './ChangeColorModal.svelte';
 	import Node from './Node.svelte';
 	import { changeNodeColor } from '../ui/changeNodeColor';
-	import Modal from './Modal.svelte';
 	import Knob from './Knob.svelte';
 	import PositionedMenu from './PositionedMenu.svelte';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
 	export let project: Project;
+	export let fullScreen = false;
+
+	let container: HTMLDivElement;
+
+	$: rect = container ? container.getBoundingClientRect() : undefined;
+	$: top = rect?.top ?? 0;
+	$: left = rect?.left ?? 0;
+
+	$: embedded = !fullScreen;
 
 	let initialAudioCanvas = project.audioCanvas;
 
@@ -228,7 +236,7 @@
 		};
 	};
 
-	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions);
+	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions, { top, left });
 
 	const handleNodeParameterChangeStart = () => {
 		audioGraphHistory = [...audioGraphHistory, audioGraph];
@@ -529,18 +537,22 @@
 
 <div
 	class="canvas"
+	class:embedded
 	on:mousedown={handleDragCanvasStart}
 	on:mousemove={handleDragCanvas}
 	on:mouseup={handleDragCanvasEnd}
 	on:click={handleCanvasDoubleClick}
 	on:keydown={() => {}}
+	bind:this={container}
 >
-	<ProjectHeader
-		projectName={chosenProjectName}
-		{playing}
-		on:playChange={handlePlayChange}
-		on:projectNameClick={handleProjectNameClick}
-	/>
+	{#if !embedded}
+		<ProjectHeader
+			projectName={chosenProjectName}
+			{playing}
+			on:playChange={handlePlayChange}
+			on:projectNameClick={handleProjectNameClick}
+		/>
+	{/if}
 	<ProjectsModal
 		open={showProjectsModal}
 		projects={projectNames}
@@ -558,7 +570,7 @@
 				running={playing}
 				selected={selectedNodeIds.some((selectedId) => selectedId === id)}
 				instantiatedNode={audioNodeDatabase[id]}
-				position={node.ui?.position ?? { x: 0, y: 0 }}
+				position={{ x: (node.ui?.position.x ?? 0) - left, y: (node.ui?.position.y ?? 0) - top }}
 				color={node.ui?.primmaryColor}
 				{draggingLine}
 				on:drag={handleDragNode}
@@ -595,10 +607,10 @@
 
 			{#if draggingLine}
 				<line
-					x1={positionOfStartingPlug.x}
-					y1={positionOfStartingPlug.y}
-					x2={positionOfEndPlug.x}
-					y2={positionOfEndPlug.y}
+					x1={positionOfStartingPlug.x - left}
+					y1={positionOfStartingPlug.y - top}
+					x2={positionOfEndPlug.x - left}
+					y2={positionOfEndPlug.y - top}
 					class="visible"
 				/>
 			{/if}
@@ -687,6 +699,15 @@
 		overflow: hidden;
 	}
 
+	.embedded {
+		border: 1px solid white;
+		border-radius: 8px;
+		overflow: hidden;
+		position: relative;
+		width: 50vw;
+		height: 400px;
+		margin: auto;
+	}
 	svg {
 		position: relative;
 		pointer-events: none;
