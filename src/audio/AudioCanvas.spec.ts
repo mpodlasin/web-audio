@@ -25,6 +25,10 @@ import {
 import { OscillatorNodeMock } from './mocks';
 
 describe('AudioCanvas', () => {
+	afterEach(() => {
+		jest.clearAllMocks();
+	});
+
 	describe('updateAudioCanvas - creating', () => {
 		it('returns single oscillator', () => {
 			const audioElements = {
@@ -923,6 +927,8 @@ describe('AudioCanvas', () => {
 			)
 
 			expect(newerAudioElements['2']?.inputs).toEqual([]);
+
+			jest.clearAllMocks();
 
 			updateAudioCanvas(newerAudioElements, newAudioElements, audioNodeDatabase);
 
