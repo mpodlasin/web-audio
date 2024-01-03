@@ -544,22 +544,22 @@ function getRemovedInputs(
 	const removedInputs: Inputs = [];
 
 	if (newAudioElement.inputs && oldAudioElement.inputs) {
-		for (const input of oldAudioElement.inputs) {
-			if (typeof input === 'string' && !newAudioElement.inputs.includes(input)) {
-				removedInputs.push(input);
+		for (const oldInput of oldAudioElement.inputs) {
+			if (typeof oldInput === 'string' && !newAudioElement.inputs.includes(oldInput)) {
+				removedInputs.push(oldInput);
 			}
 
 			if (
-				typeof input !== 'string' &&
+				typeof oldInput !== 'string' &&
 				!newAudioElement.inputs.some(
 					(i) =>
 						typeof i !== 'string' &&
-						i.id === input.id &&
-						i.output === input.output &&
-						i.input === input.input
+						i.id === oldInput.id &&
+						i.output === oldInput.output &&
+						i.input === oldInput.input
 				)
 			) {
-				removedInputs.push(input);
+				removedInputs.push(oldInput);
 			}
 		}
 	}

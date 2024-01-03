@@ -860,7 +860,7 @@ describe('AudioCanvas', () => {
 			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode('audio'));
 		});
 
-		it('removes one of two connections from trigger to delay', () => {
+		it('removes two connections from trigger to delay', () => {
 			const audioElements = {
 				'1': {
 					type: 'trigger' as const,
@@ -907,6 +907,28 @@ describe('AudioCanvas', () => {
 			expect(
 				(audioNodeDatabase['1'] as TriggerNode).getOutputNode().disconnect
 			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode('audio'));
+
+			const newerAudioElements = removeConnection(
+				newAudioElements,
+				{
+					type: 'output',
+					nodeId: '1',
+					id: 'trigger'
+				},
+				{
+					type: 'input',
+					nodeId: '2',
+					id: 'trigger'
+				}
+			)
+
+			expect(newerAudioElements['2']?.inputs).toEqual([]);
+
+			updateAudioCanvas(newerAudioElements, newAudioElements, audioNodeDatabase);
+
+			expect(
+				(audioNodeDatabase['1'] as TriggerNode).getOutputNode().disconnect
+			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode('trigger'));
 		});
 
 		it('adds connection between gain and oscillator detune parameter', () => {
