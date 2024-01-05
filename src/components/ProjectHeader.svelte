@@ -6,6 +6,7 @@
 
 	export let projectName: string;
 
+	export let embedded: boolean;
 	export let playing: boolean;
 
 	const dispatcher = createEventDispatcher();
@@ -21,11 +22,13 @@
 	};
 </script>
 
-<div class="menu">
+<div class="menu" class:embedded>
+	{#if !embedded}
 	<div class="projectName" on:click={handleProjectNameClick} on:keypress={() => {}}>
 		<ChevronRight />
 		<div>{projectName}</div>
 	</div>
+	{/if}
 	<div class="playPause" on:click={handlePlayOrPauseClick} on:keypress={() => {}}>
 		{#if playing}
 			<Pause />
@@ -48,6 +51,11 @@
 		display: flex;
 		gap: 32px;
 		align-items: center;
+	}
+
+	.embedded {
+		position: absolute;
+		padding: 16px 24px;
 	}
 
 	.projectName {

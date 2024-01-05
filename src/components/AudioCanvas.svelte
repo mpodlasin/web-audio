@@ -568,14 +568,13 @@
 	on:keydown={() => {}}
 	bind:this={container}
 >
-	{#if !embedded}
-		<ProjectHeader
-			projectName={chosenProjectName}
-			{playing}
-			on:playChange={handlePlayChange}
-			on:projectNameClick={handleProjectNameClick}
-		/>
-	{/if}
+	<ProjectHeader
+		projectName={chosenProjectName}
+		{playing}
+		{embedded}
+		on:playChange={handlePlayChange}
+		on:projectNameClick={handleProjectNameClick}
+	/>
 	<ProjectsModal
 		open={showProjectsModal}
 		projects={projectNames}
