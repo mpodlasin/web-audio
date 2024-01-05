@@ -39,8 +39,14 @@
 
 	let container: HTMLDivElement;
 
+	let scroll = 0;
+
+	window.addEventListener('scroll', () => {
+		scroll = window.scrollY;
+	});
+
 	$: rect = container ? container.getBoundingClientRect() : { left: 0, top: 0 };
-	$: globalTop = rect.top;
+	$: globalTop = rect.top - scroll;
 	$: globalLeft = rect.left;
 
 	const enhancePosition = (position: Position) => ({

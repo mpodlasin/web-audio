@@ -14,3 +14,7 @@
 ### Types Of Signals
 
 <AudioCanvas projectNames={[]} chosenProjectName="dupa" project={{audioCanvas: {}}} />
+
+## Nodes
+
+<AudioCanvas projectNames={[]} chosenProjectName="dupa" project={{audioCanvas: {}}} />
