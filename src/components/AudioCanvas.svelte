@@ -39,9 +39,14 @@
 
 	let container: HTMLDivElement;
 
-	$: rect = container ? container.getBoundingClientRect() : undefined;
-	$: top = rect?.top ?? 0;
-	$: left = rect?.left ?? 0;
+	$: rect = container ? container.getBoundingClientRect() : { left: 0, top: 0 };
+	$: globalTop = rect.top;
+	$: globalLeft = rect.left;
+
+	const enhancePosition = (position: Position) => ({
+		x: position.x - globalLeft,
+		y: position.y - globalTop
+	});
 
 	$: embedded = !fullScreen;
 
@@ -222,21 +227,39 @@
 				);
 			}, audioGraphHistory);
 		} else {
-			audioGraphHistory = dragNode(event.detail, audioGraphHistory, plugPositions);
+			audioGraphHistory = dragNode({
+				id: event.detail.id,
+				...enhancePosition(event.detail),
+			}, audioGraphHistory, plugPositions);
 		}
 	};
 
-	const handleNodePlugPositions = (event: CustomEvent) => {
+	const handleNodePlugPositions = (event: CustomEvent<{ id: string; inputPlugPositions: { [id: string]: Position }; outputPlugPositions: { [id: string]: Position }; parameterKnobPositions: { [id: string]: Position } }>) => {
 		const { id, inputPlugPositions, outputPlugPositions, parameterKnobPositions } = event.detail;
 
 		plugPositions[id] = {
-			inputPlugPositions,
-			outputPlugPositions,
-			parameterKnobPositions
+			inputPlugPositions: Object.fromEntries(
+				Object.entries(inputPlugPositions).map(([id, position]) => [
+					id,
+					enhancePosition(position),
+				])
+			),
+			outputPlugPositions: Object.fromEntries(
+				Object.entries(outputPlugPositions).map(([id, position]) => [
+					id,
+					enhancePosition(position),
+				])
+			),
+			parameterKnobPositions: Object.fromEntries(
+				Object.entries(parameterKnobPositions).map(([id, position]) => [
+					id,
+					enhancePosition(position),
+				])
+			)
 		};
 	};
 
-	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions, { top, left });
+	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions);
 
 	const handleNodeParameterChangeStart = () => {
 		audioGraphHistory = [...audioGraphHistory, audioGraph];
@@ -262,7 +285,7 @@
 	) => {
 		event.preventDefault();
 
-		audioGraphHistory = [...audioGraphHistory, addNode(audioGraph, event.detail, menuPosition)];
+		audioGraphHistory = [...audioGraphHistory, addNode(audioGraph, event.detail, enhancePosition(menuPosition))];
 
 		closeMenu();
 	};
@@ -325,7 +348,7 @@
 	const handleLineDrag = (event: MouseEvent) => {
 		event.preventDefault();
 
-		positionOfEndPlug = { x: event.clientX, y: event.clientY };
+		positionOfEndPlug = enhancePosition({ x: event.clientX, y: event.clientY });
 	};
 
 	/* ----------------------------------------------------------- */
@@ -570,7 +593,7 @@
 				running={playing}
 				selected={selectedNodeIds.some((selectedId) => selectedId === id)}
 				instantiatedNode={audioNodeDatabase[id]}
-				position={{ x: (node.ui?.position.x ?? 0) - left, y: (node.ui?.position.y ?? 0) - top }}
+				position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
 				color={node.ui?.primmaryColor}
 				{draggingLine}
 				on:drag={handleDragNode}
@@ -607,10 +630,10 @@
 
 			{#if draggingLine}
 				<line
-					x1={positionOfStartingPlug.x - left}
-					y1={positionOfStartingPlug.y - top}
-					x2={positionOfEndPlug.x - left}
-					y2={positionOfEndPlug.y - top}
+					x1={positionOfStartingPlug.x}
+					y1={positionOfStartingPlug.y}
+					x2={positionOfEndPlug.x}
+					y2={positionOfEndPlug.y}
 					class="visible"
 				/>
 			{/if}
@@ -704,7 +727,7 @@
 		border-radius: 8px;
 		overflow: hidden;
 		position: relative;
-		width: 50vw;
+		width: 100%;
 		height: 400px;
 		margin: auto;
 	}

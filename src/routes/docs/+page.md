@@ -1,5 +1,8 @@
 <script>
-    import AudioCanvas from "../../components/AudioCanvas.svelte"
+ 	import { loadCustomNodes } from '../../audio/web-audio/utils';
+	import AudioCanvas from '../../components/AudioCanvas.svelte';
+
+	loadCustomNodes();
 </script>
 
 # Docs
