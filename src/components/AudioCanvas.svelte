@@ -588,6 +588,8 @@
 		];
 		chosenLineMultiply = value;
 	};
+
+	$: console.log(JSON.stringify(audioGraph));
 </script>
 
 <div
@@ -601,151 +603,151 @@
 	bind:this={container}
 >
 	{#if isInViewport}
-	<ProjectHeader
-		projectName={chosenProjectName}
-		{playing}
-		{embedded}
-		on:playChange={handlePlayChange}
-		on:projectNameClick={handleProjectNameClick}
-	/>
-	<ProjectsModal
-		open={showProjectsModal}
-		projects={projectNames}
-		on:close={handleCloseProjectsModal}
-		on:newProject={handleNewProject}
-		on:projectChange={handleProjectChange}
-		on:projectDelete
-		on:projectNameChange
-	/>
-	<div class="audio-canvas" on:contextmenu={handleCanvasLeftClick} on:mousemove={handleLineDrag}>
-		{#each Object.entries(audioGraph) as [id, node] (id)}
-			<DraggableNode
-				{id}
-				{node}
-				running={playing}
-				selected={selectedNodeIds.some((selectedId) => selectedId === id)}
-				instantiatedNode={audioNodeDatabase[id]}
-				position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
-				color={node.ui?.primmaryColor}
-				{draggingLine}
-				on:drag={handleDragNode}
-				on:dragstart={handleDragStart}
-				on:nodePlugAndKnobPositions={handleNodePlugPositions}
-				on:nodeParameterChangeStart={handleNodeParameterChangeStart}
-				on:nodeParameterChange={handleNodeParameterChange}
-				on:nodePlugClick={handlePlugClick}
-				on:nodePlugUp={handlePlugUp}
-				on:deleteNode={handleDeleteNode}
-				on:knobMouseUp={handleKnobMouseUp}
-				on:contextmenu={handleNodeLeftClick(id)}
-				on:click={handleNodeClick(id)}
-			/>
-		{/each}
-		{#if selectNodesStartPosition && selectNodesEndPosition}
-			<div
-				class="select"
-				style="top: {Math.min(
-					selectNodesStartPosition.y,
-					selectNodesEndPosition.y
-				)}px; left: {Math.min(
-					selectNodesStartPosition.x,
-					selectNodesEndPosition.x
-				)}px; width: {Math.abs(
-					selectNodesEndPosition.x - selectNodesStartPosition.x
-				)}px; height: {Math.abs(selectNodesEndPosition.y - selectNodesStartPosition.y)}px;"
-			/>
-		{/if}
-		<svg width="100vw" height="100vh">
-			{#each linesToDisplay as line}
-				<Line {line} {chosenLine} on:contextmenu={handleLineLeftClick(line)} />
+		<ProjectHeader
+			projectName={chosenProjectName}
+			{playing}
+			{embedded}
+			on:playChange={handlePlayChange}
+			on:projectNameClick={handleProjectNameClick}
+		/>
+		<ProjectsModal
+			open={showProjectsModal}
+			projects={projectNames}
+			on:close={handleCloseProjectsModal}
+			on:newProject={handleNewProject}
+			on:projectChange={handleProjectChange}
+			on:projectDelete
+			on:projectNameChange
+		/>
+		<div class="audio-canvas" on:contextmenu={handleCanvasLeftClick} on:mousemove={handleLineDrag}>
+			{#each Object.entries(audioGraph) as [id, node] (id)}
+				<DraggableNode
+					{id}
+					{node}
+					running={playing}
+					selected={selectedNodeIds.some((selectedId) => selectedId === id)}
+					instantiatedNode={audioNodeDatabase[id]}
+					position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
+					color={node.ui?.primmaryColor}
+					{draggingLine}
+					on:drag={handleDragNode}
+					on:dragstart={handleDragStart}
+					on:nodePlugAndKnobPositions={handleNodePlugPositions}
+					on:nodeParameterChangeStart={handleNodeParameterChangeStart}
+					on:nodeParameterChange={handleNodeParameterChange}
+					on:nodePlugClick={handlePlugClick}
+					on:nodePlugUp={handlePlugUp}
+					on:deleteNode={handleDeleteNode}
+					on:knobMouseUp={handleKnobMouseUp}
+					on:contextmenu={handleNodeLeftClick(id)}
+					on:click={handleNodeClick(id)}
+				/>
 			{/each}
-
-			{#if draggingLine}
-				<line
-					x1={positionOfStartingPlug.x}
-					y1={positionOfStartingPlug.y}
-					x2={positionOfEndPlug.x}
-					y2={positionOfEndPlug.y}
-					class="visible"
+			{#if selectNodesStartPosition && selectNodesEndPosition}
+				<div
+					class="select"
+					style="top: {Math.min(
+						selectNodesStartPosition.y,
+						selectNodesEndPosition.y
+					)}px; left: {Math.min(
+						selectNodesStartPosition.x,
+						selectNodesEndPosition.x
+					)}px; width: {Math.abs(
+						selectNodesEndPosition.x - selectNodesStartPosition.x
+					)}px; height: {Math.abs(selectNodesEndPosition.y - selectNodesStartPosition.y)}px;"
 				/>
 			{/if}
-		</svg>
+			<svg width="100vw" height="100vh">
+				{#each linesToDisplay as line}
+					<Line {line} {chosenLine} on:contextmenu={handleLineLeftClick(line)} />
+				{/each}
 
-		{#if showMenu && menuKind === 'line'}
-			<PositionedMenu position={menuPosition} on:close={closeMenu}>
-				{#if chosenLineMultiply !== undefined}
-					<MenuButton on:click={openLineMultiplyMenu}
-						>Mult: {chosenLineMultiply.toFixed(2)}</MenuButton
-					>
+				{#if draggingLine}
+					<line
+						x1={positionOfStartingPlug.x}
+						y1={positionOfStartingPlug.y}
+						x2={positionOfEndPlug.x}
+						y2={positionOfEndPlug.y}
+						class="visible"
+					/>
 				{/if}
-				<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
-					>Delete</MenuButton
-				>
-			</PositionedMenu>
-		{/if}
+			</svg>
 
-		{#if showMenu && menuKind === 'node'}
-			<PositionedMenu position={menuPosition} on:close={closeMenu}>
-				{#if selectedNodeIds.some((id) => menuNodeId === id)}
-					<div class="nodes-selected-header">{selectedNodeIds.length} nodes selected:</div>
-				{/if}
-				<MenuButton on:click={openChangeColorModal(menuNodeId)}>Color</MenuButton>
-				<MenuButton on:click={handleCopyNode}>Copy</MenuButton>
-				<MenuButton on:click={handleDeleteNode} on:keypress={() => {}} variant="danger"
-					>Delete</MenuButton
-				>
-			</PositionedMenu>
-		{/if}
-
-		{#if showMenu && menuKind === 'canvas'}
-			<ContextMenu
-				position={menuPosition}
-				on:create={handleCreateElementClick}
-				on:paste={handlePasteClick}
-				on:close={closeMenu}
-			/>
-		{/if}
-
-		{#if showMenu && menuKind === 'line-multiply'}
-			<PositionedMenu position={menuPosition} on:close={closeMenu}>
-				<Knob
-					parameterName="mult"
-					parameter={{ base: chosenLineMultiply ?? 1, inputs: [] }}
-					defaultValue={1}
-					minValue={0}
-					maxValue={10_000}
-					polarity="uni"
-					draggingLine={false}
-					audioParamAnalyser={undefined}
-					on:change={handleMultiplyValueChange}
-					on:mousedown={handleMultiplyValueChangeStart}
-				/>
-			</PositionedMenu>
-		{/if}
-
-		{#if changeColorModalIsOpen}
-			<ChangeColorModal
-				value={changedNodeColor}
-				open
-				on:change={handleColorChange}
-				on:confirm={handleConfirmChange}
-				on:close={closeChangeColorModal}
-			>
-				<div slot="node">
-					{#if changedColorNode}
-						<Node
-							color={changedNodeColor}
-							node={changedColorNode}
-							id={changedColorNodeId}
-							instantiatedNode={null}
-							draggingLine={false}
-							running={playing}
-						/>
+			{#if showMenu && menuKind === 'line'}
+				<PositionedMenu position={menuPosition} on:close={closeMenu}>
+					{#if chosenLineMultiply !== undefined}
+						<MenuButton on:click={openLineMultiplyMenu}
+							>Mult: {chosenLineMultiply.toFixed(2)}</MenuButton
+						>
 					{/if}
-				</div>
-			</ChangeColorModal>
-		{/if}
-	</div>
+					<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
+						>Delete</MenuButton
+					>
+				</PositionedMenu>
+			{/if}
+
+			{#if showMenu && menuKind === 'node'}
+				<PositionedMenu position={menuPosition} on:close={closeMenu}>
+					{#if selectedNodeIds.some((id) => menuNodeId === id)}
+						<div class="nodes-selected-header">{selectedNodeIds.length} nodes selected:</div>
+					{/if}
+					<MenuButton on:click={openChangeColorModal(menuNodeId)}>Color</MenuButton>
+					<MenuButton on:click={handleCopyNode}>Copy</MenuButton>
+					<MenuButton on:click={handleDeleteNode} on:keypress={() => {}} variant="danger"
+						>Delete</MenuButton
+					>
+				</PositionedMenu>
+			{/if}
+
+			{#if showMenu && menuKind === 'canvas'}
+				<ContextMenu
+					position={menuPosition}
+					on:create={handleCreateElementClick}
+					on:paste={handlePasteClick}
+					on:close={closeMenu}
+				/>
+			{/if}
+
+			{#if showMenu && menuKind === 'line-multiply'}
+				<PositionedMenu position={menuPosition} on:close={closeMenu}>
+					<Knob
+						parameterName="mult"
+						parameter={{ base: chosenLineMultiply ?? 1, inputs: [] }}
+						defaultValue={1}
+						minValue={0}
+						maxValue={10_000}
+						polarity="uni"
+						draggingLine={false}
+						audioParamAnalyser={undefined}
+						on:change={handleMultiplyValueChange}
+						on:mousedown={handleMultiplyValueChangeStart}
+					/>
+				</PositionedMenu>
+			{/if}
+
+			{#if changeColorModalIsOpen}
+				<ChangeColorModal
+					value={changedNodeColor}
+					open
+					on:change={handleColorChange}
+					on:confirm={handleConfirmChange}
+					on:close={closeChangeColorModal}
+				>
+					<div slot="node">
+						{#if changedColorNode}
+							<Node
+								color={changedNodeColor}
+								node={changedColorNode}
+								id={changedColorNodeId}
+								instantiatedNode={null}
+								draggingLine={false}
+								running={playing}
+							/>
+						{/if}
+					</div>
+				</ChangeColorModal>
+			{/if}
+		</div>
 	{/if}
 </div>
 

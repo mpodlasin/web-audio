@@ -1,5 +1,17 @@
+<script lang="ts">
+	import { loadCustomNodes } from '../../audio/web-audio/utils';
+
+	const customNodesPromise = loadCustomNodes();
+</script>
+
 <div>
-	<slot />
+	{#await customNodesPromise}
+		<p>Loading...</p>
+	{:then}
+		<slot />
+	{:catch error}
+		<p>{error.message}</p>
+	{/await}
 </div>
 
 <style>

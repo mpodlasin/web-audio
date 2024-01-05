@@ -80,11 +80,7 @@ export type SerializedTriggerNode = SerializedAudioElement<'trigger', 'tempo'>;
 
 export type SerializedPanNode = SerializedAudioElement<'pan', 'pan'>;
 
-export type SerializedSequencerNode = SerializedAudioElement<'sequencer', never> & {
-	tempoInBpm: number;
-	notes: SerializedSequencerNote[];
-	loopLength: number;
-};
+export type SerializedSequencerNode = SerializedAudioElement<'sequencer', never>;
 
 export type SerializedMidiNode = SerializedAudioElement<'midi', never>;
 
