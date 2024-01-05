@@ -19,9 +19,17 @@ It is basically a set of small, simple devices, like oscillators, filters, effec
 
 Here is a simple example. Simply press play and listen to the results:
 
-<AudioCanvas projectNames={[]} chosenProjectName="dupa" project={{audioCanvas: introductionExample}} />
+<AudioCanvas projectNames={[]} chosenProjectName="Introductory Example" project={{audioCanvas: introductionExample}} />
 
-Because AudioCanvas is entirely web based, it allows you to have fun with making electronic music without installing anything. This makes it great for educational purposes.
+This window is fairly small, so click on fullscreen button in order to better see what is happening here.
+
+This example is fully interactive, both in fullscreen and window form.
+
+You can also drag the canvas around, simply by clicking and dragging with mouse anywhere on the screen.
+
+If this example seems daunting, don't worry! We have prepared an [online resource](/learn) that will teach you AudioCanvas and basics of electronic music, even if you don't have any previous experience with those topics!
+
+If you have however some experience with music patching environments or electronic music in general, this document is probably better suited for you.
 
 ## Overview
 

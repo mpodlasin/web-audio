@@ -1,12 +1,15 @@
 <script lang="ts">
 	import Play from '../icons/Play.svg?component';
 	import Pause from '../icons/Pause.svg?component';
+	import Expand from '../icons/Expand.svg?component';
+	import Shrink from '../icons/Shrink.svg?component';
 	import ChevronRight from '../icons/Chevron_Right.svg?component';
 	import { createEventDispatcher } from 'svelte';
 
 	export let projectName: string;
 
 	export let embedded: boolean;
+	export let fullScreen: boolean;
 	export let playing: boolean;
 
 	const dispatcher = createEventDispatcher();
@@ -19,6 +22,10 @@
 
 	const handleProjectNameClick = () => {
 		dispatcher('projectNameClick');
+	};
+
+	const handleFullscreenClick = () => {
+		dispatcher('fullscreen');
 	};
 </script>
 
@@ -36,6 +43,15 @@
 			<Play />
 		{/if}
 	</div>
+	{#if embedded}
+		<div class="fullscreen" on:click={handleFullscreenClick} on:keypress={() => {}}>
+			{#if fullScreen}
+				<Shrink />
+			{:else}
+				<Expand />
+			{/if}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -65,7 +81,8 @@
 		cursor: pointer;
 	}
 
-	.playPause {
+	.playPause,
+	.fullscreen {
 		display: flex;
 		align-items: center;
 		cursor: pointer;

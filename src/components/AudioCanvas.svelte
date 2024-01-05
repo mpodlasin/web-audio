@@ -37,6 +37,8 @@
 	export let project: Project;
 	export let fullScreen = false;
 
+	let embeddedFullscreen = false;
+
 	let container: HTMLDivElement;
 
 	let scroll = 0;
@@ -590,11 +592,24 @@
 	};
 
 	$: console.log(JSON.stringify(audioGraph));
+
+	const handleFullscreenClick = () => {
+		if (embeddedFullscreen) {
+			embeddedFullscreen = false;
+			scroll = 0;
+			rect = container.getBoundingClientRect();
+		} else {
+			embeddedFullscreen = true;
+			scroll = 0;
+			rect = { left: 0, top: 0 };
+		}
+	};
 </script>
 
 <div
 	class="canvas"
 	class:embedded
+	class:embedded-fullscreen={embeddedFullscreen}
 	on:mousedown={handleDragCanvasStart}
 	on:mousemove={handleDragCanvas}
 	on:mouseup={handleDragCanvasEnd}
@@ -607,8 +622,10 @@
 			projectName={chosenProjectName}
 			{playing}
 			{embedded}
+			fullScreen={embeddedFullscreen}
 			on:playChange={handlePlayChange}
 			on:projectNameClick={handleProjectNameClick}
+			on:fullscreen={handleFullscreenClick}
 		/>
 		<ProjectsModal
 			open={showProjectsModal}
@@ -755,17 +772,28 @@
 	.canvas {
 		background-color: var(--neutral-700);
 		overflow: hidden;
+		position: relative;
 	}
 
 	.embedded {
 		border: 1px solid white;
 		border-radius: 8px;
 		overflow: hidden;
-		position: relative;
 		width: 100%;
 		height: 400px;
 		margin: auto;
 	}
+
+	.embedded-fullscreen {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		border: none;
+		border-radius: 0;
+	}
+
 	svg {
 		position: relative;
 		pointer-events: none;
