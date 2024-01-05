@@ -227,33 +227,38 @@
 				);
 			}, audioGraphHistory);
 		} else {
-			audioGraphHistory = dragNode({
-				id: event.detail.id,
-				...enhancePosition(event.detail),
-			}, audioGraphHistory, plugPositions);
+			audioGraphHistory = dragNode(
+				{
+					id: event.detail.id,
+					...enhancePosition(event.detail)
+				},
+				audioGraphHistory,
+				plugPositions
+			);
 		}
 	};
 
-	const handleNodePlugPositions = (event: CustomEvent<{ id: string; inputPlugPositions: { [id: string]: Position }; outputPlugPositions: { [id: string]: Position }; parameterKnobPositions: { [id: string]: Position } }>) => {
+	const handleNodePlugPositions = (
+		event: CustomEvent<{
+			id: string;
+			inputPlugPositions: { [id: string]: Position };
+			outputPlugPositions: { [id: string]: Position };
+			parameterKnobPositions: { [id: string]: Position };
+		}>
+	) => {
 		const { id, inputPlugPositions, outputPlugPositions, parameterKnobPositions } = event.detail;
 
 		plugPositions[id] = {
 			inputPlugPositions: Object.fromEntries(
-				Object.entries(inputPlugPositions).map(([id, position]) => [
-					id,
-					enhancePosition(position),
-				])
+				Object.entries(inputPlugPositions).map(([id, position]) => [id, enhancePosition(position)])
 			),
 			outputPlugPositions: Object.fromEntries(
-				Object.entries(outputPlugPositions).map(([id, position]) => [
-					id,
-					enhancePosition(position),
-				])
+				Object.entries(outputPlugPositions).map(([id, position]) => [id, enhancePosition(position)])
 			),
 			parameterKnobPositions: Object.fromEntries(
 				Object.entries(parameterKnobPositions).map(([id, position]) => [
 					id,
-					enhancePosition(position),
+					enhancePosition(position)
 				])
 			)
 		};
@@ -285,7 +290,10 @@
 	) => {
 		event.preventDefault();
 
-		audioGraphHistory = [...audioGraphHistory, addNode(audioGraph, event.detail, enhancePosition(menuPosition))];
+		audioGraphHistory = [
+			...audioGraphHistory,
+			addNode(audioGraph, event.detail, enhancePosition(menuPosition))
+		];
 
 		closeMenu();
 	};

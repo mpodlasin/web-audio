@@ -24,10 +24,10 @@
 
 <div class="menu" class:embedded>
 	{#if !embedded}
-	<div class="projectName" on:click={handleProjectNameClick} on:keypress={() => {}}>
-		<ChevronRight />
-		<div>{projectName}</div>
-	</div>
+		<div class="projectName" on:click={handleProjectNameClick} on:keypress={() => {}}>
+			<ChevronRight />
+			<div>{projectName}</div>
+		</div>
 	{/if}
 	<div class="playPause" on:click={handlePlayOrPauseClick} on:keypress={() => {}}>
 		{#if playing}

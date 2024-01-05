@@ -16,7 +16,7 @@ export interface LineToDisplay {
 export const getLinesToDisplay = (
 	audioGraphWithPositions: SerializedAudioElements,
 	plugPositions: PlugPositions,
-	{ top, left } = { top: 0, left: 0 },
+	{ top, left } = { top: 0, left: 0 }
 ): LineToDisplay[] => {
 	const lines = Object.entries(audioGraphWithPositions).reduce(
 		(
