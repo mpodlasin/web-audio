@@ -41,6 +41,24 @@
 
 	let scroll = 0;
 
+	let isInViewport = false;
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			isInViewport = entries.some((entry) => entry.isIntersecting);
+		},
+		{
+			rootMargin: '0px',
+			threshold: 0
+		}
+	);
+
+	$: {
+		if (container) {
+			observer.observe(container);
+		}
+	}
+
 	window.addEventListener('scroll', () => {
 		scroll = window.scrollY;
 	});
@@ -582,6 +600,7 @@
 	on:keydown={() => {}}
 	bind:this={container}
 >
+	{#if isInViewport}
 	<ProjectHeader
 		projectName={chosenProjectName}
 		{playing}
@@ -727,6 +746,7 @@
 			</ChangeColorModal>
 		{/if}
 	</div>
+	{/if}
 </div>
 
 <style>

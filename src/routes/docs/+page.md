@@ -18,3 +18,8 @@
 ## Nodes
 
 <AudioCanvas projectNames={[]} chosenProjectName="dupa" project={{audioCanvas: {}}} />
+
+<AudioCanvas projectNames={[]} chosenProjectName="dupa" project={{audioCanvas: {}}} />
+
+<AudioCanvas projectNames={[]} chosenProjectName="dupa" project={{audioCanvas: {}}} />
+
