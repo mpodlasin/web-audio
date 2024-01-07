@@ -9,7 +9,7 @@
 	export let projectName: string;
 
 	export let embedded: boolean;
-	export let fullScreen: boolean;
+	export let embeddedFullscreen: boolean;
 	export let playing: boolean;
 
 	const dispatcher = createEventDispatcher();
@@ -45,7 +45,7 @@
 	</div>
 	{#if embedded}
 		<div class="fullscreen" on:click={handleFullscreenClick} on:keypress={() => {}}>
-			{#if fullScreen}
+			{#if embeddedFullscreen}
 				<Shrink />
 			{:else}
 				<Expand />

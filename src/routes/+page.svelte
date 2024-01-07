@@ -110,7 +110,7 @@
 				{projectNames}
 				{chosenProjectName}
 				project={chosenProject}
-				fullScreen
+				standalone
 				on:change={handleChange}
 				on:newProject={handleNewProject}
 				on:projectChange={handleProjectChange}

@@ -35,7 +35,7 @@
 	export let chosenProjectName: string;
 	export let projectNames: string[];
 	export let project: Project;
-	export let fullScreen = false;
+	export let standalone = false;
 
 	let embeddedFullscreen = false;
 
@@ -74,7 +74,7 @@
 		y: position.y - globalTop
 	});
 
-	$: embedded = !fullScreen;
+	$: embedded = !standalone;
 
 	let initialAudioCanvas = project.audioCanvas;
 
@@ -591,8 +591,6 @@
 		chosenLineMultiply = value;
 	};
 
-	$: console.log(JSON.stringify(audioGraph));
-
 	const handleFullscreenClick = () => {
 		if (embeddedFullscreen) {
 			embeddedFullscreen = false;
@@ -622,7 +620,7 @@
 			projectName={chosenProjectName}
 			{playing}
 			{embedded}
-			fullScreen={embeddedFullscreen}
+			{embeddedFullscreen}
 			on:playChange={handlePlayChange}
 			on:projectNameClick={handleProjectNameClick}
 			on:fullscreen={handleFullscreenClick}
