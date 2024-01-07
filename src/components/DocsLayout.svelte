@@ -18,6 +18,6 @@
 	div {
 		margin: auto;
 		max-width: 800px;
-        line-height: 1.5;
+		line-height: 1.5;
 	}
 </style>

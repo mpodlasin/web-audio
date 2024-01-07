@@ -35,46 +35,8 @@
 	export let chosenProjectName: string;
 	export let projectNames: string[];
 	export let project: Project;
-	export let standalone = false;
-
-	let embeddedFullscreen = false;
 
 	let container: HTMLDivElement;
-
-	let scroll = 0;
-
-	let isInViewport = false;
-
-	const observer = new IntersectionObserver(
-		(entries) => {
-			isInViewport = entries.some((entry) => entry.isIntersecting);
-		},
-		{
-			rootMargin: '0px',
-			threshold: 0
-		}
-	);
-
-	$: {
-		if (container) {
-			observer.observe(container);
-		}
-	}
-
-	window.addEventListener('scroll', () => {
-		scroll = window.scrollY;
-	});
-
-	$: rect = container ? container.getBoundingClientRect() : { left: 0, top: 0 };
-	$: globalTop = rect.top - scroll;
-	$: globalLeft = rect.left;
-
-	const enhancePosition = (position: Position) => ({
-		x: position.x - globalLeft,
-		y: position.y - globalTop
-	});
-
-	$: embedded = !standalone;
 
 	let initialAudioCanvas = project.audioCanvas;
 
@@ -253,14 +215,7 @@
 				);
 			}, audioGraphHistory);
 		} else {
-			audioGraphHistory = dragNode(
-				{
-					id: event.detail.id,
-					...enhancePosition(event.detail)
-				},
-				audioGraphHistory,
-				plugPositions
-			);
+			audioGraphHistory = dragNode(event.detail, audioGraphHistory, plugPositions);
 		}
 	};
 
@@ -275,18 +230,9 @@
 		const { id, inputPlugPositions, outputPlugPositions, parameterKnobPositions } = event.detail;
 
 		plugPositions[id] = {
-			inputPlugPositions: Object.fromEntries(
-				Object.entries(inputPlugPositions).map(([id, position]) => [id, enhancePosition(position)])
-			),
-			outputPlugPositions: Object.fromEntries(
-				Object.entries(outputPlugPositions).map(([id, position]) => [id, enhancePosition(position)])
-			),
-			parameterKnobPositions: Object.fromEntries(
-				Object.entries(parameterKnobPositions).map(([id, position]) => [
-					id,
-					enhancePosition(position)
-				])
-			)
+			inputPlugPositions,
+			outputPlugPositions,
+			parameterKnobPositions
 		};
 	};
 
@@ -316,10 +262,7 @@
 	) => {
 		event.preventDefault();
 
-		audioGraphHistory = [
-			...audioGraphHistory,
-			addNode(audioGraph, event.detail, enhancePosition(menuPosition))
-		];
+		audioGraphHistory = [...audioGraphHistory, addNode(audioGraph, event.detail, menuPosition)];
 
 		closeMenu();
 	};
@@ -382,7 +325,7 @@
 	const handleLineDrag = (event: MouseEvent) => {
 		event.preventDefault();
 
-		positionOfEndPlug = enhancePosition({ x: event.clientX, y: event.clientY });
+		positionOfEndPlug = { x: event.clientX, y: event.clientY };
 	};
 
 	/* ----------------------------------------------------------- */
@@ -590,24 +533,10 @@
 		];
 		chosenLineMultiply = value;
 	};
-
-	const handleFullscreenClick = () => {
-		if (embeddedFullscreen) {
-			embeddedFullscreen = false;
-			scroll = 0;
-			rect = container.getBoundingClientRect();
-		} else {
-			embeddedFullscreen = true;
-			scroll = 0;
-			rect = { left: 0, top: 0 };
-		}
-	};
 </script>
 
 <div
 	class="canvas"
-	class:embedded
-	class:embedded-fullscreen={embeddedFullscreen}
 	on:mousedown={handleDragCanvasStart}
 	on:mousemove={handleDragCanvas}
 	on:mouseup={handleDragCanvasEnd}
@@ -615,155 +544,150 @@
 	on:keydown={() => {}}
 	bind:this={container}
 >
-	{#if isInViewport}
-		<ProjectHeader
-			projectName={chosenProjectName}
-			{playing}
-			{embedded}
-			{embeddedFullscreen}
-			on:playChange={handlePlayChange}
-			on:projectNameClick={handleProjectNameClick}
-			on:fullscreen={handleFullscreenClick}
-		/>
-		<ProjectsModal
-			open={showProjectsModal}
-			projects={projectNames}
-			on:close={handleCloseProjectsModal}
-			on:newProject={handleNewProject}
-			on:projectChange={handleProjectChange}
-			on:projectDelete
-			on:projectNameChange
-		/>
-		<div class="audio-canvas" on:contextmenu={handleCanvasLeftClick} on:mousemove={handleLineDrag}>
-			{#each Object.entries(audioGraph) as [id, node] (id)}
-				<DraggableNode
-					{id}
-					{node}
-					running={playing}
-					selected={selectedNodeIds.some((selectedId) => selectedId === id)}
-					instantiatedNode={audioNodeDatabase[id]}
-					position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
-					color={node.ui?.primmaryColor}
-					{draggingLine}
-					on:drag={handleDragNode}
-					on:dragstart={handleDragStart}
-					on:nodePlugAndKnobPositions={handleNodePlugPositions}
-					on:nodeParameterChangeStart={handleNodeParameterChangeStart}
-					on:nodeParameterChange={handleNodeParameterChange}
-					on:nodePlugClick={handlePlugClick}
-					on:nodePlugUp={handlePlugUp}
-					on:deleteNode={handleDeleteNode}
-					on:knobMouseUp={handleKnobMouseUp}
-					on:contextmenu={handleNodeLeftClick(id)}
-					on:click={handleNodeClick(id)}
-				/>
+	<ProjectHeader
+		projectName={chosenProjectName}
+		{playing}
+		on:playChange={handlePlayChange}
+		on:projectNameClick={handleProjectNameClick}
+	/>
+	<ProjectsModal
+		open={showProjectsModal}
+		projects={projectNames}
+		on:close={handleCloseProjectsModal}
+		on:newProject={handleNewProject}
+		on:projectChange={handleProjectChange}
+		on:projectDelete
+		on:projectNameChange
+	/>
+	<div class="audio-canvas" on:contextmenu={handleCanvasLeftClick} on:mousemove={handleLineDrag}>
+		{#each Object.entries(audioGraph) as [id, node] (id)}
+			<DraggableNode
+				{id}
+				{node}
+				running={playing}
+				selected={selectedNodeIds.some((selectedId) => selectedId === id)}
+				instantiatedNode={audioNodeDatabase[id]}
+				position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
+				color={node.ui?.primmaryColor}
+				{draggingLine}
+				on:drag={handleDragNode}
+				on:dragstart={handleDragStart}
+				on:nodePlugAndKnobPositions={handleNodePlugPositions}
+				on:nodeParameterChangeStart={handleNodeParameterChangeStart}
+				on:nodeParameterChange={handleNodeParameterChange}
+				on:nodePlugClick={handlePlugClick}
+				on:nodePlugUp={handlePlugUp}
+				on:deleteNode={handleDeleteNode}
+				on:knobMouseUp={handleKnobMouseUp}
+				on:contextmenu={handleNodeLeftClick(id)}
+				on:click={handleNodeClick(id)}
+			/>
+		{/each}
+		{#if selectNodesStartPosition && selectNodesEndPosition}
+			<div
+				class="select"
+				style="top: {Math.min(
+					selectNodesStartPosition.y,
+					selectNodesEndPosition.y
+				)}px; left: {Math.min(
+					selectNodesStartPosition.x,
+					selectNodesEndPosition.x
+				)}px; width: {Math.abs(
+					selectNodesEndPosition.x - selectNodesStartPosition.x
+				)}px; height: {Math.abs(selectNodesEndPosition.y - selectNodesStartPosition.y)}px;"
+			/>
+		{/if}
+		<svg width="100vw" height="100vh">
+			{#each linesToDisplay as line}
+				<Line {line} {chosenLine} on:contextmenu={handleLineLeftClick(line)} />
 			{/each}
-			{#if selectNodesStartPosition && selectNodesEndPosition}
-				<div
-					class="select"
-					style="top: {Math.min(
-						selectNodesStartPosition.y,
-						selectNodesEndPosition.y
-					)}px; left: {Math.min(
-						selectNodesStartPosition.x,
-						selectNodesEndPosition.x
-					)}px; width: {Math.abs(
-						selectNodesEndPosition.x - selectNodesStartPosition.x
-					)}px; height: {Math.abs(selectNodesEndPosition.y - selectNodesStartPosition.y)}px;"
+
+			{#if draggingLine}
+				<line
+					x1={positionOfStartingPlug.x}
+					y1={positionOfStartingPlug.y}
+					x2={positionOfEndPlug.x}
+					y2={positionOfEndPlug.y}
+					class="visible"
 				/>
 			{/if}
-			<svg width="100vw" height="100vh">
-				{#each linesToDisplay as line}
-					<Line {line} {chosenLine} on:contextmenu={handleLineLeftClick(line)} />
-				{/each}
+		</svg>
 
-				{#if draggingLine}
-					<line
-						x1={positionOfStartingPlug.x}
-						y1={positionOfStartingPlug.y}
-						x2={positionOfEndPlug.x}
-						y2={positionOfEndPlug.y}
-						class="visible"
-					/>
+		{#if showMenu && menuKind === 'line'}
+			<PositionedMenu position={menuPosition} on:close={closeMenu}>
+				{#if chosenLineMultiply !== undefined}
+					<MenuButton on:click={openLineMultiplyMenu}
+						>Mult: {chosenLineMultiply.toFixed(2)}</MenuButton
+					>
 				{/if}
-			</svg>
-
-			{#if showMenu && menuKind === 'line'}
-				<PositionedMenu position={menuPosition} on:close={closeMenu}>
-					{#if chosenLineMultiply !== undefined}
-						<MenuButton on:click={openLineMultiplyMenu}
-							>Mult: {chosenLineMultiply.toFixed(2)}</MenuButton
-						>
-					{/if}
-					<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
-						>Delete</MenuButton
-					>
-				</PositionedMenu>
-			{/if}
-
-			{#if showMenu && menuKind === 'node'}
-				<PositionedMenu position={menuPosition} on:close={closeMenu}>
-					{#if selectedNodeIds.some((id) => menuNodeId === id)}
-						<div class="nodes-selected-header">{selectedNodeIds.length} nodes selected:</div>
-					{/if}
-					<MenuButton on:click={openChangeColorModal(menuNodeId)}>Color</MenuButton>
-					<MenuButton on:click={handleCopyNode}>Copy</MenuButton>
-					<MenuButton on:click={handleDeleteNode} on:keypress={() => {}} variant="danger"
-						>Delete</MenuButton
-					>
-				</PositionedMenu>
-			{/if}
-
-			{#if showMenu && menuKind === 'canvas'}
-				<ContextMenu
-					position={menuPosition}
-					on:create={handleCreateElementClick}
-					on:paste={handlePasteClick}
-					on:close={closeMenu}
-				/>
-			{/if}
-
-			{#if showMenu && menuKind === 'line-multiply'}
-				<PositionedMenu position={menuPosition} on:close={closeMenu}>
-					<Knob
-						parameterName="mult"
-						parameter={{ base: chosenLineMultiply ?? 1, inputs: [] }}
-						defaultValue={1}
-						minValue={0}
-						maxValue={10_000}
-						polarity="uni"
-						draggingLine={false}
-						audioParamAnalyser={undefined}
-						on:change={handleMultiplyValueChange}
-						on:mousedown={handleMultiplyValueChangeStart}
-					/>
-				</PositionedMenu>
-			{/if}
-
-			{#if changeColorModalIsOpen}
-				<ChangeColorModal
-					value={changedNodeColor}
-					open
-					on:change={handleColorChange}
-					on:confirm={handleConfirmChange}
-					on:close={closeChangeColorModal}
+				<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
+					>Delete</MenuButton
 				>
-					<div slot="node">
-						{#if changedColorNode}
-							<Node
-								color={changedNodeColor}
-								node={changedColorNode}
-								id={changedColorNodeId}
-								instantiatedNode={null}
-								draggingLine={false}
-								running={playing}
-							/>
-						{/if}
-					</div>
-				</ChangeColorModal>
-			{/if}
-		</div>
-	{/if}
+			</PositionedMenu>
+		{/if}
+
+		{#if showMenu && menuKind === 'node'}
+			<PositionedMenu position={menuPosition} on:close={closeMenu}>
+				{#if selectedNodeIds.some((id) => menuNodeId === id)}
+					<div class="nodes-selected-header">{selectedNodeIds.length} nodes selected:</div>
+				{/if}
+				<MenuButton on:click={openChangeColorModal(menuNodeId)}>Color</MenuButton>
+				<MenuButton on:click={handleCopyNode}>Copy</MenuButton>
+				<MenuButton on:click={handleDeleteNode} on:keypress={() => {}} variant="danger"
+					>Delete</MenuButton
+				>
+			</PositionedMenu>
+		{/if}
+
+		{#if showMenu && menuKind === 'canvas'}
+			<ContextMenu
+				position={menuPosition}
+				on:create={handleCreateElementClick}
+				on:paste={handlePasteClick}
+				on:close={closeMenu}
+			/>
+		{/if}
+
+		{#if showMenu && menuKind === 'line-multiply'}
+			<PositionedMenu position={menuPosition} on:close={closeMenu}>
+				<Knob
+					parameterName="mult"
+					parameter={{ base: chosenLineMultiply ?? 1, inputs: [] }}
+					defaultValue={1}
+					minValue={0}
+					maxValue={10_000}
+					polarity="uni"
+					draggingLine={false}
+					audioParamAnalyser={undefined}
+					on:change={handleMultiplyValueChange}
+					on:mousedown={handleMultiplyValueChangeStart}
+				/>
+			</PositionedMenu>
+		{/if}
+
+		{#if changeColorModalIsOpen}
+			<ChangeColorModal
+				value={changedNodeColor}
+				open
+				on:change={handleColorChange}
+				on:confirm={handleConfirmChange}
+				on:close={closeChangeColorModal}
+			>
+				<div slot="node">
+					{#if changedColorNode}
+						<Node
+							color={changedNodeColor}
+							node={changedColorNode}
+							id={changedColorNodeId}
+							instantiatedNode={null}
+							draggingLine={false}
+							running={playing}
+						/>
+					{/if}
+				</div>
+			</ChangeColorModal>
+		{/if}
+	</div>
 </div>
 
 <style>
@@ -771,25 +695,6 @@
 		background-color: var(--neutral-700);
 		overflow: hidden;
 		position: relative;
-	}
-
-	.embedded {
-		border: 1px solid white;
-		border-radius: 8px;
-		overflow: hidden;
-		width: 100%;
-		height: 400px;
-		margin: auto;
-	}
-
-	.embedded-fullscreen {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100vw;
-		height: 100vh;
-		border: none;
-		border-radius: 0;
 	}
 
 	svg {

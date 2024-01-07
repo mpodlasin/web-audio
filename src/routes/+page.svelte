@@ -110,7 +110,6 @@
 				{projectNames}
 				{chosenProjectName}
 				project={chosenProject}
-				standalone
 				on:change={handleChange}
 				on:newProject={handleNewProject}
 				on:projectChange={handleProjectChange}

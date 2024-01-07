@@ -1,12 +1,3 @@
-<script>
- 	import { loadCustomNodes } from '../../audio/web-audio/utils';
-	import AudioCanvas from '../../components/AudioCanvas.svelte';
-
-	import { introductionExample } from '../../examples/introduction';
-
-	loadCustomNodes();
-</script>
-
 # Docs
 
 ## Introduction
@@ -16,20 +7,6 @@ Hi! Welcome to AudioCanvas.
 AudioCanvas is a browser-based environment for sound synthesis and manipulation.
 
 It is a set of small, simple devices, like oscillators, filters, effects and others, which you can connect in any way you'd like, allowing for fast and easy musical experimentation.
-
-Here is a simple example. Simply press play and listen to the results:
-
-<AudioCanvas projectNames={[]} chosenProjectName="Introductory Example" project={{audioCanvas: introductionExample}} />
-
-This window is fairly small, so click on fullscreen button in order to better see what is happening here.
-
-This example is fully interactive, both in fullscreen and window form - try to turn some knob or drag a device around!
-
-You can also drag the whole canvas around, simply by clicking and dragging with mouse anywhere on the background.
-
-If this example seems daunting, don't worry! We have prepared an [online resource](/learn) that will teach you AudioCanvas and basics of electronic music, even if you don't have any previous experience with those topics!
-
-If you have however some experience with music patching environments or electronic music in general, this document is probably better suited for you. It is an in depth resource of ins and outs of how AudioCanvas works.
 
 ## Overview
 
@@ -47,7 +24,7 @@ We will list them here and say some more about their characteristics and gotcha'
 
 It's not a surprise that an audio signal is the most important, but also the most obvious to list here.
 
-We (loosely) define audio signal as basically any signal that ranges from -1 to 1. 
+We (loosely) define audio signal as basically any signal that ranges from -1 to 1.
 
 Note that this is a very broad definition, and doesn't necessarily correlate to an intuitive understanding of what an audio signal is. Not only that, many signals listed below also fall into that definition, even though they are their own, separate categories.
 
@@ -61,7 +38,7 @@ Trigger signals are defined as signals that can have only two values - 0 and 1 (
 
 #### Envelope signals
 
-#### Other 
+#### Other
 
 ## Devices
 

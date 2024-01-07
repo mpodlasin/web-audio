@@ -7,9 +7,6 @@
 	import { createEventDispatcher } from 'svelte';
 
 	export let projectName: string;
-
-	export let embedded: boolean;
-	export let embeddedFullscreen: boolean;
 	export let playing: boolean;
 
 	const dispatcher = createEventDispatcher();
@@ -23,19 +20,13 @@
 	const handleProjectNameClick = () => {
 		dispatcher('projectNameClick');
 	};
-
-	const handleFullscreenClick = () => {
-		dispatcher('fullscreen');
-	};
 </script>
 
-<div class="menu" class:embedded>
-	{#if !embedded}
-		<div class="projectName" on:click={handleProjectNameClick} on:keypress={() => {}}>
-			<ChevronRight />
-			<div>{projectName}</div>
-		</div>
-	{/if}
+<div class="menu">
+	<div class="projectName" on:click={handleProjectNameClick} on:keypress={() => {}}>
+		<ChevronRight />
+		<div>{projectName}</div>
+	</div>
 	<div class="playPause" on:click={handlePlayOrPauseClick} on:keypress={() => {}}>
 		{#if playing}
 			<Pause />
@@ -43,15 +34,6 @@
 			<Play />
 		{/if}
 	</div>
-	{#if embedded}
-		<div class="fullscreen" on:click={handleFullscreenClick} on:keypress={() => {}}>
-			{#if embeddedFullscreen}
-				<Shrink />
-			{:else}
-				<Expand />
-			{/if}
-		</div>
-	{/if}
 </div>
 
 <style>
@@ -69,11 +51,6 @@
 		align-items: center;
 	}
 
-	.embedded {
-		position: absolute;
-		padding: 16px 24px;
-	}
-
 	.projectName {
 		display: flex;
 		gap: 4px;
@@ -81,8 +58,7 @@
 		cursor: pointer;
 	}
 
-	.playPause,
-	.fullscreen {
+	.playPause {
 		display: flex;
 		align-items: center;
 		cursor: pointer;
