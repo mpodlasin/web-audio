@@ -1,6 +1,73 @@
 import { equals } from '../../utils/equals';
 import type { NodeType } from './types';
 
+type StaticInputOutputDefinition = {
+	id: string;
+	name: string;
+	minValue: number;
+	maxValue: number;
+	description?: string;
+	unit?: string;
+};
+
+const audioInputOutputDefinition: StaticInputOutputDefinition = {
+	id: 'audio',
+	name: 'Audio',
+	minValue: -1,
+	maxValue: 1,
+	description: 'Audio signal'
+};
+
+const triggerInputOutputDefinition: StaticInputOutputDefinition = {
+	id: 'trigger',
+	name: 'Trigger',
+	minValue: 0,
+	maxValue: 1,
+	description: 'Trigger signal'
+};
+
+const frequencyInputOutputDefinition: StaticInputOutputDefinition = {
+	id: 'frequency',
+	name: 'Frequency',
+	minValue: 0,
+	maxValue: 10000,
+	unit: 'Hz',
+	description: 'Frequency signal'
+};
+
+const anyInputOutputDefinition: StaticInputOutputDefinition = {
+	id: 'any',
+	name: 'Any',
+	minValue: -Infinity,
+	maxValue: Infinity,
+	description: 'Any signal'
+};
+
+const audioLikeInputOutputDefinition: StaticInputOutputDefinition = {
+	id: 'audio-like',
+	name: 'Audio-like',
+	minValue: -1,
+	maxValue: 1,
+	description: 'Any signal ranging from -1 to 1, but not necessarily representing audio'
+};
+
+const envelopeInputOutputDefinition: StaticInputOutputDefinition = {
+	id: 'envelope',
+	name: 'Envelope',
+	minValue: 0,
+	maxValue: 1,
+	description: 'Envelope signal'
+};
+
+const secondsInputOutputDefinition: StaticInputOutputDefinition = {
+	id: 'seconds',
+	name: 'Seconds',
+	minValue: 0,
+	maxValue: 1000,
+	unit: 's',
+	description: 'Seconds signal'
+};
+
 const frequencyParameter = {
 	minValue: 0,
 	maxValue: 10000,
@@ -20,7 +87,7 @@ const buttonParameter = {
 const lfoDefinition = {
 	showCategory: true,
 	inputs: [],
-	outputs: ['audio'],
+	outputs: [audioLikeInputOutputDefinition],
 	parameters: {
 		frequency: {
 			minValue: 0,
@@ -43,7 +110,7 @@ const lfoDefinition = {
 const oscillatorDefinition = {
 	showCategory: true,
 	inputs: [],
-	outputs: ['audio'],
+	outputs: [audioInputOutputDefinition],
 	parameters: {
 		frequency: frequencyParameter,
 		detune: {
@@ -58,8 +125,8 @@ const oscillatorDefinition = {
 
 const filterWithResonanceDefinition = {
 	showCategory: true,
-	inputs: ['audio'],
-	outputs: ['audio'],
+	inputs: [audioInputOutputDefinition],
+	outputs: [audioInputOutputDefinition],
 	parameters: {
 		frequency: frequencyParameter,
 		resonance: {
@@ -74,8 +141,8 @@ const filterWithResonanceDefinition = {
 export const allowedSerializedAudioElementStaticDefinitions: {
 	[key in NodeType]: {
 		showCategory?: boolean;
-		inputs: string[];
-		outputs: string[];
+		inputs: StaticInputOutputDefinition[];
+		outputs: StaticInputOutputDefinition[];
 		parameters: {
 			[key: string]: {
 				minValue: number;
@@ -91,8 +158,13 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	};
 } = {
 	sequencer: {
-		inputs: ['trigger'],
-		outputs: ['frequency'],
+		inputs: [
+			{
+				...triggerInputOutputDefinition,
+				description: 'Signal triggering next step in the sequencer'
+			}
+		],
+		outputs: [frequencyInputOutputDefinition],
 		parameters: {
 			frequency1: { ...frequencyParameter, highlightIndex: 0 },
 			frequency2: { ...frequencyParameter, highlightIndex: 1 },
@@ -105,8 +177,13 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	'pitch-quantizer': {
-		inputs: ['frequency'],
-		outputs: ['frequency'],
+		inputs: [frequencyInputOutputDefinition],
+		outputs: [
+			{
+				...frequencyInputOutputDefinition,
+				description: 'Frequency signal quantized to chosen scale'
+			}
+		],
 		parameters: {
 			A: buttonParameter,
 			'A#': buttonParameter,
@@ -130,8 +207,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	'highpass-filter': filterWithResonanceDefinition,
 	'bandpass-filter': filterWithResonanceDefinition,
 	gain: {
-		inputs: ['audio'],
-		outputs: ['audio'],
+		inputs: [audioInputOutputDefinition],
+		outputs: [audioInputOutputDefinition],
 		parameters: {
 			gain: {
 				minValue: 0,
@@ -143,8 +220,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	multiply: {
-		inputs: ['audio'],
-		outputs: ['audio'],
+		inputs: [anyInputOutputDefinition],
+		outputs: [anyInputOutputDefinition],
 		parameters: {
 			factor: {
 				minValue: 0,
@@ -155,13 +232,13 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	'bipolar-to-unipolar': {
-		inputs: ['audio'],
-		outputs: ['audio'],
+		inputs: [audioLikeInputOutputDefinition],
+		outputs: [audioLikeInputOutputDefinition],
 		parameters: {}
 	},
 	pan: {
-		inputs: ['audio'],
-		outputs: ['audio'],
+		inputs: [audioInputOutputDefinition],
+		outputs: [audioInputOutputDefinition],
 		parameters: {
 			pan: {
 				minValue: -1,
@@ -173,8 +250,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	delay: {
-		inputs: ['audio', 'trigger'],
-		outputs: ['audio'],
+		inputs: [audioInputOutputDefinition, triggerInputOutputDefinition],
+		outputs: [audioInputOutputDefinition],
 		parameters: {
 			delayTime: {
 				minValue: 0,
@@ -199,18 +276,18 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	destination: {
-		inputs: ['audio'],
+		inputs: [audioInputOutputDefinition],
 		outputs: [],
 		parameters: {}
 	},
 	oscilloscope: {
-		inputs: ['audio'],
-		outputs: ['audio'],
+		inputs: [audioLikeInputOutputDefinition],
+		outputs: [audioLikeInputOutputDefinition],
 		parameters: {}
 	},
 	convolution: {
-		inputs: ['audio'],
-		outputs: ['audio'],
+		inputs: [audioInputOutputDefinition],
+		outputs: [audioInputOutputDefinition],
 		parameters: {
 			mix: {
 				minValue: 0,
@@ -223,7 +300,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	},
 	trigger: {
 		inputs: [],
-		outputs: ['trigger'],
+		outputs: [triggerInputOutputDefinition],
 		parameters: {
 			tempo: {
 				defaultValue: 120,
@@ -236,8 +313,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	},
 	'ar-envelope': {
 		showCategory: true,
-		inputs: ['trigger'],
-		outputs: ['envelope'],
+		inputs: [triggerInputOutputDefinition],
+		outputs: [envelopeInputOutputDefinition],
 		parameters: {
 			attack: {
 				minValue: 0,
@@ -257,8 +334,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	},
 	'ad-envelope': {
 		showCategory: true,
-		inputs: ['trigger'],
-		outputs: ['envelope'],
+		inputs: [triggerInputOutputDefinition],
+		outputs: [envelopeInputOutputDefinition],
 		parameters: {
 			attack: {
 				minValue: 0,
@@ -278,12 +355,12 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	},
 	midi: {
 		inputs: [],
-		outputs: ['frequency', 'trigger'],
+		outputs: [frequencyInputOutputDefinition, triggerInputOutputDefinition],
 		parameters: {}
 	},
 	'gate-length': {
-		inputs: ['trigger'],
-		outputs: ['trigger'],
+		inputs: [triggerInputOutputDefinition],
+		outputs: [triggerInputOutputDefinition],
 		parameters: {
 			length: {
 				minValue: 0,
@@ -295,8 +372,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	'measure-gate': {
-		inputs: ['trigger'],
-		outputs: ['value'],
+		inputs: [triggerInputOutputDefinition],
+		outputs: [secondsInputOutputDefinition],
 		parameters: {}
 	},
 	'saw-lfo': lfoDefinition,
@@ -304,8 +381,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	'square-lfo': lfoDefinition,
 	'triangle-lfo': lfoDefinition,
 	pattern: {
-		inputs: ['trigger'],
-		outputs: ['trigger'],
+		inputs: [triggerInputOutputDefinition],
+		outputs: [triggerInputOutputDefinition],
 		parameters: {
 			step1: { ...buttonParameter, highlightIndex: 0 },
 			step2: { ...buttonParameter, highlightIndex: 1 },

@@ -162,7 +162,7 @@
 			{#each staticDefinition.inputs as input (input)}
 				<Plug
 					type="input"
-					id={input}
+					id={input.id}
 					on:plug={handlePlug}
 					on:click={handlePlugClick}
 					on:up={handlePlugUp}
@@ -173,7 +173,7 @@
 			{#each staticDefinition.outputs as output (output)}
 				<Plug
 					type="output"
-					id={output}
+					id={output.id}
 					on:plug={handlePlug}
 					on:click={handlePlugClick}
 					on:up={handlePlugUp}

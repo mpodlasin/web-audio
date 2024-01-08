@@ -32,15 +32,24 @@ export const getLinesToDisplay = (
 								allowedSerializedAudioElementStaticDefinitions[
 									audioGraphWithPositions[input]?.type ?? 'sine-oscillator'
 								];
-							return [
-								[input, staticNodeDefinition.outputs[0] as string],
-								[id, staticToDefinition.inputs[0] as string],
-								undefined
-							] as const;
+
+							const defaultOutput = staticNodeDefinition.outputs[0];
+							const defaultInput = staticToDefinition.inputs[0];
+
+							if (!defaultOutput || !defaultInput) {
+								throw new Error(`No default output or input!`);
+							}
+
+							return [[input, defaultOutput.id], [id, defaultInput.id], undefined] as const;
 						} else {
+							const defaultInput = staticToDefinition.inputs[0];
+
+							if (!defaultInput) {
+								throw new Error(`No default input!`);
+							}
 							return [
 								[input.id, input.output],
-								[id, input.input ?? staticToDefinition.inputs[0] ?? ''],
+								[id, input.input ?? defaultInput.id ?? ''],
 								undefined
 							] as const;
 						}

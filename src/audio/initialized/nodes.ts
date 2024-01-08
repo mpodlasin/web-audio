@@ -37,7 +37,7 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 		const outputs = staticDefinition.outputs;
 
 		outputs.forEach((output) => {
-			this.getOutput(output).disconnect();
+			this.getOutput(output.id).disconnect();
 		});
 	}
 

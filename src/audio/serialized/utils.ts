@@ -346,7 +346,7 @@ export const removeConnection = <S extends SerializedAudioElements>(
 					if (typeof input === 'string') {
 						return (
 							input !== startingPlug.nodeId ||
-							endingNodeStaticDefinition.inputs[0] !== endingPlug.id
+							endingNodeStaticDefinition.inputs[0]?.id !== endingPlug.id
 						);
 					} else {
 						return (
