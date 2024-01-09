@@ -1,7 +1,7 @@
 import { equals } from '../../utils/equals';
 import type { NodeType } from './types';
 
-type StaticInputOutputDefinition = {
+export type StaticInputOutputDefinition = {
 	id: string;
 	name: string;
 	minValue: number;

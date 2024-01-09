@@ -159,10 +159,11 @@
 	{/if}
 	<div class="inputs-and-outputs">
 		<div class="inputs">
-			{#each staticDefinition.inputs as input (input)}
+			{#each staticDefinition.inputs as input (input.id)}
 				<Plug
 					type="input"
 					id={input.id}
+					staticDefinition={input}
 					on:plug={handlePlug}
 					on:click={handlePlugClick}
 					on:up={handlePlugUp}
@@ -170,10 +171,11 @@
 			{/each}
 		</div>
 		<div class="outputs">
-			{#each staticDefinition.outputs as output (output)}
+			{#each staticDefinition.outputs as output (output.id)}
 				<Plug
 					type="output"
 					id={output.id}
+					staticDefinition={output}
 					on:plug={handlePlug}
 					on:click={handlePlugClick}
 					on:up={handlePlugUp}
