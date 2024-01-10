@@ -171,8 +171,8 @@
 		if (!touch) return;
 
 		const positionChange = {
-			x: dragPosition.x - startDragPosition.x,
-			y: dragPosition.y - startDragPosition.y
+			x: Math.abs(dragPosition.x - startDragPosition.x),
+			y: Math.abs(dragPosition.y - startDragPosition.y)
 		};
 
 		if (showMenu) {
