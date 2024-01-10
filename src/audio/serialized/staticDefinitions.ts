@@ -7,23 +7,29 @@ export type StaticInputOutputDefinition = {
 	minValue: number;
 	maxValue: number;
 	description?: string;
+	contextDescription?: string;
 	unit?: string;
+};
+
+const numberInputOutputDefinition: StaticInputOutputDefinition = {
+	id: 'number',
+	name: 'Number',
+	minValue: -Infinity,
+	maxValue: Infinity
 };
 
 const audioInputOutputDefinition: StaticInputOutputDefinition = {
 	id: 'audio',
 	name: 'Audio',
 	minValue: -1,
-	maxValue: 1,
-	description: 'Audio signal'
+	maxValue: 1
 };
 
 const triggerInputOutputDefinition: StaticInputOutputDefinition = {
 	id: 'trigger',
 	name: 'Trigger',
 	minValue: 0,
-	maxValue: 1,
-	description: 'Trigger signal'
+	maxValue: 1
 };
 
 const frequencyInputOutputDefinition: StaticInputOutputDefinition = {
@@ -31,32 +37,14 @@ const frequencyInputOutputDefinition: StaticInputOutputDefinition = {
 	name: 'Frequency',
 	minValue: 0,
 	maxValue: 10000,
-	unit: 'Hz',
-	description: 'Frequency signal'
-};
-
-const anyInputOutputDefinition: StaticInputOutputDefinition = {
-	id: 'any',
-	name: 'Any',
-	minValue: -Infinity,
-	maxValue: Infinity,
-	description: 'Any signal'
-};
-
-const audioLikeInputOutputDefinition: StaticInputOutputDefinition = {
-	id: 'audio-like',
-	name: 'Audio-like',
-	minValue: -1,
-	maxValue: 1,
-	description: 'Any signal ranging from -1 to 1, but not necessarily representing audio'
+	unit: 'Hz'
 };
 
 const envelopeInputOutputDefinition: StaticInputOutputDefinition = {
 	id: 'envelope',
 	name: 'Envelope',
 	minValue: 0,
-	maxValue: 1,
-	description: 'Envelope signal'
+	maxValue: 1
 };
 
 const secondsInputOutputDefinition: StaticInputOutputDefinition = {
@@ -64,8 +52,7 @@ const secondsInputOutputDefinition: StaticInputOutputDefinition = {
 	name: 'Seconds',
 	minValue: 0,
 	maxValue: 1000,
-	unit: 's',
-	description: 'Seconds signal'
+	unit: 's'
 };
 
 const frequencyParameter = {
@@ -87,7 +74,14 @@ const buttonParameter = {
 const lfoDefinition = {
 	showCategory: true,
 	inputs: [],
-	outputs: [audioLikeInputOutputDefinition],
+	outputs: [
+		{
+			...numberInputOutputDefinition,
+			minValue: -1,
+			maxValue: 1,
+			contextDescription: 'LFO signal.'
+		}
+	],
 	parameters: {
 		frequency: {
 			minValue: 0,
@@ -161,10 +155,15 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		inputs: [
 			{
 				...triggerInputOutputDefinition,
-				description: 'Signal triggering next step in the sequencer'
+				contextDescription: 'Signal triggering next step in the sequencer.'
 			}
 		],
-		outputs: [frequencyInputOutputDefinition],
+		outputs: [
+			{
+				...frequencyInputOutputDefinition,
+				contextDescription: 'Frequency signal of the current\nstep in the sequencer.'
+			}
+		],
 		parameters: {
 			frequency1: { ...frequencyParameter, highlightIndex: 0 },
 			frequency2: { ...frequencyParameter, highlightIndex: 1 },
@@ -177,11 +176,16 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	'pitch-quantizer': {
-		inputs: [frequencyInputOutputDefinition],
+		inputs: [
+			{
+				...frequencyInputOutputDefinition,
+				contextDescription: 'Frequency signal to be quantized.'
+			}
+		],
 		outputs: [
 			{
 				...frequencyInputOutputDefinition,
-				description: 'Frequency signal quantized to chosen scale'
+				contextDescription: 'Frequency signal quantized to chosen scale.'
 			}
 		],
 		parameters: {
@@ -220,8 +224,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	multiply: {
-		inputs: [anyInputOutputDefinition],
-		outputs: [anyInputOutputDefinition],
+		inputs: [numberInputOutputDefinition],
+		outputs: [numberInputOutputDefinition],
 		parameters: {
 			factor: {
 				minValue: 0,
@@ -232,8 +236,22 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	'bipolar-to-unipolar': {
-		inputs: [audioLikeInputOutputDefinition],
-		outputs: [audioLikeInputOutputDefinition],
+		inputs: [
+			{
+				...numberInputOutputDefinition,
+				minValue: -1,
+				maxValue: 1,
+				contextDescription: 'Bipolar signal to be converted.'
+			}
+		],
+		outputs: [
+			{
+				...numberInputOutputDefinition,
+				minValue: 0,
+				maxValue: 1,
+				contextDescription: 'Unipolar signal.'
+			}
+		],
 		parameters: {}
 	},
 	pan: {
@@ -281,8 +299,22 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		parameters: {}
 	},
 	oscilloscope: {
-		inputs: [audioLikeInputOutputDefinition],
-		outputs: [audioLikeInputOutputDefinition],
+		inputs: [
+			{
+				...numberInputOutputDefinition,
+				minValue: -1,
+				maxValue: 1,
+				contextDescription: 'Signal to be visualized.'
+			}
+		],
+		outputs: [
+			{
+				...numberInputOutputDefinition,
+				minValue: -1,
+				maxValue: 1,
+				contextDescription: 'Pass-through.'
+			}
+		],
 		parameters: {}
 	},
 	convolution: {

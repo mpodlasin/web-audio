@@ -10,6 +10,9 @@
 
 	const dispatcher = createEventDispatcher();
 
+	$: minValue = staticDefinition.minValue === -Infinity ? '-infinity' : staticDefinition.minValue;
+	$: maxValue = staticDefinition.maxValue === Infinity ? 'infinity' : staticDefinition.maxValue;
+
 	$: {
 		if (plug) {
 			dispatcher('plug', {
@@ -37,17 +40,19 @@
 </script>
 
 <div class="wrapper">
-	<div
-		class="plug"
-		bind:this={plug}
-		on:mousedown={handlePlugClick}
-		on:mouseup={handlePlugUp}
-	/>
+	<div class="plug" bind:this={plug} on:mousedown={handlePlugClick} on:mouseup={handlePlugUp} />
 	<div class="menu">
 		<Menu>
-			<h2>{staticDefinition.name}</h2>
-			<p>{staticDefinition.description}</p>
-			<p>Range {staticDefinition.minValue} to {staticDefinition.maxValue} {staticDefinition.unit ?? ''}</p>
+			<div class="menu-content">
+				<h2>{type}:<span class="name">{staticDefinition.name}</span></h2>
+				{#if staticDefinition.description}
+					<p>{staticDefinition.description}</p>
+				{/if}
+				{#if staticDefinition.contextDescription}
+					<p>{staticDefinition.contextDescription}</p>
+				{/if}
+				<p>Range: {minValue} to {maxValue} {staticDefinition.unit ?? ''}</p>
+			</div>
 		</Menu>
 	</div>
 </div>
@@ -65,6 +70,7 @@
 		transition-delay: 1s;
 		opacity: 0;
 		pointer-events: none;
+		z-index: 100;
 	}
 
 	.wrapper:hover .menu {
@@ -80,12 +86,29 @@
 	}
 
 	.menu h2 {
-		font-size: 12px;
-		font-weight: bold;
-		text-transform: capitalize;
+		text-align: center;
+		color: var(--neutral-500);
+		text-transform: uppercase;
+		font-size: 10px;
+		margin: 0;
 	}
 
 	.menu p {
 		font-size: 10px;
+		margin: 0;
+		text-align: center;
+		white-space: pre;
+		line-height: 1.7;
+	}
+
+	.menu-content {
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
+	}
+
+	.name {
+		color: var(--primary-500);
+		padding-left: 4px;
 	}
 </style>
