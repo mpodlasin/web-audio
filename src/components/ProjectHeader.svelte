@@ -22,7 +22,7 @@
 	};
 </script>
 
-<div class="menu">
+<div class="menu" on:touchstart={(e) => e.stopPropagation()}>
 	<div class="projectName" on:click={handleProjectNameClick} on:keypress={() => {}}>
 		<ChevronRight />
 		<div>{projectName}</div>

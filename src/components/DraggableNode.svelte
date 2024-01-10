@@ -50,7 +50,7 @@
 		const rect = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
 		internalClickPosition = {
 			x: touch.clientX - rect.left,
-			y: touch.clientY - rect.top,
+			y: touch.clientY - rect.top
 		};
 
 		disaptcher('dragstart');
@@ -121,6 +121,7 @@
 		on:nodeParameterChangeStart
 		on:nodeParameterChange
 		on:nodePlugClick
+		on:nodePlugTouchStart
 		on:nodePlugUp
 		on:deleteNode
 		on:knobMouseUp

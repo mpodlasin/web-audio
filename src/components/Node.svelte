@@ -98,6 +98,13 @@
 		dispatcher('nodePlugClick', { id: plugId, type, nodeId: id });
 	};
 
+	const handlePlugTouchStart = (event: any) => {
+		const plugId = event.detail.id;
+		const type = event.detail.type;
+
+		dispatcher('nodePlugTouchStart', { id: plugId, type, nodeId: id });
+	};
+
 	const handlePlugUp = (event: any) => {
 		const plugId = event.detail.id;
 		const type = event.detail.type;
@@ -163,10 +170,12 @@
 				<Plug
 					type="input"
 					id={input.id}
+					nodeId={id}
 					staticDefinition={input}
 					on:plug={handlePlug}
 					on:click={handlePlugClick}
 					on:up={handlePlugUp}
+					on:touchstart={handlePlugTouchStart}
 				/>
 			{/each}
 		</div>
@@ -175,9 +184,11 @@
 				<Plug
 					type="output"
 					id={output.id}
+					nodeId={id}
 					staticDefinition={output}
 					on:plug={handlePlug}
 					on:click={handlePlugClick}
+					on:touchstart={handlePlugTouchStart}
 					on:up={handlePlugUp}
 				/>
 			{/each}

@@ -3,6 +3,7 @@
 	import Menu from './Menu.svelte';
 	import type { StaticInputOutputDefinition } from '../audio/AudioCanvas';
 
+	export let nodeId: string;
 	export let id: string;
 	export let type: 'input' | 'output';
 	export let staticDefinition: StaticInputOutputDefinition;
@@ -24,14 +25,21 @@
 		}
 	}
 
-	const handlePlugClick = (event: any) => {
+	const handlePlugClick = (event: Event) => {
 		event.stopPropagation();
 		event.preventDefault();
 
 		dispatcher('click', { id, type });
 	};
 
-	const handlePlugUp = (event: any) => {
+	const handlePlugTouchStart = (event: Event) => {
+		event.stopPropagation();
+		event.preventDefault();
+
+		dispatcher('touchstart', { id, type });
+	};
+
+	const handlePlugUp = (event: Event) => {
 		event.stopPropagation();
 		event.preventDefault();
 
@@ -40,7 +48,16 @@
 </script>
 
 <div class="wrapper">
-	<div class="plug" bind:this={plug} on:mousedown={handlePlugClick} on:mouseup={handlePlugUp} />
+	<div
+		class="plug"
+		bind:this={plug}
+		on:mousedown={handlePlugClick}
+		on:mouseup={handlePlugUp}
+		on:touchstart={handlePlugTouchStart}
+		data-id={id}
+		data-node-id={nodeId}
+		data-type={type}
+	/>
 	<div class="menu">
 		<Menu>
 			<div class="menu-content">
