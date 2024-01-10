@@ -71,6 +71,19 @@
 		}
 	};
 
+	const handleTouchDragCanvasStart = (event: TouchEvent) => {
+		audioGraphHistory = [...audioGraphHistory, audioGraph];
+		event.preventDefault();
+		const touch = event.touches[0];
+
+		if (!touch) return;
+
+		dragPosition = {
+			x: touch.clientX,
+			y: touch.clientY
+		};
+	};
+
 	const handleDragCanvasStart = (event: MouseEvent) => {
 		audioGraphHistory = [...audioGraphHistory, audioGraph];
 		event.preventDefault();
@@ -101,6 +114,53 @@
 			x: event.clientX,
 			y: event.clientY
 		};
+	};
+
+	const handleTouchDragCanvas = (event: TouchEvent) => {
+		event.preventDefault();
+		const touch = event.touches[0];
+
+		if (!touch) return;
+
+		if (!dragPosition) return;
+
+		const positionChange = {
+			x: dragPosition.x - touch.clientX,
+			y: dragPosition.y - touch.clientY
+		};
+
+		const newAudioGraphWithPositions = Object.fromEntries(
+			Object.entries(audioGraph).map(([id, node]) => [
+				id,
+				{
+					...node,
+					ui: {
+						...node.ui,
+						position: node.ui?.position
+							? {
+									x: node.ui.position.x - positionChange.x,
+									y: node.ui.position.y - positionChange.y
+							  }
+							: { x: 0, y: 0 }
+					}
+				}
+			])
+		);
+
+		audioGraphHistory = [...audioGraphHistory.slice(0, -1), newAudioGraphWithPositions];
+
+		plugPositions = addDiffToAllPositions(plugPositions, -positionChange.x, -positionChange.y);
+
+		dragPosition = {
+			x: touch.clientX,
+			y: touch.clientY
+		};
+	};
+
+	const handleTouchDragCanvasEnd = () => {
+		dragPosition = null;
+		selectNodesStartPosition = null;
+		selectNodesEndPosition = null;
 	};
 
 	const handleDragCanvas = (event: MouseEvent) => {
@@ -540,6 +600,9 @@
 	on:mousedown={handleDragCanvasStart}
 	on:mousemove={handleDragCanvas}
 	on:mouseup={handleDragCanvasEnd}
+	on:touchstart={handleTouchDragCanvasStart}
+	on:touchmove={handleTouchDragCanvas}
+	on:touchend={handleTouchDragCanvasEnd}
 	on:click={handleCanvasDoubleClick}
 	on:keydown={() => {}}
 	bind:this={container}
