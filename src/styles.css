@@ -17,6 +17,10 @@ body {
 	background-color: var(--neutral-900);
 }
 
+body {
+	position: fixed;
+}
+
 a {
 	color: var(--primary-500);
 	text-decoration: none;

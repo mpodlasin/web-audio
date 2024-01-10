@@ -38,6 +38,46 @@
 		}
 	};
 
+	const handleTouchStart = (event: TouchEvent) => {
+		event.stopPropagation();
+
+		const touch = event.touches[0];
+
+		if (!touch) {
+			return;
+		}
+
+		const rect = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
+		internalClickPosition = {
+			x: touch.clientX - rect.left,
+			y: touch.clientY - rect.top,
+		};
+
+		disaptcher('dragstart');
+
+		window.addEventListener('touchmove', handleTouchMove);
+	};
+
+	const handleTouchMove = (event: TouchEvent) => {
+		event.preventDefault();
+
+		const touch = event.touches[0];
+
+		if (!touch) {
+			return;
+		}
+
+		disaptcher('drag', {
+			id,
+			x: touch.clientX - internalClickPosition.x,
+			y: touch.clientY - internalClickPosition.y
+		});
+	};
+
+	const handleTouchEnd = () => {
+		window.removeEventListener('touchmove', handleTouchMove);
+	};
+
 	const handleMouseMove = (event: MouseEvent) => {
 		event.preventDefault();
 
@@ -63,7 +103,9 @@
 	on:contextmenu={handleContextMenu}
 	on:contextmenu
 	on:click
-	on:keypress
+	on:touchstart={handleTouchStart}
+	on:touchend={handleTouchEnd}
+	on:keydown={() => {}}
 	class="wrapper"
 	class:selected
 	style="position: absolute; left: {position.x}px; top: {position.y}px;"
