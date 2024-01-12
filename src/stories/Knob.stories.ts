@@ -16,6 +16,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
 	args: {
+		nodeId: '123',
 		parameterName: 'frequency',
 		parameter: { base: 0.5, inputs: [] },
 		minValue: 0,
@@ -29,6 +30,7 @@ export const Primary: Story = {
 
 export const Controlled: Story = {
 	args: {
+		nodeId: '123',
 		parameterName: 'frequency',
 		parameter: { base: 0.5, inputs: [{ id: '1', output: 'frequency' }] },
 		minValue: 0,

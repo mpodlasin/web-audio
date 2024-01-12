@@ -3,7 +3,7 @@
 	import type { AllowedSerializedAudioElements } from '../audio/AudioCanvas';
 	import Node from './Node.svelte';
 
-	const disaptcher = createEventDispatcher();
+	const dispatcher = createEventDispatcher();
 
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
@@ -32,7 +32,7 @@
 				y: event.clientY - rect.top
 			};
 
-			disaptcher('dragstart');
+			dispatcher('dragstart');
 
 			window.addEventListener('mousemove', handleMouseMove);
 		}
@@ -53,7 +53,7 @@
 			y: touch.clientY - rect.top
 		};
 
-		disaptcher('dragstart');
+		dispatcher('dragstart');
 
 		window.addEventListener('touchmove', handleTouchMove);
 	};
@@ -65,7 +65,7 @@
 			return;
 		}
 
-		disaptcher('drag', {
+		dispatcher('drag', {
 			id,
 			x: touch.clientX - internalClickPosition.x,
 			y: touch.clientY - internalClickPosition.y
@@ -79,7 +79,7 @@
 	const handleMouseMove = (event: MouseEvent) => {
 		event.preventDefault();
 
-		disaptcher('drag', {
+		dispatcher('drag', {
 			id,
 			x: event.clientX - internalClickPosition.x,
 			y: event.clientY - internalClickPosition.y

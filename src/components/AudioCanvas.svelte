@@ -537,20 +537,39 @@
 		chosenLine = null;
 	};
 
-	const handleLineLeftClick = (line: LineToDisplay) => (event: MouseEvent) => {
+	const handleLineClick = (line: LineToDisplay) => (event: MouseEvent | TouchEvent) => {
 		event.preventDefault();
 		event.stopPropagation();
+
+		if (event instanceof TouchEvent) {
+			const touch = event.changedTouches[0];
+
+			if (!touch) return;
+
+			menuPosition = { x: touch.clientX, y: touch.clientY };
+		} else {
+			menuPosition = { x: event.clientX, y: event.clientY };
+		}
 
 		showMenu = true;
 		menuKind = 'line';
 		chosenLine = line;
-		menuPosition = { x: event.clientX, y: event.clientY };
 	};
 
-	const handleNodeLeftClick = (nodeId: string) => (event: MouseEvent) => {
+	const handleNodeClick = (nodeId: string) => (event: MouseEvent | TouchEvent) => {
 		event.preventDefault();
+		event.stopPropagation();
 
-		menuPosition = { x: event.clientX, y: event.clientY };
+		if (event instanceof TouchEvent) {
+			const touch = event.changedTouches[0];
+
+			if (!touch) return;
+
+			menuPosition = { x: touch.clientX, y: touch.clientY };
+		} else {
+			menuPosition = { x: event.clientX, y: event.clientY };
+		}
+
 		showMenu = true;
 		menuKind = 'node';
 		chosenLine = null;
@@ -635,7 +654,7 @@
 
 	window.addEventListener('keydown', handleCanvasKeypress);
 
-	const openLineMultiplyMenu = (event: MouseEvent) => {
+	const openLineMultiplyMenu = (event: MouseEvent | TouchEvent) => {
 		event.stopPropagation();
 
 		menuKind = 'line-multiply';
@@ -721,7 +740,7 @@
 				on:nodePlugUp={handlePlugUp}
 				on:deleteNode={handleDeleteNode}
 				on:knobMouseUp={handleKnobMouseUp}
-				on:contextmenu={handleNodeLeftClick(id)}
+				on:contextmenu={handleNodeClick(id)}
 				on:click={handleSelectNodeClick(id)}
 			/>
 		{/each}
@@ -741,7 +760,12 @@
 		{/if}
 		<svg width="100vw" height="100vh">
 			{#each linesToDisplay as line}
-				<Line {line} {chosenLine} on:contextmenu={handleLineLeftClick(line)} />
+				<Line
+					{line}
+					{chosenLine}
+					on:contextmenu={handleLineClick(line)}
+					on:touchstart={handleLineClick(line)}
+				/>
 			{/each}
 
 			{#if draggingLine}
@@ -758,12 +782,15 @@
 		{#if showMenu && menuKind === 'line'}
 			<PositionedMenu position={menuPosition} on:close={closeMenu}>
 				{#if chosenLineMultiply !== undefined}
-					<MenuButton on:click={openLineMultiplyMenu}
+					<MenuButton on:click={openLineMultiplyMenu} on:touchstart={openLineMultiplyMenu}
 						>Mult: {chosenLineMultiply.toFixed(2)}</MenuButton
 					>
 				{/if}
-				<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
-					>Delete</MenuButton
+				<MenuButton
+					on:click={handleDeleteConnection}
+					on:touchstart={handleDeleteConnection}
+					on:keypress={() => {}}
+					variant="danger">Delete</MenuButton
 				>
 			</PositionedMenu>
 		{/if}

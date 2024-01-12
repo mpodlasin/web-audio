@@ -11,6 +11,7 @@
 <line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} class="visible" />
 <line
 	on:contextmenu
+	on:touchstart
 	x1={line.from.x + normalizedVector(line.from, line.to).x * cutLineOverlayConstant}
 	y1={line.from.y + normalizedVector(line.from, line.to).y * cutLineOverlayConstant}
 	x2={line.to.x - normalizedVector(line.from, line.to).x * cutLineOverlayConstant}
