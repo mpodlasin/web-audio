@@ -37,7 +37,7 @@
 		setTimeoutId = id;
 	};
 
-	const handleNodeClick = (nodeType: string) => (event: MouseEvent) => {
+	const handleNodeClick = (nodeType: string) => () => {
 		dispatcher('create', nodeType);
 	};
 
@@ -53,6 +53,7 @@
 				<div
 					class="menu-section"
 					on:mouseenter={handleMouseEnter(nodeType)}
+					on:touchstart={handleMouseEnter(nodeType)}
 					on:mouseleave={handleMouseLeave}
 				>
 					<div>{readableCategoryNames[nodeType]}</div>
@@ -60,7 +61,11 @@
 					<div class="submenu" class:visible={hoveredOverNodeType === nodeType}>
 						<Menu>
 							{#each nodeTypes as innerNodeType (innerNodeType)}
-								<MenuButton on:click={handleNodeClick(innerNodeType)} on:keydown={() => {}}>
+								<MenuButton
+									on:click={handleNodeClick(innerNodeType)}
+									on:touchstart={handleNodeClick(innerNodeType)}
+									on:keydown={() => {}}
+								>
 									{readableNames[innerNodeType]}
 								</MenuButton>
 							{/each}
@@ -70,7 +75,9 @@
 			</MenuButton>
 		{/each}
 	</div>
-	<MenuButton on:click={handlePasteClick} on:keypress={() => {}}>Paste</MenuButton>
+	<MenuButton on:click={handlePasteClick} on:touchstart={handlePasteClick} on:keypress={() => {}}
+		>Paste</MenuButton
+	>
 </PositionedMenu>
 
 <style>

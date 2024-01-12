@@ -31,6 +31,8 @@
 	import { changeNodeColor } from '../ui/changeNodeColor';
 	import Knob from './Knob.svelte';
 	import PositionedMenu from './PositionedMenu.svelte';
+	import { dragAllNodes } from '../ui/dragAllNodes';
+	import { isAlternativeKey } from '../ui/isAlternativeKey';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
@@ -38,17 +40,105 @@
 
 	let container: HTMLDivElement;
 
-	let initialAudioCanvas = project.audioCanvas;
-
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
-	let audioGraphHistory: SerializedAudioElements[] = [{}, initialAudioCanvas];
+	let audioGraphHistory: SerializedAudioElements[] = [{}, project.audioCanvas];
+	$: previousAudioGraph = audioGraphHistory.at(-2) ?? {};
+	$: audioGraph = audioGraphHistory.at(-1) ?? {};
 
+	/* DRAGGING CANVAS ----------------------------------------- */
 	let dragPosition: Position | null = null;
 	let startDragPosition: Position | null = null;
 
+	const handleDragCanvasStart = (event: TouchEvent | MouseEvent) => {
+		event.preventDefault();
+		audioGraphHistory = [...audioGraphHistory, audioGraph];
+
+		let position: Position | null = null;
+
+		if (event instanceof TouchEvent) {
+			const touch = event.touches[0];
+
+			if (!touch) return;
+
+			position = {
+				x: touch.clientX,
+				y: touch.clientY
+			};
+		} else if (!isAlternativeKey(event)) {
+			position = {
+				x: event.clientX,
+				y: event.clientY
+			};
+		}
+
+		if (!position) return;
+
+		dragPosition = position;
+		startDragPosition = position;
+	};
+
+	const handleDragCanvasEnd = () => {
+		dragPosition = null;
+	};
+
+	const handleDragCanvas = (event: TouchEvent | MouseEvent) => {
+		event.preventDefault();
+		if (!dragPosition) return;
+
+		let position: Position | null = null;
+
+		if (event instanceof TouchEvent) {
+			const touch = event.touches[0];
+
+			if (!touch) return;
+
+			position = {
+				x: touch.clientX,
+				y: touch.clientY
+			};
+		} else {
+			position = {
+				x: event.clientX,
+				y: event.clientY
+			};
+		}
+
+		if (!position) return;
+
+		const positionChange = {
+			x: dragPosition.x - position.x,
+			y: dragPosition.y - position.y
+		};
+
+		const newAudioGraphWithPositions = dragAllNodes(audioGraph, positionChange);
+
+		audioGraphHistory = [...audioGraphHistory.slice(0, -1), newAudioGraphWithPositions];
+
+		plugPositions = addDiffToAllPositions(plugPositions, -positionChange.x, -positionChange.y);
+
+		dragPosition = position;
+	};
+
+	/* SELECTING NODES ----------------------------------------- */
+	let selectedNodeIds: string[] = [];
 	let selectNodesStartPosition: Position | null = null;
 	let selectNodesEndPosition: Position | null = null;
+
+	const handleStartSelectingNodes = (event: MouseEvent) => {
+		event.preventDefault();
+		audioGraphHistory = [...audioGraphHistory, audioGraph];
+
+		if (isAlternativeKey(event)) {
+			if (!event.shiftKey) {
+				selectedNodeIds = [];
+			}
+			selectNodesStartPosition = {
+				x: event.clientX,
+				y: event.clientY
+			};
+		}
+	};
 
 	const handleCanvasDoubleClick = (event: MouseEvent) => {
 		if (event.detail === 2) {
@@ -56,9 +146,16 @@
 		}
 	};
 
-	const isAlternativeKey = (event: MouseEvent) => event.altKey || event.metaKey;
+	const handleSelectNodesDrag = (event: MouseEvent) => {
+		if (!selectNodesStartPosition) return;
 
-	const handleNodeClick = (id: string) => (event: MouseEvent) => {
+		selectNodesEndPosition = {
+			x: event.clientX,
+			y: event.clientY
+		};
+	};
+
+	const handleSelectNodeClick = (id: string) => (event: MouseEvent) => {
 		event.preventDefault();
 		if (isAlternativeKey(event)) {
 			if (event.shiftKey) {
@@ -73,176 +170,10 @@
 		}
 	};
 
-	const handleTouchDragCanvasStart = (event: TouchEvent) => {
-		audioGraphHistory = [...audioGraphHistory, audioGraph];
-		event.preventDefault();
-		const touch = event.touches[0];
-
-		if (!touch) return;
-
-		dragPosition = {
-			x: touch.clientX,
-			y: touch.clientY
-		};
-
-		startDragPosition = dragPosition;
-	};
-
-	const handleDragCanvasStart = (event: MouseEvent) => {
-		audioGraphHistory = [...audioGraphHistory, audioGraph];
-		event.preventDefault();
-		if (isAlternativeKey(event)) {
-			if (!event.shiftKey) {
-				selectedNodeIds = [];
-			}
-			selectNodesStartPosition = {
-				x: event.clientX,
-				y: event.clientY
-			};
-		} else {
-			dragPosition = {
-				x: event.clientX,
-				y: event.clientY
-			};
-
-			startDragPosition = dragPosition;
-		}
-	};
-
-	const handleDragCanvasEnd = () => {
-		dragPosition = null;
+	const handleSelectNodesEnd = () => {
 		selectNodesStartPosition = null;
 		selectNodesEndPosition = null;
 	};
-
-	const handleSelectNodesDrag = (event: MouseEvent) => {
-		selectNodesEndPosition = {
-			x: event.clientX,
-			y: event.clientY
-		};
-	};
-
-	const handleTouchDragCanvas = (event: TouchEvent) => {
-		event.preventDefault();
-		const touch = event.touches[0];
-
-		if (!touch) return;
-
-		if (!dragPosition) return;
-
-		const positionChange = {
-			x: dragPosition.x - touch.clientX,
-			y: dragPosition.y - touch.clientY
-		};
-
-		const newAudioGraphWithPositions = Object.fromEntries(
-			Object.entries(audioGraph).map(([id, node]) => [
-				id,
-				{
-					...node,
-					ui: {
-						...node.ui,
-						position: node.ui?.position
-							? {
-									x: node.ui.position.x - positionChange.x,
-									y: node.ui.position.y - positionChange.y
-							  }
-							: { x: 0, y: 0 }
-					}
-				}
-			])
-		);
-
-		audioGraphHistory = [...audioGraphHistory.slice(0, -1), newAudioGraphWithPositions];
-
-		plugPositions = addDiffToAllPositions(plugPositions, -positionChange.x, -positionChange.y);
-
-		dragPosition = {
-			x: touch.clientX,
-			y: touch.clientY
-		};
-	};
-
-	const handleTouchDragCanvasEnd = (event: TouchEvent) => {
-		const touch = event.changedTouches[0];
-
-		if (!dragPosition) return;
-		if (!startDragPosition) return;
-		if (!touch) return;
-
-		const positionChange = {
-			x: Math.abs(dragPosition.x - startDragPosition.x),
-			y: Math.abs(dragPosition.y - startDragPosition.y)
-		};
-
-		if (showMenu) {
-			showMenu = false;
-		} else {
-			if (positionChange.x < 5 && positionChange.y < 5) {
-				menuPosition = { x: touch.clientX, y: touch.clientY };
-				showMenu = true;
-				menuKind = 'canvas';
-				chosenLine = null;
-				chosenLineMultiply = undefined;
-			}
-		}
-
-		dragPosition = null;
-		selectNodesStartPosition = null;
-		selectNodesEndPosition = null;
-	};
-
-	const handleDragCanvas = (event: MouseEvent) => {
-		if (selectNodesStartPosition) {
-			handleSelectNodesDrag(event);
-			return;
-		}
-
-		if (!dragPosition) return;
-
-		const positionChange = {
-			x: dragPosition.x - event.clientX,
-			y: dragPosition.y - event.clientY
-		};
-
-		const newAudioGraphWithPositions = Object.fromEntries(
-			Object.entries(audioGraph).map(([id, node]) => [
-				id,
-				{
-					...node,
-					ui: {
-						...node.ui,
-						position: node.ui?.position
-							? {
-									x: node.ui.position.x - positionChange.x,
-									y: node.ui.position.y - positionChange.y
-							  }
-							: { x: 0, y: 0 }
-					}
-				}
-			])
-		);
-
-		audioGraphHistory = [...audioGraphHistory.slice(0, -1), newAudioGraphWithPositions];
-
-		plugPositions = addDiffToAllPositions(plugPositions, -positionChange.x, -positionChange.y);
-
-		dragPosition = {
-			x: event.clientX,
-			y: event.clientY
-		};
-	};
-
-	$: previousAudioGraph = audioGraphHistory.at(-2) ?? {};
-	$: audioGraph = audioGraphHistory.at(-1) ?? {};
-
-	const dispatcher = createEventDispatcher();
-
-	$: {
-		dispatcher('change', audioGraph);
-	}
-
-	let selectedNodeIds: string[] = [];
 
 	$: {
 		if (selectNodesStartPosition && selectNodesEndPosition) {
@@ -271,6 +202,12 @@
 
 			selectedNodeIds = [...selectedNodeIds, ...filteredIds];
 		}
+	}
+
+	const dispatcher = createEventDispatcher();
+
+	$: {
+		dispatcher('change', audioGraph);
 	}
 
 	let plugPositions: PlugPositions = {};
@@ -540,17 +477,44 @@
 	let menuKind: 'canvas' | 'node' | 'line' | 'line-multiply' = 'canvas';
 	let chosenLine: LineToDisplay | null = null;
 	let menuNodeId: string = '';
-
 	$: chosenLineMultiply = chosenLine?.multiply;
 
-	const handleCanvasLeftClick = (event: MouseEvent) => {
+	const handleOpenContextMenu = (event: TouchEvent | MouseEvent) => {
 		event.preventDefault();
 
-		menuPosition = { x: event.clientX, y: event.clientY };
+		if (event instanceof TouchEvent) {
+			const touch = event.changedTouches[0];
+
+			if (!dragPosition) return;
+			if (!startDragPosition) return;
+			if (!touch) return;
+
+			const positionChange = {
+				x: Math.abs(dragPosition.x - startDragPosition.x),
+				y: Math.abs(dragPosition.y - startDragPosition.y)
+			};
+
+			if (showMenu) {
+				closeMenu();
+				return;
+			} else if (positionChange.x < 5 && positionChange.y < 5) {
+				menuPosition = { x: touch.clientX, y: touch.clientY };
+			} else {
+				return;
+			}
+		} else {
+			menuPosition = { x: event.clientX, y: event.clientY };
+		}
+
 		showMenu = true;
 		menuKind = 'canvas';
 		chosenLine = null;
 		chosenLineMultiply = undefined;
+	};
+
+	const closeMenu = () => {
+		showMenu = false;
+		chosenLine = null;
 	};
 
 	const handleLineLeftClick = (line: LineToDisplay) => (event: MouseEvent) => {
@@ -571,11 +535,6 @@
 		menuKind = 'node';
 		chosenLine = null;
 		menuNodeId = nodeId;
-	};
-
-	const closeMenu = () => {
-		showMenu = false;
-		chosenLine = null;
 	};
 
 	let showProjectsModal = false;
@@ -686,12 +645,15 @@
 
 <div
 	class="canvas"
+	on:mousedown={handleStartSelectingNodes}
+	on:mousemove={handleSelectNodesDrag}
+	on:mouseup={handleSelectNodesEnd}
 	on:mousedown={handleDragCanvasStart}
+	on:touchstart={handleDragCanvasStart}
 	on:mousemove={handleDragCanvas}
+	on:touchmove={handleDragCanvas}
 	on:mouseup={handleDragCanvasEnd}
-	on:touchstart={handleTouchDragCanvasStart}
-	on:touchmove={handleTouchDragCanvas}
-	on:touchend={handleTouchDragCanvasEnd}
+	on:touchend={handleDragCanvasEnd}
 	on:click={handleCanvasDoubleClick}
 	on:keydown={() => {}}
 	bind:this={container}
@@ -713,7 +675,8 @@
 	/>
 	<div
 		class="audio-canvas"
-		on:contextmenu={handleCanvasLeftClick}
+		on:contextmenu={handleOpenContextMenu}
+		on:touchend={handleOpenContextMenu}
 		on:mousemove={handleLineDrag}
 		on:touchmove={handleTouchLineDrag}
 		on:touchend={handleTouchLineDragStop}
@@ -739,7 +702,7 @@
 				on:deleteNode={handleDeleteNode}
 				on:knobMouseUp={handleKnobMouseUp}
 				on:contextmenu={handleNodeLeftClick(id)}
-				on:click={handleNodeClick(id)}
+				on:click={handleSelectNodeClick(id)}
 			/>
 		{/each}
 		{#if selectNodesStartPosition && selectNodesEndPosition}

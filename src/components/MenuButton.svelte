@@ -2,7 +2,7 @@
 	export let variant: 'default' | 'danger' = 'default';
 </script>
 
-<button on:click on:keypress class:danger={variant === 'danger'}>
+<button on:click on:touchstart on:keypress class:danger={variant === 'danger'}>
 	<slot />
 </button>
 

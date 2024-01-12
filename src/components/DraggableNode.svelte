@@ -59,8 +59,6 @@
 	};
 
 	const handleTouchMove = (event: TouchEvent) => {
-		event.preventDefault();
-
 		const touch = event.touches[0];
 
 		if (!touch) {
