@@ -25,18 +25,11 @@
 		}
 	}
 
-	const handlePlugClick = (event: Event) => {
+	const handlePlugClick = (event: MouseEvent | TouchEvent) => {
 		event.stopPropagation();
 		event.preventDefault();
 
-		dispatcher('click', { id, type });
-	};
-
-	const handlePlugTouchStart = (event: Event) => {
-		event.stopPropagation();
-		event.preventDefault();
-
-		dispatcher('touchstart', { id, type });
+		dispatcher('click', { id, type, clickEvent: event });
 	};
 
 	const handlePlugUp = (event: Event) => {
@@ -52,8 +45,8 @@
 		class="plug"
 		bind:this={plug}
 		on:mousedown={handlePlugClick}
+		on:touchstart={handlePlugClick}
 		on:mouseup={handlePlugUp}
-		on:touchstart={handlePlugTouchStart}
 		data-id={id}
 		data-node-id={nodeId}
 		data-type={type}

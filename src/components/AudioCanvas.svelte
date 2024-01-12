@@ -310,25 +310,26 @@
 		startingPlug = { id, type, nodeId };
 		positionOfStartingPlug =
 			plugPositions[nodeId]?.[type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'][id]!;
-
-		window.addEventListener('mouseup', stopDragging, { once: true });
-	};
-
-	const handlePlugTouchStart = (
-		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
-	) => {
-		const { id, type, nodeId } = event.detail;
-
-		draggingLine = true;
-		startingPlug = { id, type, nodeId };
-		positionOfStartingPlug =
-			plugPositions[nodeId]?.[type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'][id]!;
-
-		window.addEventListener('touchend', handleTouchLineDragStop, { once: true });
 	};
 
 	const stopDragging = () => {
 		draggingLine = false;
+	};
+
+	const handleLineDrag = (event: MouseEvent | TouchEvent) => {
+		if (!draggingLine) return;
+
+		event.preventDefault();
+
+		if (event instanceof MouseEvent) {
+			positionOfEndPlug = { x: event.clientX, y: event.clientY };
+		} else {
+			const touch = event.touches[0];
+
+			if (!touch) return;
+
+			positionOfEndPlug = { x: touch.clientX, y: touch.clientY };
+		}
 	};
 
 	const handlePlugUp = (
@@ -361,24 +362,45 @@
 		stopDragging();
 	};
 
-	const handleLineDrag = (event: MouseEvent) => {
-		event.preventDefault();
+	const handleTouchLineDragStopForKnob = (event: TouchEvent) => {
+		if (!draggingLine) return;
+		if (!startingPlug) return;
 
-		positionOfEndPlug = { x: event.clientX, y: event.clientY };
+		const changedTouch = event.changedTouches[0];
+
+		if (!changedTouch) return;
+
+		const element = document.elementFromPoint(changedTouch.clientX, changedTouch.clientY);
+
+		if (!element) return;
+
+		const knob = element.closest('[data-parameter-name]');
+
+		if (!knob) return;
+
+		const parameterName = knob.getAttribute('data-parameter-name');
+
+		if (!parameterName) return;
+
+		const nodeId = knob.getAttribute('data-node-id');
+
+		if (!nodeId) return;
+
+		audioGraphHistory = [
+			...audioGraphHistory,
+			addConnectionToParameter(audioGraph, startingPlug, {
+				nodeId,
+				type: 'input',
+				id: parameterName
+			})
+		];
+
+		stopDragging();
 	};
 
-	const handleTouchLineDrag = (event: TouchEvent) => {
-		event.preventDefault();
-
-		const touch = event.touches[0];
-
-		if (!touch) return;
-
-		positionOfEndPlug = { x: touch.clientX, y: touch.clientY };
-	};
-
-	const handleTouchLineDragStop = (event: TouchEvent) => {
-		draggingLine = false;
+	const handleTouchLineDragStopForPlug = (event: TouchEvent) => {
+		if (!draggingLine) return;
+		if (!startingPlug) return;
 
 		const changedTouch = event.changedTouches[0];
 
@@ -403,8 +425,6 @@
 		const type = plug.getAttribute('data-type') as 'input' | 'output' | null;
 
 		if (!type) return;
-
-		if (!startingPlug) return;
 
 		audioGraphHistory = [
 			...audioGraphHistory,
@@ -678,8 +698,9 @@
 		on:contextmenu={handleOpenContextMenu}
 		on:touchend={handleOpenContextMenu}
 		on:mousemove={handleLineDrag}
-		on:touchmove={handleTouchLineDrag}
-		on:touchend={handleTouchLineDragStop}
+		on:touchmove={handleLineDrag}
+		on:touchend={handleTouchLineDragStopForPlug}
+		on:touchend={handleTouchLineDragStopForKnob}
 	>
 		{#each Object.entries(audioGraph) as [id, node] (id)}
 			<DraggableNode
@@ -697,7 +718,6 @@
 				on:nodeParameterChangeStart={handleNodeParameterChangeStart}
 				on:nodeParameterChange={handleNodeParameterChange}
 				on:nodePlugClick={handlePlugClick}
-				on:nodePlugTouchStart={handlePlugTouchStart}
 				on:nodePlugUp={handlePlugUp}
 				on:deleteNode={handleDeleteNode}
 				on:knobMouseUp={handleKnobMouseUp}
@@ -781,6 +801,7 @@
 					polarity="uni"
 					draggingLine={false}
 					audioParamAnalyser={undefined}
+					nodeId=""
 					on:change={handleMultiplyValueChange}
 					on:mousedown={handleMultiplyValueChangeStart}
 				/>

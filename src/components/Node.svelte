@@ -91,21 +91,15 @@
 		dispatcher('nodeParameterChange', { id, parameterName, value });
 	};
 
-	const handlePlugClick = (event: any) => {
+	const handlePlugClick = (event: CustomEvent<{id: string, type: string; clickEvent: MouseEvent | TouchEvent}>) => {
 		const plugId = event.detail.id;
 		const type = event.detail.type;
+		const clickEvent = event.detail.clickEvent;
 
-		dispatcher('nodePlugClick', { id: plugId, type, nodeId: id });
+		dispatcher('nodePlugClick', { id: plugId, type, nodeId: id, clickEvent });
 	};
 
-	const handlePlugTouchStart = (event: any) => {
-		const plugId = event.detail.id;
-		const type = event.detail.type;
-
-		dispatcher('nodePlugTouchStart', { id: plugId, type, nodeId: id });
-	};
-
-	const handlePlugUp = (event: any) => {
+	const handlePlugUp = (event: CustomEvent<{id: string, type: string; }>) => {
 		const plugId = event.detail.id;
 		const type = event.detail.type;
 
@@ -150,6 +144,7 @@
 						polarity={staticDefinition.parameters[nodeParameter[0]]?.polarity ?? 'uni'}
 						linear={staticDefinition.parameters[nodeParameter[0]]?.linear}
 						{draggingLine}
+						nodeId={id}
 						on:change={handleParameterChange}
 						on:mousedown={handleParameterChangeStart}
 						on:mouseup={handleKnobMouseUp}
@@ -175,7 +170,6 @@
 					on:plug={handlePlug}
 					on:click={handlePlugClick}
 					on:up={handlePlugUp}
-					on:touchstart={handlePlugTouchStart}
 				/>
 			{/each}
 		</div>
@@ -188,7 +182,6 @@
 					staticDefinition={output}
 					on:plug={handlePlug}
 					on:click={handlePlugClick}
-					on:touchstart={handlePlugTouchStart}
 					on:up={handlePlugUp}
 				/>
 			{/each}

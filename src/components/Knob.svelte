@@ -5,6 +5,7 @@
 
 	type Polarity = 'uni' | 'bi';
 
+	export let nodeId: string;
 	export let parameterName: string;
 	export let parameter: SerializedAudioParameter;
 	export let audioParamAnalyser: AnalyserNode | undefined;
@@ -281,7 +282,7 @@
 	};
 </script>
 
-<div class="wrapper">
+<div class="wrapper" data-node-id={nodeId} data-parameter-name={parameterName}>
 	<div class="title">{rewriteStringWithNumber(parameterName)}</div>
 	<div class="knob-wrapper" style={highlightStyle}>
 		<div
