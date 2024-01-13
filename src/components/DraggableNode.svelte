@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import type { AllowedSerializedAudioElements } from '../audio/AudioCanvas';
+	import type { AllowedSerializedAudioElements, Position } from '../audio/AudioCanvas';
 	import Node from './Node.svelte';
 
 	const dispatcher = createEventDispatcher();
@@ -90,19 +90,66 @@
 		window.removeEventListener('mousemove', handleMouseMove);
 	};
 
-	const handleContextMenu = (event: MouseEvent) => {
+	let touchStartPosition: Position | null = null;
+
+	const registerTouchStartPosition = (event: TouchEvent) => {
+		const touch = event.touches[0];
+
+		if (!touch) {
+			return;
+		}
+		touchStartPosition = {
+			x: touch.clientX,
+			y: touch.clientY
+		};
+	};
+
+	const handleNodeClick = (event: MouseEvent | TouchEvent) => {
 		event.stopPropagation();
+
+		let position: Position | null = null;
+		if (event instanceof TouchEvent) {
+			const touch = event.changedTouches[0];
+
+			if (!touchStartPosition) {
+				return;
+			}
+
+			if (!touch) {
+				return;
+			}
+
+			const xDiff = Math.abs(touch.clientX - touchStartPosition.x);
+			const yDiff = Math.abs(touch.clientY - touchStartPosition.y);
+
+			if (xDiff < 10 && yDiff < 10) {
+				position = {
+					x: touch.clientX,
+					y: touch.clientY
+				};
+			}
+		} else {
+			position = {
+				x: event.clientX,
+				y: event.clientY
+			};
+		}
+
+		if (position) {
+			dispatcher('contextmenu', { id, position });
+		}
 	};
 </script>
 
 <div
 	on:mousedown={handleMouseDown}
 	on:mouseup={handleMouseUp}
-	on:contextmenu={handleContextMenu}
-	on:contextmenu
+	on:contextmenu={handleNodeClick}
 	on:click
 	on:touchstart={handleTouchStart}
 	on:touchend={handleTouchEnd}
+	on:touchstart={registerTouchStartPosition}
+	on:touchend={handleNodeClick}
 	on:keydown={() => {}}
 	class="wrapper"
 	class:selected

@@ -57,7 +57,6 @@
 		let position: Position | null = null;
 
 		if (event instanceof TouchEvent) {
-
 			console.log('starting drag with touch');
 			const touch = event.touches[0];
 
@@ -441,6 +440,7 @@
 
 	/* ----------------------------------------------------------- */
 
+	/* LINE CONTEXT MENU ----------------------------------------- */
 	const handleDeleteConnection = (event: MouseEvent | TouchEvent) => {
 		event.stopPropagation();
 
@@ -454,8 +454,8 @@
 		closeMenu();
 	};
 
+	/* NODE CONTEXT MENU ----------------------------------------- */
 	let copiedNodes: string[] = [];
-
 	const handleCopyNode = () => {
 		if (selectedNodeIds.some((id) => id === menuNodeId)) {
 			copiedNodes = selectedNodeIds;
@@ -482,6 +482,7 @@
 		closeMenu();
 	};
 
+	/* PLAYING ----------------------------------------- */
 	let playing = false;
 
 	const handlePlayChange = (event: CustomEvent<{ playing: boolean }>) => {
@@ -563,24 +564,12 @@
 		chosenLine = line;
 	};
 
-	const handleNodeClick = (nodeId: string) => (event: MouseEvent | TouchEvent) => {
-		event.preventDefault();
-		event.stopPropagation();
-
-		if (event instanceof TouchEvent) {
-			const touch = event.changedTouches[0];
-
-			if (!touch) return;
-
-			menuPosition = { x: touch.clientX, y: touch.clientY };
-		} else {
-			menuPosition = { x: event.clientX, y: event.clientY };
-		}
-
+	const handleNodeClick = (event: CustomEvent<{ id: string; position: Position }>) => {
+		menuPosition = event.detail.position;
 		showMenu = true;
 		menuKind = 'node';
 		chosenLine = null;
-		menuNodeId = nodeId;
+		menuNodeId = event.detail.id;
 	};
 
 	let showProjectsModal = false;
@@ -747,7 +736,7 @@
 				on:nodePlugUp={handlePlugUp}
 				on:deleteNode={handleDeleteNode}
 				on:knobMouseUp={handleKnobMouseUp}
-				on:contextmenu={handleNodeClick(id)}
+				on:contextmenu={handleNodeClick}
 				on:click={handleSelectNodeClick(id)}
 			/>
 		{/each}
