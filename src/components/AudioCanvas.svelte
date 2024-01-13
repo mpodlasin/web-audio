@@ -299,7 +299,7 @@
 	let draggingLine = false;
 	let startingPlug: { id: string; type: 'input' | 'output'; nodeId: string } | null = null;
 	let positionOfStartingPlug: { x: number; y: number } = { x: 0, y: 0 };
-	let positionOfEndPlug: { x: number; y: number } = { x: 0, y: 0 };
+	let positionOfEndPlug: { x: number; y: number } | null = null;
 
 	const handlePlugClick = (
 		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
@@ -314,6 +314,9 @@
 
 	const stopDragging = () => {
 		draggingLine = false;
+		startingPlug = null;
+		positionOfStartingPlug = { x: 0, y: 0 };
+		positionOfEndPlug = null;
 	};
 
 	const handleLineDrag = (event: MouseEvent | TouchEvent) => {
@@ -768,7 +771,7 @@
 				/>
 			{/each}
 
-			{#if draggingLine}
+			{#if draggingLine && positionOfEndPlug}
 				<line
 					x1={positionOfStartingPlug.x}
 					y1={positionOfStartingPlug.y}
