@@ -57,6 +57,8 @@
 		let position: Position | null = null;
 
 		if (event instanceof TouchEvent) {
+
+			console.log('starting drag with touch');
 			const touch = event.touches[0];
 
 			if (!touch) return;
@@ -439,7 +441,9 @@
 
 	/* ----------------------------------------------------------- */
 
-	const handleDeleteConnection = () => {
+	const handleDeleteConnection = (event: MouseEvent | TouchEvent) => {
+		event.stopPropagation();
+
 		if (!chosenLine) return;
 
 		audioGraphHistory = [
