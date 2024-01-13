@@ -1,8 +1,6 @@
 <script lang="ts">
 	import Play from '../icons/Play.svg?component';
 	import Pause from '../icons/Pause.svg?component';
-	import Expand from '../icons/Expand.svg?component';
-	import Shrink from '../icons/Shrink.svg?component';
 	import ChevronRight from '../icons/Chevron_Right.svg?component';
 	import { createEventDispatcher } from 'svelte';
 

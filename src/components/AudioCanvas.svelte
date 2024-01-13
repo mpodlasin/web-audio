@@ -51,7 +51,6 @@
 	let startDragPosition: Position | null = null;
 
 	const handleDragCanvasStart = (event: TouchEvent | MouseEvent) => {
-		event.preventDefault();
 		audioGraphHistory = [...audioGraphHistory, audioGraph];
 
 		let position: Position | null = null;
@@ -67,6 +66,7 @@
 				y: touch.clientY
 			};
 		} else if (!isAlternativeKey(event)) {
+			event.preventDefault();
 			position = {
 				x: event.clientX,
 				y: event.clientY
@@ -84,7 +84,6 @@
 	};
 
 	const handleDragCanvas = (event: TouchEvent | MouseEvent) => {
-		event.preventDefault();
 		if (!dragPosition) return;
 
 		let position: Position | null = null;
@@ -99,6 +98,7 @@
 				y: touch.clientY
 			};
 		} else {
+			event.preventDefault();
 			position = {
 				x: event.clientX,
 				y: event.clientY
@@ -323,9 +323,8 @@
 	const handleLineDrag = (event: MouseEvent | TouchEvent) => {
 		if (!draggingLine) return;
 
-		event.preventDefault();
-
 		if (event instanceof MouseEvent) {
+			event.preventDefault();
 			positionOfEndPlug = { x: event.clientX, y: event.clientY };
 		} else {
 			const touch = event.touches[0];
@@ -508,8 +507,6 @@
 	$: chosenLineMultiply = chosenLine?.multiply;
 
 	const handleOpenContextMenu = (event: TouchEvent | MouseEvent) => {
-		event.preventDefault();
-
 		if (event instanceof TouchEvent) {
 			const touch = event.changedTouches[0];
 
@@ -531,6 +528,7 @@
 				return;
 			}
 		} else {
+			event.preventDefault();
 			menuPosition = { x: event.clientX, y: event.clientY };
 		}
 
@@ -546,7 +544,6 @@
 	};
 
 	const handleLineClick = (line: LineToDisplay) => (event: MouseEvent | TouchEvent) => {
-		event.preventDefault();
 		event.stopPropagation();
 
 		if (event instanceof TouchEvent) {
@@ -556,6 +553,7 @@
 
 			menuPosition = { x: touch.clientX, y: touch.clientY };
 		} else {
+			event.preventDefault();
 			menuPosition = { x: event.clientX, y: event.clientY };
 		}
 
