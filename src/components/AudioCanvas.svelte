@@ -38,13 +38,31 @@
 	export let projectNames: string[];
 	export let project: Project;
 
+	const dispatcher = createEventDispatcher();
+
 	let container: HTMLDivElement;
 
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
+	let plugPositions: PlugPositions = {};
+
 	let audioGraphHistory: SerializedAudioElements[] = [{}, project.audioCanvas];
 	$: previousAudioGraph = audioGraphHistory.at(-2) ?? {};
 	$: audioGraph = audioGraphHistory.at(-1) ?? {};
+
+	$: {
+		dispatcher('change', audioGraph);
+	}
+	
+	$: {
+		updateAudioCanvas(audioGraph, previousAudioGraph, audioNodeDatabase);
+	}
+
+	$: {
+		if (audioGraphHistory.length > 100) {
+			audioGraphHistory = audioGraphHistory.slice(audioGraphHistory.length - 100);
+		}
+	}
 
 	/* DRAGGING CANVAS ----------------------------------------- */
 	let dragPosition: Position | null = null;
@@ -56,7 +74,6 @@
 		let position: Position | null = null;
 
 		if (event instanceof TouchEvent) {
-			console.log('starting drag with touch');
 			const touch = event.touches[0];
 
 			if (!touch) return;
@@ -205,14 +222,7 @@
 		}
 	}
 
-	const dispatcher = createEventDispatcher();
-
-	$: {
-		dispatcher('change', audioGraph);
-	}
-
-	let plugPositions: PlugPositions = {};
-
+	/* DRAGGING NODES ----------------------------------------- */
 	const handleDragStart = () => {
 		audioGraphHistory = [...audioGraphHistory, audioGraph];
 	};
@@ -246,6 +256,7 @@
 		}
 	};
 
+	/* PLUG POSITIONS ----------------------------------------- */
 	const handleNodePlugPositions = (
 		event: CustomEvent<{
 			id: string;
@@ -265,6 +276,7 @@
 
 	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions);
 
+	/* NODE PARAMETER CHANGE ----------------------------------------- */
 	const handleNodeParameterChangeStart = () => {
 		audioGraphHistory = [...audioGraphHistory, audioGraph];
 	};
@@ -280,10 +292,6 @@
 		];
 	};
 
-	$: {
-		updateAudioCanvas(audioGraph, previousAudioGraph, audioNodeDatabase);
-	}
-
 	const handleCreateElementClick = (
 		event: CustomEvent<keyof typeof allowedSerializedAudioElementStaticDefinitions>
 	) => {
@@ -294,9 +302,7 @@
 		closeMenu();
 	};
 
-	/* -------------------------------------------------------------------------- */
-	/* LINE DRAGGING */
-
+	/* LINE DRAGGING ----------------------------------------- */
 	let draggingLine = false;
 	let startingPlug: { id: string; type: 'input' | 'output'; nodeId: string } | null = null;
 	let positionOfStartingPlug: { x: number; y: number } = { x: 0, y: 0 };
@@ -437,33 +443,6 @@
 		stopDragging();
 	};
 
-	/* ----------------------------------------------------------- */
-
-	/* LINE CONTEXT MENU ----------------------------------------- */
-	const handleDeleteConnection = (event: MouseEvent | TouchEvent) => {
-		event.stopPropagation();
-
-		if (!chosenLine) return;
-
-		audioGraphHistory = [
-			...audioGraphHistory,
-			removeConnection(audioGraph, chosenLine.line[0], chosenLine.line[1])
-		];
-
-		closeMenu();
-	};
-
-	/* NODE CONTEXT MENU ----------------------------------------- */
-	let copiedNodes: string[] = [];
-	const handleCopyNode = () => {
-		if (selectedNodeIds.some((id) => id === menuNodeId)) {
-			copiedNodes = selectedNodeIds;
-		} else {
-			copiedNodes = [menuNodeId];
-		}
-		closeMenu();
-	};
-
 	const handlePasteClick = () => {
 		const newAudioGraph = insertExistingNodes(audioGraph, copiedNodes, menuPosition);
 		audioGraphHistory = [...audioGraphHistory, newAudioGraph];
@@ -570,6 +549,59 @@
 		menuNodeId = event.detail.id;
 	};
 
+	/* LINE CONTEXT MENU ----------------------------------------- */
+	const handleDeleteConnection = (event: MouseEvent | TouchEvent) => {
+		event.stopPropagation();
+
+		if (!chosenLine) return;
+
+		audioGraphHistory = [
+			...audioGraphHistory,
+			removeConnection(audioGraph, chosenLine.line[0], chosenLine.line[1])
+		];
+
+		closeMenu();
+	};
+
+	const openLineMultiplyMenu = (event: MouseEvent | TouchEvent) => {
+		event.stopPropagation();
+
+		menuKind = 'line-multiply';
+	};
+
+	const handleMultiplyValueChangeStart = (event: CustomEvent) => {
+		audioGraphHistory = [...audioGraphHistory, audioGraph];
+	};
+
+	const handleMultiplyValueChange = (
+		event: CustomEvent<{ parameterName: string; value: number }>
+	) => {
+		const { value } = event.detail;
+
+		if (!chosenLine) return;
+
+		const nodeId = chosenLine.line[1].nodeId;
+		const inputId = chosenLine.line[0].nodeId;
+
+		audioGraphHistory = [
+			...audioGraphHistory.slice(0, -1),
+			changeParameterMultiply(audioGraph, nodeId, chosenLine.line[1].id, inputId, value)
+		];
+		chosenLineMultiply = value;
+	};
+
+	/* NODE CONTEXT MENU ----------------------------------------- */
+	let copiedNodes: string[] = [];
+	const handleCopyNode = () => {
+		if (selectedNodeIds.some((id) => id === menuNodeId)) {
+			copiedNodes = selectedNodeIds;
+		} else {
+			copiedNodes = [menuNodeId];
+		}
+		closeMenu();
+	};
+
+	/* PROJECTS ----------------------------------------- */
 	let showProjectsModal = false;
 
 	const handleProjectNameClick = () => {
@@ -590,6 +622,7 @@
 		dispatcher('projectChange', event.detail);
 	};
 
+	/* CHANGE COLOR ----------------------------------------- */
 	let changeColorModalIsOpen = false;
 	let changedColorNodeId = '';
 	$: changedColorNode = audioGraph[changedColorNodeId];
@@ -632,12 +665,7 @@
 		closeChangeColorModal();
 	};
 
-	$: {
-		if (audioGraphHistory.length > 100) {
-			audioGraphHistory = audioGraphHistory.slice(audioGraphHistory.length - 100);
-		}
-	}
-
+	/* UNDO ----------------------------------------- */
 	const handleCanvasKeypress = (event: KeyboardEvent) => {
 		if (event.key === 'z' && (event.ctrlKey || event.metaKey)) {
 			if (audioGraphHistory.length > 2) {
@@ -645,35 +673,7 @@
 			}
 		}
 	};
-
 	window.addEventListener('keydown', handleCanvasKeypress);
-
-	const openLineMultiplyMenu = (event: MouseEvent | TouchEvent) => {
-		event.stopPropagation();
-
-		menuKind = 'line-multiply';
-	};
-
-	const handleMultiplyValueChangeStart = (event: CustomEvent) => {
-		audioGraphHistory = [...audioGraphHistory, audioGraph];
-	};
-
-	const handleMultiplyValueChange = (
-		event: CustomEvent<{ parameterName: string; value: number }>
-	) => {
-		const { value } = event.detail;
-
-		if (!chosenLine) return;
-
-		const nodeId = chosenLine.line[1].nodeId;
-		const inputId = chosenLine.line[0].nodeId;
-
-		audioGraphHistory = [
-			...audioGraphHistory.slice(0, -1),
-			changeParameterMultiply(audioGraph, nodeId, chosenLine.line[1].id, inputId, value)
-		];
-		chosenLineMultiply = value;
-	};
 </script>
 
 <div
