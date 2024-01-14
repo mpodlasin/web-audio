@@ -53,23 +53,10 @@
 		previousAngle = angle;
 
 		dispatcher('mousedown');
-
-		window.addEventListener('touchmove', handleTouchMove);
-
-		window.addEventListener(
-			'touchend',
-			() => {
-				isDragging = false;
-				draggingStartPosition = null;
-				window.removeEventListener('touchmove', handleTouchMove);
-			},
-			{ once: true }
-		);
 	}
 
 	function handleTouchMove(event: TouchEvent) {
-		event.preventDefault();
-
+		event.stopPropagation();
 		if (isDragging && draggingStartPosition) {
 			const factor = event.shiftKey ? 10 : 3;
 			const touch = event.touches[0];
@@ -95,7 +82,12 @@
 		}
 	}
 
-	function handleTouchEnd() {
+	function handleTouchEnd(event: TouchEvent) {
+		event.stopPropagation();
+
+		isDragging = false;
+		draggingStartPosition = null;
+
 		dispatcher('mouseup', {
 			parameterName
 		});
@@ -290,6 +282,7 @@
 			on:mousedown={handleMouseDown}
 			on:mouseup={handleMouseUp}
 			on:touchstart={handleTouchStart}
+			on:touchmove={handleTouchMove}
 			on:touchend={handleTouchEnd}
 			on:mouseenter={handleMouseEnter}
 			on:mouseleave={handleMouseLeave}

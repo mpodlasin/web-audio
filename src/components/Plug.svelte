@@ -27,12 +27,15 @@
 
 	const handlePlugClick = (event: MouseEvent | TouchEvent) => {
 		event.stopPropagation();
-		event.preventDefault();
 
-		dispatcher('click', { id, type, clickEvent: event });
+		if (event instanceof MouseEvent) {
+			event.preventDefault();
+		}
+
+		dispatcher('click', { id, type });
 	};
 
-	const handlePlugUp = (event: Event) => {
+	const handlePlugUp = (event: MouseEvent) => {
 		event.stopPropagation();
 		event.preventDefault();
 

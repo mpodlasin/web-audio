@@ -92,13 +92,12 @@
 	};
 
 	const handlePlugClick = (
-		event: CustomEvent<{ id: string; type: string; clickEvent: MouseEvent | TouchEvent }>
+		event: CustomEvent<{ id: string; type: string }>
 	) => {
 		const plugId = event.detail.id;
 		const type = event.detail.type;
-		const clickEvent = event.detail.clickEvent;
 
-		dispatcher('nodePlugClick', { id: plugId, type, nodeId: id, clickEvent });
+		dispatcher('nodePlugClick', { id: plugId, type, nodeId: id });
 	};
 
 	const handlePlugUp = (event: CustomEvent<{ id: string; type: string }>) => {
