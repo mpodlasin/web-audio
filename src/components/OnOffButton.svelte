@@ -7,6 +7,13 @@
 
 	const dispatcher = createEventDispatcher();
 
+	const handleTouchClick = (event: TouchEvent) => {
+		event.stopPropagation();
+		event.preventDefault();
+
+		handleClick();
+	};
+
 	const handleClick = () => {
 		dispatcher('change', {
 			parameterName: label,
@@ -16,7 +23,7 @@
 </script>
 
 <div class="wrapper">
-	<button class:active on:click={handleClick} />
+	<button class:active on:click={handleClick} on:touchstart={handleTouchClick} />
 	<div class="label">{rewriteStringWithNumber(label)}</div>
 </div>
 
