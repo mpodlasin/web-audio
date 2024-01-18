@@ -34,12 +34,10 @@
 
 	let highlightedParameter = '';
 
-	$: {
-		if (isCustomAudioNode(instantiatedNode)) {
-			instantiatedNode.onHighlightParameter((parameterName) => {
-				highlightedParameter = parameterName;
-			});
-		}
+	if (isCustomAudioNode(instantiatedNode)) {
+		instantiatedNode.onHighlightParameter((parameterName) => {
+			highlightedParameter = parameterName;
+		});
 	}
 
 	$: categoryName = showCategory ? getCategoryReadableName(node.type) ?? '' : '';
