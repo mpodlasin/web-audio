@@ -194,9 +194,14 @@
 		}
 	}
 
+	let animating = false;
+
 	$: {
-		if (audioParamAnalyser && isControlled) {
+		if (isControlled && !animating && audioParamAnalyser) {
+			animating = true;
 			animateAudioParam();
+		} else if (!isControlled && animating) {
+			animating = false;
 		}
 	}
 
@@ -206,7 +211,7 @@
 	let animatedValue = 0;
 
 	function animateAudioParam() {
-		if (audioParamAnalyser && isControlled) {
+		if (audioParamAnalyser && isControlled && animating) {
 			audioParamAnalyser.getFloatTimeDomainData(dataArray);
 
 			animatedValue = dataArray[0] ?? 0;
