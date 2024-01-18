@@ -6,16 +6,18 @@
 	export let chosenLine: LineToDisplay | null;
 
 	const cutLineOverlayConstant = 9;
+
+	$: vector = normalizedVector(line.from, line.to);
 </script>
 
 <line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} class="visible" />
 <line
 	on:contextmenu
 	on:touchstart
-	x1={line.from.x + normalizedVector(line.from, line.to).x * cutLineOverlayConstant}
-	y1={line.from.y + normalizedVector(line.from, line.to).y * cutLineOverlayConstant}
-	x2={line.to.x - normalizedVector(line.from, line.to).x * cutLineOverlayConstant}
-	y2={line.to.y - normalizedVector(line.from, line.to).y * cutLineOverlayConstant}
+	x1={line.from.x + vector.x * cutLineOverlayConstant}
+	y1={line.from.y + vector.y * cutLineOverlayConstant}
+	x2={line.to.x - vector.x * cutLineOverlayConstant}
+	y2={line.to.y - vector.y * cutLineOverlayConstant}
 	stroke="transparent"
 	stroke-width="7"
 	stroke-linecap="round"
