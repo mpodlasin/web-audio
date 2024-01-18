@@ -53,7 +53,7 @@
 	$: {
 		dispatcher('change', audioGraph);
 	}
-	
+
 	$: {
 		updateAudioCanvas(audioGraph, previousAudioGraph, audioNodeDatabase);
 	}
@@ -342,10 +342,25 @@
 	};
 
 	const handlePlugUp = (
-		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
+		event: CustomEvent<{
+			id: string;
+			type: 'input' | 'output';
+			nodeId: string;
+			event: MouseEvent | TouchEvent;
+		}>
 	) => {
 		if (!draggingLine) return;
 		if (!startingPlug) return;
+
+		if (event.detail.event instanceof TouchEvent) {
+			const connectedToPlug = handleTouchLineDragStopForPlug(event.detail.event);
+
+			if (connectedToPlug) return;
+
+			handleTouchLineDragStopForKnob(event.detail.event);
+
+			return;
+		}
 
 		audioGraphHistory = [
 			...audioGraphHistory,
@@ -355,7 +370,9 @@
 		stopDragging();
 	};
 
-	const handleKnobMouseUp = (event: CustomEvent<{ nodeId: string; parameterName: string }>) => {
+	const handleKnobMouseUp = (
+		event: CustomEvent<{ nodeId: string; parameterName: string; event: MouseEvent | TouchEvent }>
+	) => {
 		if (!draggingLine) return;
 		if (!startingPlug) return;
 
@@ -372,28 +389,28 @@
 	};
 
 	const handleTouchLineDragStopForKnob = (event: TouchEvent) => {
-		if (!draggingLine) return;
-		if (!startingPlug) return;
+		if (!draggingLine) return false;
+		if (!startingPlug) return false;
 
 		const changedTouch = event.changedTouches[0];
 
-		if (!changedTouch) return;
+		if (!changedTouch) return false;
 
 		const element = document.elementFromPoint(changedTouch.clientX, changedTouch.clientY);
 
-		if (!element) return;
+		if (!element) return false;
 
 		const knob = element.closest('[data-parameter-name]');
 
-		if (!knob) return;
+		if (!knob) return false;
 
 		const parameterName = knob.getAttribute('data-parameter-name');
 
-		if (!parameterName) return;
+		if (!parameterName) return false;
 
 		const nodeId = knob.getAttribute('data-node-id');
 
-		if (!nodeId) return;
+		if (!nodeId) return false;
 
 		audioGraphHistory = [
 			...audioGraphHistory,
@@ -405,35 +422,37 @@
 		];
 
 		stopDragging();
+
+		return true;
 	};
 
 	const handleTouchLineDragStopForPlug = (event: TouchEvent) => {
-		if (!draggingLine) return;
-		if (!startingPlug) return;
+		if (!draggingLine) return false;
+		if (!startingPlug) return false;
 
 		const changedTouch = event.changedTouches[0];
 
-		if (!changedTouch) return;
+		if (!changedTouch) return false;
 
 		const element = document.elementFromPoint(changedTouch.clientX, changedTouch.clientY);
 
-		if (!element) return;
+		if (!element) return false;
 
 		const plug = element.closest('[data-id]');
 
-		if (!plug) return;
+		if (!plug) return false;
 
 		const id = plug.getAttribute('data-id');
 
-		if (!id) return;
+		if (!id) return false;
 
 		const nodeId = plug.getAttribute('data-node-id');
 
-		if (!nodeId) return;
+		if (!nodeId) return false;
 
 		const type = plug.getAttribute('data-type') as 'input' | 'output' | null;
 
-		if (!type) return;
+		if (!type) return false;
 
 		audioGraphHistory = [
 			...audioGraphHistory,
@@ -441,6 +460,8 @@
 		];
 
 		stopDragging();
+
+		return true;
 	};
 
 	const handlePasteClick = () => {
@@ -712,8 +733,6 @@
 		on:touchend={handleOpenContextMenu}
 		on:mousemove={handleLineDrag}
 		on:touchmove={handleLineDrag}
-		on:touchend={handleTouchLineDragStopForPlug}
-		on:touchend={handleTouchLineDragStopForKnob}
 	>
 		{#each Object.entries(audioGraph) as [id, node] (id)}
 			<DraggableNode

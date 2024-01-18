@@ -35,11 +35,14 @@
 		dispatcher('click', { id, type });
 	};
 
-	const handlePlugUp = (event: MouseEvent) => {
+	const handlePlugUp = (event: MouseEvent | TouchEvent) => {
 		event.stopPropagation();
-		event.preventDefault();
 
-		dispatcher('up', { id, type });
+		if (event instanceof MouseEvent) {
+			event.preventDefault();
+		}
+
+		dispatcher('up', { id, type, event });
 	};
 </script>
 
@@ -50,6 +53,7 @@
 		on:mousedown={handlePlugClick}
 		on:touchstart={handlePlugClick}
 		on:mouseup={handlePlugUp}
+		on:touchend={handlePlugUp}
 		data-id={id}
 		data-node-id={nodeId}
 		data-type={type}

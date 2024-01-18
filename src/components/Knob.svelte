@@ -83,13 +83,15 @@
 	}
 
 	function handleTouchEnd(event: TouchEvent) {
+		console.log('touchend');
 		event.stopPropagation();
 
 		isDragging = false;
 		draggingStartPosition = null;
 
 		dispatcher('mouseup', {
-			parameterName
+			parameterName,
+			event
 		});
 	}
 
@@ -117,9 +119,10 @@
 		);
 	}
 
-	function handleMouseUp() {
+	function handleMouseUp(event: MouseEvent) {
 		dispatcher('mouseup', {
-			parameterName
+			parameterName,
+			event
 		});
 	}
 

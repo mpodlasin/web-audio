@@ -91,28 +91,32 @@
 		dispatcher('nodeParameterChange', { id, parameterName, value });
 	};
 
-	const handlePlugClick = (
-		event: CustomEvent<{ id: string; type: string }>
-	) => {
+	const handlePlugClick = (event: CustomEvent<{ id: string; type: string }>) => {
 		const plugId = event.detail.id;
 		const type = event.detail.type;
 
 		dispatcher('nodePlugClick', { id: plugId, type, nodeId: id });
 	};
 
-	const handlePlugUp = (event: CustomEvent<{ id: string; type: string }>) => {
+	const handlePlugUp = (
+		event: CustomEvent<{ id: string; type: string; event: MouseEvent | TouchEvent }>
+	) => {
 		const plugId = event.detail.id;
 		const type = event.detail.type;
+		const underlyingEvent = event.detail.event;
 
-		dispatcher('nodePlugUp', { id: plugId, type, nodeId: id });
+		dispatcher('nodePlugUp', { id: plugId, type, nodeId: id, event: underlyingEvent });
 	};
 
 	let element: HTMLDivElement;
 
-	const handleKnobMouseUp = (event: CustomEvent) => {
+	const handleKnobMouseUp = (
+		event: CustomEvent<{ parameterName: string; event: MouseEvent | TouchEvent }>
+	) => {
 		dispatcher('knobMouseUp', {
 			nodeId: id,
-			parameterName: event.detail.parameterName
+			parameterName: event.detail.parameterName,
+			event: event.detail.event
 		});
 	};
 </script>
