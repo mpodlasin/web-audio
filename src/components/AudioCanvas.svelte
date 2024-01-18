@@ -357,7 +357,11 @@
 
 			if (connectedToPlug) return;
 
-			handleTouchLineDragStopForKnob(event.detail.event);
+			const connectedToKnob = handleTouchLineDragStopForKnob(event.detail.event);
+
+			if (connectedToKnob) return;
+
+			stopDragging();
 
 			return;
 		}
