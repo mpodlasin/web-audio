@@ -9,12 +9,9 @@
 	--danger-300: #ff6161;
 }
 
-html {
-	overscroll-behavior: none;
-}
-
 html,
 body {
+	overscroll-behavior: none;
 	margin: 0;
 	font-family: 'Inter', arial;
 	color: var(--neutral-300);
