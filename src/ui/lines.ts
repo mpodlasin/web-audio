@@ -102,12 +102,12 @@ export const getLinesToDisplay = (
 					] as const,
 					multiply,
 					from: {
-						x: fromPlugPosition.x - left,
-						y: fromPlugPosition.y - top
+						x: fromPlugPosition.x + left,
+						y: fromPlugPosition.y + top
 					},
 					to: {
-						x: toParameterKnobPosition.x - left,
-						y: toParameterKnobPosition.y - top
+						x: toParameterKnobPosition.x + left,
+						y: toParameterKnobPosition.y + top
 					},
 					key: `${fromId}-${fromName}-${toId}-${toName}`
 				}
@@ -130,12 +130,12 @@ export const getLinesToDisplay = (
 						}
 					] as const,
 					from: {
-						x: fromPlugPosition.x - left,
-						y: fromPlugPosition.y - top
+						x: fromPlugPosition.x + left,
+						y: fromPlugPosition.y + top
 					},
 					to: {
-						x: toPlugPosition.x - left,
-						y: toPlugPosition.y - top
+						x: toPlugPosition.x + left,
+						y: toPlugPosition.y + top
 					},
 					key: `${fromId}-${fromName}-${toId}-${toName}`
 				}

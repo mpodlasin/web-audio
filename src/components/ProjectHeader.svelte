@@ -47,6 +47,8 @@
 		display: flex;
 		gap: 32px;
 		align-items: center;
+
+		z-index: 100;
 	}
 
 	.projectName {

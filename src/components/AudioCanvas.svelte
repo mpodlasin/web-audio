@@ -17,7 +17,7 @@
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
 	import { getLinesToDisplay, type LineToDisplay } from '../ui/lines';
-	import { addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
+	import type { PlugPositions } from '../ui/plugPositions';
 	import ProjectsModal from './ProjectsModal.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import type { Project } from '../ui/project';
@@ -31,7 +31,6 @@
 	import { changeNodeColor } from '../ui/changeNodeColor';
 	import Knob from './Knob.svelte';
 	import PositionedMenu from './PositionedMenu.svelte';
-	import { dragAllNodes } from '../ui/dragAllNodes';
 	import { isAlternativeKey } from '../ui/isAlternativeKey';
 
 	export let chosenProjectName: string;
@@ -65,14 +64,11 @@
 	}
 
 	/* DRAGGING CANVAS ----------------------------------------- */
-	let dragPosition: Position | null = null;
+	let canvasRelativePosition: Position = { x: 0, y: 0 };
 	let startDragPosition: Position | null = null;
 
 	const handleDragCanvasStart = (event: TouchEvent | MouseEvent) => {
-		audioGraphHistory = [...audioGraphHistory, audioGraph];
-
-		let position: Position | null = null;
-
+		let position: Position;
 		if (event instanceof TouchEvent) {
 			const touch = event.touches[0];
 
@@ -82,7 +78,7 @@
 				x: touch.clientX,
 				y: touch.clientY
 			};
-		} else if (!isAlternativeKey(event)) {
+		} else {
 			event.preventDefault();
 			position = {
 				x: event.clientX,
@@ -90,20 +86,20 @@
 			};
 		}
 
-		if (!position) return;
-
-		dragPosition = position;
-		startDragPosition = position;
+		startDragPosition = {
+			x: position.x - canvasRelativePosition.x,
+			y: position.y - canvasRelativePosition.y
+		};
 	};
 
 	const handleDragCanvasEnd = () => {
-		dragPosition = null;
+		startDragPosition = null;
 	};
 
 	const handleDragCanvas = (event: TouchEvent | MouseEvent) => {
-		if (!dragPosition) return;
+		if (!startDragPosition) return;
 
-		let position: Position | null = null;
+		let position: Position;
 
 		if (event instanceof TouchEvent) {
 			const touch = event.touches[0];
@@ -122,20 +118,10 @@
 			};
 		}
 
-		if (!position) return;
-
-		const positionChange = {
-			x: dragPosition.x - position.x,
-			y: dragPosition.y - position.y
+		canvasRelativePosition = {
+			x: position.x - startDragPosition.x,
+			y: position.y - startDragPosition.y
 		};
-
-		const newAudioGraphWithPositions = dragAllNodes(audioGraph, positionChange);
-
-		audioGraphHistory = [...audioGraphHistory.slice(0, -1), newAudioGraphWithPositions];
-
-		plugPositions = addDiffToAllPositions(plugPositions, -positionChange.x, -positionChange.y);
-
-		dragPosition = position;
 	};
 
 	/* SELECTING NODES ----------------------------------------- */
@@ -274,7 +260,10 @@
 		};
 	};
 
-	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions);
+	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions, {
+		top: canvasRelativePosition.y,
+		left: canvasRelativePosition.x
+	});
 
 	/* NODE PARAMETER CHANGE ----------------------------------------- */
 	const handleNodeParameterChangeStart = () => {
@@ -514,13 +503,13 @@
 		if (event instanceof TouchEvent) {
 			const touch = event.changedTouches[0];
 
-			if (!dragPosition) return;
+			if (!canvasRelativePosition) return;
 			if (!startDragPosition) return;
 			if (!touch) return;
 
 			const positionChange = {
-				x: Math.abs(dragPosition.x - startDragPosition.x),
-				y: Math.abs(dragPosition.y - startDragPosition.y)
+				x: Math.abs(canvasRelativePosition.x - startDragPosition.x),
+				y: Math.abs(canvasRelativePosition.y - startDragPosition.y)
 			};
 
 			if (showMenu) {
@@ -731,6 +720,26 @@
 		on:projectDelete
 		on:projectNameChange
 	/>
+	<svg width="100vw" height="100vh">
+		{#each linesToDisplay as line (line.key)}
+			<Line
+				{line}
+				{chosenLine}
+				on:contextmenu={handleLineClick(line)}
+				on:touchstart={handleLineClick(line)}
+			/>
+		{/each}
+
+		{#if draggingLine && positionOfEndPlug}
+			<line
+				x1={positionOfStartingPlug.x}
+				y1={positionOfStartingPlug.y}
+				x2={positionOfEndPlug.x}
+				y2={positionOfEndPlug.y}
+				class="visible"
+			/>
+		{/if}
+	</svg>
 	<div
 		class="audio-canvas"
 		on:contextmenu={handleOpenContextMenu}
@@ -738,29 +747,34 @@
 		on:mousemove={handleLineDrag}
 		on:touchmove={handleLineDrag}
 	>
-		{#each Object.entries(audioGraph) as [id, node] (id)}
-			<DraggableNode
-				{id}
-				{node}
-				running={playing}
-				selected={selectedNodeIds.some((selectedId) => selectedId === id)}
-				instantiatedNode={audioNodeDatabase[id]}
-				position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
-				color={node.ui?.primmaryColor}
-				{draggingLine}
-				on:drag={handleDragNode}
-				on:dragstart={handleDragStart}
-				on:nodePlugAndKnobPositions={handleNodePlugPositions}
-				on:nodeParameterChangeStart={handleNodeParameterChangeStart}
-				on:nodeParameterChange={handleNodeParameterChange}
-				on:nodePlugClick={handlePlugClick}
-				on:nodePlugUp={handlePlugUp}
-				on:deleteNode={handleDeleteNode}
-				on:knobMouseUp={handleKnobMouseUp}
-				on:contextmenu={handleNodeClick}
-				on:click={handleSelectNodeClick(id)}
-			/>
-		{/each}
+		<div
+			class="nodes"
+			style="transform: translate({canvasRelativePosition.x}px, {canvasRelativePosition.y}px)"
+		>
+			{#each Object.entries(audioGraph) as [id, node] (id)}
+				<DraggableNode
+					{id}
+					{node}
+					running={playing}
+					selected={selectedNodeIds.some((selectedId) => selectedId === id)}
+					instantiatedNode={audioNodeDatabase[id]}
+					position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
+					color={node.ui?.primmaryColor}
+					{draggingLine}
+					on:drag={handleDragNode}
+					on:dragstart={handleDragStart}
+					on:nodePlugAndKnobPositions={handleNodePlugPositions}
+					on:nodeParameterChangeStart={handleNodeParameterChangeStart}
+					on:nodeParameterChange={handleNodeParameterChange}
+					on:nodePlugClick={handlePlugClick}
+					on:nodePlugUp={handlePlugUp}
+					on:deleteNode={handleDeleteNode}
+					on:knobMouseUp={handleKnobMouseUp}
+					on:contextmenu={handleNodeClick}
+					on:click={handleSelectNodeClick(id)}
+				/>
+			{/each}
+		</div>
 		{#if selectNodesStartPosition && selectNodesEndPosition}
 			<div
 				class="select"
@@ -775,27 +789,6 @@
 				)}px; height: {Math.abs(selectNodesEndPosition.y - selectNodesStartPosition.y)}px;"
 			/>
 		{/if}
-		<svg width="100vw" height="100vh">
-			{#each linesToDisplay as line (line.key)}
-				<Line
-					{line}
-					{chosenLine}
-					on:contextmenu={handleLineClick(line)}
-					on:touchstart={handleLineClick(line)}
-				/>
-			{/each}
-
-			{#if draggingLine && positionOfEndPlug}
-				<line
-					x1={positionOfStartingPlug.x}
-					y1={positionOfStartingPlug.y}
-					x2={positionOfEndPlug.x}
-					y2={positionOfEndPlug.y}
-					class="visible"
-				/>
-			{/if}
-		</svg>
-
 		{#if showMenu && menuKind === 'line'}
 			<PositionedMenu position={menuPosition} on:close={closeMenu}>
 				{#if chosenLineMultiply !== undefined}
@@ -882,11 +875,18 @@
 		background-color: var(--neutral-700);
 		overflow: hidden;
 		position: relative;
+		width: 100vw;
+		height: 100vh;
+	}
+
+	.audio-canvas {
+		height: 100%;
 	}
 
 	svg {
-		position: relative;
 		pointer-events: none;
+		position: fixed;
+		z-index: 10;
 	}
 
 	line.visible {
