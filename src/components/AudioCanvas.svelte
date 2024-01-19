@@ -238,7 +238,11 @@
 				);
 			}, audioGraphHistory);
 		} else {
-			audioGraphHistory = dragNode(event.detail, audioGraphHistory, plugPositions);
+			audioGraphHistory = dragNode({
+				id: event.detail.id,
+				x: event.detail.x - canvasRelativePosition.x,
+				y: event.detail.y - canvasRelativePosition.y,
+			}, audioGraphHistory, plugPositions);
 		}
 	};
 
