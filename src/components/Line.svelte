@@ -7,17 +7,48 @@
 
 	const cutLineOverlayConstant = 9;
 
-	$: vector = normalizedVector(line.from, line.to);
+	let vector = normalizedVector(line.from, line.to);
+
+	let x1 = line.from.x + vector.x * cutLineOverlayConstant;
+	let y1 = line.from.y + vector.y * cutLineOverlayConstant;
+	let x2 = line.to.x - vector.x * cutLineOverlayConstant;
+	let y2 = line.to.y - vector.y * cutLineOverlayConstant;
+
+	let visibleX1 = line.from.x;
+	let visibleY1 = line.from.y;
+	let visibleX2 = line.to.x;
+	let visibleY2 = line.to.y;
+
+	$: {
+		if (
+			line.from.x !== visibleX1 ||
+			line.from.y !== visibleY1 ||
+			line.to.x !== visibleX2 ||
+			line.to.y !== visibleY2
+		) {
+			vector = normalizedVector(line.from, line.to);
+
+			x1 = line.from.x + vector.x * cutLineOverlayConstant;
+			y1 = line.from.y + vector.y * cutLineOverlayConstant;
+			x2 = line.to.x - vector.x * cutLineOverlayConstant;
+			y2 = line.to.y - vector.y * cutLineOverlayConstant;
+
+			visibleX1 = line.from.x;
+			visibleY1 = line.from.y;
+			visibleX2 = line.to.x;
+			visibleY2 = line.to.y;
+		}
+	}
 </script>
 
-<line x1={line.from.x} y1={line.from.y} x2={line.to.x} y2={line.to.y} class="visible" />
+<line x1={visibleX1} y1={visibleY1} x2={visibleX2} y2={visibleY2} class="visible" />
 <line
 	on:contextmenu
 	on:touchstart
-	x1={line.from.x + vector.x * cutLineOverlayConstant}
-	y1={line.from.y + vector.y * cutLineOverlayConstant}
-	x2={line.to.x - vector.x * cutLineOverlayConstant}
-	y2={line.to.y - vector.y * cutLineOverlayConstant}
+	{x1}
+	{y1}
+	{x2}
+	{y2}
 	stroke="transparent"
 	stroke-width="7"
 	stroke-linecap="round"
