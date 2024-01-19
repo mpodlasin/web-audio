@@ -9,6 +9,10 @@
 	--danger-300: #ff6161;
 }
 
+html {
+	overscroll-behavior: none;
+}
+
 html,
 body {
 	margin: 0;
