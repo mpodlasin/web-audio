@@ -11,6 +11,7 @@ export interface LineToDisplay {
 	multiply?: number;
 	from: Position;
 	to: Position;
+	key: string;
 }
 
 export const getLinesToDisplay = (
@@ -107,7 +108,8 @@ export const getLinesToDisplay = (
 					to: {
 						x: toParameterKnobPosition.x - left,
 						y: toParameterKnobPosition.y - top
-					}
+					},
+					key: `${fromId}-${fromName}-${toId}-${toName}`
 				}
 			];
 		}
@@ -134,7 +136,8 @@ export const getLinesToDisplay = (
 					to: {
 						x: toPlugPosition.x - left,
 						y: toPlugPosition.y - top
-					}
+					},
+					key: `${fromId}-${fromName}-${toId}-${toName}`
 				}
 			];
 		}

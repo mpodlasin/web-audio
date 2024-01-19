@@ -776,7 +776,7 @@
 			/>
 		{/if}
 		<svg width="100vw" height="100vh">
-			{#each linesToDisplay as line}
+			{#each linesToDisplay as line (line.key)}
 				<Line
 					{line}
 					{chosenLine}
