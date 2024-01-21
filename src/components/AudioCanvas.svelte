@@ -245,8 +245,8 @@
 		} else {
 			audioGraphHistory = dragNode({
 				id: event.detail.id,
-				x: event.detail.x - canvasScaledRelativePosition.x,
-				y: event.detail.y - canvasScaledRelativePosition.y
+				x: event.detail.x / size - canvasScaledRelativePosition.x,
+				y: event.detail.y / size - canvasScaledRelativePosition.y
 			}, audioGraphHistory, plugPositions);
 		}
 	};
