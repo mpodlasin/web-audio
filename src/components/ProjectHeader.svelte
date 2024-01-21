@@ -18,6 +18,14 @@
 	const handleProjectNameClick = () => {
 		dispatcher('projectNameClick');
 	};
+
+	const handleMakeStuffSmaller = () => {
+		dispatcher('makeStuffSmaller');
+	};
+
+	const handleMakeStuffBigger = () => {
+		dispatcher('makeStuffBigger');
+	};
 </script>
 
 <div class="menu" on:touchstart={(e) => e.stopPropagation()}>
@@ -31,6 +39,10 @@
 		{:else}
 			<Play />
 		{/if}
+	</div>
+	<div class="resize">
+		<button on:click={handleMakeStuffSmaller}>-</button>
+		<button on:click={handleMakeStuffBigger}>+</button>
 	</div>
 </div>
 

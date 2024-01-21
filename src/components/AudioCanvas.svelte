@@ -265,8 +265,8 @@
 	};
 
 	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions, {
-		top: canvasRelativePosition.y,
-		left: canvasRelativePosition.x
+		top: canvasRelativePosition.y / size,
+		left: canvasRelativePosition.x / size
 	});
 
 	/* NODE PARAMETER CHANGE ----------------------------------------- */
@@ -692,6 +692,16 @@
 		}
 	};
 	window.addEventListener('keydown', handleCanvasKeypress);
+
+	/* RESIZE ----------------------------------------- */
+	let size = 1;
+	const makeStuffSmaller = () => {
+		size = size * 0.9;
+	};
+
+	const makeStuffBigger = () => {
+		size = size * 1.1;
+	};
 </script>
 
 <div
@@ -714,6 +724,8 @@
 		{playing}
 		on:playChange={handlePlayChange}
 		on:projectNameClick={handleProjectNameClick}
+		on:makeStuffSmaller={makeStuffSmaller}
+		on:makeStuffBigger={makeStuffBigger}
 	/>
 	<ProjectsModal
 		open={showProjectsModal}
@@ -725,14 +737,16 @@
 		on:projectNameChange
 	/>
 	<svg width="100vw" height="100vh">
-		{#each linesToDisplay as line (line.key)}
-			<Line
-				{line}
-				{chosenLine}
-				on:contextmenu={handleLineClick(line)}
-				on:touchstart={handleLineClick(line)}
-			/>
-		{/each}
+		<g transform="scale({size})">
+			{#each linesToDisplay as line (line.key)}
+				<Line
+					{line}
+					{chosenLine}
+					on:contextmenu={handleLineClick(line)}
+					on:touchstart={handleLineClick(line)}
+				/>
+			{/each}
+		</g>
 
 		{#if draggingLine && positionOfEndPlug}
 			<line
@@ -753,7 +767,7 @@
 	>
 		<div
 			class="nodes"
-			style="transform: translate({canvasRelativePosition.x}px, {canvasRelativePosition.y}px)"
+			style="transform: translate({canvasRelativePosition.x}px, {canvasRelativePosition.y}px) scale({size});"
 		>
 			{#each Object.entries(audioGraph) as [id, node] (id)}
 				<DraggableNode
@@ -906,5 +920,9 @@
 
 	.nodes-selected-header {
 		font-size: 14px;
+	}
+
+	.nodes {
+		transform-origin: top left;
 	}
 </style>
