@@ -755,17 +755,16 @@
 					on:touchstart={handleLineClick(line)}
 				/>
 			{/each}
+			{#if draggingLine && positionOfEndPlug}
+				<line
+					x1={positionOfStartingPlug.x}
+					y1={positionOfStartingPlug.y}
+					x2={positionOfEndPlug.x / size - canvasScaledRelativePosition.x}
+					y2={positionOfEndPlug.y / size - canvasScaledRelativePosition.y}
+					class="visible"
+				/>
+			{/if}
 		</g>
-
-		{#if draggingLine && positionOfEndPlug}
-			<line
-				x1={positionOfStartingPlug.x}
-				y1={positionOfStartingPlug.y}
-				x2={positionOfEndPlug.x}
-				y2={positionOfEndPlug.y}
-				class="visible"
-			/>
-		{/if}
 	</svg>
 	<div
 		class="audio-canvas"
