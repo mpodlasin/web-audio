@@ -67,6 +67,11 @@
 	let canvasRelativePosition: Position = { x: 0, y: 0 };
 	let startDragPosition: Position | null = null;
 
+	$: canvasScaledRelativePosition = {
+		x: canvasRelativePosition.x / size,
+		y: canvasRelativePosition.y / size
+	};
+
 	const handleDragCanvasStart = (event: TouchEvent | MouseEvent) => {
 		let position: Position;
 		if (event instanceof TouchEvent) {
@@ -240,8 +245,8 @@
 		} else {
 			audioGraphHistory = dragNode({
 				id: event.detail.id,
-				x: event.detail.x - canvasRelativePosition.x,
-				y: event.detail.y - canvasRelativePosition.y,
+				x: event.detail.x - canvasScaledRelativePosition.x,
+				y: event.detail.y - canvasScaledRelativePosition.y
 			}, audioGraphHistory, plugPositions);
 		}
 	};
@@ -265,8 +270,8 @@
 	};
 
 	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions, {
-		top: canvasRelativePosition.y / size,
-		left: canvasRelativePosition.x / size
+		top: canvasScaledRelativePosition.y,
+		left: canvasScaledRelativePosition.x
 	});
 
 	/* NODE PARAMETER CHANGE ----------------------------------------- */
