@@ -299,10 +299,13 @@
 	) => {
 		event.preventDefault();
 
-		audioGraphHistory = [...audioGraphHistory, addNode(audioGraph, event.detail, {
-			x: menuPosition.x / size - canvasScaledRelativePosition.x,
-			y: menuPosition.y / size - canvasScaledRelativePosition.y
-		})];
+		audioGraphHistory = [
+			...audioGraphHistory,
+			addNode(audioGraph, event.detail, {
+				x: menuPosition.x / size - canvasScaledRelativePosition.x,
+				y: menuPosition.y / size - canvasScaledRelativePosition.y
+			})
+		];
 
 		closeMenu();
 	};
@@ -353,7 +356,7 @@
 
 		positionOfEndPlug = {
 			x: position.x + canvasRelativePosition.x,
-			y: position.y + canvasRelativePosition.y,
+			y: position.y + canvasRelativePosition.y
 		};
 	};
 
@@ -728,12 +731,12 @@
 
 	/* LOGS ----------------------------------------- */
 	$: {
-		console.log('-------------------------------------------')
+		console.log('-------------------------------------------');
 		console.log('canvasRelativePosition', canvasRelativePosition);
 		console.log('size', size);
 		console.log('positionOfStartingPlug', positionOfStartingPlug);
 		console.log('positionOfEndPlug', positionOfEndPlug);
-		console.log('-------------------------------------------')
+		console.log('-------------------------------------------');
 	}
 </script>
 
