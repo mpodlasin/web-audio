@@ -43,7 +43,9 @@
 		{/if}
 	</div>
 	<div class="resize">
-		<div class="minus" on:click={handleMakeStuffSmaller} on:keypress={() => {}}><RemoveMinus /></div>
+		<div class="minus" on:click={handleMakeStuffSmaller} on:keypress={() => {}}>
+			<RemoveMinus />
+		</div>
 		<div class="plus" on:click={handleMakeStuffBigger} on:keypress={() => {}}><AddPlus /></div>
 	</div>
 </div>
@@ -84,7 +86,8 @@
 		align-items: center;
 	}
 
-	.minus, .plus {
+	.minus,
+	.plus {
 		cursor: pointer;
 	}
 </style>

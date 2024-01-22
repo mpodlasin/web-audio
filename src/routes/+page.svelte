@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { SerializedAudioElements } from '../audio/serialized';
+	import type { Position, SerializedAudioElements } from '../audio/serialized';
 	import { loadCustomNodes } from '../audio/web-audio/utils';
 	import AudioCanvas from '../components/AudioCanvas.svelte';
 	import { createProject, type Projects } from '../ui/project';
@@ -99,6 +99,38 @@
 			chosenProjectName = newName;
 		}
 	};
+
+	const handleSizeChange = (event: CustomEvent<number>) => {
+		const size = event.detail;
+
+		const project = projects[chosenProjectName];
+
+		if (!project) return;
+
+		projects = {
+			...projects,
+			[chosenProjectName]: {
+				...project,
+				size
+			}
+		};
+	};
+
+	const handleCanvasRelativePositionChange = (event: CustomEvent<Position>) => {
+		const { x, y } = event.detail;
+
+		const project = projects[chosenProjectName];
+
+		if (!project) return;
+
+		projects = {
+			...projects,
+			[chosenProjectName]: {
+				...project,
+				canvasRelativePosition: { x, y }
+			}
+		};
+	};
 </script>
 
 {#await customNodesPromise}
@@ -115,6 +147,8 @@
 				on:projectChange={handleProjectChange}
 				on:projectDelete={handleProjectDelete}
 				on:projectNameChange={handleProjectNameChange}
+				on:sizeChange={handleSizeChange}
+				on:canvasRelativePositionChange={handleCanvasRelativePositionChange}
 			/>
 		{/key}
 	{/if}

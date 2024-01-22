@@ -64,13 +64,17 @@
 	}
 
 	/* DRAGGING CANVAS ----------------------------------------- */
-	let canvasRelativePosition: Position = { x: 0, y: 0 };
+	let canvasRelativePosition: Position = project.canvasRelativePosition;
 	let startDragPosition: Position | null = null;
 
 	$: canvasScaledRelativePosition = {
 		x: canvasRelativePosition.x / size,
 		y: canvasRelativePosition.y / size
 	};
+
+	$: {
+		dispatcher('canvasRelativePositionChange', canvasRelativePosition);
+	}
 
 	const handleDragCanvasStart = (event: TouchEvent | MouseEvent) => {
 		let position: Position;
@@ -720,24 +724,19 @@
 	window.addEventListener('keydown', handleCanvasKeypress);
 
 	/* RESIZE ----------------------------------------- */
-	let size = 1;
+	let size = project.size;
+
 	const makeStuffSmaller = () => {
 		size = size * 0.9;
+
+		dispatcher('sizeChange', size);
 	};
 
 	const makeStuffBigger = () => {
 		size = size * 1.1;
-	};
 
-	/* LOGS ----------------------------------------- */
-	$: {
-		console.log('-------------------------------------------');
-		console.log('canvasRelativePosition', canvasRelativePosition);
-		console.log('size', size);
-		console.log('positionOfStartingPlug', positionOfStartingPlug);
-		console.log('positionOfEndPlug', positionOfEndPlug);
-		console.log('-------------------------------------------');
-	}
+		dispatcher('sizeChange', size);
+	};
 </script>
 
 <div
