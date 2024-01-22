@@ -752,6 +752,7 @@
 	on:mouseup={handleDragCanvasEnd}
 	on:touchend={handleDragCanvasEnd}
 	on:click={handleCanvasDoubleClick}
+	on:mouseup={stopDragging}
 	on:keydown={() => {}}
 	bind:this={container}
 >
