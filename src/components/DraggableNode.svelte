@@ -129,6 +129,7 @@
 				};
 			}
 		} else {
+			event.preventDefault();
 			position = {
 				x: event.clientX,
 				y: event.clientY

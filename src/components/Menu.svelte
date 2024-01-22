@@ -17,6 +17,8 @@
 		gap: 8px;
 		padding: 8px;
 
+		z-index: 100;
+
 		box-shadow: 3px 4px 19px -5px rgba(0, 0, 0, 0.6);
 	}
 </style>
