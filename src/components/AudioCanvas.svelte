@@ -299,7 +299,10 @@
 	) => {
 		event.preventDefault();
 
-		audioGraphHistory = [...audioGraphHistory, addNode(audioGraph, event.detail, menuPosition)];
+		audioGraphHistory = [...audioGraphHistory, addNode(audioGraph, event.detail, {
+			x: menuPosition.x / size - canvasScaledRelativePosition.x,
+			y: menuPosition.y / size - canvasScaledRelativePosition.y
+		})];
 
 		closeMenu();
 	};
@@ -317,8 +320,13 @@
 
 		draggingLine = true;
 		startingPlug = { id, type, nodeId };
-		positionOfStartingPlug =
+		const rawPositionOfStartingPlug =
 			plugPositions[nodeId]?.[type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'][id]!;
+
+		positionOfStartingPlug = {
+			x: rawPositionOfStartingPlug.x + canvasScaledRelativePosition.x,
+			y: rawPositionOfStartingPlug.y + canvasScaledRelativePosition.y
+		};
 	};
 
 	const stopDragging = () => {
@@ -331,16 +339,22 @@
 	const handleLineDrag = (event: MouseEvent | TouchEvent) => {
 		if (!draggingLine) return;
 
+		let position: Position;
 		if (event instanceof MouseEvent) {
 			event.preventDefault();
-			positionOfEndPlug = { x: event.clientX, y: event.clientY };
+			position = { x: event.clientX, y: event.clientY };
 		} else {
 			const touch = event.touches[0];
 
 			if (!touch) return;
 
-			positionOfEndPlug = { x: touch.clientX, y: touch.clientY };
+			position = { x: touch.clientX, y: touch.clientY };
 		}
+
+		positionOfEndPlug = {
+			x: position.x + canvasRelativePosition.x,
+			y: position.y + canvasRelativePosition.y,
+		};
 	};
 
 	const handlePlugUp = (
@@ -711,6 +725,16 @@
 	const makeStuffBigger = () => {
 		size = size * 1.1;
 	};
+
+	/* LOGS ----------------------------------------- */
+	$: {
+		console.log('-------------------------------------------')
+		console.log('canvasRelativePosition', canvasRelativePosition);
+		console.log('size', size);
+		console.log('positionOfStartingPlug', positionOfStartingPlug);
+		console.log('positionOfEndPlug', positionOfEndPlug);
+		console.log('-------------------------------------------')
+	}
 </script>
 
 <div
