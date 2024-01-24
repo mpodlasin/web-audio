@@ -17,7 +17,12 @@
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
 	import { getLinesToDisplay, type LineToDisplay } from '../ui/lines';
-	import { addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
+	import {
+		addDiffToAllPositions,
+		mapAllPositions,
+		mapPositions,
+		type PlugPositions
+	} from '../ui/plugPositions';
 	import ProjectsModal from './ProjectsModal.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import type { Project } from '../ui/project';
@@ -69,8 +74,8 @@
 
 	const translatePosition = (position: Position) => {
 		return {
-			x: position.x - canvasRelativePosition.x,
-			y: position.y - canvasRelativePosition.y
+			x: (position.x - canvasRelativePosition.x) / size,
+			y: (position.y - canvasRelativePosition.y) / size
 		};
 	};
 
@@ -737,13 +742,13 @@
 	let size = project.size;
 
 	const makeStuffSmaller = () => {
-		size = size * 0.9;
+		size = size - 0.1;
 
 		dispatcher('sizeChange', size);
 	};
 
 	const makeStuffBigger = () => {
-		size = size * 1.1;
+		size = size + 0.1;
 
 		dispatcher('sizeChange', size);
 	};
