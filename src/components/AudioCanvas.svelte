@@ -17,7 +17,7 @@
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
 	import { getLinesToDisplay, type LineToDisplay } from '../ui/lines';
-	import type { PlugPositions } from '../ui/plugPositions';
+	import { addDiffToAllPositions, type PlugPositions } from '../ui/plugPositions';
 	import ProjectsModal from './ProjectsModal.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import type { Project } from '../ui/project';
@@ -65,11 +65,20 @@
 
 	/* DRAGGING CANVAS ----------------------------------------- */
 	let canvasRelativePosition: Position = project.canvasRelativePosition;
-	let startDragPosition: Position | null = null;
+	let lastDragPosition: Position | null = null;
 
-	$: canvasScaledRelativePosition = {
-		x: canvasRelativePosition.x / size,
-		y: canvasRelativePosition.y / size
+	const translatePosition = (position: Position) => {
+		return {
+			x: position.x - canvasRelativePosition.x,
+			y: position.y - canvasRelativePosition.y
+		};
+	};
+
+	const translateEventWithPosition = <E extends Position>(event: CustomEvent<E>) => {
+		const translatedPosition = translatePosition(event.detail);
+
+		event.detail.x = translatedPosition.x;
+		event.detail.y = translatedPosition.y;
 	};
 
 	$: {
@@ -95,18 +104,15 @@
 			};
 		}
 
-		startDragPosition = {
-			x: position.x - canvasRelativePosition.x,
-			y: position.y - canvasRelativePosition.y
-		};
+		lastDragPosition = position;
 	};
 
 	const handleDragCanvasEnd = () => {
-		startDragPosition = null;
+		lastDragPosition = null;
 	};
 
 	const handleDragCanvas = (event: TouchEvent | MouseEvent) => {
-		if (!startDragPosition) return;
+		if (!lastDragPosition) return;
 
 		let position: Position;
 
@@ -127,10 +133,19 @@
 			};
 		}
 
-		canvasRelativePosition = {
-			x: position.x - startDragPosition.x,
-			y: position.y - startDragPosition.y
+		const dragDifference = {
+			x: position.x - lastDragPosition.x,
+			y: position.y - lastDragPosition.y
 		};
+
+		canvasRelativePosition = {
+			x: canvasRelativePosition.x + dragDifference.x,
+			y: canvasRelativePosition.y + dragDifference.y
+		};
+
+		plugPositions = addDiffToAllPositions(plugPositions, dragDifference);
+
+		lastDragPosition = position;
 	};
 
 	/* SELECTING NODES ----------------------------------------- */
@@ -223,6 +238,8 @@
 	};
 
 	const handleDragNode = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
+		translateEventWithPosition(event);
+
 		if (selectedNodeIds.some((selectedId) => selectedId === event.detail.id)) {
 			const draggedNode = audioGraph[event.detail.id];
 
@@ -250,8 +267,8 @@
 			audioGraphHistory = dragNode(
 				{
 					id: event.detail.id,
-					x: event.detail.x / size - canvasScaledRelativePosition.x,
-					y: event.detail.y / size - canvasScaledRelativePosition.y
+					x: event.detail.x,
+					y: event.detail.y
 				},
 				audioGraphHistory,
 				plugPositions
@@ -277,10 +294,7 @@
 		};
 	};
 
-	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions, {
-		top: canvasScaledRelativePosition.y,
-		left: canvasScaledRelativePosition.x
-	});
+	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions);
 
 	/* NODE PARAMETER CHANGE ----------------------------------------- */
 	const handleNodeParameterChangeStart = () => {
@@ -305,10 +319,7 @@
 
 		audioGraphHistory = [
 			...audioGraphHistory,
-			addNode(audioGraph, event.detail, {
-				x: menuPosition.x / size - canvasScaledRelativePosition.x,
-				y: menuPosition.y / size - canvasScaledRelativePosition.y
-			})
+			addNode(audioGraph, event.detail, translatePosition(menuPosition))
 		];
 
 		closeMenu();
@@ -331,8 +342,8 @@
 			plugPositions[nodeId]?.[type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'][id]!;
 
 		positionOfStartingPlug = {
-			x: rawPositionOfStartingPlug.x + canvasScaledRelativePosition.x,
-			y: rawPositionOfStartingPlug.y + canvasScaledRelativePosition.y
+			x: rawPositionOfStartingPlug.x,
+			y: rawPositionOfStartingPlug.y
 		};
 	};
 
@@ -359,8 +370,8 @@
 		}
 
 		positionOfEndPlug = {
-			x: position.x + canvasRelativePosition.x,
-			y: position.y + canvasRelativePosition.y
+			x: position.x,
+			y: position.y
 		};
 	};
 
@@ -537,13 +548,12 @@
 		if (event instanceof TouchEvent) {
 			const touch = event.changedTouches[0];
 
-			if (!canvasRelativePosition) return;
-			if (!startDragPosition) return;
+			if (!lastDragPosition) return;
 			if (!touch) return;
 
 			const positionChange = {
-				x: Math.abs(canvasRelativePosition.x - startDragPosition.x),
-				y: Math.abs(canvasRelativePosition.y - startDragPosition.y)
+				x: Math.abs(canvasRelativePosition.x - lastDragPosition.x),
+				y: Math.abs(canvasRelativePosition.y - lastDragPosition.y)
 			};
 
 			if (showMenu) {
@@ -737,6 +747,12 @@
 
 		dispatcher('sizeChange', size);
 	};
+
+	/* LOGS ----------------------------------------- */
+	$: {
+		console.log('canvasRelativePosition', canvasRelativePosition);
+		console.log('size', size);
+	}
 </script>
 
 <div
@@ -786,8 +802,8 @@
 				<line
 					x1={positionOfStartingPlug.x}
 					y1={positionOfStartingPlug.y}
-					x2={positionOfEndPlug.x / size - canvasScaledRelativePosition.x}
-					y2={positionOfEndPlug.y / size - canvasScaledRelativePosition.y}
+					x2={positionOfEndPlug.x}
+					y2={positionOfEndPlug.y}
 					class="visible"
 				/>
 			{/if}

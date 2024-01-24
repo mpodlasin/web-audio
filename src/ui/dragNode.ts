@@ -22,7 +22,7 @@ export const dragNode = (
 
 		if (!prevPositions) return audioGraphHistory;
 
-		plugPositions[id] = addDiff(prevPositions, diffX, diffY);
+		plugPositions[id] = addDiff(prevPositions, { x: diffX, y: diffY });
 
 		if (audioGraphHistoryCopy.length >= 2) {
 			audioGraphHistoryCopy = [

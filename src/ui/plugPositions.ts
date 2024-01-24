@@ -1,17 +1,18 @@
+import type { Position } from '../audio/serialized';
+
 export interface PlugPositions {
 	[key: string]: PlugPositionsForNode;
 }
 
 export interface PlugPositionsForNode {
-	inputPlugPositions: { [key: string]: { x: number; y: number } };
-	outputPlugPositions: { [key: string]: { x: number; y: number } };
-	parameterKnobPositions: { [key: string]: { x: number; y: number } };
+	inputPlugPositions: { [key: string]: Position };
+	outputPlugPositions: { [key: string]: Position };
+	parameterKnobPositions: { [key: string]: Position };
 }
 
 export const addDiff = (
 	plugPositions: PlugPositionsForNode,
-	diffX: number,
-	diffY: number
+	{ x: diffX, y: diffY }: Position
 ): PlugPositionsForNode => {
 	return {
 		inputPlugPositions: Object.fromEntries(
@@ -37,10 +38,9 @@ export const addDiff = (
 
 export const addDiffToAllPositions = (
 	plugPositions: PlugPositions,
-	diffX: number,
-	diffY: number
+	position: Position
 ): PlugPositions => {
 	return Object.fromEntries(
-		Object.entries(plugPositions).map(([id, positions]) => [id, addDiff(positions, diffX, diffY)])
+		Object.entries(plugPositions).map(([id, positions]) => [id, addDiff(positions, position)])
 	);
 };
