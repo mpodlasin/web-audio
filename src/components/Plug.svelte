@@ -7,23 +7,11 @@
 	export let id: string;
 	export let type: 'input' | 'output';
 	export let staticDefinition: StaticInputOutputDefinition;
-	let plug: HTMLElement;
 
 	const dispatcher = createEventDispatcher();
 
 	$: minValue = staticDefinition.minValue === -Infinity ? '-infinity' : staticDefinition.minValue;
 	$: maxValue = staticDefinition.maxValue === Infinity ? 'infinity' : staticDefinition.maxValue;
-
-	$: {
-		if (plug) {
-			dispatcher('plug', {
-				id,
-				type,
-				x: plug.getBoundingClientRect().x + 7,
-				y: plug.getBoundingClientRect().y + 7
-			});
-		}
-	}
 
 	const handlePlugClick = (event: MouseEvent | TouchEvent) => {
 		event.stopPropagation();
@@ -49,7 +37,7 @@
 <div class="wrapper">
 	<div
 		class="plug"
-		bind:this={plug}
+		data-plug={type}
 		on:mousedown={handlePlugClick}
 		on:touchstart={handlePlugClick}
 		on:mouseup={handlePlugUp}

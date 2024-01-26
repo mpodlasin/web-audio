@@ -34,8 +34,6 @@
 
 	const dispatcher = createEventDispatcher();
 
-	let knob: HTMLDivElement;
-
 	let isDragging = false;
 	let draggingStartPosition: Position | null = null;
 
@@ -184,16 +182,6 @@
 		}
 	}
 
-	$: {
-		if (knob) {
-			dispatcher('knob', {
-				parameterName,
-				x: knob.getBoundingClientRect().x + 6,
-				y: knob.getBoundingClientRect().y + 6
-			});
-		}
-	}
-
 	let animating = false;
 
 	$: {
@@ -282,7 +270,7 @@
 	};
 </script>
 
-<div class="wrapper" data-node-id={nodeId} data-parameter-name={parameterName}>
+<div class="wrapper" data-knob data-node-id={nodeId} data-parameter-name={parameterName}>
 	<div class="title">{rewriteStringWithNumber(parameterName)}</div>
 	<div class="knob-wrapper" style={highlightStyle}>
 		<div
@@ -299,7 +287,7 @@
 			style="transform: rotate({angle}deg)"
 		>
 			<div class="knob-pointer" />
-			<div class:visible={isControlled} class="controlled-knob-circle" bind:this={knob} />
+			<div class:visible={isControlled} class="controlled-knob-circle" />
 		</div>
 	</div>
 	{#if numberParameterInput}

@@ -17,14 +17,8 @@
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
 	import { getLinesToDisplay, type LineToDisplay } from '../ui/lines';
-	import {
-		addDiffToAllPositions,
-		mapAllPositions,
-		mapPositions,
-		type PlugPositions
-	} from '../ui/plugPositions';
 	import ProjectsModal from './ProjectsModal.svelte';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import type { Project } from '../ui/project';
 	import Line from './Line.svelte';
 	import ContextMenu from './ContextMenu.svelte';
@@ -37,6 +31,7 @@
 	import Knob from './Knob.svelte';
 	import PositionedMenu from './PositionedMenu.svelte';
 	import { isAlternativeKey } from '../ui/isAlternativeKey';
+	import type { PlugPositions } from '../ui/plugPositions';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
@@ -47,8 +42,6 @@
 	let container: HTMLDivElement;
 
 	let audioNodeDatabase: AudioNodeDatabase = {};
-
-	let plugPositions: PlugPositions = {};
 
 	let audioGraphHistory: SerializedAudioElements[] = [{}, project.audioCanvas];
 	$: previousAudioGraph = audioGraphHistory.at(-2) ?? {};
@@ -148,9 +141,9 @@
 			y: canvasRelativePosition.y + dragDifference.y
 		};
 
-		plugPositions = addDiffToAllPositions(plugPositions, dragDifference);
-
 		lastDragPosition = position;
+
+		updatePlugPositions();
 	};
 
 	/* SELECTING NODES ----------------------------------------- */
@@ -264,8 +257,7 @@
 						x: (node.ui?.position.x ?? 0) - diffX,
 						y: (node.ui?.position.y ?? 0) - diffY
 					},
-					audioGraphHistory,
-					plugPositions
+					audioGraphHistory
 				);
 			}, audioGraphHistory);
 		} else {
@@ -275,28 +267,89 @@
 					x: event.detail.x,
 					y: event.detail.y
 				},
-				audioGraphHistory,
-				plugPositions
+				audioGraphHistory
 			);
 		}
+
+		updatePlugPositions();
 	};
 
 	/* PLUG POSITIONS ----------------------------------------- */
-	const handleNodePlugPositions = (
-		event: CustomEvent<{
-			id: string;
-			inputPlugPositions: { [id: string]: Position };
-			outputPlugPositions: { [id: string]: Position };
-			parameterKnobPositions: { [id: string]: Position };
-		}>
-	) => {
-		const { id, inputPlugPositions, outputPlugPositions, parameterKnobPositions } = event.detail;
 
-		plugPositions[id] = {
-			inputPlugPositions,
-			outputPlugPositions,
-			parameterKnobPositions
-		};
+	const getPlugPositions = (): PlugPositions => {
+		const plugs = document.querySelectorAll('[data-plug]');
+		const knobs = document.querySelectorAll('[data-knob]');
+
+		const plugPositions: PlugPositions = {};
+
+		plugs.forEach((plug) => {
+			const id = plug.getAttribute('data-id');
+			const nodeId = plug.getAttribute('data-node-id');
+			const type = plug.getAttribute('data-type') as 'input' | 'output' | null;
+
+			if (!id) return;
+			if (!nodeId) return;
+			if (!type) return;
+
+			const rect = plug.getBoundingClientRect();
+
+			if (!plugPositions[nodeId]) {
+				plugPositions[nodeId] = {
+					inputPlugPositions: {},
+					outputPlugPositions: {},
+					parameterKnobPositions: {}
+				};
+			}
+
+			if (type === 'input') {
+				plugPositions[nodeId]!.inputPlugPositions[id] = {
+					x: rect.left + rect.width / 2,
+					y: rect.top + rect.height / 2
+				};
+			} else {
+				plugPositions[nodeId]!.outputPlugPositions[id] = {
+					x: rect.left + rect.width / 2,
+					y: rect.top + rect.height / 2
+				};
+			}
+		});
+
+		knobs.forEach((knob) => {
+			const nodeId = knob.getAttribute('data-node-id');
+			const parameterName = knob.getAttribute('data-parameter-name');
+
+			if (!nodeId) return;
+			if (!parameterName) return;
+
+			const rect = knob.getBoundingClientRect();
+
+			if (!plugPositions[nodeId]) {
+				plugPositions[nodeId] = {
+					inputPlugPositions: {},
+					outputPlugPositions: {},
+					parameterKnobPositions: {}
+				};
+			}
+
+			plugPositions[nodeId]!.parameterKnobPositions[parameterName] = {
+				x: rect.left + rect.width / 2,
+				y: rect.top + rect.height / 2
+			};
+		});
+
+		return plugPositions;
+	};
+
+	let plugPositions: PlugPositions = {};
+
+	onMount(() => {
+		updatePlugPositions();
+	});
+
+	const updatePlugPositions = () => {
+		requestAnimationFrame(() => {
+			plugPositions = getPlugPositions();
+		});
 	};
 
 	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions);
@@ -322,10 +375,7 @@
 	) => {
 		event.preventDefault();
 
-		audioGraphHistory = [
-			...audioGraphHistory,
-			addNode(audioGraph, event.detail, translatePosition(menuPosition))
-		];
+		audioGraphHistory = [...audioGraphHistory, addNode(audioGraph, event.detail, menuPosition)];
 
 		closeMenu();
 	};
@@ -744,20 +794,18 @@
 	const makeStuffSmaller = () => {
 		size = size - 0.1;
 
+		updatePlugPositions();
+
 		dispatcher('sizeChange', size);
 	};
 
 	const makeStuffBigger = () => {
 		size = size + 0.1;
 
+		updatePlugPositions();
+
 		dispatcher('sizeChange', size);
 	};
-
-	/* LOGS ----------------------------------------- */
-	$: {
-		console.log('canvasRelativePosition', canvasRelativePosition);
-		console.log('size', size);
-	}
 </script>
 
 <div
@@ -794,25 +842,23 @@
 		on:projectNameChange
 	/>
 	<svg width="100vw" height="100vh">
-		<g transform="scale({size})">
-			{#each linesToDisplay as line (line.key)}
-				<Line
-					{line}
-					{chosenLine}
-					on:contextmenu={handleLineClick(line)}
-					on:touchstart={handleLineClick(line)}
-				/>
-			{/each}
-			{#if draggingLine && positionOfEndPlug}
-				<line
-					x1={positionOfStartingPlug.x}
-					y1={positionOfStartingPlug.y}
-					x2={positionOfEndPlug.x}
-					y2={positionOfEndPlug.y}
-					class="visible"
-				/>
-			{/if}
-		</g>
+		{#each linesToDisplay as line (line.key)}
+			<Line
+				{line}
+				{chosenLine}
+				on:contextmenu={handleLineClick(line)}
+				on:touchstart={handleLineClick(line)}
+			/>
+		{/each}
+		{#if draggingLine && positionOfEndPlug}
+			<line
+				x1={positionOfStartingPlug.x}
+				y1={positionOfStartingPlug.y}
+				x2={positionOfEndPlug.x}
+				y2={positionOfEndPlug.y}
+				class="visible"
+			/>
+		{/if}
 	</svg>
 	<div
 		class="audio-canvas"
@@ -837,7 +883,6 @@
 					{draggingLine}
 					on:drag={handleDragNode}
 					on:dragstart={handleDragStart}
-					on:nodePlugAndKnobPositions={handleNodePlugPositions}
 					on:nodeParameterChangeStart={handleNodeParameterChangeStart}
 					on:nodeParameterChange={handleNodeParameterChange}
 					on:nodePlugClick={handlePlugClick}

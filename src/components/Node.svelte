@@ -44,40 +44,6 @@
 
 	const dispatcher = createEventDispatcher();
 
-	let inputPlugPositions: Record<string, { x: number; y: number }> = {};
-	let outputPlugPositions: Record<string, { x: number; y: number }> = {};
-	let parameterKnobPositions: Record<string, { x: number; y: number }> = {};
-
-	const handlePlug = (event: any) => {
-		const id = event.detail.id;
-		const x = event.detail.x;
-		const y = event.detail.y;
-		const type = event.detail.type;
-
-		if (type === 'input') {
-			inputPlugPositions[id] = { x, y };
-		} else {
-			outputPlugPositions[id] = { x, y };
-		}
-	};
-
-	const handleKnob = (event: any) => {
-		const id = event.detail.parameterName;
-		const x = event.detail.x;
-		const y = event.detail.y;
-
-		parameterKnobPositions[id] = { x, y };
-	};
-
-	$: {
-		dispatcher('nodePlugAndKnobPositions', {
-			id,
-			inputPlugPositions,
-			outputPlugPositions,
-			parameterKnobPositions
-		});
-	}
-
 	const handleParameterChangeStart = () => {
 		dispatcher('nodeParameterChangeStart');
 	};
@@ -151,7 +117,6 @@
 						on:change={handleParameterChange}
 						on:mousedown={handleParameterChangeStart}
 						on:mouseup={handleKnobMouseUp}
-						on:knob={handleKnob}
 					/>
 				{/if}
 			</div>
@@ -170,7 +135,6 @@
 					id={input.id}
 					nodeId={id}
 					staticDefinition={input}
-					on:plug={handlePlug}
 					on:click={handlePlugClick}
 					on:up={handlePlugUp}
 				/>
@@ -183,7 +147,6 @@
 					id={output.id}
 					nodeId={id}
 					staticDefinition={output}
-					on:plug={handlePlug}
 					on:click={handlePlugClick}
 					on:up={handlePlugUp}
 				/>
