@@ -1,7 +1,17 @@
 <script lang="ts">
+	const stopPropagation = (event: Event) => {
+		event.stopPropagation();
+	};
 </script>
 
-<div on:click on:keydown on:mouseup class="wrapper" on:touchstart={(e) => e.stopPropagation()}>
+<div
+	on:click
+	on:keydown
+	on:mouseup
+	class="wrapper"
+	on:touchstart={stopPropagation}
+	on:touchend={stopPropagation}
+>
 	<slot />
 </div>
 
