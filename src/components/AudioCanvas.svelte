@@ -602,16 +602,28 @@
 	let menuNodeId: string = '';
 	$: chosenLineMultiply = chosenLine?.multiply;
 
+	let openContextMenuStartPosition: Position | null = null;
+
+	const handleOpenContextMenuStart = (event: TouchEvent) => {
+		const touch = event.touches[0];
+
+		if (!touch) return;
+
+		openContextMenuStartPosition = {
+			x: touch.clientX,
+			y: touch.clientY
+		};
+	};
+
 	const handleOpenContextMenu = (event: TouchEvent | MouseEvent) => {
 		if (event instanceof TouchEvent) {
 			const touch = event.changedTouches[0];
 
-			if (!lastDragPosition) return;
 			if (!touch) return;
 
 			const positionChange = {
-				x: Math.abs(canvasRelativePosition.x - lastDragPosition.x),
-				y: Math.abs(canvasRelativePosition.y - lastDragPosition.y)
+				x: Math.abs(openContextMenuStartPosition!.x - touch.clientX),
+				y: Math.abs(openContextMenuStartPosition!.y - touch.clientY)
 			};
 
 			if (showMenu) {
@@ -866,6 +878,7 @@
 	<div
 		class="audio-canvas"
 		on:contextmenu={handleOpenContextMenu}
+		on:touchstart={handleOpenContextMenuStart}
 		on:touchend={handleOpenContextMenu}
 		on:mousemove={handleLineDrag}
 		on:touchmove={handleLineDrag}
