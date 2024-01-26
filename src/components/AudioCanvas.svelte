@@ -375,7 +375,10 @@
 	) => {
 		event.preventDefault();
 
-		audioGraphHistory = [...audioGraphHistory, addNode(audioGraph, event.detail, menuPosition)];
+		audioGraphHistory = [
+			...audioGraphHistory,
+			addNode(audioGraph, event.detail, translatePosition(menuPosition))
+		];
 
 		closeMenu();
 	};
