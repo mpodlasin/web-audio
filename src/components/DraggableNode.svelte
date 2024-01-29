@@ -170,6 +170,8 @@
 		on:nodePlugUp
 		on:deleteNode
 		on:knobMouseUp
+		on:plugCreated
+		on:knobCreated
 	/>
 </div>
 

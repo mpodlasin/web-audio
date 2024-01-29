@@ -276,10 +276,18 @@
 
 	/* PLUG POSITIONS ----------------------------------------- */
 
-	const getPlugPositions = (): PlugPositions => {
-		const plugs = document.querySelectorAll('[data-plug]');
-		const knobs = document.querySelectorAll('[data-knob]');
+	let plugs: HTMLDivElement[] = [];
+	let knobs: HTMLDivElement[] = [];
 
+	const handlePlugCreated = (event: CustomEvent<HTMLDivElement>) => {
+		plugs = [...plugs, event.detail];
+	};
+
+	const handleKnobCreated = (event: CustomEvent<HTMLDivElement>) => {
+		knobs = [...knobs, event.detail];
+	};
+
+	const getPlugPositions = (): PlugPositions => {
 		const plugPositions: PlugPositions = {};
 
 		plugs.forEach((plug) => {
@@ -907,6 +915,8 @@
 					on:knobMouseUp={handleKnobMouseUp}
 					on:contextmenu={handleNodeClick}
 					on:click={handleSelectNodeClick(id)}
+					on:plugCreated={handlePlugCreated}
+					on:knobCreated={handleKnobCreated}
 				/>
 			{/each}
 		</div>

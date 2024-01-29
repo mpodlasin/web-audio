@@ -17,6 +17,8 @@
 	export let draggingLine: boolean;
 	export let linear: boolean = false;
 
+	let knob: HTMLDivElement;
+
 	let hoveringOver = false;
 
 	$: hoveringOverWhileDraggingLine = hoveringOver && draggingLine;
@@ -33,6 +35,10 @@
 	};
 
 	const dispatcher = createEventDispatcher();
+
+	$: {
+		dispatcher('knobCreated', knob);
+	}
 
 	let isDragging = false;
 	let draggingStartPosition: Position | null = null;
@@ -270,7 +276,13 @@
 	};
 </script>
 
-<div class="wrapper" data-knob data-node-id={nodeId} data-parameter-name={parameterName}>
+<div
+	class="wrapper"
+	data-knob
+	data-node-id={nodeId}
+	data-parameter-name={parameterName}
+	bind:this={knob}
+>
 	<div class="title">{rewriteStringWithNumber(parameterName)}</div>
 	<div class="knob-wrapper" style={highlightStyle}>
 		<div

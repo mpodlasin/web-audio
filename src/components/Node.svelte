@@ -40,9 +40,9 @@
 		});
 	}
 
-	$: categoryName = showCategory ? getCategoryReadableName(node.type) ?? '' : '';
-
 	const dispatcher = createEventDispatcher();
+
+	$: categoryName = showCategory ? getCategoryReadableName(node.type) ?? '' : '';
 
 	const handleParameterChangeStart = () => {
 		dispatcher('nodeParameterChangeStart');
@@ -117,6 +117,7 @@
 						on:change={handleParameterChange}
 						on:mousedown={handleParameterChangeStart}
 						on:mouseup={handleKnobMouseUp}
+						on:knobCreated
 					/>
 				{/if}
 			</div>
@@ -137,6 +138,7 @@
 					staticDefinition={input}
 					on:click={handlePlugClick}
 					on:up={handlePlugUp}
+					on:plugCreated
 				/>
 			{/each}
 		</div>
@@ -149,6 +151,7 @@
 					staticDefinition={output}
 					on:click={handlePlugClick}
 					on:up={handlePlugUp}
+					on:plugCreated
 				/>
 			{/each}
 		</div>
