@@ -1,10 +1,22 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { CustomOscilloscopeNode } from '../audio/initialized';
+	import OnOffButton from './OnOffButton.svelte';
 
 	export let oscilloscopeNode: CustomOscilloscopeNode;
 	export let running: boolean;
 
-	const color = '#45C7FF';
+	let mode: 'fast' | 'slow' = 'fast';
+
+	let primaryColor = '#45C7FF';
+	let neutralColor = '#FFFFFF';
+
+	$: {
+		if (canvas) {
+			primaryColor = window.getComputedStyle(canvas).getPropertyValue('--primary-500');
+			neutralColor = window.getComputedStyle(canvas).getPropertyValue('--neutral-900');
+		}
+	}
 
 	$: analyser = oscilloscopeNode.webApiNode;
 	$: bufferLength = analyser.frequencyBinCount;
@@ -13,24 +25,22 @@
 	let canvas: HTMLCanvasElement;
 	$: canvasCtx = canvas?.getContext('2d') ?? null;
 
-	const steps = 20;
-
 	let lastPosition = 0;
 
-	function draw() {
-		requestAnimationFrame(draw);
-
+	function drawSlowMode() {
 		if (!running) return;
-
 		if (canvasCtx === null) return;
 		if (!canvas) return;
 		if (!analyser) return;
+		if (mode !== 'slow') return;
+
+		requestAnimationFrame(drawSlowMode);
 
 		analyser.getByteTimeDomainData(dataArray);
 
 		canvasCtx.lineWidth = 1;
-		canvasCtx.strokeStyle = color;
-		canvasCtx.fillStyle = color;
+		canvasCtx.strokeStyle = primaryColor;
+		canvasCtx.fillStyle = primaryColor;
 
 		const v = (dataArray[0] ?? 128) / 128.0;
 		const v2 = 2 - v;
@@ -50,12 +60,76 @@
 		canvasCtx.globalCompositeOperation = 'source-over';
 	}
 
-	draw();
+	function drawFastMode() {
+		if (!running) return;
+		if (canvasCtx === null) return;
+		if (!canvas) return;
+		if (!analyser) return;
+		if (mode !== 'fast') return;
+
+		requestAnimationFrame(drawFastMode);
+
+		analyser.getByteTimeDomainData(dataArray);
+
+		canvasCtx.fillStyle = neutralColor;
+		canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+		canvasCtx.lineWidth = 2;
+		canvasCtx.strokeStyle = primaryColor;
+
+		canvasCtx.beginPath();
+
+		const sliceWidth = (canvas.width * 1.0) / bufferLength;
+		let x = 0;
+
+		for (let i = 0; i < bufferLength; i++) {
+			const v = (dataArray[i] ?? 0) / 128.0;
+			const y = (v * canvas.height) / 2;
+
+			if (i === 0) {
+				canvasCtx.moveTo(x, y);
+			} else {
+				canvasCtx.lineTo(x, y);
+			}
+
+			x += sliceWidth;
+		}
+
+		canvasCtx.lineTo(canvas.width, canvas.height / 2);
+		canvasCtx.stroke();
+	}
+
+	const toggleMode = () => {
+		if (mode === 'fast') {
+			mode = 'slow';
+		} else {
+			mode = 'fast';
+		}
+	};
+
+	$: {
+		if (running) {
+			if (mode === 'fast') {
+				drawFastMode();
+			} else {
+				drawSlowMode();
+			}
+		}
+	}
 </script>
 
-<canvas bind:this={canvas} />
+<div class="container">
+	<canvas bind:this={canvas} />
+	<OnOffButton label="Slow" active={mode === 'slow'} on:change={toggleMode} />
+</div>
 
 <style>
+	.container {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 1em;
+	}
 	canvas {
 		border: 1px solid var(--neutral-500);
 		border-radius: 4px;

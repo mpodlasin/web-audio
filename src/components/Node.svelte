@@ -85,7 +85,7 @@
 	};
 </script>
 
-<div class="node" bind:this={element} style={color ? `--primary-500: ${color};` : ''}>
+<div class="node" bind:this={element} style={color ? `--primary-500: ${color};` : ''} data-node>
 	<div class="header">
 		{#if categoryName}
 			<span class="categoryName">{categoryName} / </span>
