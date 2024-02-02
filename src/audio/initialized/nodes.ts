@@ -3,7 +3,6 @@ import { allowedSerializedAudioElementStaticDefinitions, type NodeType } from '.
 import { settings } from '../settings';
 import { generateReverb } from '../web-audio/reverbGeneration';
 import {
-	isCustomAudioNodeWithWebApiNode,
 	type CustomAudioNode,
 	type CustomAudioNodeWithWebApiNode,
 	type CustomAudioScheduledSourceNode,
@@ -416,6 +415,7 @@ export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode
 
 		const slow = globalContext.createConstantSource();
 		slow.start();
+		slow.offset.value = 0;
 
 		this.slow = slow;
 	}

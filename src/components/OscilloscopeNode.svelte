@@ -14,12 +14,6 @@
 	$: slowParameter = serializedNode.parameters?.slow;
 
 	const handleSlowModeChange = (event: CustomEvent<{ parameterName: string; value: number }>) => {
-		console.log({
-			id,
-			parameterName: event.detail.parameterName,
-			value: event.detail.value
-		});
-
 		dispatcher('nodeParameterChange', {
 			id,
 			parameterName: event.detail.parameterName,
@@ -27,7 +21,7 @@
 		});
 	};
 
-	let mode: 'fast' | 'slow' = 'fast';
+	$: mode = slowParameter?.base === 1 ? 'slow' : 'fast';
 
 	let primaryColor = '#45C7FF';
 	let neutralColor = '#FFFFFF';
