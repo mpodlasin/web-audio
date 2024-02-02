@@ -1,10 +1,31 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	import type { CustomOscilloscopeNode } from '../audio/initialized';
+	import type { SerializedOscilloscopeNode } from '../audio/serialized';
 	import OnOffButton from './OnOffButton.svelte';
 
+	export let id: string;
+	export let serializedNode: SerializedOscilloscopeNode;
 	export let oscilloscopeNode: CustomOscilloscopeNode;
 	export let running: boolean;
+
+	const dispatcher = createEventDispatcher();
+
+	$: slowParameter = serializedNode.parameters?.slow;
+
+	const handleSlowModeChange = (event: CustomEvent<{ parameterName: string; value: number }>) => {
+		console.log({
+			id,
+			parameterName: event.detail.parameterName,
+			value: event.detail.value
+		});
+
+		dispatcher('nodeParameterChange', {
+			id,
+			parameterName: event.detail.parameterName,
+			value: event.detail.value
+		});
+	};
 
 	let mode: 'fast' | 'slow' = 'fast';
 
@@ -99,14 +120,6 @@
 		canvasCtx.stroke();
 	}
 
-	const toggleMode = () => {
-		if (mode === 'fast') {
-			mode = 'slow';
-		} else {
-			mode = 'fast';
-		}
-	};
-
 	$: {
 		if (running) {
 			if (mode === 'fast') {
@@ -120,7 +133,7 @@
 
 <div class="container">
 	<canvas bind:this={canvas} />
-	<OnOffButton label="Slow" active={mode === 'slow'} on:change={toggleMode} />
+	<OnOffButton label="slow" active={slowParameter?.base === 1} on:change={handleSlowModeChange} />
 </div>
 
 <style>

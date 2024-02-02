@@ -315,7 +315,9 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				contextDescription: 'Pass-through.'
 			}
 		],
-		parameters: {}
+		parameters: {
+			slow: buttonParameter
+		}
 	},
 	convolution: {
 		inputs: [audioInputOutputDefinition],

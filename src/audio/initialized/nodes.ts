@@ -409,8 +409,23 @@ export class CustomMultiplyNode extends GenericCustomAudioNodeWithWebApiNode<Gai
 }
 
 export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode<AnalyserNode> {
+	slow: ConstantSourceNode;
+
 	constructor(id: string) {
 		super(globalContext.createAnalyser(), id, 'oscilloscope');
+
+		const slow = globalContext.createConstantSource();
+		slow.start();
+
+		this.slow = slow;
+	}
+
+	getAudioParam(parameterName: string): AudioParam {
+		if (parameterName === 'slow') {
+			return this.slow.offset;
+		}
+
+		return accessParameter(this.webApiNode, parameterName);
 	}
 }
 

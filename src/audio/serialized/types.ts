@@ -94,7 +94,7 @@ export type SerializedAREnvelopeNode = SerializedAudioElement<'ar-envelope', 'at
 
 export type SerializedADEnvelopeNode = SerializedAudioElement<'ad-envelope', 'attack' | 'decay'>;
 
-export type SerializedOscilloscopeNode = SerializedAudioElement<'oscilloscope', never>;
+export type SerializedOscilloscopeNode = SerializedAudioElement<'oscilloscope', 'slow'>;
 
 export type SerializedConvolutionNode = SerializedAudioElement<'convolution', never>;
 
