@@ -118,6 +118,10 @@ export type SerializedSquareLFONode = SerializedAudioElement<'square-lfo', never
 
 export type SerializedPatternNode = SerializedAudioElement<'pattern', never>;
 
+export type SerializedTutorialNode = SerializedAudioElement<'tutorial', never> & {
+	descriptionId: string;
+}
+
 export type AllowedSerializedAudioElements =
 	| SerializedSineOscillatorNode
 	| SerializedSawOscillatorNode
@@ -146,6 +150,7 @@ export type AllowedSerializedAudioElements =
 	| SerializedSawLFONode
 	| SerializedTriangleLFONode
 	| SerializedSquareLFONode
-	| SerializedPatternNode;
+	| SerializedPatternNode
+	| SerializedTutorialNode;
 
 export type NodeType = AllowedSerializedAudioElements['type'];

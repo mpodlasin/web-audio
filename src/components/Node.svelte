@@ -7,12 +7,16 @@
 		CustomOscilloscopeNode,
 		isCustomAudioNode,
 		readableNames,
-		getCategoryReadableName
+		getCategoryReadableName,
+
+		EmptyCustomAudioNode
+
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
 	import OscilloscopeNode from './OscilloscopeNode.svelte';
 	import OnOffButton from './OnOffButton.svelte';
+	import TutorialNode from './TutorialNode.svelte';
 
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
@@ -33,7 +37,8 @@
 	});
 
 	$: isSpecialNode =
-		node.type === 'oscilloscope' && instantiatedNode instanceof CustomOscilloscopeNode;
+		node.type === 'oscilloscope' && instantiatedNode instanceof CustomOscilloscopeNode ||
+		node.type === 'tutorial' && instantiatedNode instanceof EmptyCustomAudioNode;
 
 	let highlightedParameter = '';
 
@@ -138,6 +143,9 @@
 				on:nodeParameterChange
 			/>
 		</div>
+	{/if}
+	{#if node.type === 'tutorial' && instantiatedNode instanceof EmptyCustomAudioNode}
+		<TutorialNode {node} />
 	{/if}
 	<div class="inputs-and-outputs">
 		<div class="inputs">

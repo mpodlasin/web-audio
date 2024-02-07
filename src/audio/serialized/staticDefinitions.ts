@@ -427,6 +427,11 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			step7: { ...buttonParameter, highlightIndex: 6 },
 			step8: { ...buttonParameter, highlightIndex: 7 }
 		}
+	},
+	tutorial: {
+		inputs: [],
+		outputs: [],
+		parameters: {}
 	}
 };
 
@@ -460,7 +465,8 @@ export const readableNames: { [P in NodeType]: string } = {
 	'sine-lfo': 'Sine',
 	'square-lfo': 'Square',
 	'triangle-lfo': 'Triangle',
-	pattern: 'Pattern'
+	pattern: 'Pattern',
+	tutorial: 'Tutorial'
 };
 
 export const categorizedNodeTypes = {
@@ -479,7 +485,7 @@ export const categorizedNodeTypes = {
 	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
 	clock: ['trigger', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
-	visualization: ['oscilloscope'] as NodeType[]
+	visualization: ['oscilloscope', 'tutorial'] as NodeType[]
 };
 
 const everyNodeIsIncludedInMenu = nodeTypes.every((nodeType) =>

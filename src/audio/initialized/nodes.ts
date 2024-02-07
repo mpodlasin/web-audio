@@ -342,6 +342,25 @@ export class CustomBipolarToUnipolarNode extends GenericCustomAudioNodeWithWebAp
 	}
 }
 
+export class EmptyCustomAudioNode implements CustomAudioNode {
+	getOutput(): Output {
+		throw new Error('Method not implemented.');
+	}
+	getInputNode(): AudioNode | null {
+		throw new Error('Method not implemented.');
+	}
+	getParameter(): CustomAudioParam {
+		throw new Error('Method not implemented.');
+	}
+	disconnect(): void {
+		throw new Error('Method not implemented.');
+	}
+	onHighlightParameter(): void {
+		throw new Error('Method not implemented.');
+	}
+}
+
+
 export class CustomFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
 	static filterTypeToNodeType: { [P in BiquadFilterType]: NodeType } = {
 		highpass: 'highpass-filter',
