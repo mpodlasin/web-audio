@@ -120,7 +120,7 @@ export type SerializedPatternNode = SerializedAudioElement<'pattern', never>;
 
 export type SerializedTutorialNode = SerializedAudioElement<'tutorial', never> & {
 	descriptionId: string;
-}
+};
 
 export type AllowedSerializedAudioElements =
 	| SerializedSineOscillatorNode

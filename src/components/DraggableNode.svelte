@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import type { AllowedSerializedAudioElements, Position } from '../audio/AudioCanvas';
+	import type {
+		AllowedSerializedAudioElements,
+		Position,
+		SerializedAudioElements
+	} from '../audio/AudioCanvas';
 	import Node from './Node.svelte';
 
 	const dispatcher = createEventDispatcher();
@@ -16,6 +20,7 @@
 	export let running: boolean;
 	export let draggingLine: boolean;
 	export let selected: boolean;
+	export let audioGraph: SerializedAudioElements;
 
 	let internalClickPosition = {
 		x: 0,
@@ -163,6 +168,7 @@
 		{running}
 		{draggingLine}
 		{color}
+		{audioGraph}
 		on:nodeParameterChangeStart
 		on:nodeParameterChange
 		on:nodePlugClick

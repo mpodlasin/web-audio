@@ -360,7 +360,6 @@ export class EmptyCustomAudioNode implements CustomAudioNode {
 	}
 }
 
-
 export class CustomFilterNode extends GenericCustomAudioNodeWithWebApiNode<BiquadFilterNode> {
 	static filterTypeToNodeType: { [P in BiquadFilterType]: NodeType } = {
 		highpass: 'highpass-filter',

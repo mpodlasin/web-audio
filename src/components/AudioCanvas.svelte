@@ -899,6 +899,7 @@
 				<DraggableNode
 					{id}
 					{node}
+					{audioGraph}
 					running={playing}
 					selected={selectedNodeIds.some((selectedId) => selectedId === id)}
 					instantiatedNode={audioNodeDatabase[id]}
@@ -1007,6 +1008,7 @@
 							instantiatedNode={null}
 							draggingLine={false}
 							running={playing}
+							{audioGraph}
 						/>
 					{/if}
 				</div>

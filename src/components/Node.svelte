@@ -8,9 +8,8 @@
 		isCustomAudioNode,
 		readableNames,
 		getCategoryReadableName,
-
-		EmptyCustomAudioNode
-
+		EmptyCustomAudioNode,
+		type SerializedAudioElements
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
@@ -24,6 +23,7 @@
 	export let running: boolean;
 	export let draggingLine: boolean;
 	export let color: string | undefined;
+	export let audioGraph: SerializedAudioElements;
 
 	$: staticDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
 	$: showCategory = staticDefinition.showCategory ?? false;
@@ -37,8 +37,8 @@
 	});
 
 	$: isSpecialNode =
-		node.type === 'oscilloscope' && instantiatedNode instanceof CustomOscilloscopeNode ||
-		node.type === 'tutorial' && instantiatedNode instanceof EmptyCustomAudioNode;
+		(node.type === 'oscilloscope' && instantiatedNode instanceof CustomOscilloscopeNode) ||
+		(node.type === 'tutorial' && instantiatedNode instanceof EmptyCustomAudioNode);
 
 	let highlightedParameter = '';
 
@@ -145,7 +145,7 @@
 		</div>
 	{/if}
 	{#if node.type === 'tutorial' && instantiatedNode instanceof EmptyCustomAudioNode}
-		<TutorialNode {node} />
+		<TutorialNode {node} {audioGraph} />
 	{/if}
 	<div class="inputs-and-outputs">
 		<div class="inputs">
