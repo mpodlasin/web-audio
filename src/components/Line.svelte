@@ -43,8 +43,8 @@
 
 <line x1={visibleX1} y1={visibleY1} x2={visibleX2} y2={visibleY2} class="visible" />
 <line
-	on:contextmenu
-	on:touchstart
+	on:click
+	on:keypress={() => {}}
 	{x1}
 	{y1}
 	{x2}

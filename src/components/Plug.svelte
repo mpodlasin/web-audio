@@ -19,22 +19,16 @@
 	$: minValue = staticDefinition.minValue === -Infinity ? '-infinity' : staticDefinition.minValue;
 	$: maxValue = staticDefinition.maxValue === Infinity ? 'infinity' : staticDefinition.maxValue;
 
-	const handlePlugClick = (event: MouseEvent | TouchEvent) => {
+	const handlePlugClick = (event: MouseEvent) => {
 		event.stopPropagation();
-
-		if (event instanceof MouseEvent) {
-			event.preventDefault();
-		}
+		event.preventDefault();
 
 		dispatcher('click', { id, type });
 	};
 
-	const handlePlugUp = (event: MouseEvent | TouchEvent) => {
+	const handlePlugUp = (event: PointerEvent) => {
 		event.stopPropagation();
-
-		if (event instanceof MouseEvent) {
-			event.preventDefault();
-		}
+		event.preventDefault();
 
 		dispatcher('up', { id, type, event });
 	};
@@ -44,10 +38,9 @@
 	<div
 		class="plug"
 		data-plug={type}
-		on:mousedown={handlePlugClick}
-		on:touchstart={handlePlugClick}
-		on:mouseup={handlePlugUp}
-		on:touchend={handlePlugUp}
+		on:click={handlePlugClick}
+		on:pointerup={handlePlugUp}
+		on:keydown={() => {}}
 		data-id={id}
 		data-node-id={nodeId}
 		data-type={type}

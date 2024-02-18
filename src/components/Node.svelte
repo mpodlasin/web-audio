@@ -70,9 +70,7 @@
 		dispatcher('nodePlugClick', { id: plugId, type, nodeId: id });
 	};
 
-	const handlePlugUp = (
-		event: CustomEvent<{ id: string; type: string; event: MouseEvent | TouchEvent }>
-	) => {
+	const handlePlugUp = (event: CustomEvent<{ id: string; type: string; event: PointerEvent }>) => {
 		const plugId = event.detail.id;
 		const type = event.detail.type;
 		const underlyingEvent = event.detail.event;
@@ -83,7 +81,7 @@
 	let element: HTMLDivElement;
 
 	const handleKnobMouseUp = (
-		event: CustomEvent<{ parameterName: string; event: MouseEvent | TouchEvent }>
+		event: CustomEvent<{ parameterName: string; event: PointerEvent }>
 	) => {
 		dispatcher('knobMouseUp', {
 			nodeId: id,

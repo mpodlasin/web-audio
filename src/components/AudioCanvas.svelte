@@ -83,24 +83,12 @@
 		dispatcher('canvasRelativePositionChange', canvasRelativePosition);
 	}
 
-	const handleDragCanvasStart = (event: TouchEvent | MouseEvent) => {
-		let position: Position;
-		if (event instanceof TouchEvent) {
-			const touch = event.touches[0];
-
-			if (!touch) return;
-
-			position = {
-				x: touch.clientX,
-				y: touch.clientY
-			};
-		} else {
-			event.preventDefault();
-			position = {
-				x: event.clientX,
-				y: event.clientY
-			};
-		}
+	const handleDragCanvasStart = (event: PointerEvent) => {
+		event.preventDefault();
+		const position = {
+			x: event.clientX,
+			y: event.clientY
+		};
 
 		lastDragPosition = position;
 	};
@@ -109,27 +97,14 @@
 		lastDragPosition = null;
 	};
 
-	const handleDragCanvas = (event: TouchEvent | MouseEvent) => {
+	const handleDragCanvas = (event: PointerEvent) => {
 		if (!lastDragPosition) return;
 
-		let position: Position;
-
-		if (event instanceof TouchEvent) {
-			const touch = event.touches[0];
-
-			if (!touch) return;
-
-			position = {
-				x: touch.clientX,
-				y: touch.clientY
-			};
-		} else {
-			event.preventDefault();
-			position = {
-				x: event.clientX,
-				y: event.clientY
-			};
-		}
+		event.preventDefault();
+		const position = {
+			x: event.clientX,
+			y: event.clientY
+		};
 
 		const dragDifference = {
 			x: position.x - lastDragPosition.x,
@@ -151,7 +126,7 @@
 	let selectNodesStartPosition: Position | null = null;
 	let selectNodesEndPosition: Position | null = null;
 
-	const handleStartSelectingNodes = (event: MouseEvent) => {
+	const handleStartSelectingNodes = (event: PointerEvent) => {
 		event.preventDefault();
 		audioGraphHistory = [...audioGraphHistory, audioGraph];
 
@@ -172,7 +147,7 @@
 		}
 	};
 
-	const handleSelectNodesDrag = (event: MouseEvent) => {
+	const handleSelectNodesDrag = (event: PointerEvent) => {
 		if (!selectNodesStartPosition) return;
 
 		selectNodesEndPosition = {
@@ -420,20 +395,11 @@
 		positionOfEndPlug = null;
 	};
 
-	const handleLineDrag = (event: MouseEvent | TouchEvent) => {
+	const handleLineDrag = (event: PointerEvent) => {
 		if (!draggingLine) return;
 
-		let position: Position;
-		if (event instanceof MouseEvent) {
-			event.preventDefault();
-			position = { x: event.clientX, y: event.clientY };
-		} else {
-			const touch = event.touches[0];
-
-			if (!touch) return;
-
-			position = { x: touch.clientX, y: touch.clientY };
-		}
+		event.preventDefault();
+		const position = { x: event.clientX, y: event.clientY };
 
 		positionOfEndPlug = {
 			x: position.x,
@@ -446,7 +412,7 @@
 			id: string;
 			type: 'input' | 'output';
 			nodeId: string;
-			event: MouseEvent | TouchEvent;
+			event: PointerEvent;
 		}>
 	) => {
 		if (!draggingLine) return;
@@ -475,7 +441,7 @@
 	};
 
 	const handleKnobMouseUp = (
-		event: CustomEvent<{ nodeId: string; parameterName: string; event: MouseEvent | TouchEvent }>
+		event: CustomEvent<{ nodeId: string; parameterName: string; event: PointerEvent }>
 	) => {
 		if (!draggingLine) return;
 		if (!startingPlug) return;
@@ -612,39 +578,26 @@
 
 	let openContextMenuStartPosition: Position | null = null;
 
-	const handleOpenContextMenuStart = (event: TouchEvent) => {
-		const touch = event.touches[0];
-
-		if (!touch) return;
-
+	const handleOpenContextMenuStart = (event: PointerEvent) => {
 		openContextMenuStartPosition = {
-			x: touch.clientX,
-			y: touch.clientY
+			x: event.clientX,
+			y: event.clientY
 		};
 	};
 
-	const handleOpenContextMenu = (event: TouchEvent | MouseEvent) => {
-		if (event instanceof TouchEvent) {
-			const touch = event.changedTouches[0];
+	const handleOpenContextMenu = (event: PointerEvent) => {
+		const positionChange = {
+			x: Math.abs(openContextMenuStartPosition!.x - event.clientX),
+			y: Math.abs(openContextMenuStartPosition!.y - event.clientY)
+		};
 
-			if (!touch) return;
-
-			const positionChange = {
-				x: Math.abs(openContextMenuStartPosition!.x - touch.clientX),
-				y: Math.abs(openContextMenuStartPosition!.y - touch.clientY)
-			};
-
-			if (showMenu) {
-				closeMenu();
-				return;
-			} else if (positionChange.x < 5 && positionChange.y < 5) {
-				menuPosition = { x: touch.clientX, y: touch.clientY };
-			} else {
-				return;
-			}
-		} else {
-			event.preventDefault();
+		if (showMenu) {
+			closeMenu();
+			return;
+		} else if (positionChange.x < 5 && positionChange.y < 5) {
 			menuPosition = { x: event.clientX, y: event.clientY };
+		} else {
+			return;
 		}
 
 		showMenu = true;
@@ -658,20 +611,10 @@
 		chosenLine = null;
 	};
 
-	const handleLineClick = (line: LineToDisplay) => (event: MouseEvent | TouchEvent) => {
+	const handleLineClick = (line: LineToDisplay) => (event: MouseEvent) => {
 		event.stopPropagation();
-
-		if (event instanceof TouchEvent) {
-			const touch = event.changedTouches[0];
-
-			if (!touch) return;
-
-			menuPosition = { x: touch.clientX, y: touch.clientY };
-		} else {
-			event.preventDefault();
-			menuPosition = { x: event.clientX, y: event.clientY };
-		}
-
+		event.preventDefault();
+		menuPosition = { x: event.clientX, y: event.clientY };
 		showMenu = true;
 		menuKind = 'line';
 		chosenLine = line;
@@ -686,7 +629,7 @@
 	};
 
 	/* LINE CONTEXT MENU ----------------------------------------- */
-	const handleDeleteConnection = (event: MouseEvent | TouchEvent) => {
+	const handleDeleteConnection = (event: MouseEvent) => {
 		event.stopPropagation();
 
 		if (!chosenLine) return;
@@ -699,7 +642,7 @@
 		closeMenu();
 	};
 
-	const openLineMultiplyMenu = (event: MouseEvent | TouchEvent) => {
+	const openLineMultiplyMenu = (event: MouseEvent) => {
 		event.stopPropagation();
 
 		menuKind = 'line-multiply';
@@ -833,15 +776,12 @@
 
 <div
 	class="canvas"
-	on:mousedown={handleStartSelectingNodes}
-	on:mousemove={handleSelectNodesDrag}
+	on:pointerdown={handleStartSelectingNodes}
+	on:pointermove={handleSelectNodesDrag}
 	on:mouseup={handleSelectNodesEnd}
-	on:mousedown={handleDragCanvasStart}
-	on:touchstart={handleDragCanvasStart}
-	on:mousemove={handleDragCanvas}
-	on:touchmove={handleDragCanvas}
-	on:mouseup={handleDragCanvasEnd}
-	on:touchend={handleDragCanvasEnd}
+	on:pointerdown={handleDragCanvasStart}
+	on:pointermove={handleDragCanvas}
+	on:pointerup={handleDragCanvasEnd}
 	on:click={handleCanvasDoubleClick}
 	on:mouseup={stopDragging}
 	on:keydown={() => {}}
@@ -866,12 +806,7 @@
 	/>
 	<svg width="100vw" height="100vh">
 		{#each linesToDisplay as line (line.key)}
-			<Line
-				{line}
-				{chosenLine}
-				on:contextmenu={handleLineClick(line)}
-				on:touchstart={handleLineClick(line)}
-			/>
+			<Line {line} {chosenLine} on:click={handleLineClick(line)} />
 		{/each}
 		{#if draggingLine && positionOfEndPlug}
 			<line
@@ -885,11 +820,9 @@
 	</svg>
 	<div
 		class="audio-canvas"
-		on:contextmenu={handleOpenContextMenu}
-		on:touchstart={handleOpenContextMenuStart}
-		on:touchend={handleOpenContextMenu}
-		on:mousemove={handleLineDrag}
-		on:touchmove={handleLineDrag}
+		on:pointerup={handleOpenContextMenu}
+		on:pointerdown={handleOpenContextMenuStart}
+		on:pointermove={handleLineDrag}
 	>
 		<div
 			class="nodes"
@@ -938,15 +871,12 @@
 		{#if showMenu && menuKind === 'line'}
 			<PositionedMenu position={menuPosition} on:close={closeMenu}>
 				{#if chosenLineMultiply !== undefined}
-					<MenuButton on:click={openLineMultiplyMenu} on:touchstart={openLineMultiplyMenu}
+					<MenuButton on:click={openLineMultiplyMenu}
 						>Mult: {chosenLineMultiply.toFixed(2)}</MenuButton
 					>
 				{/if}
-				<MenuButton
-					on:click={handleDeleteConnection}
-					on:touchstart={handleDeleteConnection}
-					on:keypress={() => {}}
-					variant="danger">Delete</MenuButton
+				<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
+					>Delete</MenuButton
 				>
 			</PositionedMenu>
 		{/if}

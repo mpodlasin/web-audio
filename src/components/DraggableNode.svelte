@@ -27,7 +27,7 @@
 		y: 0
 	};
 
-	const handleMouseDown = (event: MouseEvent) => {
+	const handlePointerDown = (event: PointerEvent) => {
 		event.stopPropagation();
 
 		if (event.button === 0) {
@@ -39,49 +39,11 @@
 
 			dispatcher('dragstart');
 
-			window.addEventListener('mousemove', handleMouseMove);
+			window.addEventListener('pointermove', handlePointerMove);
 		}
 	};
 
-	const handleTouchStart = (event: TouchEvent) => {
-		event.stopPropagation();
-
-		const touch = event.touches[0];
-
-		if (!touch) {
-			return;
-		}
-
-		const rect = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
-		internalClickPosition = {
-			x: touch.clientX - rect.left,
-			y: touch.clientY - rect.top
-		};
-
-		dispatcher('dragstart');
-
-		window.addEventListener('touchmove', handleTouchMove);
-	};
-
-	const handleTouchMove = (event: TouchEvent) => {
-		const touch = event.touches[0];
-
-		if (!touch) {
-			return;
-		}
-
-		dispatcher('drag', {
-			id,
-			x: touch.clientX - internalClickPosition.x,
-			y: touch.clientY - internalClickPosition.y
-		});
-	};
-
-	const handleTouchEnd = () => {
-		window.removeEventListener('touchmove', handleTouchMove);
-	};
-
-	const handleMouseMove = (event: MouseEvent) => {
+	const handlePointerMove = (event: PointerEvent) => {
 		event.preventDefault();
 
 		dispatcher('drag', {
@@ -91,71 +53,39 @@
 		});
 	};
 
-	const handleMouseUp = () => {
-		window.removeEventListener('mousemove', handleMouseMove);
+	const handlePointerUp = () => {
+		window.removeEventListener('pointermove', handlePointerMove);
 	};
 
-	let touchStartPosition: Position | null = null;
+	// const handleNodeClick = (event: PointerEvent) => {
+	// 	event.stopPropagation();
 
-	const registerTouchStartPosition = (event: TouchEvent) => {
-		const touch = event.touches[0];
+	// 	let position: Position | null = null;
 
-		if (!touch) {
-			return;
-		}
-		touchStartPosition = {
-			x: touch.clientX,
-			y: touch.clientY
-		};
-	};
+	// 	if (!touchStartPosition) {
+	// 		return;
+	// 	}
 
-	const handleNodeClick = (event: MouseEvent | TouchEvent) => {
-		event.stopPropagation();
+	// 	const xDiff = Math.abs(event.clientX - touchStartPosition.x);
+	// 	const yDiff = Math.abs(event.clientY - touchStartPosition.y);
 
-		let position: Position | null = null;
-		if (event instanceof TouchEvent) {
-			const touch = event.changedTouches[0];
+	// 	if (xDiff < 10 && yDiff < 10) {
+	// 		position = {
+	// 			x: event.clientX,
+	// 			y: event.clientY
+	// 		};
+	// 	}
 
-			if (!touchStartPosition) {
-				return;
-			}
-
-			if (!touch) {
-				return;
-			}
-
-			const xDiff = Math.abs(touch.clientX - touchStartPosition.x);
-			const yDiff = Math.abs(touch.clientY - touchStartPosition.y);
-
-			if (xDiff < 10 && yDiff < 10) {
-				position = {
-					x: touch.clientX,
-					y: touch.clientY
-				};
-			}
-		} else {
-			event.preventDefault();
-			position = {
-				x: event.clientX,
-				y: event.clientY
-			};
-		}
-
-		if (position) {
-			dispatcher('contextmenu', { id, position });
-		}
-	};
+	// 	if (position) {
+	// 		dispatcher('contextmenu', { id, position });
+	// 	}
+	// };
 </script>
 
 <div
-	on:mousedown={handleMouseDown}
-	on:mouseup={handleMouseUp}
-	on:contextmenu={handleNodeClick}
+	on:pointerdown={handlePointerDown}
+	on:pointerup={handlePointerUp}
 	on:click
-	on:touchstart={handleTouchStart}
-	on:touchend={handleTouchEnd}
-	on:touchstart={registerTouchStartPosition}
-	on:touchend={handleNodeClick}
 	on:keydown={() => {}}
 	class="wrapper"
 	class:selected

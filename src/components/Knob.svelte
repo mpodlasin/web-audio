@@ -99,8 +99,9 @@
 		});
 	}
 
-	function handleMouseDown(event: MouseEvent) {
+	function handleMouseDown(event: PointerEvent) {
 		event.stopPropagation();
+
 		isDragging = true;
 		draggingStartPosition = {
 			x: event.clientX,
@@ -110,20 +111,20 @@
 
 		dispatcher('mousedown');
 
-		window.addEventListener('mousemove', handleMouseMove);
+		window.addEventListener('pointermove', handleMouseMove);
 
 		window.addEventListener(
 			'mouseup',
 			() => {
 				isDragging = false;
 				draggingStartPosition = null;
-				window.removeEventListener('mousemove', handleMouseMove);
+				window.removeEventListener('pointermove', handleMouseMove);
 			},
 			{ once: true }
 		);
 	}
 
-	function handleMouseUp(event: MouseEvent) {
+	function handleMouseUp(event: PointerEvent) {
 		dispatcher('mouseup', {
 			parameterName,
 			event
@@ -164,8 +165,9 @@
 
 	let previousAngle = angle ?? 0;
 
-	function handleMouseMove(event: MouseEvent) {
+	function handleMouseMove(event: PointerEvent) {
 		event.preventDefault();
+		event.stopPropagation();
 
 		if (isDragging && draggingStartPosition) {
 			const factor = event.shiftKey ? 10 : 3;
@@ -287,8 +289,8 @@
 	<div class="knob-wrapper" style={highlightStyle}>
 		<div
 			class="knob"
-			on:mousedown={handleMouseDown}
-			on:mouseup={handleMouseUp}
+			on:pointerdown={handleMouseDown}
+			on:pointerup={handleMouseUp}
 			on:touchstart={handleTouchStart}
 			on:touchmove={handleTouchMove}
 			on:touchend={handleTouchEnd}
