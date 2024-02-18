@@ -20,38 +20,50 @@
 	$: Copy = tutorial?.steps[currentStep]?.copy;
 	$: check = tutorial?.steps[currentStep]?.check ?? (() => false);
 
+	$: numberOfSteps = tutorial?.steps.length ?? 0;
+
 	$: checkResult = check(audioGraph);
 
 	const handleContinueClick = () => {
-		currentStep += 1;
+		currentStep = currentStep + 1;
 	};
 </script>
 
 <div>
-	{#if Copy}
-		<Copy />
-	{/if}
+	<div class="steps">
+		{currentStep + 1} / {numberOfSteps}
+	</div>
+	<div class="copy">
+		{#if Copy}
+			<svelte:component this={Copy} />
+		{/if}
+	</div>
 	<div class="result">
 		{#if checkResult}
 			<div>
-				<p>Great! You've completed this tutorial.</p>
-				<Button on:click={handleContinueClick} title="Continue..." />
+				<p>Great! You've completed this step of the tutorial.</p>
+				<Button on:click={handleContinueClick} title="Next" />
 			</div>
 		{:else}
-			<p>Keep going!</p>
+			<p>Perform the action described above to continue.</p>
 		{/if}
 	</div>
 </div>
 
 <style>
-	div {
+	.copy {
 		font-size: 0.8em;
-		max-width: 400px;
+		width: 400px;
+	}
+
+	.steps {
+		font-size: 0.9em;
+		color: var(--primary-500);
 	}
 
 	.result {
 		margin-top: 1em;
 		color: var(--primary-500);
-		font-size: 1.2em;
+		font-size: 0.9em;
 	}
 </style>

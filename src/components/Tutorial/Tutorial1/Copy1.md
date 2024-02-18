@@ -1,13 +1,18 @@
-### Test
+Hello!
 
-Hello! In this tutorial, we will be learning about the Web Audio API and how to use it to create a simple synthesizer.
+Welcome to the first chapter of `Learn Modular Electronic Music` tutorial!
 
-The Web Audio API is a powerful tool for creating and manipulating audio in the browser. It provides a set of audio nodes that can be connected together to create complex audio processing graphs. These nodes can be used to generate sound, process audio, and create effects.
+In this chapter we will learn how to create nodes in `AudioCanvas` and how connect them together to create a simple synthesizer.
 
-In this tutorial, we will be using the Web Audio API to create a simple synthesizer. We will start by creating a basic oscillator node to generate a simple tone. We will then connect this oscillator to a gain node to control the volume of the sound. Finally, we will connect the gain node to the audio output of the browser to hear the sound.
+By completing this chapter you will learn about the following nodes:
 
-Let's get started!
+- oscillator
+- gain
+- envelope
+- sequencer
+- quantizer
+- convolution
 
-Step 1: Creating an Oscillator Node
+By connecting them together, you will create a working digital synthesizer that can be used to create music in the browser.
 
-The first step in creating our synthesizer is to create an oscillator node. An oscillator is a basic audio node that generates a periodic waveform, such as a sine wave, square wave, or sawtooth wave. We will use the oscillator node to generate a simple tone.
+Click on the `Next` button to get started!
