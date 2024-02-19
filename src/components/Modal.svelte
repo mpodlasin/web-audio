@@ -16,12 +16,16 @@
 		}
 	}
 
-	const handleClose = () => {
+	const stopPropagation = (event: Event) => {
+		event.stopPropagation();
+	};
+
+	const handleClose = (event: MouseEvent) => {
 		disaptcher('close');
 	};
 </script>
 
-<dialog bind:this={dialog}>
+<dialog bind:this={dialog} on:pointerdown={stopPropagation} on:pointerup={stopPropagation}>
 	<div class="close" on:click={handleClose} on:keypress={() => {}}>
 		<Close />
 	</div>
