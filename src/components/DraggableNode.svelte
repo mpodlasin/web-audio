@@ -100,8 +100,8 @@
 		{audioGraph}
 		on:nodeParameterChangeStart
 		on:nodeParameterChange
-		on:nodePlugClick
 		on:nodePlugTouchStart
+		on:nodePlugDown
 		on:nodePlugUp
 		on:deleteNode
 		on:knobMouseUp

@@ -19,11 +19,11 @@
 	$: minValue = staticDefinition.minValue === -Infinity ? '-infinity' : staticDefinition.minValue;
 	$: maxValue = staticDefinition.maxValue === Infinity ? 'infinity' : staticDefinition.maxValue;
 
-	const handlePlugClick = (event: MouseEvent) => {
+	const handlePlugDown = (event: PointerEvent) => {
 		event.stopPropagation();
 		event.preventDefault();
 
-		dispatcher('click', { id, type });
+		dispatcher('down', { id, type, event });
 	};
 
 	const handlePlugUp = (event: PointerEvent) => {
@@ -38,8 +38,8 @@
 	<div
 		class="plug"
 		data-plug={type}
-		on:click={handlePlugClick}
 		on:pointerup={handlePlugUp}
+		on:pointerdown={handlePlugDown}
 		on:keydown={() => {}}
 		data-id={id}
 		data-node-id={nodeId}

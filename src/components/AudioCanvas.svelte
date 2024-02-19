@@ -372,7 +372,7 @@
 	let positionOfStartingPlug: { x: number; y: number } = { x: 0, y: 0 };
 	let positionOfEndPlug: { x: number; y: number } | null = null;
 
-	const handlePlugClick = (
+	const handlePlugDown = (
 		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
 	) => {
 		const { id, type, nodeId } = event.detail;
@@ -783,7 +783,7 @@
 	on:pointermove={handleDragCanvas}
 	on:pointerup={handleDragCanvasEnd}
 	on:click={handleCanvasDoubleClick}
-	on:mouseup={stopDragging}
+	on:pointerup={stopDragging}
 	on:keydown={() => {}}
 	bind:this={container}
 >
@@ -843,7 +843,7 @@
 					on:dragstart={handleDragStart}
 					on:nodeParameterChangeStart={handleNodeParameterChangeStart}
 					on:nodeParameterChange={handleNodeParameterChange}
-					on:nodePlugClick={handlePlugClick}
+					on:nodePlugDown={handlePlugDown}
 					on:nodePlugUp={handlePlugUp}
 					on:deleteNode={handleDeleteNode}
 					on:knobMouseUp={handleKnobMouseUp}

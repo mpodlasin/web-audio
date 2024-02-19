@@ -63,11 +63,11 @@
 		dispatcher('nodeParameterChange', { id, parameterName, value });
 	};
 
-	const handlePlugClick = (event: CustomEvent<{ id: string; type: string }>) => {
+	const handlePlugDown = (event: CustomEvent<{ id: string; type: string }>) => {
 		const plugId = event.detail.id;
 		const type = event.detail.type;
 
-		dispatcher('nodePlugClick', { id: plugId, type, nodeId: id });
+		dispatcher('nodePlugDown', { id: plugId, type, nodeId: id });
 	};
 
 	const handlePlugUp = (event: CustomEvent<{ id: string; type: string; event: PointerEvent }>) => {
@@ -153,7 +153,7 @@
 					id={input.id}
 					nodeId={id}
 					staticDefinition={input}
-					on:click={handlePlugClick}
+					on:down={handlePlugDown}
 					on:up={handlePlugUp}
 					on:plugCreated
 				/>
@@ -166,7 +166,7 @@
 					id={output.id}
 					nodeId={id}
 					staticDefinition={output}
-					on:click={handlePlugClick}
+					on:down={handlePlugDown}
 					on:up={handlePlugUp}
 					on:plugCreated
 				/>
