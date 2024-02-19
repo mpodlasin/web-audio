@@ -628,6 +628,8 @@
 		menuNodeId = event.detail.id;
 	};
 
+	$: console.log(menuKind);
+
 	/* LINE CONTEXT MENU ----------------------------------------- */
 	const handleDeleteConnection = (event: MouseEvent) => {
 		event.stopPropagation();

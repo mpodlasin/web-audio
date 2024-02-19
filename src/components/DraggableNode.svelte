@@ -27,14 +27,22 @@
 		y: 0
 	};
 
+	let dragStartPosition: Position | null = null;
+
 	const handlePointerDown = (event: PointerEvent) => {
 		event.stopPropagation();
+		event.preventDefault();
 
 		if (event.button === 0) {
 			const rect = (event.currentTarget as HTMLDivElement).getBoundingClientRect();
 			internalClickPosition = {
 				x: event.clientX - rect.left,
 				y: event.clientY - rect.top
+			};
+
+			dragStartPosition = {
+				x: event.clientX,
+				y: event.clientY
 			};
 
 			dispatcher('dragstart');
@@ -45,6 +53,7 @@
 
 	const handlePointerMove = (event: PointerEvent) => {
 		event.preventDefault();
+		event.stopPropagation();
 
 		dispatcher('drag', {
 			id,
@@ -53,33 +62,23 @@
 		});
 	};
 
-	const handlePointerUp = () => {
+	const handlePointerUp = (event: PointerEvent) => {
+		event.preventDefault();
+		event.stopPropagation();
+
 		window.removeEventListener('pointermove', handlePointerMove);
+
+		if (!dragStartPosition) return;
+
+		const xDiff = Math.abs(event.clientX - dragStartPosition.x);
+		const yDiff = Math.abs(event.clientY - dragStartPosition.y);
+
+		if (xDiff < 10 && yDiff < 10) {
+			dispatcher('contextmenu', { id, position: { x: event.clientX, y: event.clientY } });
+		} else {
+			dispatcher('dragend');
+		}
 	};
-
-	// const handleNodeClick = (event: PointerEvent) => {
-	// 	event.stopPropagation();
-
-	// 	let position: Position | null = null;
-
-	// 	if (!touchStartPosition) {
-	// 		return;
-	// 	}
-
-	// 	const xDiff = Math.abs(event.clientX - touchStartPosition.x);
-	// 	const yDiff = Math.abs(event.clientY - touchStartPosition.y);
-
-	// 	if (xDiff < 10 && yDiff < 10) {
-	// 		position = {
-	// 			x: event.clientX,
-	// 			y: event.clientY
-	// 		};
-	// 	}
-
-	// 	if (position) {
-	// 		dispatcher('contextmenu', { id, position });
-	// 	}
-	// };
 </script>
 
 <div
