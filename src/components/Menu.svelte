@@ -9,8 +9,8 @@
 	on:keydown
 	on:mouseup
 	class="wrapper"
-	on:touchstart={stopPropagation}
-	on:touchend={stopPropagation}
+	on:pointerdown={stopPropagation}
+	on:pointerup={stopPropagation}
 >
 	<slot />
 </div>
