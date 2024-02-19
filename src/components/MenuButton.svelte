@@ -1,8 +1,12 @@
 <script lang="ts">
 	export let variant: 'default' | 'danger' = 'default';
+
+	const stopPropagation = (event: Event) => {
+		event.stopPropagation();
+	};
 </script>
 
-<button on:click on:touchstart on:keypress class:danger={variant === 'danger'}>
+<button on:click on:touchstart on:keypress class:danger={variant === 'danger'} on:pointerdown={stopPropagation} on:pointerup={stopPropagation}>
 	<slot />
 </button>
 

@@ -1,9 +1,15 @@
 <script lang="ts">
 	export let title: string;
 	export let variant: 'default' | 'danger' = 'default';
+
+	const stopPropagation = (event: Event) => {
+		event.stopPropagation();
+	};
 </script>
 
-<button on:click class:danger={variant === 'danger'}>{title}</button>
+<button on:click class:danger={variant === 'danger'} on:pointerdown={stopPropagation} on:pointerup={stopPropagation}>
+	{title}
+</button>
 
 <style>
 	button {
