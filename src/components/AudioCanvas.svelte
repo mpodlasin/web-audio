@@ -85,6 +85,7 @@
 
 	const handleDragCanvasStart = (event: PointerEvent) => {
 		event.preventDefault();
+
 		const position = {
 			x: event.clientX,
 			y: event.clientY
@@ -93,14 +94,17 @@
 		lastDragPosition = position;
 	};
 
-	const handleDragCanvasEnd = () => {
+	const handleDragCanvasEnd = (event: PointerEvent) => {
+		event.preventDefault();
+
 		lastDragPosition = null;
 	};
 
 	const handleDragCanvas = (event: PointerEvent) => {
+		event.preventDefault();
+
 		if (!lastDragPosition) return;
 
-		event.preventDefault();
 		const position = {
 			x: event.clientX,
 			y: event.clientY
@@ -782,8 +786,8 @@
 	on:pointerdown={handleDragCanvasStart}
 	on:pointermove={handleDragCanvas}
 	on:pointerup={handleDragCanvasEnd}
-	on:click={handleCanvasDoubleClick}
 	on:pointerup={stopDragging}
+	on:click={handleCanvasDoubleClick}
 	on:keydown={() => {}}
 	bind:this={container}
 >

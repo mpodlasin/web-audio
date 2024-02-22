@@ -6,7 +6,14 @@
 	};
 </script>
 
-<button on:click on:touchstart on:keypress class:danger={variant === 'danger'} on:pointerdown={stopPropagation} on:pointerup={stopPropagation}>
+<button
+	on:click
+	on:touchstart
+	on:keypress
+	class:danger={variant === 'danger'}
+	on:pointerdown={stopPropagation}
+	on:pointerup={stopPropagation}
+>
 	<slot />
 </button>
 

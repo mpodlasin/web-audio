@@ -7,7 +7,12 @@
 	};
 </script>
 
-<button on:click class:danger={variant === 'danger'} on:pointerdown={stopPropagation} on:pointerup={stopPropagation}>
+<button
+	on:click
+	class:danger={variant === 'danger'}
+	on:pointerdown={stopPropagation}
+	on:pointerup={stopPropagation}
+>
 	{title}
 </button>
 

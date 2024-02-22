@@ -16,6 +16,7 @@ body {
 	font-family: 'Inter', arial;
 	color: var(--neutral-300);
 	background-color: var(--neutral-900);
+	touch-action: none;
 }
 
 body {

@@ -87,7 +87,6 @@
 	}
 
 	function handleTouchEnd(event: TouchEvent) {
-		console.log('touchend');
 		event.stopPropagation();
 
 		isDragging = false;
