@@ -419,27 +419,13 @@
 			event: PointerEvent;
 		}>
 	) => {
-		if (!draggingLine) return;
-		if (!startingPlug) return;
+		const connectedToPlug = handleLineDragStopForPlug(event.detail.event);
 
-		if (event.detail.event instanceof TouchEvent) {
-			const connectedToPlug = handleTouchLineDragStopForPlug(event.detail.event);
+		if (connectedToPlug) return;
 
-			if (connectedToPlug) return;
+		const connectedToKnob = handleLineDragStopForKnob(event.detail.event);
 
-			const connectedToKnob = handleTouchLineDragStopForKnob(event.detail.event);
-
-			if (connectedToKnob) return;
-
-			stopDragging();
-
-			return;
-		}
-
-		audioGraphHistory = [
-			...audioGraphHistory,
-			addConnection(audioGraph, startingPlug, event.detail)
-		];
+		if (connectedToKnob) return;
 
 		stopDragging();
 	};
@@ -462,15 +448,11 @@
 		stopDragging();
 	};
 
-	const handleTouchLineDragStopForKnob = (event: TouchEvent) => {
+	const handleLineDragStopForKnob = (event: PointerEvent) => {
 		if (!draggingLine) return false;
 		if (!startingPlug) return false;
 
-		const changedTouch = event.changedTouches[0];
-
-		if (!changedTouch) return false;
-
-		const element = document.elementFromPoint(changedTouch.clientX, changedTouch.clientY);
+		const element = document.elementFromPoint(event.clientX, event.clientY);
 
 		if (!element) return false;
 
@@ -500,15 +482,11 @@
 		return true;
 	};
 
-	const handleTouchLineDragStopForPlug = (event: TouchEvent) => {
+	const handleLineDragStopForPlug = (event: PointerEvent) => {
 		if (!draggingLine) return false;
 		if (!startingPlug) return false;
 
-		const changedTouch = event.changedTouches[0];
-
-		if (!changedTouch) return false;
-
-		const element = document.elementFromPoint(changedTouch.clientX, changedTouch.clientY);
+		const element = document.elementFromPoint(event.clientX, event.clientY);
 
 		if (!element) return false;
 
