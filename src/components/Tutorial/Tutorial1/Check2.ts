@@ -1,6 +1,6 @@
 import type { SerializedAudioElements } from '../../../audio/serialized';
 
-export default function Tutorial1Check(audioGraph: SerializedAudioElements) {
+export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 
 	// Check that sine oscillator was created:
