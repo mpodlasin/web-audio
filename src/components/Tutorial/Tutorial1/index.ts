@@ -6,6 +6,14 @@ import copy3 from './Copy3.md';
 import check3 from './Check3';
 import copy4 from './Copy4.md';
 import check4 from './Check4';
+import copy5 from './Copy5.md';
+import check5 from './Check5';
+import copy6 from './Copy6.md';
+import check6 from './Check6';
+import copy7 from './Copy7.md';
+import check7 from './Check7';
+import copy8 from './Copy8.md';
+import check8 from './Check8';
 import type { Tutorial } from '../types';
 
 export const tutorial1: Tutorial = {
@@ -25,6 +33,22 @@ export const tutorial1: Tutorial = {
 		{
 			copy: copy4,
 			check: check4
+		},
+		{
+			copy: copy5,
+			check: check5
+		},
+		{
+			copy: copy6,
+			check: check6
+		},
+		{
+			copy: copy7,
+			check: check7
+		},
+		{
+			copy: copy8,
+			check: check8
 		}
 	]
 };

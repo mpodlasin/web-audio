@@ -1,0 +1,1 @@
+Now connect `Gain` to `Output` by dragging the cable from the `Gain` node to the `Output` node.
