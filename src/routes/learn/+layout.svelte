@@ -1,7 +1,16 @@
-<script lang="ts">
-	import DocsLayout from '../../components/DocsLayout.svelte';
-</script>
+<div class="wrapper">
+	<div class="content">
+		<slot />
+	</div>
+</div>
 
-<DocsLayout>
-	<slot />
-</DocsLayout>
+<style>
+	.wrapper {
+		width: 100vw;
+	}
+
+	.content {
+		max-width: 800px;
+		margin: 0 auto;
+	}
+</style>
