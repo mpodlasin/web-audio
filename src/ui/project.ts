@@ -1,4 +1,4 @@
-import type { Position, SerializedAudioElements } from '../audio/serialized';
+import { addNode, type Position, type SerializedAudioElements } from '../audio/serialized';
 
 export interface Project {
 	name: string;
@@ -21,3 +21,10 @@ export const createProject = (name: string): Project => ({
 	size: 1,
 	canvasRelativePosition: { x: 0, y: 0 }
 });
+
+export const createTutorialProject = (name: string): Project => {
+	const project = createProject(name);
+	project.audioCanvas = addNode(project.audioCanvas, 'tutorial', { x: 8, y: 80 });
+	return project;
+}
+
