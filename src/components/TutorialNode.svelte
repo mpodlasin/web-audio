@@ -11,9 +11,9 @@
 		tutorial1: tutorial1
 	};
 
-	$: descriptionId = node.descriptionId;
+	$: tutorialId = node.tutorialId;
 
-	$: tutorial = tutorials[descriptionId] ?? tutorial1;
+	$: tutorial = tutorials[tutorialId];
 
 	let currentStep = 0;
 

@@ -3,18 +3,16 @@
 	import { loadCustomNodes } from '../../../audio/web-audio/utils';
 	import AudioCanvas from '../../../components/AudioCanvas.svelte';
 	import { createTutorialProject, type Projects } from '../../../ui/project';
-    import { tutorial1 } from "../../../components/Tutorial";
-    import type { Tutorial } from "../../../components/Tutorial/types";
 
     export let data;
 
     $: id = data.id;
 
-    const routes: Record<string, { title: string, tutorial: Tutorial }> = {
+    const routes: Record<string, { title: string, tutorialId: string }> = {
         'basics': {
             title: 'Basics',
-            tutorial: tutorial1
-        }
+			tutorialId: 'tutorial1',
+		},
     }
 
     $: route = routes[id];
@@ -32,21 +30,18 @@
 
 
     $: chosenProjectName = route?.title ?? '';
-
     let chosenTutorial = tutorials[id];
 
     $: {
         if (!chosenTutorial && route) {
             tutorials = {
                 ...tutorials,
-                [id]: createTutorialProject(id)
+                [id]: createTutorialProject(chosenProjectName, route.tutorialId),
             }
 
             chosenTutorial = tutorials[id];
         }
     }
-
-    $: console.log(chosenTutorial);
 
 	$: {
 		localStorage.setItem(localStorageKey, JSON.stringify(tutorials));

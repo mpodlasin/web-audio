@@ -150,7 +150,8 @@ export const insertExistingNodes = (
 export const addNode = <S extends SerializedAudioElements>(
 	audioGraph: S,
 	type: AllowedSerializedAudioElements['type'],
-	position?: Position
+	position?: Position,
+	tutorialId?: string,
 ): S => {
 	const nextId = generateId(audioGraph);
 
@@ -163,6 +164,7 @@ export const addNode = <S extends SerializedAudioElements>(
 		[nextId]: {
 			type,
 			inputs: [],
+			...(tutorialId ? { tutorialId } : {}),
 			ui: {
 				position,
 				primmaryColor: defaultColor

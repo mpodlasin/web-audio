@@ -22,9 +22,9 @@ export const createProject = (name: string): Project => ({
 	canvasRelativePosition: { x: 0, y: 0 }
 });
 
-export const createTutorialProject = (name: string): Project => {
+export const createTutorialProject = (name: string, tutorialId: string): Project => {
 	const project = createProject(name);
-	project.audioCanvas = addNode(project.audioCanvas, 'tutorial', { x: 8, y: 80 });
+	project.audioCanvas = addNode(project.audioCanvas, 'tutorial', { x: 8, y: 80 }, tutorialId);
 	return project;
 }
 
