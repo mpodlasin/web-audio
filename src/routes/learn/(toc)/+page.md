@@ -10,17 +10,19 @@ Learning this material will grant you skills enabling you to quickly and easily 
 
 ### Basics
 
-- [Your First Sounds](/learn/your-first-sounds)
+1. [Your First Sounds](/learn/your-first-sounds)
 
 ### Building Blocks of Modular Synthesis
 
-- [Oscillators - Frequency and Amplitude](/learn/oscillators-frequency-amplitude)
-- [Filters - Shaping Sound](/learn/filters-shaping-sound)
-- [Envelopes - Controlling Sound](/learn/envelopes-controlling-sound)
-- [LFOs - Adding Movement](/learn/lfos-adding-movement)
+2. [Oscillators - Frequency and Amplitude](/learn/oscillators-frequency-amplitude)
+3. [Filters - Shaping Sound](/learn/filters-shaping-sound)
+4. [Envelopes - Controlling Sound](/learn/envelopes-controlling-sound)
+5. [LFOs - Adding Movement](/learn/lfos-adding-movement)
 
 ### Advanced Topics
 
-_more coming soon..._
+6. [Spectral Analysis - Understanding Sound](/learn/spectral-analysis-understanding-sound)
+
+### More Coming Soon!
 
 _join the [mailing list](https://mailchi.mp/3e3e3e3e3e3e/learn-modular-electronic-music) to get notified when new chapters are released!_

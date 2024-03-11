@@ -2,7 +2,7 @@ import { redirect } from '@sveltejs/kit';
 
 const routes: Record<string, { title: string; tutorialId: string }> = {
 	'your-first-sounds': {
-		title: 'Your First Sounds',
+		title: '1. Your First Sounds',
 		tutorialId: 'tutorial1'
 	}
 };
