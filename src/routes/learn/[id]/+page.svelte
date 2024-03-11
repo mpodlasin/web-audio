@@ -6,16 +6,10 @@
 
     export let data;
 
-    $: id = data.id;
+	const id = data.id!;
+	const route = data.route!;
 
-    const routes: Record<string, { title: string, tutorialId: string }> = {
-        'basics': {
-            title: 'Basics',
-			tutorialId: 'tutorial1',
-		},
-    }
-
-    $: route = routes[id];
+	const chosenProjectName = route.title;
 
 	const customNodesPromise = loadCustomNodes();
 
@@ -28,30 +22,59 @@
 			? JSON.parse(tutorialsString)
 			: {};
 
+	let chosenTutorial = tutorials[id];
 
-    $: chosenProjectName = route?.title ?? '';
-    let chosenTutorial = tutorials[id];
-
-    $: {
-        if (!chosenTutorial && route) {
-            tutorials = {
-                ...tutorials,
-                [id]: createTutorialProject(chosenProjectName, route.tutorialId),
-            }
-
-            chosenTutorial = tutorials[id];
-        }
-    }
+	$: {
+		if (!chosenTutorial) {
+			tutorials = {
+				...tutorials,
+				[id]: createTutorialProject(chosenProjectName, route.tutorialId),
+			};
+		}
+	}
 
 	$: {
 		localStorage.setItem(localStorageKey, JSON.stringify(tutorials));
 	}
 
-	const handleChange = (event: CustomEvent<SerializedAudioElements>) => {};
+	const handleChange = (event: CustomEvent<SerializedAudioElements>) => {
+		if (!chosenTutorial) return;
 
-	const handleSizeChange = (event: CustomEvent<number>) => {};
+		tutorials = {
+			...tutorials,
+			[id]: {
+				...chosenTutorial,
+				lastChanged: new Date(Date.now()).toISOString(),
+				audioCanvas: event.detail
+			}
+		};
+	};
 
-	const handleCanvasRelativePositionChange = (event: CustomEvent<Position>) => {};
+	const handleSizeChange = (event: CustomEvent<number>) => {
+		const size = event.detail;
+		if (!chosenTutorial) return;
+
+		tutorials = {
+			...tutorials,
+			[id]: {
+				...chosenTutorial,
+				size
+			}
+		};
+	};
+
+	const handleCanvasRelativePositionChange = (event: CustomEvent<Position>) => {
+		const canvasRelativePosition = event.detail;
+		if (!chosenTutorial) return;
+
+		tutorials = {
+			...tutorials,
+			[id]: {
+				...chosenTutorial,
+				canvasRelativePosition
+			}
+		};
+	};
 </script>
 
 {#await customNodesPromise}
