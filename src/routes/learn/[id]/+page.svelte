@@ -4,7 +4,7 @@
 	import AudioCanvas from '../../../components/AudioCanvas.svelte';
 	import { createTutorialProject, type Projects } from '../../../ui/project';
 
-    export let data;
+	export let data;
 
 	const id = data.id!;
 	const route = data.route!;
@@ -19,10 +19,7 @@
 
 	const tutorialsString = localStorage.getItem(localStorageKey);
 
-	let tutorials: Projects =
-		tutorialsString !== null
-			? JSON.parse(tutorialsString)
-			: {};
+	let tutorials: Projects = tutorialsString !== null ? JSON.parse(tutorialsString) : {};
 
 	let chosenTutorial = tutorials[id];
 
@@ -32,7 +29,7 @@
 		if (!chosenTutorial) {
 			tutorials = {
 				...tutorials,
-				[id]: createTutorialProject(chosenProjectName, route.tutorialId),
+				[id]: createTutorialProject(chosenProjectName, route.tutorialId)
 			};
 
 			chosenTutorial = tutorials[id];
@@ -90,7 +87,7 @@
 		{#key chosenProjectName}
 			<AudioCanvas
 				{chosenProjectName}
-                projectNames={[]}
+				projectNames={[]}
 				project={chosenTutorial}
 				tutorialMode
 				on:change={handleChange}

@@ -151,7 +151,7 @@ export const addNode = <S extends SerializedAudioElements>(
 	audioGraph: S,
 	type: AllowedSerializedAudioElements['type'],
 	position?: Position,
-	tutorialId?: string,
+	tutorialId?: string
 ): S => {
 	const nextId = generateId(audioGraph);
 

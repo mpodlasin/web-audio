@@ -21,9 +21,6 @@ Learning this material will grant you skills enabling you to quickly and easily 
 
 ### Advanced Topics
 
+_more coming soon..._
 
-
-*more coming soon...*
-
-*join the [mailing list](https://mailchi.mp/3e3e3e3e3e3e/learn-modular-electronic-music) to get notified when new chapters are released!*
-
+_join the [mailing list](https://mailchi.mp/3e3e3e3e3e3e/learn-modular-electronic-music) to get notified when new chapters are released!_
