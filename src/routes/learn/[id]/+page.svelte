@@ -9,6 +9,8 @@
 	const id = data.id!;
 	const route = data.route!;
 
+	console.log('route', route);
+
 	const chosenProjectName = route.title;
 
 	const customNodesPromise = loadCustomNodes();
@@ -24,12 +26,16 @@
 
 	let chosenTutorial = tutorials[id];
 
+	$: console.log(chosenTutorial);
+
 	$: {
 		if (!chosenTutorial) {
 			tutorials = {
 				...tutorials,
 				[id]: createTutorialProject(chosenProjectName, route.tutorialId),
 			};
+
+			chosenTutorial = tutorials[id];
 		}
 	}
 
@@ -86,6 +92,7 @@
 				{chosenProjectName}
                 projectNames={[]}
 				project={chosenTutorial}
+				tutorialMode
 				on:change={handleChange}
 				on:sizeChange={handleSizeChange}
 				on:canvasRelativePositionChange={handleCanvasRelativePositionChange}

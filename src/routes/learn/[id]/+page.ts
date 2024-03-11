@@ -1,8 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 
 const routes: Record<string, { title: string, tutorialId: string }> = {
-    'basics': {
-        title: 'Basics',
+    'your-first-sounds': {
+        title: 'Your First Sounds',
         tutorialId: 'tutorial1',
     },
 }

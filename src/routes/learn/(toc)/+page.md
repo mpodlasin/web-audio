@@ -10,7 +10,7 @@ Learning this material will grant you skills enabling you to quickly and easily 
 
 ### Basics
 
-- [Your First Synthesizer](/learn/your-first-synthesizer)
+- [Your First Sounds](/learn/your-first-sounds)
 
 ### Building Blocks of Modular Synthesis
 

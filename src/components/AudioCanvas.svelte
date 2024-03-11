@@ -32,10 +32,12 @@
 	import PositionedMenu from './PositionedMenu.svelte';
 	import { isAlternativeKey } from '../ui/isAlternativeKey';
 	import type { PlugPositions } from '../ui/plugPositions';
+	import { goto } from '$app/navigation';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
 	export let project: Project;
+	export let tutorialMode = false;
 
 	const dispatcher = createEventDispatcher();
 
@@ -666,6 +668,11 @@
 	let showProjectsModal = false;
 
 	const handleProjectNameClick = () => {
+		if (tutorialMode) {
+			goto('/learn');
+			return;
+		}
+
 		showProjectsModal = true;
 	};
 
