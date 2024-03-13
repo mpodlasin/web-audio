@@ -27,7 +27,8 @@
 		y: 0
 	};
 
-	let dragStartPosition: Position | null = null;
+	let lastDragPosition: Position | null = null;
+	let draggedDistance = 0;
 
 	const handlePointerDown = (event: PointerEvent) => {
 		event.stopPropagation();
@@ -40,11 +41,6 @@
 				y: event.clientY - rect.top
 			};
 
-			dragStartPosition = {
-				x: event.clientX,
-				y: event.clientY
-			};
-
 			dispatcher('dragstart');
 
 			window.addEventListener('pointermove', handlePointerMove);
@@ -54,6 +50,21 @@
 	const handlePointerMove = (event: PointerEvent) => {
 		event.preventDefault();
 		event.stopPropagation();
+
+		if (!lastDragPosition) {
+			lastDragPosition = {
+				x: event.clientX,
+				y: event.clientY
+			};
+		}
+
+		draggedDistance +=
+			Math.abs(event.clientX - lastDragPosition.x) + Math.abs(event.clientY - lastDragPosition.y);
+
+		lastDragPosition = {
+			x: event.clientX,
+			y: event.clientY
+		};
 
 		dispatcher('drag', {
 			id,
@@ -68,12 +79,12 @@
 
 		window.removeEventListener('pointermove', handlePointerMove);
 
-		if (!dragStartPosition) return;
+		const notDragged = draggedDistance < 10;
 
-		const xDiff = Math.abs(event.clientX - dragStartPosition.x);
-		const yDiff = Math.abs(event.clientY - dragStartPosition.y);
+		draggedDistance = 0;
+		lastDragPosition = null;
 
-		if (xDiff < 10 && yDiff < 10) {
+		if (notDragged) {
 			dispatcher('contextmenu', { id, position: { x: event.clientX, y: event.clientY } });
 		} else {
 			dispatcher('dragend');
