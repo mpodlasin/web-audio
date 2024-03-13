@@ -33,6 +33,7 @@
 	import { isAlternativeKey } from '../ui/isAlternativeKey';
 	import type { PlugPositions } from '../ui/plugPositions';
 	import { goto } from '$app/navigation';
+	import { DISTANCE_THAT_IS_CONSIDERED_DRAG } from '../constants';
 
 	export let chosenProjectName: string;
 	export let projectNames: string[];
@@ -566,7 +567,7 @@
 	$: chosenLineMultiply = chosenLine?.multiply;
 
 	const handleOpenContextMenu = (event: PointerEvent) => {
-		const wasNotDragging = draggedDistance < 10;
+		const wasNotDragging = draggedDistance < DISTANCE_THAT_IS_CONSIDERED_DRAG;
 
 		if (showMenu) {
 			closeMenu();

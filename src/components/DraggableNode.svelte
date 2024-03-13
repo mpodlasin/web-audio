@@ -6,6 +6,7 @@
 		SerializedAudioElements
 	} from '../audio/AudioCanvas';
 	import Node from './Node.svelte';
+	import { DISTANCE_THAT_IS_CONSIDERED_DRAG } from '../constants';
 
 	const dispatcher = createEventDispatcher();
 
@@ -79,7 +80,7 @@
 
 		window.removeEventListener('pointermove', handlePointerMove);
 
-		const notDragged = draggedDistance < 10;
+		const notDragged = draggedDistance < DISTANCE_THAT_IS_CONSIDERED_DRAG;
 
 		draggedDistance = 0;
 		lastDragPosition = null;

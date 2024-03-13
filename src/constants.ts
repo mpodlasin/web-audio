@@ -1,0 +1,1 @@
+export const DISTANCE_THAT_IS_CONSIDERED_DRAG = 5;
