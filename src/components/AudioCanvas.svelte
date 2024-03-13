@@ -66,6 +66,7 @@
 	/* DRAGGING CANVAS ----------------------------------------- */
 	let canvasRelativePosition: Position = project.canvasRelativePosition;
 	let lastDragPosition: Position | null = null;
+	let draggedDistance = 0;
 
 	const translatePosition = (position: Position) => {
 		return {
@@ -94,6 +95,8 @@
 		};
 
 		lastDragPosition = position;
+
+		draggedDistance = 0;
 	};
 
 	const handleDragCanvasEnd = (event: PointerEvent) => {
@@ -116,6 +119,8 @@
 			x: position.x - lastDragPosition.x,
 			y: position.y - lastDragPosition.y
 		};
+
+		draggedDistance += Math.sqrt(dragDifference.x ** 2 + dragDifference.y ** 2);
 
 		canvasRelativePosition = {
 			x: canvasRelativePosition.x + dragDifference.x,
@@ -560,25 +565,13 @@
 	let menuNodeId: string = '';
 	$: chosenLineMultiply = chosenLine?.multiply;
 
-	let openContextMenuStartPosition: Position | null = null;
-
-	const handleOpenContextMenuStart = (event: PointerEvent) => {
-		openContextMenuStartPosition = {
-			x: event.clientX,
-			y: event.clientY
-		};
-	};
-
 	const handleOpenContextMenu = (event: PointerEvent) => {
-		const positionChange = {
-			x: Math.abs(openContextMenuStartPosition!.x - event.clientX),
-			y: Math.abs(openContextMenuStartPosition!.y - event.clientY)
-		};
+		const wasNotDragging = draggedDistance < 10;
 
 		if (showMenu) {
 			closeMenu();
 			return;
-		} else if (positionChange.x < 5 && positionChange.y < 5) {
+		} else if (wasNotDragging) {
 			menuPosition = { x: event.clientX, y: event.clientY };
 		} else {
 			return;
@@ -807,12 +800,7 @@
 			/>
 		{/if}
 	</svg>
-	<div
-		class="audio-canvas"
-		on:pointerup={handleOpenContextMenu}
-		on:pointerdown={handleOpenContextMenuStart}
-		on:pointermove={handleLineDrag}
-	>
+	<div class="audio-canvas" on:pointerup={handleOpenContextMenu} on:pointermove={handleLineDrag}>
 		<div
 			class="nodes"
 			style="transform: translate({canvasRelativePosition.x}px, {canvasRelativePosition.y}px) scale({size});"
