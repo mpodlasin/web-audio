@@ -569,6 +569,8 @@
 	const handleOpenContextMenu = (event: PointerEvent) => {
 		const wasNotDragging = draggedDistance < DISTANCE_THAT_IS_CONSIDERED_DRAG;
 
+		if (draggingLine) return;
+
 		if (showMenu) {
 			closeMenu();
 			return;
