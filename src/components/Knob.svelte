@@ -43,63 +43,9 @@
 	let isDragging = false;
 	let draggingStartPosition: Position | null = null;
 
-	function handleTouchStart(event: TouchEvent) {
-		event.stopPropagation();
-		isDragging = true;
-		const touch = event.touches[0];
-
-		if (!touch) return;
-
-		draggingStartPosition = {
-			x: touch.clientX,
-			y: touch.clientY
-		};
-		previousAngle = angle;
-
-		dispatcher('mousedown');
-	}
-
-	function handleTouchMove(event: TouchEvent) {
-		event.stopPropagation();
-		if (isDragging && draggingStartPosition) {
-			const factor = event.shiftKey ? 10 : 3;
-			const touch = event.touches[0];
-
-			if (!touch) return;
-
-			const { y } = draggingStartPosition;
-			const { clientY } = touch;
-			const dy = y - clientY;
-			const normalizedValueChange = dy / factor;
-
-			const newAngle = previousAngle + normalizedValueChange;
-
-			const newValue = denormalizeNumberParameter(
-				demapNumberParameter(demapFromAngle(newAngle, polarity), linear),
-				polarity
-			);
-
-			dispatcher('change', {
-				parameterName,
-				value: Math.max(minValue, Math.min(maxValue, newValue))
-			});
-		}
-	}
-
-	function handleTouchEnd(event: TouchEvent) {
-		event.stopPropagation();
-
-		isDragging = false;
-		draggingStartPosition = null;
-
-		dispatcher('mouseup', {
-			parameterName,
-			event
-		});
-	}
-
 	function handleMouseDown(event: PointerEvent) {
 		event.stopPropagation();
+		event.preventDefault();
 
 		isDragging = true;
 		draggingStartPosition = {
@@ -111,9 +57,8 @@
 		dispatcher('mousedown');
 
 		window.addEventListener('pointermove', handleMouseMove);
-
 		window.addEventListener(
-			'mouseup',
+			'pointerup',
 			() => {
 				isDragging = false;
 				draggingStartPosition = null;
@@ -290,9 +235,6 @@
 			class="knob"
 			on:pointerdown={handleMouseDown}
 			on:pointerup={handleMouseUp}
-			on:touchstart={handleTouchStart}
-			on:touchmove={handleTouchMove}
-			on:touchend={handleTouchEnd}
 			on:mouseenter={handleMouseEnter}
 			on:mouseleave={handleMouseLeave}
 			on:click={handleClick}
