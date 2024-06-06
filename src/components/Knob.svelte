@@ -17,6 +17,7 @@
 	export let draggingLine: boolean;
 	export let linear: boolean = false;
 
+	let knobWrapper: HTMLDivElement;
 	let knob: HTMLDivElement;
 
 	let hoveringOver = false;
@@ -37,13 +38,13 @@
 	const dispatcher = createEventDispatcher();
 
 	$: {
-		dispatcher('knobCreated', knob);
+		dispatcher('knobCreated', knobWrapper);
 	}
 
 	let isDragging = false;
 	let draggingStartPosition: Position | null = null;
 
-	function handleMouseDown(event: PointerEvent) {
+	function handlePointerDown(event: PointerEvent) {
 		event.stopPropagation();
 		event.preventDefault();
 
@@ -56,19 +57,19 @@
 
 		dispatcher('mousedown');
 
-		window.addEventListener('pointermove', handleMouseMove);
-		window.addEventListener(
-			'pointerup',
-			() => {
-				isDragging = false;
-				draggingStartPosition = null;
-				window.removeEventListener('pointermove', handleMouseMove);
-			},
-			{ once: true }
-		);
+		knob.setPointerCapture(event.pointerId);
+
+		window.addEventListener('pointermove', handlePointerMove);
 	}
 
-	function handleMouseUp(event: PointerEvent) {
+	function handlePointerUp(event: PointerEvent) {
+		if (isDragging) {
+			knob.releasePointerCapture(event.pointerId);
+			isDragging = false;
+			draggingStartPosition = null;
+			window.removeEventListener('pointermove', handlePointerMove);
+		}
+
 		dispatcher('mouseup', {
 			parameterName,
 			event
@@ -109,7 +110,7 @@
 
 	let previousAngle = angle ?? 0;
 
-	function handleMouseMove(event: PointerEvent) {
+	function handlePointerMove(event: PointerEvent) {
 		event.preventDefault();
 		event.stopPropagation();
 
@@ -227,18 +228,19 @@
 	data-knob
 	data-node-id={nodeId}
 	data-parameter-name={parameterName}
-	bind:this={knob}
+	bind:this={knobWrapper}
 >
 	<div class="title">{rewriteStringWithNumber(parameterName)}</div>
 	<div class="knob-wrapper" style={highlightStyle}>
 		<div
 			class="knob"
-			on:pointerdown={handleMouseDown}
-			on:pointerup={handleMouseUp}
+			on:pointerdown={handlePointerDown}
+			on:pointerup={handlePointerUp}
 			on:mouseenter={handleMouseEnter}
 			on:mouseleave={handleMouseLeave}
 			on:click={handleClick}
 			on:keypress={() => {}}
+			bind:this={knob}
 			style="transform: rotate({angle}deg)"
 		>
 			<div class="knob-pointer" />
@@ -266,6 +268,7 @@
 		justify-content: center;
 		gap: 16px;
 		min-width: 80px;
+		touch-action: none;
 	}
 
 	.knob {
