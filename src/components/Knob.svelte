@@ -63,6 +63,9 @@
 	}
 
 	function handlePointerUp(event: PointerEvent) {
+		event.preventDefault();
+		event.stopPropagation();
+
 		if (isDragging) {
 			knob.releasePointerCapture(event.pointerId);
 			isDragging = false;
