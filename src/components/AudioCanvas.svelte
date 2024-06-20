@@ -377,6 +377,8 @@
 			addNode(audioGraph, event.detail, translatePosition(menuPosition))
 		];
 
+		updatePlugPositions();
+
 		closeMenu();
 	};
 
