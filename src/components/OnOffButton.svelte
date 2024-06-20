@@ -7,23 +7,24 @@
 
 	const dispatcher = createEventDispatcher();
 
-	const handleTouchClick = (event: TouchEvent) => {
+	const handleClick = (event: MouseEvent) => {
 		event.stopPropagation();
 		event.preventDefault();
 
-		handleClick();
-	};
-
-	const handleClick = () => {
 		dispatcher('change', {
 			parameterName: label,
 			value: active ? 0 : 1
 		});
 	};
+
+	const ignorePointerEvent = (event: PointerEvent) => {
+		event.stopPropagation();
+		event.preventDefault();
+	};
 </script>
 
 <div class="wrapper">
-	<button class:active on:click={handleClick} on:touchstart={handleTouchClick} />
+	<button class:active on:click={handleClick} on:pointerup={ignorePointerEvent} on:pointerdown={ignorePointerEvent} />
 	<div class="label">{rewriteStringWithNumber(label)}</div>
 </div>
 
