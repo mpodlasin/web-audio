@@ -88,6 +88,8 @@
 	}
 
 	const handleDragCanvasStart = (event: PointerEvent) => {
+		if (event.button === 2) return;
+
 		event.preventDefault();
 
 		const position = {
