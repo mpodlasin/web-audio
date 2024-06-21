@@ -45,7 +45,7 @@
 				{#if !noCheckNeeded}
 					<p>Great! You've completed this step of the tutorial.</p>
 				{/if}
-				<Button on:click={handleContinueClick} title="Next" />
+				<Button variant="primary" on:click={handleContinueClick} title="Next" />
 			</div>
 		{:else}
 			<p>Perform the action described above to continue.</p>
@@ -55,7 +55,7 @@
 
 <style>
 	.copy {
-		font-size: 0.8em;
+		font-size: 0.85em;
 		width: 400px;
 	}
 

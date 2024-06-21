@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let title: string;
-	export let variant: 'default' | 'danger' = 'default';
+	export let variant: 'default' | 'danger' | 'primary' = 'default';
 
 	const stopPropagation = (event: Event) => {
 		event.stopPropagation();
@@ -10,6 +10,7 @@
 <button
 	on:click
 	class:danger={variant === 'danger'}
+	class:primary={variant === 'primary'}
 	on:pointerdown={stopPropagation}
 	on:pointerup={stopPropagation}
 >
@@ -37,5 +38,10 @@
 	.danger {
 		color: var(--danger-300);
 		border: 1px solid var(--danger-300);
+	}
+
+	.primary {
+		color: var(--primary-500);
+		border: 1px solid var(--primary-500);
 	}
 </style>
