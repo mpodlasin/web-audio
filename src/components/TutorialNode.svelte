@@ -18,11 +18,12 @@
 	let currentStep = 0;
 
 	$: Copy = tutorial?.steps[currentStep]?.copy;
-	$: check = tutorial?.steps[currentStep]?.check ?? (() => false);
+	$: check = tutorial?.steps[currentStep]?.check ?? true;
 
 	$: numberOfSteps = tutorial?.steps.length ?? 0;
 
-	$: checkResult = check(audioGraph);
+	$: noCheckNeeded = check === true;
+	$: checkResult = check === true || check(audioGraph);
 
 	const handleContinueClick = () => {
 		currentStep = currentStep + 1;
@@ -41,7 +42,9 @@
 	<div class="result">
 		{#if checkResult}
 			<div>
-				<p>Great! You've completed this step of the tutorial.</p>
+				{#if !noCheckNeeded}
+					<p>Great! You've completed this step of the tutorial.</p>
+				{/if}
 				<Button on:click={handleContinueClick} title="Next" />
 			</div>
 		{:else}
