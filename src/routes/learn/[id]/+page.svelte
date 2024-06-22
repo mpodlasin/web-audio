@@ -9,8 +9,6 @@
 	const id = data.id!;
 	const route = data.route!;
 
-	console.log('route', route);
-
 	const chosenProjectName = route.title;
 
 	const customNodesPromise = loadCustomNodes();
@@ -22,8 +20,6 @@
 	let tutorials: Projects = tutorialsString !== null ? JSON.parse(tutorialsString) : {};
 
 	let chosenTutorial = tutorials[id];
-
-	$: console.log(chosenTutorial);
 
 	$: {
 		if (!chosenTutorial) {
