@@ -435,7 +435,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	}
 };
 
-export const nodeTypes = Object.keys(allowedSerializedAudioElementStaticDefinitions) as NodeType[];
+export const nodeTypes = Object.keys(allowedSerializedAudioElementStaticDefinitions).filter(nodeType => nodeType !== 'tutorial') as NodeType[];
 
 export const readableNames: { [P in NodeType]: string } = {
 	'sine-oscillator': 'Sine',
@@ -485,7 +485,7 @@ export const categorizedNodeTypes = {
 	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
 	clock: ['trigger', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
-	visualization: ['oscilloscope', 'tutorial'] as NodeType[]
+	visualization: ['oscilloscope'] as NodeType[]
 };
 
 const everyNodeIsIncludedInMenu = nodeTypes.every((nodeType) =>
