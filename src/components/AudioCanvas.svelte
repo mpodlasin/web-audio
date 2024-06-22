@@ -402,6 +402,8 @@
 			x: rawPositionOfStartingPlug.x,
 			y: rawPositionOfStartingPlug.y
 		};
+
+		window.addEventListener('pointerup', stopDragging, { once: true });
 	};
 
 	const stopDragging = () => {
@@ -771,7 +773,6 @@
 	on:pointerdown={handleDragCanvasStart}
 	on:pointermove={handleDragCanvas}
 	on:pointerup={handleDragCanvasEnd}
-	on:pointerup={stopDragging}
 	on:click={handleCanvasDoubleClick}
 	on:keydown={() => {}}
 	bind:this={container}
