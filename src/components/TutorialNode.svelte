@@ -7,15 +7,22 @@
 	export let audioGraph: SerializedAudioElements;
 	export let node: SerializedTutorialNode;
 
+	const localStorageKey = 'tutorial_steps';
+
 	const tutorials: Record<string, Tutorial> = {
 		tutorial1: tutorial1
 	};
 
 	$: tutorialId = node.tutorialId;
 
-	$: tutorial = tutorials[tutorialId];
-
 	let currentStep = 0;
+
+	$: {
+		const tutorialSteps = JSON.parse(window.localStorage.getItem(localStorageKey) ?? "{}");
+		currentStep = tutorialSteps[tutorialId] ?? 0;
+	}
+
+	$: tutorial = tutorials[tutorialId];
 
 	$: Copy = tutorial?.steps[currentStep]?.copy;
 	$: check = tutorial?.steps[currentStep]?.check ?? true;
@@ -27,6 +34,9 @@
 
 	const handleContinueClick = () => {
 		currentStep = currentStep + 1;
+		const tutorialSteps = JSON.parse(window.localStorage.getItem(localStorageKey) ?? "{}");
+		tutorialSteps[tutorialId] = currentStep;
+		window.localStorage.setItem(localStorageKey, JSON.stringify(tutorialSteps));
 	};
 </script>
 
