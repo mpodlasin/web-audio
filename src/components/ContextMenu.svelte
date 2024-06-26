@@ -44,35 +44,42 @@
 	const handlePasteClick = () => {
 		dispatcher('paste');
 	};
+
+	const categorizedNodeTypesToDisplay = {
+		...categorizedNodeTypes,
+		internal: []
+	};
 </script>
 
 <PositionedMenu {position} on:close>
 	<div class="create-section">
-		{#each Object.entries(categorizedNodeTypes) as [nodeType, nodeTypes] (nodeType)}
-			<MenuButton>
-				<div
-					class="menu-section"
-					on:mouseenter={handleMouseEnter(nodeType)}
-					on:touchstart={handleMouseEnter(nodeType)}
-					on:mouseleave={handleMouseLeave}
-				>
-					<div>{readableCategoryNames[nodeType]}</div>
-					<div class="icon"><ChevronRight /></div>
-					<div class="submenu" class:visible={hoveredOverNodeType === nodeType}>
-						<Menu>
-							{#each nodeTypes as innerNodeType (innerNodeType)}
-								<MenuButton
-									on:click={handleNodeClick(innerNodeType)}
-									on:touchstart={handleNodeClick(innerNodeType)}
-									on:keydown={() => {}}
-								>
-									{readableNames[innerNodeType]}
-								</MenuButton>
-							{/each}
-						</Menu>
+		{#each Object.entries(categorizedNodeTypesToDisplay) as [nodeType, nodeTypes] (nodeType)}
+			{#if nodeTypes.length > 0}
+				<MenuButton>
+					<div
+						class="menu-section"
+						on:mouseenter={handleMouseEnter(nodeType)}
+						on:touchstart={handleMouseEnter(nodeType)}
+						on:mouseleave={handleMouseLeave}
+					>
+						<div>{readableCategoryNames[nodeType]}</div>
+						<div class="icon"><ChevronRight /></div>
+						<div class="submenu" class:visible={hoveredOverNodeType === nodeType}>
+							<Menu>
+								{#each nodeTypes as innerNodeType (innerNodeType)}
+									<MenuButton
+										on:click={handleNodeClick(innerNodeType)}
+										on:touchstart={handleNodeClick(innerNodeType)}
+										on:keydown={() => {}}
+									>
+										{readableNames[innerNodeType]}
+									</MenuButton>
+								{/each}
+							</Menu>
+						</div>
 					</div>
-				</div>
-			</MenuButton>
+				</MenuButton>
+			{/if}
 		{/each}
 	</div>
 	<MenuButton on:click={handlePasteClick} on:touchstart={handlePasteClick} on:keypress={() => {}}

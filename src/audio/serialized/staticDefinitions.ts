@@ -485,7 +485,8 @@ export const categorizedNodeTypes = {
 	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
 	clock: ['trigger', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
-	visualization: ['oscilloscope'] as NodeType[]
+	visualization: ['oscilloscope'] as NodeType[],
+	internal: ['tutorial'] as NodeType[]
 };
 
 const everyNodeIsIncludedInMenu = nodeTypes.every((nodeType) =>
@@ -509,7 +510,8 @@ export const readableCategoryNames: { [i: string]: string } = {
 	io: 'I/O',
 	clock: 'Clock',
 	visualization: 'Visualization',
-	lfo: 'LFO'
+	lfo: 'LFO',
+	internal: 'Internal',
 };
 
 const allCategoriesHaveReadableNames = Object.keys(categorizedNodeTypes).every(
@@ -531,7 +533,8 @@ export const defaultCategoryNodeColors: { [i: string]: string } = {
 	io: '#b7c3e6',
 	clock: '#fd783f',
 	visualization: '#b7c3e6',
-	lfo: '#45c7ff'
+	lfo: '#45c7ff',
+	internal: '#45c7ff'
 };
 
 const allCategoriesHaveDefaultColors = Object.keys(categorizedNodeTypes).every(
