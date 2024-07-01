@@ -21,7 +21,7 @@
 		});
 	};
 
-	$: mode = slowParameter?.base === 1 ? 'slow' : 'fast';
+	$: mode = 'slow';
 
 	let primaryColor = '#45C7FF';
 	let neutralColor = '#FFFFFF';
@@ -127,7 +127,7 @@
 
 <div class="container">
 	<canvas bind:this={canvas} />
-	<OnOffButton label="slow" active={slowParameter?.base === 1} on:change={handleSlowModeChange} />
+	<!-- <OnOffButton label="slow" active={slowParameter?.base === 1} on:change={handleSlowModeChange} /> -->
 </div>
 
 <style>
