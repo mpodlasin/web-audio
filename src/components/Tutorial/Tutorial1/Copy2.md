@@ -1,3 +1,3 @@
-Let's begin by creating a since oscillator node.
+Let's begin by creating a sine oscillator.
 
-Click or tap on the background of the app and select `Oscillator > Sine` from the context menu.
+Click or tap on anywhere on the background of the app and select `Oscillator > Sine` from the context menu.
