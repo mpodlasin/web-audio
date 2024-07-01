@@ -86,7 +86,7 @@
 		lastDragPosition = null;
 
 		if (notDragged) {
-			dispatcher('contextmenu', { id, position: { x: event.clientX, y: event.clientY } });
+			dispatcher('contextmenu', { id, position: { x: event.clientX, y: event.clientY }, nodeType: node.type });
 		} else {
 			dispatcher('dragend');
 		}

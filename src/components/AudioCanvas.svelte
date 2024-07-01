@@ -12,7 +12,10 @@
 		addConnectionToParameter,
 		type Position,
 		insertExistingNodes,
-		changeParameterMultiply
+		changeParameterMultiply,
+
+		type NodeType
+
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
@@ -606,7 +609,11 @@
 		chosenLine = line;
 	};
 
-	const handleNodeClick = (event: CustomEvent<{ id: string; position: Position }>) => {
+	const handleNodeClick = (event: CustomEvent<{ id: string; position: Position, nodeType: NodeType }>) => {
+		if (event.detail.nodeType === 'tutorial') {
+			return;
+		}
+
 		menuPosition = event.detail.position;
 		showMenu = true;
 		menuKind = 'node';
