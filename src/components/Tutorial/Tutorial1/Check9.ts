@@ -3,10 +3,9 @@ import type { SerializedAudioElements } from '../../../audio/serialized';
 export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 
-	// Check that oscilloscope node was created
-	if (values.some((node) => node.type === 'oscilloscope')) {
-        return true;
-    }
+	// Check that oscillators frequency was changed from default 440Hz
+    const sineNode = values.find(node => node.type === 'sine-oscillator');
+    const frequencyParameter = sineNode?.parameters?.['frequency'].base ?? 440;
 
-    return false;
+    return frequencyParameter !== 440;
 }
