@@ -26,6 +26,8 @@ import copy13 from './Copy13.md';
 import check13 from './Check13';
 import copy14 from './Copy14.md';
 import check14 from './Check14';
+import copy15 from './Copy15.md';
+import check15 from './Check15';
 import type { Tutorial } from '../types';
 
 export const tutorial1: Tutorial = {
@@ -84,7 +86,11 @@ export const tutorial1: Tutorial = {
 		},
 		{
 			copy: copy14,
-			check: check14
+			check: check14,
+		},
+		{
+			copy: copy15,
+			check: check15,
 		}
 	]
 };
