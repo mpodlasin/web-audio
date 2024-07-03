@@ -20,7 +20,7 @@ import {
 	changeParameterMultiply,
 	MidiNode,
 	CustomDelayNode,
-	TriggerNode
+	ClockNode
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -454,10 +454,10 @@ describe('AudioCanvas', () => {
 			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode());
 		});
 
-		it('adds connection between trigger and delay trigger input', () => {
+		it('adds connection between clock and delay trigger input', () => {
 			const audioElements = {
 				'1': {
-					type: 'trigger' as const,
+					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					}
@@ -497,10 +497,10 @@ describe('AudioCanvas', () => {
 			expect(audioNodeDatabase['1']).toBeDefined();
 			expect(audioNodeDatabase['2']).toBeDefined();
 
-			expect(audioNodeDatabase['1']).toBeInstanceOf(TriggerNode);
+			expect(audioNodeDatabase['1']).toBeInstanceOf(ClockNode);
 			expect(audioNodeDatabase['2']).toBeInstanceOf(CustomDelayNode);
 
-			expect((audioNodeDatabase['1'] as TriggerNode).getOutputNode().connect).toHaveBeenCalledWith(
+			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().connect).toHaveBeenCalledWith(
 				(audioNodeDatabase['2'] as CustomDelayNode).getInputNode('trigger')
 			);
 		});
@@ -508,7 +508,7 @@ describe('AudioCanvas', () => {
 		it('adds connections to both inputs of delay', () => {
 			const audioElements = {
 				'1': {
-					type: 'trigger' as const,
+					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					}
@@ -571,14 +571,14 @@ describe('AudioCanvas', () => {
 			expect(audioNodeDatabase['2']).toBeDefined();
 			expect(audioNodeDatabase['3']).toBeDefined();
 
-			expect(audioNodeDatabase['1']).toBeInstanceOf(TriggerNode);
+			expect(audioNodeDatabase['1']).toBeInstanceOf(ClockNode);
 			expect(audioNodeDatabase['2']).toBeInstanceOf(CustomSineOscillatorNode);
 			expect(audioNodeDatabase['3']).toBeInstanceOf(CustomDelayNode);
 
 			expect(
 				(audioNodeDatabase['2'] as CustomSineOscillatorNode).getOutputNode().connect
 			).toHaveBeenCalledWith((audioNodeDatabase['3'] as CustomDelayNode).getInputNode());
-			expect((audioNodeDatabase['1'] as TriggerNode).getOutputNode().connect).toHaveBeenCalledWith(
+			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().connect).toHaveBeenCalledWith(
 				(audioNodeDatabase['3'] as CustomDelayNode).getInputNode('trigger')
 			);
 		});
@@ -636,10 +636,10 @@ describe('AudioCanvas', () => {
 			);
 		});
 
-		it('removes connection between trigger and delay trigger input', () => {
+		it('removes connection between clock and delay trigger input', () => {
 			const audioElements = {
 				'1': {
-					type: 'trigger' as const,
+					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					}
@@ -686,7 +686,7 @@ describe('AudioCanvas', () => {
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
 			expect(
-				(audioNodeDatabase['1'] as TriggerNode).getOutputNode().disconnect
+				(audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
 			).toHaveBeenCalledWith(audioNodeDatabase['3']?.getInputNode('trigger'));
 		});
 
@@ -745,10 +745,10 @@ describe('AudioCanvas', () => {
 			).toHaveBeenCalledWith(audioNodeDatabase['3']?.getInputNode('audio'));
 		});
 
-		it('removes "weird" connection between trigger node and delays audio input', () => {
+		it('removes "weird" connection between clock node and delays audio input', () => {
 			const audioElements = {
 				'1': {
-					type: 'trigger' as const,
+					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					}
@@ -795,14 +795,14 @@ describe('AudioCanvas', () => {
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
 			expect(
-				(audioNodeDatabase['1'] as TriggerNode).getOutputNode().disconnect
+				(audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
 			).toHaveBeenCalledWith(audioNodeDatabase['3']?.getInputNode('audio'));
 		});
 
-		it('adds two connections from trigger to delay', () => {
+		it('adds two connections from clock to delay', () => {
 			const audioElements = {
 				'1': {
-					type: 'trigger' as const,
+					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					}
@@ -840,7 +840,7 @@ describe('AudioCanvas', () => {
 
 			updateAudioCanvas(intermediateAudioElements, audioElements, audioNodeDatabase);
 
-			expect((audioNodeDatabase['1'] as TriggerNode).getOutputNode().connect).toHaveBeenCalledWith(
+			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().connect).toHaveBeenCalledWith(
 				audioNodeDatabase['2']?.getInputNode('trigger')
 			);
 
@@ -865,15 +865,15 @@ describe('AudioCanvas', () => {
 
 			updateAudioCanvas(newAudioElements, intermediateAudioElements, audioNodeDatabase);
 
-			expect((audioNodeDatabase['1'] as TriggerNode).getOutputNode().connect).toHaveBeenCalledWith(
+			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().connect).toHaveBeenCalledWith(
 				audioNodeDatabase['2']?.getInputNode('audio')
 			);
 		});
 
-		it('removes two connections from trigger to delay', () => {
+		it('removes two connections from clock to delay', () => {
 			const audioElements = {
 				'1': {
-					type: 'trigger' as const,
+					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					}
@@ -915,7 +915,7 @@ describe('AudioCanvas', () => {
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
 			expect(
-				(audioNodeDatabase['1'] as TriggerNode).getOutputNode().disconnect
+				(audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
 			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode('audio'));
 
 			const newerAudioElements = removeConnection(
@@ -939,7 +939,7 @@ describe('AudioCanvas', () => {
 			updateAudioCanvas(newerAudioElements, newAudioElements, audioNodeDatabase);
 
 			expect(
-				(audioNodeDatabase['1'] as TriggerNode).getOutputNode().disconnect
+				(audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
 			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode('trigger'));
 		});
 

@@ -596,9 +596,9 @@ export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNodeWithT
 	}
 }
 
-export class TriggerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+export class ClockNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'trigger'), id, 'trigger');
+		super(new AudioWorkletNode(globalContext, 'trigger'), id, 'clock');
 	}
 
 	start() {

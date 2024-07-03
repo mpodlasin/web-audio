@@ -4,8 +4,8 @@ export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
     const entries = Object.entries(audioGraph);
 
-	// Trigger node was created and connected to Sequencer node
-    const triggerNode = values.find(node => node.type === 'trigger');
+	// Clock node was created and connected to Sequencer node
+    const triggerNode = values.find(node => node.type === 'clock');
     const sequencerNode = values.find(node => node.type === 'sequencer');
     const triggerNodeId = entries.find(entry => entry[1] === triggerNode)?.[0];
 

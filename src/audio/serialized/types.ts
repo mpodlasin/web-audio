@@ -76,7 +76,7 @@ export type SerializedMultiplyNode = SerializedAudioElement<'multiply', 'factor'
 
 export type SerializedDestinationNode = SerializedAudioElement<'destination', never>;
 
-export type SerializedTriggerNode = SerializedAudioElement<'trigger', 'tempo'>;
+export type SerializedClockNode = SerializedAudioElement<'clock', 'tempo'>;
 
 export type SerializedPanNode = SerializedAudioElement<'pan', 'pan'>;
 
@@ -132,7 +132,7 @@ export type AllowedSerializedAudioElements =
 	| SerializedBandpassFilterNode
 	| SerializedGainNode
 	| SerializedDestinationNode
-	| SerializedTriggerNode
+	| SerializedClockNode
 	| SerializedADEnvelopeNode
 	| SerializedAREnvelopeNode
 	| SerializedSequencerNode

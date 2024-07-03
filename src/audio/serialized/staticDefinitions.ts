@@ -332,7 +332,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			}
 		}
 	},
-	trigger: {
+	clock: {
 		inputs: [],
 		outputs: [triggerInputOutputDefinition],
 		parameters: {
@@ -458,7 +458,7 @@ export const readableNames: { [P in NodeType]: string } = {
 	pan: 'Pan',
 	'pitch-quantizer': 'Pitch Quantizer',
 	sequencer: 'Sequencer',
-	trigger: 'Trigger',
+	clock: 'Clock',
 	'gate-length': 'Gate Length',
 	'measure-gate': 'Measure Gate',
 	'saw-lfo': 'Saw',
@@ -484,7 +484,7 @@ export const categorizedNodeTypes = {
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
 	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
-	clock: ['trigger', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
+	clock: ['clock', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
 	visualization: ['oscilloscope'] as NodeType[],
 	internal: ['tutorial'] as NodeType[]
 };

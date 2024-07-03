@@ -24,7 +24,7 @@ import {
 	MidiNode,
 	PitchQuantizerNode,
 	SequencerNode,
-	TriggerNode,
+	ClockNode,
 	CustomGateLengthNode,
 	ADEnvelopeNode,
 	CustomHighpassFilterNode,
@@ -414,8 +414,8 @@ function createCustomAudioNode(
 			return new CustomMultiplyNode(id);
 		case 'destination':
 			return new DestinationNode(id);
-		case 'trigger':
-			return new TriggerNode(id);
+		case 'clock':
+			return new ClockNode(id);
 		case 'ar-envelope':
 			return new AREnvelopeNode(id);
 		case 'ad-envelope':
