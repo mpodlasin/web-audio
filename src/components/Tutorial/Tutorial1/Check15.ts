@@ -5,5 +5,5 @@ export default function (audioGraph: SerializedAudioElements) {
 
 	// Pitch Quantizer node was created
 
-    return values.some(node => node.type === 'pitch-quantizer');
+	return values.some((node) => node.type === 'pitch-quantizer');
 }

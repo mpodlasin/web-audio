@@ -24,7 +24,12 @@
 </script>
 
 <div class="wrapper">
-	<button class:active on:click={handleClick} on:pointerup={ignorePointerEvent} on:pointerdown={ignorePointerEvent} />
+	<button
+		class:active
+		on:click={handleClick}
+		on:pointerup={ignorePointerEvent}
+		on:pointerdown={ignorePointerEvent}
+	/>
 	<div class="label">{rewriteStringWithNumber(label)}</div>
 </div>
 

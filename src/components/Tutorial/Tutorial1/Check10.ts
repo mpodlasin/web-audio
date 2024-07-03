@@ -4,7 +4,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 
 	// Check that sequencer node was created
-    const sequencerNode = values.find(node => node.type === 'sequencer');
+	const sequencerNode = values.find((node) => node.type === 'sequencer');
 
-    return sequencerNode !== undefined;
+	return sequencerNode !== undefined;
 }

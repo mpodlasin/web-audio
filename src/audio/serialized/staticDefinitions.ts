@@ -435,7 +435,9 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	}
 };
 
-export const nodeTypes = Object.keys(allowedSerializedAudioElementStaticDefinitions).filter(nodeType => nodeType !== 'tutorial') as NodeType[];
+export const nodeTypes = Object.keys(allowedSerializedAudioElementStaticDefinitions).filter(
+	(nodeType) => nodeType !== 'tutorial'
+) as NodeType[];
 
 export const readableNames: { [P in NodeType]: string } = {
 	'sine-oscillator': 'Sine',
@@ -511,7 +513,7 @@ export const readableCategoryNames: { [i: string]: string } = {
 	clock: 'Clock',
 	visualization: 'Visualization',
 	lfo: 'LFO',
-	internal: 'Internal',
+	internal: 'Internal'
 };
 
 const allCategoriesHaveReadableNames = Object.keys(categorizedNodeTypes).every(

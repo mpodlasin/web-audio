@@ -18,7 +18,7 @@
 	let currentStep = 0;
 
 	$: {
-		const tutorialSteps = JSON.parse(window.localStorage.getItem(localStorageKey) ?? "{}");
+		const tutorialSteps = JSON.parse(window.localStorage.getItem(localStorageKey) ?? '{}');
 		currentStep = tutorialSteps[tutorialId] ?? 0;
 	}
 
@@ -34,7 +34,7 @@
 
 	const handleContinueClick = () => {
 		currentStep = currentStep + 1;
-		const tutorialSteps = JSON.parse(window.localStorage.getItem(localStorageKey) ?? "{}");
+		const tutorialSteps = JSON.parse(window.localStorage.getItem(localStorageKey) ?? '{}');
 		tutorialSteps[tutorialId] = currentStep;
 		window.localStorage.setItem(localStorageKey, JSON.stringify(tutorialSteps));
 	};

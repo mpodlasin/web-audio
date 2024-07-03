@@ -13,9 +13,7 @@
 		type Position,
 		insertExistingNodes,
 		changeParameterMultiply,
-
 		type NodeType
-
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
@@ -609,7 +607,9 @@
 		chosenLine = line;
 	};
 
-	const handleNodeClick = (event: CustomEvent<{ id: string; position: Position, nodeType: NodeType }>) => {
+	const handleNodeClick = (
+		event: CustomEvent<{ id: string; position: Position; nodeType: NodeType }>
+	) => {
 		if (event.detail.nodeType === 'tutorial') {
 			return;
 		}

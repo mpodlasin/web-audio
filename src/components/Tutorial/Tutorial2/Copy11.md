@@ -1,12 +1,12 @@
 You can now see audio signal from `Sine` oscillator graphed on the screen.
 
-Currently though it probably just looks like noise though. 
+Currently though it probably just looks like noise though.
 
-That's because sine wave changes extremely fast. 
+That's because sine wave changes extremely fast.
 
 In order to see its shape, slow down `Sine` oscillator using `frequency` knob - the one on the left.
 
-Drag it down below the value of 2Hz. 
+Drag it down below the value of 2Hz.
 
 As you do that, you will see output of `Oscilloscope` becoming tidier and aquiring repeting shape.
 

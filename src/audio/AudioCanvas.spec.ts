@@ -685,9 +685,9 @@ describe('AudioCanvas', () => {
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
-			expect(
-				(audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
-			).toHaveBeenCalledWith(audioNodeDatabase['3']?.getInputNode('trigger'));
+			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect).toHaveBeenCalledWith(
+				audioNodeDatabase['3']?.getInputNode('trigger')
+			);
 		});
 
 		it('removes input form one node when two are present', () => {
@@ -794,9 +794,9 @@ describe('AudioCanvas', () => {
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
-			expect(
-				(audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
-			).toHaveBeenCalledWith(audioNodeDatabase['3']?.getInputNode('audio'));
+			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect).toHaveBeenCalledWith(
+				audioNodeDatabase['3']?.getInputNode('audio')
+			);
 		});
 
 		it('adds two connections from clock to delay', () => {
@@ -914,9 +914,9 @@ describe('AudioCanvas', () => {
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
-			expect(
-				(audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
-			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode('audio'));
+			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect).toHaveBeenCalledWith(
+				audioNodeDatabase['2']?.getInputNode('audio')
+			);
 
 			const newerAudioElements = removeConnection(
 				newAudioElements,
@@ -938,9 +938,9 @@ describe('AudioCanvas', () => {
 
 			updateAudioCanvas(newerAudioElements, newAudioElements, audioNodeDatabase);
 
-			expect(
-				(audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
-			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode('trigger'));
+			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect).toHaveBeenCalledWith(
+				audioNodeDatabase['2']?.getInputNode('trigger')
+			);
 		});
 
 		it('adds connection between gain and oscillator detune parameter', () => {

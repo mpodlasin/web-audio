@@ -2,7 +2,7 @@ Now the `Seqencer` and `Sine` nodes are setup correctly.
 
 But we need one more thing.
 
-The `Sequencer` node will not play by itself. 
+The `Sequencer` node will not play by itself.
 
 It requires something that would tell it (via its input) how fast it should go from one step to another - a source of tempo.
 

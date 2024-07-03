@@ -5,8 +5,8 @@ export default function (audioGraph: SerializedAudioElements) {
 
 	// Check that oscilloscope node was created
 	if (values.some((node) => node.type === 'oscilloscope')) {
-        return true;
-    }
+		return true;
+	}
 
-    return false;
+	return false;
 }
