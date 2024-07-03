@@ -45,6 +45,8 @@
 	let draggingStartPosition: Position | null = null;
 
 	function handlePointerDown(event: PointerEvent) {
+		console.log('pointer down', event);
+
 		if (event.button === 2) return;
 
 		event.stopPropagation();
@@ -59,9 +61,8 @@
 
 		dispatcher('mousedown');
 
-		knob.setPointerCapture(event.pointerId);
-
 		window.addEventListener('pointermove', handlePointerMove);
+		window.addEventListener('pointerup', handlePointerUp, { once: true, capture: true });
 	}
 
 	function handlePointerUp(event: PointerEvent) {
@@ -69,7 +70,6 @@
 		event.stopPropagation();
 
 		if (isDragging) {
-			knob.releasePointerCapture(event.pointerId);
 			isDragging = false;
 			draggingStartPosition = null;
 			window.removeEventListener('pointermove', handlePointerMove);
