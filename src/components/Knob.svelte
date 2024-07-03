@@ -45,8 +45,6 @@
 	let draggingStartPosition: Position | null = null;
 
 	function handlePointerDown(event: PointerEvent) {
-		console.log('pointer down', event);
-
 		if (event.button === 2) return;
 
 		event.stopPropagation();
