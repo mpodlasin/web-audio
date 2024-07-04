@@ -129,10 +129,6 @@ export const tutorial1: Tutorial = {
 			check: check20,
 		},
 		{
-			copy: copy20,
-			check: check20,
-		},
-		{
 			copy: copy21,
 			check: check21,
 		},
