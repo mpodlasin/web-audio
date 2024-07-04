@@ -1,12 +1,4 @@
-# Learn Modular Electronic Music
-
-Welcome to the `Learn Modular Electronic Music` tutorial!
-
-In this tutorial you will learn how to create electronic music using modular synthesizers.
-
-This is an interactive tutorial, which means you will be able to create and modify synthesizers in real-time, entirely in your web browser.
-
-Learning this material will grant you skills enabling you to quickly and easily start using more advanced software like Max/MSP, Pure Data or VCV Rack, as well as hardware modular synthesizers, for example Eurorack.
+Learn modular synthesis (like Eurorack, Max/MSP or PureData) with simple, interactive tutorials where you will be building your own synthesisers from scratch.
 
 ### Basics
 
