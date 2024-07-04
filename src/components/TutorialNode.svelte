@@ -40,7 +40,7 @@
 	};
 </script>
 
-<div>
+<div class="wrapper">
 	<div class="steps">
 		{currentStep + 1} / {numberOfSteps}
 	</div>
@@ -64,6 +64,10 @@
 </div>
 
 <style>
+
+	.wrapper {
+		padding: 0 8px;
+	}
 	.copy {
 		font-size: 0.85em;
 		width: 400px;

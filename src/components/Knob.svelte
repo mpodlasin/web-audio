@@ -269,7 +269,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		gap: 16px;
+		gap: 8px;
 		min-width: 80px;
 		touch-action: none;
 	}

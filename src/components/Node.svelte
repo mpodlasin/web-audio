@@ -177,11 +177,11 @@
 
 <style>
 	.node {
-		padding: 16px;
+		padding: 8px;
 		border: 1px solid black;
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
+		gap: 8px;
 		min-width: 70px;
 		background-color: var(--neutral-900);
 		border: 1px solid var(--primary-500);
@@ -195,6 +195,8 @@
 		text-align: center;
 		font-size: 12px;
 
+		padding: 4px;
+
 		color: var(--primary-500);
 		text-transform: uppercase;
 		white-space: nowrap;
@@ -205,7 +207,7 @@
 		flex-direction: row;
 		justify-content: space-around;
 		align-items: center;
-		gap: 16px;
+		gap: 4px;
 	}
 
 	.inputs-and-outputs {
