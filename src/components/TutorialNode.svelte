@@ -29,8 +29,8 @@
 
 	$: numberOfSteps = tutorial?.steps.length ?? 0;
 
-	$: noCheckNeeded = check === true;
-	$: checkResult = check === true || check(audioGraph);
+	$: noCheckNeeded = typeof check === 'boolean';
+	$: checkResult = typeof check === 'boolean' ? check : check(audioGraph);
 
 	const handleContinueClick = () => {
 		currentStep = currentStep + 1;
@@ -57,7 +57,7 @@
 				{/if}
 				<Button variant="primary" on:click={handleContinueClick} title="Next" />
 			</div>
-		{:else}
+		{:else if check === true}
 			<p>Perform the action described above to continue.</p>
 		{/if}
 	</div>
