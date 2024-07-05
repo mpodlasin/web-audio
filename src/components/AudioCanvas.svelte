@@ -614,6 +614,11 @@
 			return;
 		}
 
+		if (draggingLine) {
+			stopDragging();
+			return;
+		}
+
 		menuPosition = event.detail.position;
 		showMenu = true;
 		menuKind = 'node';
