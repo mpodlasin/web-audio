@@ -57,7 +57,7 @@
 				{/if}
 				<Button variant="primary" on:click={handleContinueClick} title="Next" />
 			</div>
-		{:else if check === true}
+		{:else if typeof check === 'function'}
 			<p>Perform the action described above to continue.</p>
 		{/if}
 	</div>
