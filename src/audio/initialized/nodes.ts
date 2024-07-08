@@ -352,8 +352,8 @@ export class EmptyCustomAudioNode implements CustomAudioNode {
 	getParameter(): CustomAudioParam {
 		throw new Error('Method not implemented.');
 	}
-	disconnect(): void {
-		throw new Error('Method not implemented.');
+	disconnect() {
+		// Needs to be empty because of cleanup that happens on AudioCanvas unmount.
 	}
 	onHighlightParameter(): void {
 		throw new Error('Method not implemented.');
