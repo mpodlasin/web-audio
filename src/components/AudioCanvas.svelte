@@ -357,17 +357,14 @@
 
 	/* NODE PARAMETER CHANGE ----------------------------------------- */
 	const handleNodeParameterChangeStart = () => {
-		temporaryGraphHistory = [
-			audioGraph,
-			audioGraph,
-		]
+		temporaryGraphHistory = [audioGraph, audioGraph];
 	};
 
 	const handleNodeParameterChange = (
 		event: CustomEvent<{ id: string; parameterName: string; value: number }>
 	) => {
 		const { id, parameterName, value } = event.detail;
-		
+
 		temporaryGraphHistory = [
 			...temporaryGraphHistory,
 			changeParameter(audioGraph, id, parameterName, value)
@@ -457,10 +454,7 @@
 		const temp = temporaryGraphHistory.at(-1);
 
 		if (temp) {
-			audioGraphHistory = [
-				...audioGraphHistory,
-				temp
-			];
+			audioGraphHistory = [...audioGraphHistory, temp];
 
 			temporaryGraphHistory = [];
 		}

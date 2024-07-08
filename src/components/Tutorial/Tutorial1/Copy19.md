@@ -7,4 +7,3 @@ We can quickly fix that, by adding an "echo" effect (often called "reverb").
 In audiocanvas you can do that by using `Convolution` node, to be found in `Effect` section.
 
 Create it and add it between `Sine` and `Gain` nodes.
-

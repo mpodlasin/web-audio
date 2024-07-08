@@ -4,4 +4,4 @@ So we want to control the `Gain` node, which allows us to increase/decrease volu
 
 But we still want to keep our "global" `Gain` node that controls overall volume coming out of your speakers.
 
-Having that in mind, create *another* `Gain` node and insert it between `Sine` and `Convolution` node.
+Having that in mind, create _another_ `Gain` node and insert it between `Sine` and `Convolution` node.

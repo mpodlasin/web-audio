@@ -6,7 +6,9 @@
 		<div class="links">
 			<a class="link" href="/playground">
 				<h2 class="linkHeader">Playground</h2>
-				<div class="linkDescription">Mess around in audiocanvas freely, build your own synths, experiment with sound.</div>
+				<div class="linkDescription">
+					Mess around in audiocanvas freely, build your own synths, experiment with sound.
+				</div>
 			</a>
 			<a class="link" href="/learn">
 				<h2 class="linkHeader">Learn</h2>
@@ -56,7 +58,6 @@
 
 	.link:hover {
 		border: 1px solid var(--primary-500);
-
 	}
 
 	.linkHeader {

@@ -64,7 +64,6 @@
 </div>
 
 <style>
-
 	.wrapper {
 		padding: 0 8px;
 	}

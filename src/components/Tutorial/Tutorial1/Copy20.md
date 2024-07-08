@@ -1,4 +1,4 @@
-What a difference, right? 
+What a difference, right?
 
 Reverb effect makes everything sound much more organic and it enhances the effect of `Pitch Quantizer`, by "prolonging" the pitches that are coming out of it, giving everything a very pleasant effect.
 

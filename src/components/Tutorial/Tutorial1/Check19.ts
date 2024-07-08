@@ -4,15 +4,22 @@ export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 	const entries = Object.entries(audioGraph);
 
-    // Convolution was added between Sine and `Gain`
+	// Convolution was added between Sine and `Gain`
 
-    const gainNode = values.find(node => node.type === 'gain');
-    const sineNode = values.find(node => node.type === 'sine-oscillator');
-    const sineNodeId = entries.find(entry => entry[1] === sineNode)?.[0];
-    const maybeConvolution = gainNode?.inputs?.map(input => typeof input === 'string' ? input : input.id).map(input => audioGraph[input]).filter(node => node && node.type === 'convolution')[0];
+	const gainNode = values.find((node) => node.type === 'gain');
+	const sineNode = values.find((node) => node.type === 'sine-oscillator');
+	const sineNodeId = entries.find((entry) => entry[1] === sineNode)?.[0];
+	const maybeConvolution = gainNode?.inputs
+		?.map((input) => (typeof input === 'string' ? input : input.id))
+		.map((input) => audioGraph[input])
+		.filter((node) => node && node.type === 'convolution')[0];
 
-    if (!sineNodeId) return false;
-    if (!maybeConvolution) return false;
+	if (!sineNodeId) return false;
+	if (!maybeConvolution) return false;
 
-    return maybeConvolution.inputs?.some(input => typeof input === 'string' ? input === sineNodeId : input.id === sineNodeId) ?? false;
+	return (
+		maybeConvolution.inputs?.some((input) =>
+			typeof input === 'string' ? input === sineNodeId : input.id === sineNodeId
+		) ?? false
+	);
 }

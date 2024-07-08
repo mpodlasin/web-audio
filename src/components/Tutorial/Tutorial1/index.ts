@@ -130,39 +130,39 @@ export const tutorial1: Tutorial = {
 		},
 		{
 			copy: copy19,
-			check: check19,
+			check: check19
 		},
 		{
 			copy: copy20,
-			check: check20,
+			check: check20
 		},
 		{
 			copy: copy21,
-			check: check21,
+			check: check21
 		},
 		{
 			copy: copy22,
-			check: check22,
+			check: check22
 		},
 		{
 			copy: copy23,
-			check: check23,
+			check: check23
 		},
 		{
 			copy: copy24,
-			check: check24,
+			check: check24
 		},
 		{
 			copy: copy25,
-			check: check25,
+			check: check25
 		},
 		{
 			copy: copy26,
-			check: check26,
+			check: check26
 		},
 		{
 			copy: copy27,
-			check: check27,
+			check: check27
 		}
 	]
 };

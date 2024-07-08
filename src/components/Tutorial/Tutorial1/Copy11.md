@@ -2,7 +2,7 @@
 
 Each knob represents a frequency at a given step. So, when music is played, frequency will change from step to step.
 
-By default all frequency knobs are set to 440Hz (you don't need to know for now what that means). 
+By default all frequency knobs are set to 440Hz (you don't need to know for now what that means).
 
 But we don't want the same frequency at each step - this would be boring.
 
