@@ -161,6 +161,8 @@
 			animatedValue = dataArray[0] ?? 0;
 
 			requestAnimationFrame(animateAudioParam);
+		} else {
+			animatedValue = 0;
 		}
 	}
 
