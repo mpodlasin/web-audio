@@ -48,11 +48,14 @@
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
 	let audioGraphHistory: SerializedAudioElements[] = [{}, project.audioCanvas];
-	$: previousAudioGraph = audioGraphHistory.at(-2) ?? {};
-	$: audioGraph = audioGraphHistory.at(-1) ?? {};
+	let temporaryGraphHistory: SerializedAudioElements[] = [];
+	$: previousAudioGraph = temporaryGraphHistory.at(-2) ?? audioGraphHistory.at(-2) ?? {};
+	$: audioGraph = temporaryGraphHistory.at(-1) ?? audioGraphHistory.at(-1) ?? {};
 
 	$: {
-		dispatcher('change', audioGraph);
+		if (temporaryGraphHistory.length === 0) {
+			dispatcher('change', audioGraph);
+		}
 	}
 
 	$: {
@@ -354,16 +357,19 @@
 
 	/* NODE PARAMETER CHANGE ----------------------------------------- */
 	const handleNodeParameterChangeStart = () => {
-		audioGraphHistory = [...audioGraphHistory, audioGraph];
+		temporaryGraphHistory = [
+			audioGraph,
+			audioGraph,
+		]
 	};
 
 	const handleNodeParameterChange = (
 		event: CustomEvent<{ id: string; parameterName: string; value: number }>
 	) => {
 		const { id, parameterName, value } = event.detail;
-
-		audioGraphHistory = [
-			...audioGraphHistory.slice(0, -1),
+		
+		temporaryGraphHistory = [
+			...temporaryGraphHistory,
 			changeParameter(audioGraph, id, parameterName, value)
 		];
 	};
@@ -448,6 +454,17 @@
 	const handleKnobMouseUp = (
 		event: CustomEvent<{ nodeId: string; parameterName: string; event: PointerEvent }>
 	) => {
+		const temp = temporaryGraphHistory.at(-1);
+
+		if (temp) {
+			audioGraphHistory = [
+				...audioGraphHistory,
+				temp
+			];
+
+			temporaryGraphHistory = [];
+		}
+
 		if (!draggingLine) return;
 		if (!startingPlug) return;
 
