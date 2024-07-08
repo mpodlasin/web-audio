@@ -62,6 +62,12 @@
 		updateAudioCanvas(audioGraph, previousAudioGraph, audioNodeDatabase);
 	}
 
+	onMount(() => {
+		return () => {
+			updateAudioCanvas({}, audioGraph, audioNodeDatabase);
+		}
+	})
+
 	$: {
 		if (audioGraphHistory.length > 100) {
 			audioGraphHistory = audioGraphHistory.slice(audioGraphHistory.length - 100);
