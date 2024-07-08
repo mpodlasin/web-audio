@@ -538,10 +538,14 @@
 
 		if (!type) return false;
 
-		audioGraphHistory = [
-			...audioGraphHistory,
-			addConnection(audioGraph, startingPlug, { id, type, nodeId })
-		];
+		try {
+			audioGraphHistory = [
+				...audioGraphHistory,
+				addConnection(audioGraph, startingPlug, { id, type, nodeId })
+			];
+		} catch {
+			return false;
+		}
 
 		stopDragging();
 
