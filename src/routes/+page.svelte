@@ -4,16 +4,16 @@
 	</header>
 	<main>
 		<div class="links">
-			<a class="link" href="/playground">
-				<h2 class="linkHeader">Playground</h2>
-				<div class="linkDescription">
-					Mess around in audiocanvas freely, build your own synths, experiment with sound.
-				</div>
-			</a>
 			<a class="link" href="/learn">
 				<h2 class="linkHeader">Learn</h2>
 				<div class="linkDescription">
 					Learn basics of electronic music and modular synthesis by following interactive tutorials.
+				</div>
+			</a>
+			<a class="link" href="/playground">
+				<h2 class="linkHeader">Playground</h2>
+				<div class="linkDescription">
+					Mess around in audiocanvas freely, build your own synths, experiment with sound.
 				</div>
 			</a>
 		</div>
@@ -37,11 +37,20 @@
 	}
 
 	.links {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 18px;
+		padding: 16px;
 
-		max-width: 800px;
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+	}
+
+	@media (min-width: 500px) {
+		.links {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 18px;
+			max-width: 800px;
+		}
 	}
 
 	.link {
