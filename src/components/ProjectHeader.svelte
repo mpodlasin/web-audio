@@ -64,10 +64,9 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		gap: 8px;
 
 		z-index: 100;
-
-		gap: 8px;
 	}
 
 	.header {
@@ -76,6 +75,13 @@
 		border-radius: 8px;
 		padding: 16px;
 		color: var(--neutral-300);
+		display: none;
+	}
+
+	@media (min-width: 500px) {
+		.header {
+			display: block;
+		}
 	}
 
 	.suffix {
