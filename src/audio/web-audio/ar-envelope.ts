@@ -25,6 +25,12 @@ export class AREnvelope extends AudioWorkletProcessor {
 				defalueValue: 0,
 				minValue: 0,
 				maxValue: 1
+			},
+			{
+				name: 'release-fall',
+				defaultValue: 1,
+				minValue: 0,
+				maxValue: 1,
 			}
 		];
 	}
@@ -37,6 +43,8 @@ export class AREnvelope extends AudioWorkletProcessor {
 	) {
 		const attackParameter = parameters.attack ?? [];
 		const releaseParameter = parameters.release ?? [];
+
+		const releaseFall = parameters['release-fall']?.[0] ?? 0;
 
 		inputs.forEach((input, firstIndex) => {
 			input.forEach((inp, secondIndex) => {
@@ -52,7 +60,8 @@ export class AREnvelope extends AudioWorkletProcessor {
 								out,
 								i,
 								attackParameter[i] ?? attackParameter[0] ?? 0,
-								releaseParameter[i] ?? releaseParameter[0] ?? 0
+								releaseParameter[i] ?? releaseParameter[0] ?? 0,
+								releaseFall,
 							);
 						}
 					}
@@ -65,7 +74,7 @@ export class AREnvelope extends AudioWorkletProcessor {
 
 	lastOutputValue = 0;
 
-	handleOut(inp: Float32Array, out: Float32Array, i: number, attack: number, release: number) {
+	handleOut(inp: Float32Array, out: Float32Array, i: number, attack: number, release: number, releaseFall: number) {
 		const wantedValue = inp[i] ?? 0;
 
 		const attackInSamples = Math.round((attack / 1000) * this._sampleRate);
@@ -83,7 +92,9 @@ export class AREnvelope extends AudioWorkletProcessor {
 		}
 
 		if (releaseInSamples && wantedValue < lastOutputValue) {
-			const calculatedValue = lastOutputValue - (1 / releaseInSamples);
+			const diff = lastOutputValue - wantedValue;
+			const poweredDiff = Math.pow(diff, releaseFall);
+			const calculatedValue = lastOutputValue - (poweredDiff / releaseInSamples);
 
 			if (wantedValue < calculatedValue) {
 				output = calculatedValue;
