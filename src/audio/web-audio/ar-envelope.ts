@@ -75,11 +75,19 @@ export class AREnvelope extends AudioWorkletProcessor {
 
 		let output = wantedValue;
 		if (attackInSamples && wantedValue > lastOutputValue) {
-			output = lastOutputValue + 1 / attackInSamples;
+			const calculatedValue = lastOutputValue + (1 / attackInSamples);
+
+			if (calculatedValue < wantedValue) {
+				output = calculatedValue;
+			}
 		}
 
 		if (releaseInSamples && wantedValue < lastOutputValue) {
-			output = lastOutputValue - 1 / releaseInSamples;
+			const calculatedValue = lastOutputValue - (1 / releaseInSamples);
+
+			if (wantedValue < calculatedValue) {
+				output = calculatedValue;
+			}
 		}
 
 		this.lastOutputValue = output;
