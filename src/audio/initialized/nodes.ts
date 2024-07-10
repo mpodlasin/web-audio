@@ -597,8 +597,8 @@ export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNodeWithT
 }
 
 export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode {
-	private squareOscillator: AudioNode;
 	private gateLength: AudioNode;
+	private tempo: ConstantSourceNode;
 
 	constructor(id: string) {
 		super(id, 'clock');
@@ -606,11 +606,21 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 		const squareOscillator = globalContext.createOscillator();
 		squareOscillator.start();
 		squareOscillator.type = 'square';
-		this.squareOscillator = squareOscillator;
+		squareOscillator.frequency.value = 0;
 
 		const pulseToTrigger = new AudioWorkletNode(globalContext, 'pulse-to-trigger');
 		const gateLength = new AudioWorkletNode(globalContext, 'gate-length');
 		this.gateLength = gateLength;
+
+		const tempo = globalContext.createConstantSource();
+		tempo.start();
+		this.tempo = tempo;
+
+		const bpmToFrequencyGain = globalContext.createGain(); 
+		bpmToFrequencyGain.gain.value = 1 / 60;
+
+		tempo.connect(bpmToFrequencyGain);
+		bpmToFrequencyGain.connect(squareOscillator.frequency);
 
 		squareOscillator.connect(pulseToTrigger);
 		pulseToTrigger.connect(gateLength);
@@ -618,14 +628,14 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 
 	getAudioParam(parameterName: string): AudioParam {
 		if (parameterName === 'tempo') {
-			return (this.squareOscillator as OscillatorNode).frequency;
+			return this.tempo.offset;
 		}
 
 		throw new Error(`Parmeter ${parameterName} does not exist on Clock node`);
 	}
 
 	getInputNode(): AudioNode | null {
-		return this.squareOscillator;
+		return null;
 	}
 
 	getOutputNode(): AudioNode {
