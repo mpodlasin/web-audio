@@ -596,7 +596,44 @@ export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNodeWithT
 	}
 }
 
-export class ClockNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode {
+	private squareOscillator: AudioNode;
+	private gateLength: AudioNode;
+
+	constructor(id: string) {
+		super(id, 'clock');
+
+		const squareOscillator = globalContext.createOscillator();
+		squareOscillator.start();
+		squareOscillator.type = 'square';
+		this.squareOscillator = squareOscillator;
+
+		const pulseToTrigger = new AudioWorkletNode(globalContext, 'pulse-to-trigger');
+		const gateLength = new AudioWorkletNode(globalContext, 'gate-length');
+		this.gateLength = gateLength;
+
+		squareOscillator.connect(pulseToTrigger);
+		pulseToTrigger.connect(gateLength);
+	}
+
+	getAudioParam(parameterName: string): AudioParam {
+		if (parameterName === 'tempo') {
+			return (this.squareOscillator as OscillatorNode).frequency;
+		}
+
+		throw new Error(`Parmeter ${parameterName} does not exist on Clock node`);
+	}
+
+	getInputNode(): AudioNode | null {
+		return this.squareOscillator;
+	}
+
+	getOutputNode(): AudioNode {
+		return this.gateLength;
+	}
+}
+
+export class _ClockNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
 		super(new AudioWorkletNode(globalContext, 'trigger'), id, 'clock');
 	}
@@ -952,7 +989,8 @@ export class MidiNode extends GenericCustomAudioNode {
 	}
 
 	private handleMidiMessage(event: MIDIMessageEvent) {
-		const [status, note] = event.data;
+		const status = event.data?.[0] ?? 0;
+		const note = event.data?.[1] ?? 0;
 
 		if (status === 144) {
 			this.trigger.offset.value = 1;
