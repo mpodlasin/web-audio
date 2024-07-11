@@ -52,14 +52,18 @@ export class ClockCounter extends AudioWorkletProcessor {
 		inputList.forEach((input) => {
 			input.forEach((inp) => {
 				if (this.lastValueOfPreviousProcess === 0 && inp[0] === 1) {
+					console.log(`Trigger and index 0`)
 					triggerIndexes.push(0);
 				}
 
 				for (let i = 0; i < inp.length - 1; i++) {
 					if (inp[i] === 0 && inp[i + 1] === 1) {
+						console.log(`Trigger at index ${i + 1}`);
 						triggerIndexes.push(i + 1);
 					}
 				}
+
+				this.lastValueOfPreviousProcess = inp.at(-1) ?? 0;
 			});
 		});
 
