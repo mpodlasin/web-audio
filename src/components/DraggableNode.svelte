@@ -116,6 +116,7 @@
 		{audioGraph}
 		on:nodeParameterChangeStart
 		on:nodeParameterChange
+		on:nodeParameterChangeEnd
 		on:nodePlugTouchStart
 		on:nodePlugDown
 		on:nodePlugUp

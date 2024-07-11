@@ -377,6 +377,16 @@
 		];
 	};
 
+	const handleNodeParameterChangeEnd = () => {
+		const temp = temporaryGraphHistory.at(-1);
+
+		if (temp) {
+			audioGraphHistory = [...audioGraphHistory, temp];
+
+			temporaryGraphHistory = [];
+		}
+	}
+
 	const handleCreateElementClick = (
 		event: CustomEvent<keyof typeof allowedSerializedAudioElementStaticDefinitions>
 	) => {
@@ -457,14 +467,6 @@
 	const handleKnobMouseUp = (
 		event: CustomEvent<{ nodeId: string; parameterName: string; event: PointerEvent }>
 	) => {
-		const temp = temporaryGraphHistory.at(-1);
-
-		if (temp) {
-			audioGraphHistory = [...audioGraphHistory, temp];
-
-			temporaryGraphHistory = [];
-		}
-
 		if (!draggingLine) return;
 		if (!startingPlug) return;
 
@@ -861,6 +863,7 @@
 					on:dragstart={handleDragStart}
 					on:nodeParameterChangeStart={handleNodeParameterChangeStart}
 					on:nodeParameterChange={handleNodeParameterChange}
+					on:nodeParameterChangeEnd={handleNodeParameterChangeEnd}
 					on:nodePlugDown={handlePlugDown}
 					on:nodePlugUp={handlePlugUp}
 					on:deleteNode={handleDeleteNode}
