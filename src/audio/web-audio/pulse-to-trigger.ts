@@ -52,7 +52,7 @@ export class PulseToTrigger extends AudioWorkletProcessor {
 
                         if (!out) return;
 
-                        if ((inp[i] ?? 0) < 0.5) {
+                        if ((inp[i] ?? 0) < 0) {
                             out[i] = 0;
                         } else {
                             out[i] = 1;
