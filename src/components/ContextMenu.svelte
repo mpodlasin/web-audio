@@ -13,6 +13,30 @@
 
 	export let position: Position;
 
+	const menuHeight = 363;
+	const menuWidth = 160;
+	
+	let displaySubmenusOnTheLeft = false;
+	let displayedPosition: Position;
+
+	$: {
+		const y = position.y;
+		const x = position.x;
+
+		if (y + menuHeight > window.innerHeight) {
+			displayedPosition = {
+				y: window.innerHeight - menuHeight,
+				x: position.x
+			}
+		} else {
+			displayedPosition = position;
+		}
+
+		if (x + menuWidth > window.innerWidth) {
+			displaySubmenusOnTheLeft = true;
+		}
+	}
+
 	const readableNames = _readableNames as Record<string, string>;
 
 	const dispatcher = createEventDispatcher();
@@ -51,7 +75,7 @@
 	};
 </script>
 
-<PositionedMenu {position} on:close>
+<PositionedMenu position={displayedPosition} on:close>
 	<div class="create-section">
 		{#each Object.entries(categorizedNodeTypesToDisplay) as [nodeType, nodeTypes] (nodeType)}
 			{#if nodeTypes.length > 0}
@@ -64,7 +88,7 @@
 					>
 						<div>{readableCategoryNames[nodeType]}</div>
 						<div class="icon"><ChevronRight /></div>
-						<div class="submenu" class:visible={hoveredOverNodeType === nodeType}>
+						<div class="submenu" class:left={displaySubmenusOnTheLeft} class:visible={hoveredOverNodeType === nodeType}>
 							<Menu>
 								{#each nodeTypes as innerNodeType (innerNodeType)}
 									<MenuButton
@@ -102,6 +126,12 @@
 		opacity: 0;
 		transition: opacity 0.2s;
 		pointer-events: none;
+		z-index: 101;
+	}
+
+	.submenu.left {
+		left: auto;
+		right: 100%;
 	}
 
 	.submenu.visible {
