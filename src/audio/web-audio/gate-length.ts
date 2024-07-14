@@ -10,7 +10,7 @@ export class GateLength extends AudioWorkletProcessor {
 		return [
 			{
 				name: 'length',
-				defaultValue: 1 / 10,
+				defaultValue: 1 / 100,
 				minValue: 0,
 				maxValue: 60
 			},
