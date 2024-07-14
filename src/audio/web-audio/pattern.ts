@@ -81,6 +81,8 @@ export class Pattern extends AudioWorkletProcessor {
 						triggerIndexes.push(i + 1);
 					}
 				}
+
+				this.lastValueOfPreviousProcess = inp[inp.length - 1] ?? 0;
 			});
 		});
 
