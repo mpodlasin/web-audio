@@ -114,13 +114,16 @@
 		canvasCtx.stroke();
 	}
 
+	let started = false;
+
 	$: {
-		if (running) {
+		if (running && canvasCtx && !started) {
 			if (mode === 'fast') {
 				drawFastMode();
 			} else {
 				drawSlowMode();
 			}
+			started = true;
 		}
 	}
 </script>
