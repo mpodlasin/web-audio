@@ -565,7 +565,7 @@ export class GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight extends Ge
 
 		const highlightParameter = () => {
 			analyser.getFloatTimeDomainData(dataArray);
-			let value = (dataArray[0] ?? 0) - 1
+			let value = (dataArray[0] ?? 0) - 1;
 
 			if (value === -1) {
 				value = 7;
@@ -620,7 +620,7 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 		tempo.start();
 		this.tempo = tempo;
 
-		const bpmToFrequencyGain = globalContext.createGain(); 
+		const bpmToFrequencyGain = globalContext.createGain();
 		bpmToFrequencyGain.gain.value = 1 / 60;
 
 		tempo.connect(bpmToFrequencyGain);

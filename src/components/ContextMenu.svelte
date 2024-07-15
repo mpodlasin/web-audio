@@ -15,7 +15,7 @@
 
 	const menuHeight = 363;
 	const menuWidth = 160;
-	
+
 	let displaySubmenusOnTheLeft = false;
 	let displayedPosition: Position;
 
@@ -27,7 +27,7 @@
 			displayedPosition = {
 				y: window.innerHeight - menuHeight,
 				x: position.x
-			}
+			};
 		} else {
 			displayedPosition = position;
 		}
@@ -88,7 +88,11 @@
 					>
 						<div>{readableCategoryNames[nodeType]}</div>
 						<div class="icon"><ChevronRight /></div>
-						<div class="submenu" class:left={displaySubmenusOnTheLeft} class:visible={hoveredOverNodeType === nodeType}>
+						<div
+							class="submenu"
+							class:left={displaySubmenusOnTheLeft}
+							class:visible={hoveredOverNodeType === nodeType}
+						>
 							<Menu>
 								{#each nodeTypes as innerNodeType (innerNodeType)}
 									<MenuButton

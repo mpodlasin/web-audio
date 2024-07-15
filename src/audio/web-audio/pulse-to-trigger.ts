@@ -30,7 +30,7 @@ export class PulseToTrigger extends AudioWorkletProcessor {
 				name: 'release-fall',
 				defaultValue: 1,
 				minValue: 0,
-				maxValue: 1,
+				maxValue: 1
 			}
 		];
 	}
@@ -41,7 +41,6 @@ export class PulseToTrigger extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame = currentFrame
 	) {
-
 		inputs.forEach((input, firstIndex) => {
 			input.forEach((inp, secondIndex) => {
 				for (let i = 0; i < inp.length; i++) {
@@ -50,13 +49,13 @@ export class PulseToTrigger extends AudioWorkletProcessor {
 					if (output) {
 						const out = output[secondIndex];
 
-                        if (!out) return;
+						if (!out) return;
 
-                        if ((inp[i] ?? 0) < 0) {
-                            out[i] = 0;
-                        } else {
-                            out[i] = 1;
-                        }
+						if ((inp[i] ?? 0) < 0) {
+							out[i] = 0;
+						} else {
+							out[i] = 1;
+						}
 					}
 				}
 			});

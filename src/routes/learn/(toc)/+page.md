@@ -1,15 +1,15 @@
 ### Basics
 
 1. [Your First Sounds](/learn/your-first-sounds)
-2. *[Types of Signals](/learn/types-of-signals) (coming soon)*
+2. _[Types of Signals](/learn/types-of-signals) (coming soon)_
 
 ### Building Blocks of Modular Synthesis
 
-3. *[Oscillators - Frequency and Amplitude](/learn/oscillators-frequency-amplitude) (coming soon)*
-4. *[Filters - Shaping Sound](/learn/filters-shaping-sound) (coming soon)*
-5. *[Envelopes - Controlling Sound](/learn/envelopes-controlling-sound) (coming soon)*
-6. *[LFOs - Adding Movement](/learn/lfos-adding-movement) (coming soon)*
+3. _[Oscillators - Frequency and Amplitude](/learn/oscillators-frequency-amplitude) (coming soon)_
+4. _[Filters - Shaping Sound](/learn/filters-shaping-sound) (coming soon)_
+5. _[Envelopes - Controlling Sound](/learn/envelopes-controlling-sound) (coming soon)_
+6. _[LFOs - Adding Movement](/learn/lfos-adding-movement) (coming soon)_
 
 ### Advanced Topics
 
-7. *[Spectral Analysis - Understanding Sound](/learn/spectral-analysis-understanding-sound) (coming soon)*
+7. _[Spectral Analysis - Understanding Sound](/learn/spectral-analysis-understanding-sound) (coming soon)_

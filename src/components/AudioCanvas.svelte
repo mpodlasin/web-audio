@@ -65,8 +65,8 @@
 	onMount(() => {
 		return () => {
 			updateAudioCanvas({}, audioGraph, audioNodeDatabase);
-		}
-	})
+		};
+	});
 
 	$: {
 		if (audioGraphHistory.length > 100) {
@@ -385,7 +385,7 @@
 
 			temporaryGraphHistory = [];
 		}
-	}
+	};
 
 	const handleCreateElementClick = (
 		event: CustomEvent<keyof typeof allowedSerializedAudioElementStaticDefinitions>

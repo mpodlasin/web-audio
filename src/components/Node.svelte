@@ -65,7 +65,7 @@
 
 	const handleParameterChangeEnd = () => {
 		dispatcher('nodeParameterChangeEnd');
-	}
+	};
 
 	const handlePlugDown = (event: CustomEvent<{ id: string; type: string }>) => {
 		const plugId = event.detail.id;
@@ -95,11 +95,13 @@
 		handleParameterChangeEnd();
 	};
 
-	const handleOnOffButtonChange = (event: CustomEvent<{ parameterName: string; value: number }>) => {
+	const handleOnOffButtonChange = (
+		event: CustomEvent<{ parameterName: string; value: number }>
+	) => {
 		handleParameterChangeStart();
 		handleParameterChange(event);
 		handleParameterChangeEnd();
-	}
+	};
 </script>
 
 <div class="node" bind:this={element} style={color ? `--primary-500: ${color};` : ''} data-node>
