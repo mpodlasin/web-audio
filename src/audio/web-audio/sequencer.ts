@@ -14,7 +14,7 @@ export class Sequencer extends AudioWorkletProcessor {
 		return [1, 2, 3, 4, 5, 6, 7, 8].map((i) => `frequency${i}`).map(createFrequencyDescriptor);
 	}
 
-	currentStep = 0;
+	currentStep = -1;
 	lastInputFromPreviousProcess = 0;
 
 	process(

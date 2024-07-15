@@ -550,7 +550,7 @@ export class GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight extends Ge
 		this.input = input;
 	}
 
-	lastValue = 0;
+	lastValue = 7;
 
 	getInputNode(): AudioNode {
 		return this.input;
@@ -565,7 +565,11 @@ export class GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight extends Ge
 
 		const highlightParameter = () => {
 			analyser.getFloatTimeDomainData(dataArray);
-			const value = dataArray[0] ?? 0;
+			let value = (dataArray[0] ?? 0) - 1
+
+			if (value === -1) {
+				value = 7;
+			}
 
 			if (value !== this.lastValue) {
 				this.lastValue = value;
