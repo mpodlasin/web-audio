@@ -97,7 +97,7 @@
 								{#each nodeTypes as innerNodeType (innerNodeType)}
 									<MenuButton
 										on:click={handleNodeClick(innerNodeType)}
-										on:touchstart={handleNodeClick(innerNodeType)}
+										on:touchend={handleNodeClick(innerNodeType)}
 										on:keydown={() => {}}
 									>
 										{readableNames[innerNodeType]}
