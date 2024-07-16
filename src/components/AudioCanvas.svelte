@@ -975,6 +975,7 @@
 		position: relative;
 		width: 100vw;
 		height: 100vh;
+		touch-action: none;
 	}
 
 	.audio-canvas {
