@@ -276,9 +276,9 @@
 
 		if (temp) {
 			audioGraphHistory = [...audioGraphHistory, temp];
-
-			temporaryGraphHistory = [];
 		}
+
+		temporaryGraphHistory = [];
 	}
 
 	/* PLUG POSITIONS ----------------------------------------- */
@@ -390,9 +390,9 @@
 
 		if (temp) {
 			audioGraphHistory = [...audioGraphHistory, temp];
-
-			temporaryGraphHistory = [];
 		}
+
+		temporaryGraphHistory = [];
 	};
 
 	const handleCreateElementClick = (

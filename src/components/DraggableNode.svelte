@@ -91,9 +91,9 @@
 				position: { x: event.clientX, y: event.clientY },
 				nodeType: node.type
 			});
-		} else {
-			dispatcher('dragend');
 		}
+
+		dispatcher('dragend');
 	};
 </script>
 
