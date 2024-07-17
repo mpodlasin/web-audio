@@ -27,9 +27,9 @@
 				...tutorials,
 				[id]: createTutorialProject(chosenProjectName, route.tutorialId)
 			};
-
-			chosenTutorial = tutorials[id];
 		}
+
+		chosenTutorial = tutorials[id];
 	}
 
 	$: {
@@ -51,6 +51,7 @@
 
 	const handleSizeChange = (event: CustomEvent<number>) => {
 		const size = event.detail;
+
 		if (!chosenTutorial) return;
 
 		tutorials = {
@@ -64,6 +65,7 @@
 
 	const handleCanvasRelativePositionChange = (event: CustomEvent<Position>) => {
 		const canvasRelativePosition = event.detail;
+
 		if (!chosenTutorial) return;
 
 		tutorials = {
