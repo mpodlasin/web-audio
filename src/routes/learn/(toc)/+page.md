@@ -1,3 +1,5 @@
+## Learn
+
 ### Basics
 
 1. [Your First Sounds](/learn/your-first-sounds)
@@ -10,6 +12,4 @@
 5. _[Envelopes - Controlling Sound](/learn/envelopes-controlling-sound) (coming soon)_
 6. _[LFOs - Adding Movement](/learn/lfos-adding-movement) (coming soon)_
 
-### Advanced Topics
-
-7. _[Spectral Analysis - Understanding Sound](/learn/spectral-analysis-understanding-sound) (coming soon)_
+_...and more in preperation!_
