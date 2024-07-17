@@ -1,7 +1,9 @@
-We said that we want to control the loudness of the sound (like dimnishing loudness of guitar string).
+We said that we want to control the loudness of the sound (like a dimnishing loudness of a guitar string).
 
-So we want to control the `Gain` node, which allows us to increase/decrease volume.
+Remember which node was responsible for controlling loudness? 
 
-But we still want to keep our "global" `Gain` node that controls overall volume coming out of your speakers.
+It was the `Gain` node.
+
+But we still want to keep our "global" `Gain` that controls overall volume coming out of your speakers.
 
 Having that in mind, create _another_ `Gain` node and insert it between `Sine` and `Convolution` node.

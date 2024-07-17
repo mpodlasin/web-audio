@@ -1,4 +1,4 @@
-Before we can play the melody, we have to choose which notes `Pitch Quantizer` will quantize to.
+Before we can play the melody, we have to choose to which notes `Pitch Quantizer` will quantize to.
 
 If you know musical scales, you can choose whatever notes you prefer.
 
