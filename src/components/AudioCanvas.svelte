@@ -93,10 +93,6 @@
 		event.detail.y = translatedPosition.y;
 	};
 
-	$: {
-		dispatcher('canvasRelativePositionChange', canvasRelativePosition);
-	}
-
 	const handleDragCanvasStart = (event: PointerEvent) => {
 		if (event.button === 2) return;
 
@@ -114,6 +110,8 @@
 
 	const handleDragCanvasEnd = (event: PointerEvent) => {
 		event.preventDefault();
+
+		dispatcher('canvasRelativePositionChange', canvasRelativePosition);
 
 		lastDragPosition = null;
 	};
