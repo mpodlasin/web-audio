@@ -1,6 +1,5 @@
 import { globalContext } from '../GlobalContext';
 import { allowedSerializedAudioElementStaticDefinitions, type NodeType } from '../serialized';
-import { settings } from '../settings';
 import { generateReverb } from '../web-audio/reverbGeneration';
 import {
 	type CustomAudioNode,
