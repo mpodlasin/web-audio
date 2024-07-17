@@ -229,7 +229,7 @@
 
 	/* DRAGGING NODES ----------------------------------------- */
 	const handleDragStart = () => {
-		audioGraphHistory = [...audioGraphHistory, audioGraph];
+		temporaryGraphHistory = [audioGraph, audioGraph];
 	};
 
 	const handleDragNode = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
@@ -243,10 +243,10 @@
 			const diffX = (draggedNode.ui?.position.x ?? 0) - event.detail.x;
 			const diffY = (draggedNode.ui?.position.y ?? 0) - event.detail.y;
 
-			audioGraphHistory = selectedNodeIds.reduce((audioGraphHistory, id) => {
-				const node = audioGraphHistory.at(-1)?.[id];
+			temporaryGraphHistory = selectedNodeIds.reduce((temporaryGraphHistory, id) => {
+				const node = temporaryGraphHistory.at(-1)?.[id];
 
-				if (!node) return audioGraphHistory;
+				if (!node) return temporaryGraphHistory;
 
 				return dragNode(
 					{
@@ -254,22 +254,32 @@
 						x: (node.ui?.position.x ?? 0) - diffX,
 						y: (node.ui?.position.y ?? 0) - diffY
 					},
-					audioGraphHistory
+					temporaryGraphHistory
 				);
-			}, audioGraphHistory);
+			}, temporaryGraphHistory);
 		} else {
-			audioGraphHistory = dragNode(
+			temporaryGraphHistory = dragNode(
 				{
 					id: event.detail.id,
 					x: event.detail.x,
 					y: event.detail.y
 				},
-				audioGraphHistory
+				temporaryGraphHistory
 			);
 		}
 
 		updatePlugPositions();
 	};
+
+	const handleNodeDragEnd = () => {
+		const temp = temporaryGraphHistory.at(-1);
+
+		if (temp) {
+			audioGraphHistory = [...audioGraphHistory, temp];
+
+			temporaryGraphHistory = [];
+		}
+	}
 
 	/* PLUG POSITIONS ----------------------------------------- */
 
@@ -859,6 +869,7 @@
 					{draggingLine}
 					on:drag={handleDragNode}
 					on:dragstart={handleDragStart}
+					on:dragend={handleNodeDragEnd}
 					on:nodeParameterChangeStart={handleNodeParameterChangeStart}
 					on:nodeParameterChange={handleNodeParameterChange}
 					on:nodeParameterChangeEnd={handleNodeParameterChangeEnd}
