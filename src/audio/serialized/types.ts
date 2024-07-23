@@ -37,7 +37,7 @@ export type SerializedAudioElementWithId<
 	id: string;
 };
 
-export type Inputs = (string | { id: string; output: string; input?: string })[];
+export type Inputs = ({ id: string; output: string; input: string })[];
 
 export type SerializedAudioParameter = {
 	base: number;

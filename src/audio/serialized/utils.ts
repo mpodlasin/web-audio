@@ -29,14 +29,6 @@ export const insertExistingNodes = (
 
 	const nodesWithRewrittenIds = idsAndNodes.map(([id, node]) => {
 		const rewrittenInputs = node.inputs?.map((input) => {
-			if (typeof input === 'string') {
-				if (ids.some((id) => id === input)) {
-					return idMap[input] ?? '';
-				}
-
-				return input;
-			}
-
 			if (ids.some((id) => id === input.id)) {
 				return {
 					...input,
@@ -89,22 +81,12 @@ export const insertExistingNodes = (
 				{
 					...node,
 					inputs: node.inputs?.flatMap<string | { id: string; output: string }>((input) => {
-						if (typeof input === 'string') {
-							const foundId = ids.find((id) => id === input);
+						const foundId = ids.find((id) => id === input.id);
 
-							if (foundId) {
-								return [input, idMap[foundId] ?? ''];
-							} else {
-								return [input];
-							}
+						if (foundId) {
+							return [input, { id: idMap[foundId] ?? '', output: input.output, input: input.input }];
 						} else {
-							const foundId = ids.find((id) => id === input.id);
-
-							if (foundId) {
-								return [input, { id: idMap[foundId] ?? '', output: input.output }];
-							} else {
-								return [input];
-							}
+							return [input];
 						}
 					}),
 					parameters: Object.fromEntries(
@@ -115,18 +97,10 @@ export const insertExistingNodes = (
 									...parameterValue,
 									inputs: parameterValue.inputs.flatMap<string | { id: string; output: string }>(
 										(input) => {
-											if (typeof input === 'string') {
-												const foundId = ids.find((id) => id === input);
+											const foundId = ids.find((id) => id === input.id);
 
-												if (foundId) {
-													return [input, idMap[foundId] ?? ''];
-												}
-											} else {
-												const foundId = ids.find((id) => id === input.id);
-
-												if (foundId) {
-													return [input, { id: idMap[foundId] ?? '', output: input.output }];
-												}
+											if (foundId) {
+												return [input, { id: idMap[foundId] ?? '', output: input.output }];
 											}
 
 											return [input];
@@ -186,13 +160,7 @@ export const removeNode = <S extends SerializedAudioElements>(audioGraph: S, nod
 
 	Object.values(newAudioGraph).forEach((audioElement) => {
 		audioElement.inputs = audioElement.inputs
-			? audioElement.inputs.filter((input) => {
-					if (typeof input === 'string') {
-						return input !== nodeId;
-					} else {
-						return input.id !== nodeId;
-					}
-			  })
+			? audioElement.inputs.filter((input) => input.id !== nodeId)
 			: undefined;
 
 		for (const parameterName in audioElement.parameters) {
@@ -337,26 +305,16 @@ export const removeConnection = <S extends SerializedAudioElements>(
 			throw new Error(`Audio element with id ${endingPlug.nodeId} not found`);
 		}
 
-		const endingNodeStaticDefinition =
-			allowedSerializedAudioElementStaticDefinitions[endingNode.type];
-
 		newAudioGraph = {
 			...audioGraph,
 			[endingPlug.nodeId]: {
 				...endingNode,
 				inputs: (endingNode.inputs ?? []).filter((input) => {
-					if (typeof input === 'string') {
-						return (
-							input !== startingPlug.nodeId ||
-							endingNodeStaticDefinition.inputs[0]?.id !== endingPlug.id
-						);
-					} else {
-						return (
-							input.output !== startingPlug.id ||
-							input.id !== startingPlug.nodeId ||
-							input.input !== endingPlug.id
-						);
-					}
+					return (
+						input.output !== startingPlug.id ||
+						input.id !== startingPlug.nodeId ||
+						input.input !== endingPlug.id
+					);
 				}),
 				parameters: Object.fromEntries(
 					Object.entries(endingNode.parameters ?? {}).map(([parameterName, value]) => {

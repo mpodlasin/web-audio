@@ -668,6 +668,9 @@
 	const handleDeleteConnection = (event: MouseEvent) => {
 		event.stopPropagation();
 
+		console.log('audioGraph', audioGraph);
+		console.log('chosenLine', chosenLine);
+
 		if (!chosenLine) return;
 
 		audioGraphHistory = [

@@ -73,7 +73,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
 					}
@@ -165,14 +165,14 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
 					}
 				},
 				'3': {
 					type: 'destination' as const,
-					inputs: ['2']
+					inputs: [{id: '2', output: 'audio', input: 'audio'}]
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -213,7 +213,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'ar-envelope' as const,
-					inputs: [{ id: '1', output: 'trigger' }],
+					inputs: [{ id: '1', output: 'trigger', input: 'trigger' }],
 					parameters: {
 						attack: { base: 0, inputs: [] },
 						release: { base: 0, inputs: [] }
@@ -228,14 +228,14 @@ describe('AudioCanvas', () => {
 				},
 				'4': {
 					type: 'gain' as const,
-					inputs: ['3'],
+					inputs: [{ id: '3', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0, inputs: [{ id: '2', output: 'envelope' }] }
 					}
 				},
 				'5': {
 					type: 'destination' as const,
-					inputs: ['4']
+					inputs: [{id: '4', output: 'audio', input: 'audio'}]
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -329,7 +329,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
 					}
@@ -594,7 +594,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
 					}
@@ -1067,7 +1067,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
 					}
@@ -1192,7 +1192,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
 					}
@@ -1241,7 +1241,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
 					}
@@ -1281,7 +1281,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
 					}
@@ -1321,7 +1321,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
 					}
@@ -1335,7 +1335,7 @@ describe('AudioCanvas', () => {
 
 			expect(newAudioElements['4']).toBeDefined();
 			expect(newAudioElements['4']?.type).toBe('gain');
-			expect(newAudioElements['4']?.inputs?.[0]).toBe('3');
+			expect(newAudioElements['4']?.inputs?.[0]).toEqual({id: '3', input: 'audio', output: 'audio'});
 			expect(newAudioElements['4']?.parameters?.['gain'].inputs[0]?.id).toBe('3');
 		});
 
@@ -1350,7 +1350,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
 					}
@@ -1363,7 +1363,7 @@ describe('AudioCanvas', () => {
 			expect(newAudioElements['3']?.type).toBe('square-oscillator');
 
 			expect(newAudioElements['2']?.inputs?.length).toBe(2);
-			expect(newAudioElements['2']?.inputs).toEqual(['1', '3']);
+			expect(newAudioElements['2']?.inputs).toEqual([{id: '1', output: 'audio', input: 'audio'}, {id: '3', output: 'audio', input: 'audio'}]);
 			expect(newAudioElements['2']?.parameters?.['gain'].inputs.length).toBe(2);
 			expect(newAudioElements['2']?.parameters?.['gain'].inputs['1']).toEqual({
 				id: '3',
@@ -1382,7 +1382,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
 					}
@@ -1416,7 +1416,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio', multiply: 0.2 }] }
 					}
@@ -1455,7 +1455,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'gain' as const,
-					inputs: ['1'],
+					inputs: [{id: '1', output: 'audio', input: 'audio'}],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio', multiply: 0.2 }] }
 					}
