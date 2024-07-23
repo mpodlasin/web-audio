@@ -45,6 +45,7 @@
 <line
 	on:click
 	on:keypress={() => {}}
+	on:contextmenu
 	{x1}
 	{y1}
 	{x2}
