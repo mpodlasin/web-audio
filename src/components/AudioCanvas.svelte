@@ -858,7 +858,7 @@
 			/>
 		{/if}
 	</svg>
-	<div class="audio-canvas" on:pointerup={handleOpenContextMenu} on:pointermove={handleLineDrag}>
+	<div class="audio-canvas" on:pointerup={handleOpenContextMenu} on:contextmenu={e => e.preventDefault()} on:pointermove={handleLineDrag}>
 		<div
 			class="nodes"
 			style="transform: translate({canvasRelativePosition.x}px, {canvasRelativePosition.y}px) scale({size});"
