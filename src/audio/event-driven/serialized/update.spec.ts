@@ -82,4 +82,41 @@ describe('serialized/update', () => {
 			})
 		).toEqual(expectedState);
 	});
+
+	it('removes connection between two nodes', () => {
+		const state: SerializedState = {
+			audioGraphHistory: [
+				{
+					'1': defaultSineOscillatorNode,
+					'2': {
+						...defaultGainNode,
+						inputs: [{ id: '1', output: 'audio', input: 'audio' }]
+					}
+				}
+			]
+		};
+		const expectedState: SerializedState = {
+			audioGraphHistory: [
+				{
+					'1': defaultSineOscillatorNode,
+					'2': {
+						...defaultGainNode,
+						inputs: [{ id: '1', output: 'audio', input: 'audio' }]
+					}
+				},
+				{
+					'1': defaultSineOscillatorNode,
+					'2': defaultGainNode
+				},
+			]
+		};
+
+		expect(update(state, {
+			type: 'REMOVE_CONNECTION',
+			payload: {
+				fromPlug: { type: 'output', nodeId: '1', id: 'audio' },
+				toPlug: { type: 'input', nodeId: '2', id: 'audio' }
+			}
+		})).toEqual(expectedState);
+	});
 });

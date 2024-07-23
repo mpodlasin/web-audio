@@ -1,4 +1,4 @@
-import { addConnection, addNode, removeNode, type SerializedAudioElements } from '../../serialized';
+import { addConnection, addNode, removeConnection, removeNode, type SerializedAudioElements } from '../../serialized';
 import type { AudioCanvasEvent } from '../event';
 
 export type SerializedState = {
@@ -26,6 +26,13 @@ export const update = (state: SerializedState, event: AudioCanvasEvent): Seriali
 		const toPlug = event.payload.toPlug;
 
 		return mapAudioGraph((audioGraph) => addConnection(audioGraph, fromPlug, toPlug));
+	}
+
+	if (event.type === 'REMOVE_CONNECTION') {
+		const fromPlug = event.payload.fromPlug;
+		const toPlug = event.payload.toPlug;
+
+		return mapAudioGraph((audioGraph) => removeConnection(audioGraph, fromPlug, toPlug));
 	}
 
 	return state;
