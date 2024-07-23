@@ -58,6 +58,12 @@
 		}
 	}
 
+	// $: {
+	// 	console.log('audioGraph', audioGraph);
+	// 	console.log('audioGraphHistory', audioGraphHistory);
+	// 	console.log('temporaryGraphHistory', temporaryGraphHistory);
+	// }
+
 	$: {
 		updateAudioCanvas(audioGraph, previousAudioGraph, audioNodeDatabase);
 	}
@@ -566,6 +572,7 @@
 		const newAudioGraph = insertExistingNodes(audioGraph, copiedNodes, menuPosition);
 		audioGraphHistory = [...audioGraphHistory, newAudioGraph];
 		closeMenu();
+		updatePlugPositions();
 	};
 
 	const handleDeleteNode = () => {
