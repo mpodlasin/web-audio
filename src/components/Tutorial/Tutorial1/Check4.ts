@@ -11,9 +11,7 @@ export default function (audioGraph: SerializedAudioElements) {
 		const gain = values.find((node) => node.type === 'gain');
 
 		if (sine && gain && sineId) {
-			return (
-				gain.inputs?.some((input) => typeof input === 'object' && input.id === sineId) ?? false
-			);
+			return gain.inputs?.some((input) => input.id === sineId) ?? false;
 		}
 	}
 

@@ -9,8 +9,7 @@ export default function (audioGraph: SerializedAudioElements) {
 
 	const convolutionNode = values.find((node) => node.type === 'convolution');
 	const gainConnectedToConvolution = convolutionNode?.inputs
-		?.map((input) => (typeof input === 'string' ? input : input.id))
-		.map((input) => audioGraph[input])
+		?.map((input) => audioGraph[input.id])
 		.find((node) => node && node.type === 'gain');
 
 	const adEnvelopeNode = values.find((node) => node.type === 'ad-envelope');
@@ -22,8 +21,7 @@ export default function (audioGraph: SerializedAudioElements) {
 		) ?? false;
 	const clockWasConnectedToAdEnvelope =
 		adEnvelopeNode?.inputs
-			?.map((input) => (typeof input === 'string' ? input : input.id))
-			.map((input) => audioGraph[input])
+			?.map((input) => audioGraph[input.id])
 			.some((node) => node && node.type === 'clock') ?? false;
 
 	return adEnvelopeWasConnectedToGain && clockWasConnectedToAdEnvelope;

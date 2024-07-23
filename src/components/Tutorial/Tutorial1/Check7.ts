@@ -12,10 +12,7 @@ export default function (audioGraph: SerializedAudioElements) {
 		const destination = values.find((node) => node.type === 'destination');
 
 		if (gain && destination && gainId) {
-			return (
-				destination.inputs?.some((input) => typeof input === 'object' && input.id === gainId) ??
-				false
-			);
+			return destination.inputs?.some((input) => input.id === gainId) ?? false;
 		}
 	}
 

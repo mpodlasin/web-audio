@@ -28,32 +28,16 @@ export const getLinesToDisplay = (
 
 			const mapped = node.inputs
 				? node.inputs.map((input) => {
-						if (typeof input === 'string') {
-							const staticNodeDefinition =
-								allowedSerializedAudioElementStaticDefinitions[
-									audioGraphWithPositions[input]?.type ?? 'sine-oscillator'
-								];
+						const defaultInput = staticToDefinition.inputs[0];
 
-							const defaultOutput = staticNodeDefinition.outputs[0];
-							const defaultInput = staticToDefinition.inputs[0];
-
-							if (!defaultOutput || !defaultInput) {
-								throw new Error(`No default output or input!`);
-							}
-
-							return [[input, defaultOutput.id], [id, defaultInput.id], undefined] as const;
-						} else {
-							const defaultInput = staticToDefinition.inputs[0];
-
-							if (!defaultInput) {
-								throw new Error(`No default input!`);
-							}
-							return [
-								[input.id, input.output],
-								[id, input.input ?? defaultInput.id ?? ''],
-								undefined
-							] as const;
+						if (!defaultInput) {
+							throw new Error(`No default input!`);
 						}
+						return [
+							[input.id, input.output],
+							[id, input.input ?? defaultInput.id ?? ''],
+							undefined
+						] as const;
 				  })
 				: [];
 

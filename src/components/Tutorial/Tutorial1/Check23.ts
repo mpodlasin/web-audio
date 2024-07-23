@@ -6,8 +6,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	// Gain knob on Gain connected to Convolution was set to 0
 	const convolutionNode = values.find((node) => node.type === 'convolution');
 	const gainConnectedToConvolution = convolutionNode?.inputs
-		?.map((input) => (typeof input === 'string' ? input : input.id))
-		.map((input) => audioGraph[input])
+		?.map((input) => audioGraph[input.id])
 		.find((node) => node && node.type === 'gain');
 
 	const gainParameter = gainConnectedToConvolution?.parameters?.['gain'].base ?? 0;

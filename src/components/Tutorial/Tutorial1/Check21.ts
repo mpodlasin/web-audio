@@ -10,16 +10,14 @@ export default function (audioGraph: SerializedAudioElements) {
 	const convolutionNode = values.find((node) => node.type === 'convolution');
 
 	const gainConnectedToConvolution = convolutionNode?.inputs
-		?.map((input) => (typeof input === 'string' ? input : input.id))
-		.map((input) => audioGraph[input])
+		?.map((input) => audioGraph[input.id])
 		.find((node) => node && node.type === 'gain');
 
 	if (!gainConnectedToConvolution) return false;
 
 	const sineWasConnectedToGainConnectedToConvolution =
 		gainConnectedToConvolution.inputs
-			?.map((input) => (typeof input === 'string' ? input : input.id))
-			.map((input) => audioGraph[input])
+			?.map((input) => audioGraph[input.id])
 			.some((node) => node && node.type === 'sine-oscillator') ?? false;
 
 	return thereAreTwoGainNodes && sineWasConnectedToGainConnectedToConvolution;

@@ -11,11 +11,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	const sineNodeId = entries.find((entry) => entry[1] === sineNode)?.[0];
 
 	if (sineNode && oscilloscopeNode && sineNodeId) {
-		return (
-			oscilloscopeNode.inputs?.some((input) =>
-				typeof input === 'string' ? input === sineNodeId : input.id === sineNodeId
-			) ?? false
-		);
+		return oscilloscopeNode.inputs?.some((input) => input.id === sineNodeId) ?? false;
 	}
 
 	return false;

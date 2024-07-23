@@ -105,9 +105,9 @@ export const updateAudioCanvas = (
 			const addedInputs = getAddedInputs(newAudioElement, oldAudioElement);
 
 			addedInputs.forEach((input) => {
-				const inputId = typeof input === 'string' ? input : input.id;
-				const output = typeof input === 'string' ? undefined : input.output;
-				const inputName = typeof input === 'string' ? undefined : input.input;
+				const inputId = input.id;
+				const output = input.output;
+				const inputName = input.input;
 
 				const audioElementB = newAudioElements[inputId];
 
@@ -210,9 +210,9 @@ export const updateAudioCanvas = (
 		const removedInputs = getRemovedInputs(newAudioElement, oldAudioElement);
 
 		removedInputs.forEach((input) => {
-			const inputId = typeof input === 'string' ? input : input.id;
-			const output = typeof input === 'string' ? undefined : input.output;
-			const inputName = typeof input === 'string' ? undefined : input.input;
+			const inputId = input.id;
+			const output = input.output;
+			const inputName = input.input;
 
 			const audioElementB = newAudioElements[inputId];
 
@@ -336,9 +336,9 @@ function findInputsAndConnectAudioElements(
 ): void {
 	if (audioElementA.inputs) {
 		for (const input of audioElementA.inputs) {
-			const inputId = typeof input === 'string' ? input : input.id;
-			const output = typeof input === 'string' ? undefined : input.output;
-			const inputName = typeof input === 'string' ? undefined : input.input;
+			const inputId = input.id;
+			const output = input.output;
+			const inputName = input.input;
 
 			const audioElementB = audioElementsWithIds[inputId];
 
@@ -524,18 +524,9 @@ function getAddedInputs(
 
 	if (newAudioElement.inputs && oldAudioElement.inputs) {
 		for (const input of newAudioElement.inputs) {
-			if (typeof input === 'string' && !oldAudioElement.inputs.includes(input)) {
-				addedInputs.push(input);
-			}
-
 			if (
-				typeof input !== 'string' &&
 				!oldAudioElement.inputs.some(
-					(i) =>
-						typeof i !== 'string' &&
-						i.id === input.id &&
-						i.output === input.output &&
-						i.input === input.input
+					(i) => i.id === input.id && i.output === input.output && i.input === input.input
 				)
 			) {
 				addedInputs.push(input);
@@ -554,18 +545,9 @@ function getRemovedInputs(
 
 	if (newAudioElement.inputs && oldAudioElement.inputs) {
 		for (const oldInput of oldAudioElement.inputs) {
-			if (typeof oldInput === 'string' && !newAudioElement.inputs.includes(oldInput)) {
-				removedInputs.push(oldInput);
-			}
-
 			if (
-				typeof oldInput !== 'string' &&
 				!newAudioElement.inputs.some(
-					(i) =>
-						typeof i !== 'string' &&
-						i.id === oldInput.id &&
-						i.output === oldInput.output &&
-						i.input === oldInput.input
+					(i) => i.id === oldInput.id && i.output === oldInput.output && i.input === oldInput.input
 				)
 			) {
 				removedInputs.push(oldInput);

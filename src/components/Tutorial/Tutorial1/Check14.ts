@@ -10,11 +10,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	const triggerNodeId = entries.find((entry) => entry[1] === triggerNode)?.[0];
 
 	if (triggerNode && sequencerNode && triggerNodeId) {
-		return (
-			sequencerNode.inputs?.some((input) =>
-				typeof input === 'string' ? input === triggerNodeId : input.id === triggerNodeId
-			) ?? false
-		);
+		return sequencerNode.inputs?.some((input) => input.id === triggerNodeId) ?? false;
 	}
 
 	return false;
