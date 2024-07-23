@@ -1,6 +1,6 @@
 We said that we want to control the loudness of the sound (like a dimnishing loudness of a guitar string).
 
-Remember which node was responsible for controlling loudness? 
+Remember which node was responsible for controlling loudness?
 
 It was the `Gain` node.
 

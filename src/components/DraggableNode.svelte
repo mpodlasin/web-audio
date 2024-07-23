@@ -100,7 +100,7 @@
 <div
 	on:pointerdown={handlePointerDown}
 	on:pointerup={handlePointerUp}
-	on:contextmenu={e => e.preventDefault()}
+	on:contextmenu={(e) => e.preventDefault()}
 	on:click
 	on:keydown={() => {}}
 	class="wrapper"

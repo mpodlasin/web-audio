@@ -1,6 +1,6 @@
 Now that the `Sine` oscillator is connected to the `Gain` node, an audio signal can flow between them.
 
-All nodes in `AudioCanvas` have inputs and/or outputs - depending on their function. 
+All nodes in `AudioCanvas` have inputs and/or outputs - depending on their function.
 
 Inputs are always on the left and outputs are always on the right.
 

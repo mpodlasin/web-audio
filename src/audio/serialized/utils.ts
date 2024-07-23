@@ -84,7 +84,10 @@ export const insertExistingNodes = (
 						const foundId = ids.find((id) => id === input.id);
 
 						if (foundId) {
-							return [input, { id: idMap[foundId] ?? '', output: input.output, input: input.input }];
+							return [
+								input,
+								{ id: idMap[foundId] ?? '', output: input.output, input: input.input }
+							];
 						} else {
 							return [input];
 						}

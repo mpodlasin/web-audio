@@ -285,7 +285,7 @@
 		}
 
 		temporaryGraphHistory = [];
-	}
+	};
 
 	/* PLUG POSITIONS ----------------------------------------- */
 
