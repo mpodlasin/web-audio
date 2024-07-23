@@ -1,35 +1,41 @@
-import { addNode, removeNode, type SerializedAudioElements } from "../../serialized";
-import type { AudioCanvasEvent } from "../event";
+import { addConnection, addNode, removeNode, type SerializedAudioElements } from '../../serialized';
+import type { AudioCanvasEvent } from '../event';
 
 export type SerializedState = {
-    audioGraphHistory: SerializedAudioElements[];
-}
+	audioGraphHistory: SerializedAudioElements[];
+};
 
 export const update = (state: SerializedState, event: AudioCanvasEvent): SerializedState => {
-    if (event.type === 'CREATE_NODE') {
-        const nodeType = event.payload.nodeType;
-        const position = event.payload.position;
+	const mapAudioGraph = createMapAudioGraph(state);
 
-        return {
-            ...state,
-            audioGraphHistory: [
-                ...state.audioGraphHistory,
-                addNode(state.audioGraphHistory.at(-1) ?? {}, nodeType, position)
-            ]
-        }
-    }
+	if (event.type === 'CREATE_NODE') {
+		const nodeType = event.payload.nodeType;
+		const position = event.payload.position;
 
-    if (event.type === 'DELETE_NODE') {
-        const nodeId = event.payload.nodeId;
+		return mapAudioGraph((audioGraph) => addNode(audioGraph, nodeType, position));
+	}
 
-        return {
-            ...state,
-            audioGraphHistory: [
-                ...state.audioGraphHistory,
-                removeNode(state.audioGraphHistory.at(-1) ?? {}, nodeId)
-            ]
-        }
-    }
+	if (event.type === 'DELETE_NODE') {
+		const nodeId = event.payload.nodeId;
 
-    return state;
-}
+		return mapAudioGraph((audioGraph) => removeNode(audioGraph, nodeId));
+	}
+
+	if (event.type === 'ADD_CONNECTION') {
+		const fromPlug = event.payload.fromPlug;
+		const toPlug = event.payload.toPlug;
+
+		return mapAudioGraph((audioGraph) => addConnection(audioGraph, fromPlug, toPlug));
+	}
+
+	return state;
+};
+
+const createMapAudioGraph =
+	(state: SerializedState) =>
+	(map: (a: SerializedAudioElements) => SerializedAudioElements): SerializedState => {
+		return {
+			...state,
+			audioGraphHistory: [...state.audioGraphHistory, map(state.audioGraphHistory.at(-1) ?? {})]
+		};
+	};

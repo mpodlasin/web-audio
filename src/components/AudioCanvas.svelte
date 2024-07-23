@@ -846,7 +846,12 @@
 	/>
 	<svg width="100vw" height="100vh">
 		{#each linesToDisplay as line (line.key)}
-			<Line {line} {chosenLine} on:click={handleLineClick(line)} on:contextmenu={handleLineClick(line)} />
+			<Line
+				{line}
+				{chosenLine}
+				on:click={handleLineClick(line)}
+				on:contextmenu={handleLineClick(line)}
+			/>
 		{/each}
 		{#if draggingLine && positionOfEndPlug}
 			<line
@@ -858,7 +863,12 @@
 			/>
 		{/if}
 	</svg>
-	<div class="audio-canvas" on:pointerup={handleOpenContextMenu} on:contextmenu={e => e.preventDefault()} on:pointermove={handleLineDrag}>
+	<div
+		class="audio-canvas"
+		on:pointerup={handleOpenContextMenu}
+		on:contextmenu={(e) => e.preventDefault()}
+		on:pointermove={handleLineDrag}
+	>
 		<div
 			class="nodes"
 			style="transform: translate({canvasRelativePosition.x}px, {canvasRelativePosition.y}px) scale({size});"
