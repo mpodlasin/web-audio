@@ -1,4 +1,4 @@
-import { addNode, type SerializedAudioElements } from "../../serialized";
+import { addNode, removeNode, type SerializedAudioElements } from "../../serialized";
 import type { AudioCanvasEvent } from "../event";
 
 export type SerializedState = {
@@ -15,6 +15,18 @@ export const update = (state: SerializedState, event: AudioCanvasEvent): Seriali
             audioGraphHistory: [
                 ...state.audioGraphHistory,
                 addNode(state.audioGraphHistory.at(-1) ?? {}, nodeType, position)
+            ]
+        }
+    }
+
+    if (event.type === 'DELETE_NODE') {
+        const nodeId = event.payload.nodeId;
+
+        return {
+            ...state,
+            audioGraphHistory: [
+                ...state.audioGraphHistory,
+                removeNode(state.audioGraphHistory.at(-1) ?? {}, nodeId)
             ]
         }
     }

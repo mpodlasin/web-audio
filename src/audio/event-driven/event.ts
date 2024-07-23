@@ -6,4 +6,9 @@ export type AudioCanvasEvent = {
         nodeType: NodeType;
         position: Position;
     }
-};
+} | {
+    type: 'DELETE_NODE',
+    payload: {
+        nodeId: string;
+    }
+}
