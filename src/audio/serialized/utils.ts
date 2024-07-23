@@ -4,7 +4,7 @@ import {
 } from './staticDefinitions';
 import type { AllowedSerializedAudioElements, Position, SerializedAudioElements } from './types';
 
-const generateId = (audioGraph: SerializedAudioElements, offset = 0) => {
+export const generateId = (audioGraph: SerializedAudioElements, offset = 0) => {
 	return self.crypto.randomUUID
 		? self.crypto.randomUUID()
 		: `${Object.keys(audioGraph).length + 1 + offset}`;
