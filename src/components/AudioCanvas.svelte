@@ -178,7 +178,6 @@
 
 	const handleStartSelectingNodes = (event: PointerEvent) => {
 		event.preventDefault();
-		audioGraphHistory = [...audioGraphHistory, audioGraph];
 
 		if (isAlternativeKey(event)) {
 			if (!event.shiftKey) {
@@ -686,8 +685,8 @@
 		menuKind = 'line-multiply';
 	};
 
-	const handleMultiplyValueChangeStart = (event: CustomEvent) => {
-		audioGraphHistory = [...audioGraphHistory, audioGraph];
+	const handleMultiplyValueChangeStart = () => {
+		startTemporaryAction();
 	};
 
 	const handleMultiplyValueChange = (
@@ -700,12 +699,13 @@
 		const nodeId = chosenLine.line[1].nodeId;
 		const inputId = chosenLine.line[0].nodeId;
 
-		audioGraphHistory = [
-			...audioGraphHistory.slice(0, -1),
-			changeParameterMultiply(audioGraph, nodeId, chosenLine.line[1].id, inputId, value)
-		];
+		updateAudioGraphHistory(audioGraph => changeParameterMultiply(audioGraph, nodeId, chosenLine!.line[1].id, inputId, value))
 		chosenLineMultiply = value;
 	};
+
+	const handleEndMultiplyValueChange = () => {
+		endTemporaryAction();
+	}
 
 	/* NODE CONTEXT MENU ----------------------------------------- */
 	let copiedNodes: string[] = [];
@@ -962,6 +962,7 @@
 					nodeId=""
 					on:change={handleMultiplyValueChange}
 					on:mousedown={handleMultiplyValueChangeStart}
+					on:mouseup={handleEndMultiplyValueChange}
 				/>
 			</PositionedMenu>
 		{/if}
