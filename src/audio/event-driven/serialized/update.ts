@@ -11,8 +11,9 @@ export const update = (state: SerializedState, event: AudioCanvasEvent): Seriali
 	if (event.type === 'CREATE_NODE') {
 		const nodeType = event.payload.nodeType;
 		const position = event.payload.position;
+		const nodeId = event.payload.nodeId;
 
-		return mapAudioGraph((audioGraph) => addNode(audioGraph, nodeType, position));
+		return mapAudioGraph((audioGraph) => addNode(audioGraph, nodeType, position, undefined, nodeId));
 	}
 
 	if (event.type === 'DELETE_NODE') {

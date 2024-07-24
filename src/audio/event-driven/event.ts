@@ -4,6 +4,7 @@ export type AudioCanvasEvent =
 	| {
 			type: 'CREATE_NODE';
 			payload: {
+				nodeId: string;
 				nodeType: NodeType;
 				position: Position;
 			};

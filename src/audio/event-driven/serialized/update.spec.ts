@@ -21,7 +21,7 @@ describe('serialized/update', () => {
 		expect(
 			update(state, {
 				type: 'CREATE_NODE',
-				payload: { nodeType: 'sine-oscillator', position: { x: 1, y: 2 } }
+				payload: { nodeType: 'sine-oscillator', nodeId: '1', position: { x: 1, y: 2 } }
 			})
 		).toEqual(expectedState);
 	});
