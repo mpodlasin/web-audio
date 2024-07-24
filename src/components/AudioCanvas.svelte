@@ -52,6 +52,28 @@
 	$: previousAudioGraph = temporaryGraphHistory.at(-2) ?? audioGraphHistory.at(-2) ?? {};
 	$: audioGraph = temporaryGraphHistory.at(-1) ?? audioGraphHistory.at(-1) ?? {};
 
+	const updateAudioGraphHistory = (
+		map: (a: SerializedAudioElements) => SerializedAudioElements
+	) => {
+		if (temporaryGraphHistory.length >= 2) {
+			temporaryGraphHistory = [...temporaryGraphHistory, map(temporaryGraphHistory.at(-1) ?? {})];
+		} else {
+			audioGraphHistory = [...audioGraphHistory, map(audioGraphHistory.at(-1) ?? {})];
+		}
+	};
+
+	const startTemporaryAction = () => {
+		temporaryGraphHistory = [audioGraph, audioGraph];
+	};
+
+	const endTemporaryAction = () => {
+		const temp = temporaryGraphHistory.at(-1);
+		if (temp) {
+			audioGraphHistory = [...audioGraphHistory, temp];
+		}
+		temporaryGraphHistory = [];
+	};
+
 	$: {
 		if (temporaryGraphHistory.length === 0) {
 			dispatcher('change', audioGraph);
@@ -235,7 +257,7 @@
 
 	/* DRAGGING NODES ----------------------------------------- */
 	const handleDragStart = () => {
-		temporaryGraphHistory = [audioGraph, audioGraph];
+		startTemporaryAction();
 	};
 
 	const handleDragNode = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
@@ -249,28 +271,32 @@
 			const diffX = (draggedNode.ui?.position.x ?? 0) - event.detail.x;
 			const diffY = (draggedNode.ui?.position.y ?? 0) - event.detail.y;
 
-			temporaryGraphHistory = selectedNodeIds.reduce((temporaryGraphHistory, id) => {
-				const node = temporaryGraphHistory.at(-1)?.[id];
+			updateAudioGraphHistory((audioGraph) =>
+				selectedNodeIds.reduce((audioGraph, id) => {
+					const node = audioGraph[id];
 
-				if (!node) return temporaryGraphHistory;
+					if (!node) return audioGraph;
 
-				return dragNode(
-					{
-						id,
-						x: (node.ui?.position.x ?? 0) - diffX,
-						y: (node.ui?.position.y ?? 0) - diffY
-					},
-					temporaryGraphHistory
-				);
-			}, temporaryGraphHistory);
+					return dragNode(
+						{
+							id,
+							x: (node.ui?.position.x ?? 0) - diffX,
+							y: (node.ui?.position.y ?? 0) - diffY
+						},
+						audioGraph
+					);
+				}, audioGraph)
+			);
 		} else {
-			temporaryGraphHistory = dragNode(
-				{
-					id: event.detail.id,
-					x: event.detail.x,
-					y: event.detail.y
-				},
-				temporaryGraphHistory
+			updateAudioGraphHistory((audioGraph) =>
+				dragNode(
+					{
+						id: event.detail.id,
+						x: event.detail.x,
+						y: event.detail.y
+					},
+					audioGraph
+				)
 			);
 		}
 
@@ -278,13 +304,7 @@
 	};
 
 	const handleNodeDragEnd = () => {
-		const temp = temporaryGraphHistory.at(-1);
-
-		if (temp) {
-			audioGraphHistory = [...audioGraphHistory, temp];
-		}
-
-		temporaryGraphHistory = [];
+		endTemporaryAction();
 	};
 
 	/* PLUG POSITIONS ----------------------------------------- */
@@ -377,7 +397,7 @@
 
 	/* NODE PARAMETER CHANGE ----------------------------------------- */
 	const handleNodeParameterChangeStart = () => {
-		temporaryGraphHistory = [audioGraph, audioGraph];
+		startTemporaryAction();
 	};
 
 	const handleNodeParameterChange = (
@@ -385,20 +405,11 @@
 	) => {
 		const { id, parameterName, value } = event.detail;
 
-		temporaryGraphHistory = [
-			...temporaryGraphHistory,
-			changeParameter(audioGraph, id, parameterName, value)
-		];
+		updateAudioGraphHistory((audioGraph) => changeParameter(audioGraph, id, parameterName, value));
 	};
 
 	const handleNodeParameterChangeEnd = () => {
-		const temp = temporaryGraphHistory.at(-1);
-
-		if (temp) {
-			audioGraphHistory = [...audioGraphHistory, temp];
-		}
-
-		temporaryGraphHistory = [];
+		endTemporaryAction();
 	};
 
 	const handleCreateElementClick = (
@@ -406,13 +417,10 @@
 	) => {
 		event.preventDefault();
 
-		audioGraphHistory = [
-			...audioGraphHistory,
+		updateAudioGraphHistory((audioGraph) =>
 			addNode(audioGraph, event.detail, translatePosition(menuPosition))
-		];
-
+		);
 		updatePlugPositions();
-
 		closeMenu();
 	};
 
@@ -484,14 +492,13 @@
 		if (!draggingLine) return;
 		if (!startingPlug) return;
 
-		audioGraphHistory = [
-			...audioGraphHistory,
-			addConnectionToParameter(audioGraph, startingPlug, {
+		updateAudioGraphHistory((audioGraph) =>
+			addConnectionToParameter(audioGraph, startingPlug!, {
 				nodeId: event.detail.nodeId,
 				type: 'input',
 				id: event.detail.parameterName
 			})
-		];
+		);
 
 		stopDragging();
 	};
@@ -516,14 +523,13 @@
 
 		if (!nodeId) return false;
 
-		audioGraphHistory = [
-			...audioGraphHistory,
-			addConnectionToParameter(audioGraph, startingPlug, {
+		updateAudioGraphHistory((audioGraph) =>
+			addConnectionToParameter(audioGraph, startingPlug!, {
 				nodeId,
 				type: 'input',
 				id: parameterName
 			})
-		];
+		);
 
 		stopDragging();
 
@@ -555,10 +561,9 @@
 		if (!type) return false;
 
 		try {
-			audioGraphHistory = [
-				...audioGraphHistory,
-				addConnection(audioGraph, startingPlug, { id, type, nodeId })
-			];
+			updateAudioGraphHistory((audioGraph) =>
+				addConnection(audioGraph, startingPlug!, { id, type, nodeId })
+			);
 		} catch {
 			return false;
 		}
@@ -569,19 +574,18 @@
 	};
 
 	const handlePasteClick = () => {
-		const newAudioGraph = insertExistingNodes(audioGraph, copiedNodes, menuPosition);
-		audioGraphHistory = [...audioGraphHistory, newAudioGraph];
+		updateAudioGraphHistory((audioGraph) =>
+			insertExistingNodes(audioGraph, copiedNodes, menuPosition)
+		);
 		closeMenu();
 		updatePlugPositions();
 	};
 
 	const handleDeleteNode = () => {
 		if (selectedNodeIds.some((selectedId) => selectedId === menuNodeId)) {
-			const newAudioGraph = selectedNodeIds.reduce(removeNode, audioGraph);
-
-			audioGraphHistory = [...audioGraphHistory, newAudioGraph];
+			updateAudioGraphHistory((audioGraph) => selectedNodeIds.reduce(removeNode, audioGraph));
 		} else {
-			audioGraphHistory = [...audioGraphHistory, removeNode(audioGraph, menuNodeId)];
+			updateAudioGraphHistory((audioGraph) => removeNode(audioGraph, menuNodeId));
 		}
 		closeMenu();
 	};
@@ -670,11 +674,9 @@
 
 		if (!chosenLine) return;
 
-		audioGraphHistory = [
-			...audioGraphHistory,
-			removeConnection(audioGraph, chosenLine.line[0], chosenLine.line[1])
-		];
-
+		updateAudioGraphHistory((audioGraph) =>
+			removeConnection(audioGraph, chosenLine!.line[0], chosenLine!.line[1])
+		);
 		closeMenu();
 	};
 
@@ -767,19 +769,17 @@
 		if (!changedNodeColor) return;
 
 		if (selectedNodeIds.some((selectedNodeId) => selectedNodeId === changedColorNodeId)) {
-			audioGraphHistory = [
-				...audioGraphHistory,
+			updateAudioGraphHistory((audioGraph) =>
 				selectedNodeIds.reduce(
 					(audioGraph, nodeId) =>
 						changeNodeColor(nodeId, changedNodeColor ?? '#000000', audioGraph),
 					audioGraph
 				)
-			];
+			);
 		} else {
-			audioGraphHistory = [
-				...audioGraphHistory,
-				changeNodeColor(changedColorNodeId, changedNodeColor, audioGraph)
-			];
+			updateAudioGraphHistory((audioGraph) =>
+				changeNodeColor(changedColorNodeId, changedNodeColor!, audioGraph)
+			);
 		}
 
 		closeChangeColorModal();
@@ -788,9 +788,7 @@
 	/* UNDO ----------------------------------------- */
 	const handleCanvasKeypress = (event: KeyboardEvent) => {
 		if (event.key === 'z' && (event.ctrlKey || event.metaKey)) {
-			if (audioGraphHistory.length > 2) {
-				audioGraphHistory = audioGraphHistory.slice(0, -1);
-			}
+			// TODO
 		}
 	};
 	window.addEventListener('keydown', handleCanvasKeypress);
