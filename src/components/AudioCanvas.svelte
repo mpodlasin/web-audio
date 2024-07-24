@@ -83,7 +83,11 @@
 		const audioGraph = audioGraphHistory.at(-1) ?? {};
 		const previousAudioGraph = audioGraphHistory.at(-2) ?? {};
 
-		audioGraphHistory = audioGraphHistory.slice(0, -1);
+		const newAudioGraphHistory = audioGraphHistory.slice(0, -1);
+
+		if (newAudioGraphHistory.length < 2) return;
+
+		audioGraphHistory = newAudioGraphHistory;
 
 		updateAudioCanvas(previousAudioGraph, audioGraph, audioNodeDatabase);
 	};
