@@ -485,8 +485,8 @@ export const categorizedNodeTypes = {
 	gain: ['gain', 'pan'] as NodeType[],
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
 	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
-	io: ['destination', 'midi'] as NodeType[],
 	clock: ['clock', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
+	io: ['destination', 'midi'] as NodeType[],
 	visualization: ['oscilloscope'] as NodeType[],
 	internal: ['tutorial'] as NodeType[]
 };
