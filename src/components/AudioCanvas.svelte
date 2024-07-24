@@ -47,9 +47,8 @@
 
 	let audioNodeDatabase: AudioNodeDatabase = {};
 
-	let audioGraphHistory: SerializedAudioElements[] = [{}, project.audioCanvas];
+	let audioGraphHistory: SerializedAudioElements[] = [{}];
 	let temporaryGraphHistory: SerializedAudioElements[] = [];
-	$: previousAudioGraph = temporaryGraphHistory.at(-2) ?? audioGraphHistory.at(-2) ?? {};
 	$: audioGraph = temporaryGraphHistory.at(-1) ?? audioGraphHistory.at(-1) ?? {};
 
 	const updateAudioGraphHistory = (
@@ -57,9 +56,36 @@
 	) => {
 		if (temporaryGraphHistory.length >= 2) {
 			temporaryGraphHistory = [...temporaryGraphHistory, map(temporaryGraphHistory.at(-1) ?? {})];
+
+			updateAudioCanvas(
+				temporaryGraphHistory.at(-1) ?? {},
+				temporaryGraphHistory.at(-2) ?? {},
+				audioNodeDatabase
+			);
 		} else {
-			audioGraphHistory = [...audioGraphHistory, map(audioGraphHistory.at(-1) ?? {})];
+			let newAudioGraphHistory = [...audioGraphHistory, map(audioGraphHistory.at(-1) ?? {})];
+
+			if (newAudioGraphHistory.length > 100) {
+				audioGraphHistory = audioGraphHistory.slice(audioGraphHistory.length - 100);
+			}
+
+			audioGraphHistory = newAudioGraphHistory;
+
+			updateAudioCanvas(
+				audioGraphHistory.at(-1) ?? {},
+				audioGraphHistory.at(-2) ?? {},
+				audioNodeDatabase
+			);
 		}
+	};
+
+	const undo = () => {
+		const audioGraph = audioGraphHistory.at(-1) ?? {};
+		const previousAudioGraph = audioGraphHistory.at(-2) ?? {};
+
+		audioGraphHistory = audioGraphHistory.slice(0, -1);
+
+		updateAudioCanvas(previousAudioGraph, audioGraph, audioNodeDatabase);
 	};
 
 	const startTemporaryAction = () => {
@@ -80,15 +106,7 @@
 		}
 	}
 
-	// $: {
-	// 	console.log('audioGraph', audioGraph);
-	// 	console.log('audioGraphHistory', audioGraphHistory);
-	// 	console.log('temporaryGraphHistory', temporaryGraphHistory);
-	// }
-
-	$: {
-		updateAudioCanvas(audioGraph, previousAudioGraph, audioNodeDatabase);
-	}
+	updateAudioGraphHistory(() => project.audioCanvas);
 
 	onMount(() => {
 		return () => {
@@ -96,11 +114,11 @@
 		};
 	});
 
-	$: {
-		if (audioGraphHistory.length > 100) {
-			audioGraphHistory = audioGraphHistory.slice(audioGraphHistory.length - 100);
-		}
-	}
+	// $: {
+	// 	console.log('audioGraph', audioGraph);
+	// 	console.log('audioGraphHistory', audioGraphHistory);
+	// 	console.log('temporaryGraphHistory', temporaryGraphHistory);
+	// }
 
 	/* DRAGGING CANVAS ----------------------------------------- */
 	let canvasRelativePosition: Position = project.canvasRelativePosition;
@@ -699,13 +717,15 @@
 		const nodeId = chosenLine.line[1].nodeId;
 		const inputId = chosenLine.line[0].nodeId;
 
-		updateAudioGraphHistory(audioGraph => changeParameterMultiply(audioGraph, nodeId, chosenLine!.line[1].id, inputId, value))
+		updateAudioGraphHistory((audioGraph) =>
+			changeParameterMultiply(audioGraph, nodeId, chosenLine!.line[1].id, inputId, value)
+		);
 		chosenLineMultiply = value;
 	};
 
 	const handleEndMultiplyValueChange = () => {
 		endTemporaryAction();
-	}
+	};
 
 	/* NODE CONTEXT MENU ----------------------------------------- */
 	let copiedNodes: string[] = [];
@@ -788,7 +808,7 @@
 	/* UNDO ----------------------------------------- */
 	const handleCanvasKeypress = (event: KeyboardEvent) => {
 		if (event.key === 'z' && (event.ctrlKey || event.metaKey)) {
-			// TODO
+			undo();
 		}
 	};
 	window.addEventListener('keydown', handleCanvasKeypress);
