@@ -107,16 +107,18 @@ describe('serialized/update', () => {
 				{
 					'1': defaultSineOscillatorNode,
 					'2': defaultGainNode
-				},
+				}
 			]
 		};
 
-		expect(update(state, {
-			type: 'REMOVE_CONNECTION',
-			payload: {
-				fromPlug: { type: 'output', nodeId: '1', id: 'audio' },
-				toPlug: { type: 'input', nodeId: '2', id: 'audio' }
-			}
-		})).toEqual(expectedState);
+		expect(
+			update(state, {
+				type: 'REMOVE_CONNECTION',
+				payload: {
+					fromPlug: { type: 'output', nodeId: '1', id: 'audio' },
+					toPlug: { type: 'input', nodeId: '2', id: 'audio' }
+				}
+			})
+		).toEqual(expectedState);
 	});
 });

@@ -22,10 +22,10 @@ export type AudioCanvasEvent =
 				toPlug: Plug;
 			};
 	  }
-    | {
-		type: 'REMOVE_CONNECTION';
-		payload: {
-			fromPlug: Plug;
-			toPlug: Plug;
-		}
-	};
+	| {
+			type: 'REMOVE_CONNECTION';
+			payload: {
+				fromPlug: Plug;
+				toPlug: Plug;
+			};
+	  };

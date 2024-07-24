@@ -1,10 +1,38 @@
-import { ADEnvelopeNode, AREnvelopeNode, ClockNode, CustomBandpassFilterNode, CustomBipolarToUnipolarNode, CustomConvolutionNode, CustomDelayNode, CustomGainNode, CustomGateLengthNode, CustomHighpassFilterNode, CustomLowpassFilterNode, CustomMultiplyNode, CustomOscilloscopeNode, CustomPanNode, CustomPatternNode, CustomSawLFONode, CustomSawOscillatorNode, CustomSineLFONode, CustomSineOscillatorNode, CustomSquareLFONode, CustomSquareOscillatorNode, CustomTriangleLFONode, CustomTriangleOscillatorNode, DestinationNode, EmptyCustomAudioNode, MeasureGateNode, MidiNode, PitchQuantizerNode, SequencerNode, type CustomAudioNode } from "../../initialized";
-import type { NodeType } from "../../serialized";
+import {
+	ADEnvelopeNode,
+	AREnvelopeNode,
+	ClockNode,
+	CustomBandpassFilterNode,
+	CustomBipolarToUnipolarNode,
+	CustomConvolutionNode,
+	CustomDelayNode,
+	CustomGainNode,
+	CustomGateLengthNode,
+	CustomHighpassFilterNode,
+	CustomLowpassFilterNode,
+	CustomMultiplyNode,
+	CustomOscilloscopeNode,
+	CustomPanNode,
+	CustomPatternNode,
+	CustomSawLFONode,
+	CustomSawOscillatorNode,
+	CustomSineLFONode,
+	CustomSineOscillatorNode,
+	CustomSquareLFONode,
+	CustomSquareOscillatorNode,
+	CustomTriangleLFONode,
+	CustomTriangleOscillatorNode,
+	DestinationNode,
+	EmptyCustomAudioNode,
+	MeasureGateNode,
+	MidiNode,
+	PitchQuantizerNode,
+	SequencerNode,
+	type CustomAudioNode
+} from '../../initialized';
+import type { NodeType } from '../../serialized';
 
-export function createCustomAudioNode(
-	id: string,
-	nodeType: NodeType
-): CustomAudioNode {
+export function createCustomAudioNode(id: string, nodeType: NodeType): CustomAudioNode {
 	switch (nodeType) {
 		case 'sine-oscillator':
 			return new CustomSineOscillatorNode(id);

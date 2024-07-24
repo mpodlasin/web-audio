@@ -131,7 +131,6 @@ export const addNode = <S extends SerializedAudioElements>(
 	tutorialId?: string,
 	nextId: string = generateId(audioGraph)
 ): S => {
-	
 	const staticNodeDefinition = allowedSerializedAudioElementStaticDefinitions[type];
 
 	const defaultColor = getDefaultColorForNode(type);
