@@ -18,6 +18,8 @@
 		text-align: center;
 		padding: 24px;
 		color: var(--neutral-300);
+		font-family: var(--primary-font);
+		font-size: 20px;
 	}
 
 	.suffix {

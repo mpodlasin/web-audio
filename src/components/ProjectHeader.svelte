@@ -63,7 +63,7 @@
 
 		display: flex;
 		justify-content: center;
-		align-items: center;
+		align-items: stretch;
 		gap: 8px;
 
 		z-index: 100;
@@ -73,9 +73,11 @@
 		border: 1px solid var(--neutral-500);
 		background-color: var(--neutral-900);
 		border-radius: 8px;
-		padding: 16px;
+		padding: 12px;
 		color: var(--neutral-300);
 		display: none;
+		font-family: var(--primary-font);
+		font-size: 20px;
 	}
 
 	@media (min-width: 500px) {

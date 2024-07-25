@@ -30,6 +30,8 @@
 
 	header {
 		margin: 24px;
+		font-family: var(--primary-font);
+		font-size: 20px;
 	}
 
 	.suffix {
