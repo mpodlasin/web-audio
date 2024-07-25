@@ -525,18 +525,18 @@ if (!allCategoriesHaveReadableNames) {
 }
 
 export const defaultCategoryNodeColors: { [i: string]: string } = {
-	oscillator: '#45c7ff',
-	filter: '#4754ff',
-	gain: '#ff4747',
-	envelope: '#47ff8e',
-	effects: '#4754ff',
-	pitch: '#ffe747',
-	math: '#b7c3e6',
-	io: '#b7c3e6',
-	clock: '#fd783f',
-	visualization: '#b7c3e6',
-	lfo: '#45c7ff',
-	internal: '#45c7ff'
+	oscillator: '#1E90FF',
+	envelope: '#00FA9A',
+	lfo: '#40E0D0',
+	internal: '#45c7ff',
+	math: '#9ab7bc',
+	clock: '#e95e2a',
+	visualization: '#6bbd6b',
+	filter: '#9ACD32',
+	effects: '#9370DB',
+	pitch: '#DAA520',
+	gain: '#d22d4e',
+	io: '#d54ca3',
 };
 
 const allCategoriesHaveDefaultColors = Object.keys(categorizedNodeTypes).every(

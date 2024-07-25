@@ -88,6 +88,6 @@
 	}
 
 	.success {
-		color: #5ebd78;
+		color: #6bbd6b;
 	}
 </style>
