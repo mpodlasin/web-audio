@@ -53,7 +53,7 @@
 		{#if checkResult}
 			<div>
 				{#if !noCheckNeeded}
-					<p>Great! You've completed this step of the tutorial.</p>
+					<p class="success">Great! You've completed this step of the tutorial.</p>
 				{/if}
 				<Button variant="primary" on:click={handleContinueClick} title="Next" />
 			</div>
@@ -85,5 +85,9 @@
 		margin-top: 1em;
 		color: var(--primary-500);
 		font-size: 0.9em;
+	}
+
+	.success {
+		color: #5ebd78;
 	}
 </style>

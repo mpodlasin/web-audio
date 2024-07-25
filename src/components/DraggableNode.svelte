@@ -13,7 +13,7 @@
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
 	export let instantiatedNode: unknown;
-	export let color: string | undefined;
+	export let color: string;
 	export let position: {
 		x: number;
 		y: number;

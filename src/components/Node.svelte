@@ -22,7 +22,7 @@
 	export let instantiatedNode: unknown;
 	export let running: boolean;
 	export let draggingLine: boolean;
-	export let color: string | undefined;
+	export let color: string;
 	export let audioGraph: SerializedAudioElements;
 
 	$: staticDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
@@ -191,22 +191,22 @@
 <style>
 	.node {
 		padding: 8px;
-		border: 1px solid black;
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
 		min-width: 70px;
 		background-color: var(--neutral-900);
-		border: 1px solid var(--primary-500);
 		border-radius: 8px;
 		box-shadow: 3px 4px 19px -5px rgba(0, 0, 0, 0.6);
+		border: 1px solid var(--primary-500);
 	}
 
 	.header {
 		text-transform: capitalize;
-		font-weight: bold;
+		font-weight: 400;
 		text-align: center;
 		font-size: 12px;
+		font-family: var(--primary-font);
 
 		padding: 4px;
 
@@ -238,7 +238,7 @@
 	}
 
 	.categoryName {
-		color: var(--neutral-500);
+		color: var(--neutral-400);
 	}
 
 	.parameter-wrapper {

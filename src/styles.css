@@ -1,5 +1,6 @@
 :root {
 	--neutral-300: #d4d4d4;
+	--neutral-400: #949494;
 	--neutral-500: #676767;
 	--neutral-700: #292929;
 	--neutral-900: #1c1c1c;
@@ -7,6 +8,8 @@
 	--primary-500: #45c7ff;
 
 	--danger-300: #ff6161;
+
+	--primary-font: 'Urbanist', sans-serif;
 }
 
 html,

@@ -65,7 +65,7 @@
 	}
 
 	line.visible {
-		stroke: var(--neutral-300);
+		stroke: var(--neutral-400);
 		pointer-events: none;
 	}
 

@@ -24,6 +24,11 @@ import {
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
+const ui = {
+	position: { x: 0, y: 0 },
+	primaryColor: '#000000'
+};
+
 describe('AudioCanvas', () => {
 	afterEach(() => {
 		jest.clearAllMocks();
@@ -37,7 +42,8 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -69,14 +75,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -110,14 +118,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 440, inputs: [{ id: '2', output: 'audio' }] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'sine-oscillator' as const,
 					parameters: {
 						frequency: { base: 30, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -161,18 +171,21 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				},
 				'3': {
 					type: 'destination' as const,
-					inputs: [{ id: '2', output: 'audio', input: 'audio' }]
+					inputs: [{ id: '2', output: 'audio', input: 'audio' }],
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -209,7 +222,8 @@ describe('AudioCanvas', () => {
 						{ time: 2, duration: 1, note: 'E3' },
 						{ time: 3, duration: 1, note: 'F3' }
 					],
-					loopLength: 4
+					loopLength: 4,
+					ui
 				},
 				'2': {
 					type: 'ar-envelope' as const,
@@ -217,25 +231,29 @@ describe('AudioCanvas', () => {
 					parameters: {
 						attack: { base: 0, inputs: [] },
 						release: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'3': {
 					type: 'sine-oscillator' as const,
 					parameters: {
 						frequency: { base: 440, inputs: [{ id: '1', output: 'frequency' }] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'4': {
 					type: 'gain' as const,
 					inputs: [{ id: '3', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0, inputs: [{ id: '2', output: 'envelope' }] }
-					}
+					},
+					ui
 				},
 				'5': {
 					type: 'destination' as const,
-					inputs: [{ id: '4', output: 'audio', input: 'audio' }]
+					inputs: [{ id: '4', output: 'audio', input: 'audio' }],
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -258,7 +276,8 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -285,7 +304,8 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -314,7 +334,8 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -332,7 +353,8 @@ describe('AudioCanvas', () => {
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -359,14 +381,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -409,7 +433,8 @@ describe('AudioCanvas', () => {
 			const audioElements = {
 				'1': {
 					type: 'midi' as const,
-					parameters: {}
+					parameters: {},
+					ui
 				},
 				'2': {
 					type: 'ar-envelope' as const,
@@ -417,7 +442,8 @@ describe('AudioCanvas', () => {
 					parameters: {
 						attack: { base: 0.5, inputs: [] },
 						release: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -460,14 +486,16 @@ describe('AudioCanvas', () => {
 					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'delay' as const,
 					inputs: [],
 					parameters: {
 						delayTime: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -511,21 +539,24 @@ describe('AudioCanvas', () => {
 					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'sine-oscillator' as const,
 					parameters: {
 						frequency: { base: 0, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'3': {
 					type: 'delay' as const,
 					inputs: [],
 					parameters: {
 						delayTime: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -590,14 +621,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -642,14 +675,16 @@ describe('AudioCanvas', () => {
 					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'sine-oscillator' as const,
 					parameters: {
 						frequency: { base: 0, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'3': {
 					type: 'delay' as const,
@@ -659,7 +694,8 @@ describe('AudioCanvas', () => {
 					],
 					parameters: {
 						delayTime: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -697,14 +733,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 0, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'sine-oscillator' as const,
 					parameters: {
 						frequency: { base: 0, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'3': {
 					type: 'delay' as const,
@@ -714,7 +752,8 @@ describe('AudioCanvas', () => {
 					],
 					parameters: {
 						delayTime: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -751,14 +790,16 @@ describe('AudioCanvas', () => {
 					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'sine-oscillator' as const,
 					parameters: {
 						frequency: { base: 0, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'3': {
 					type: 'delay' as const,
@@ -768,7 +809,8 @@ describe('AudioCanvas', () => {
 					],
 					parameters: {
 						delayTime: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -805,14 +847,16 @@ describe('AudioCanvas', () => {
 					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'delay' as const,
 					inputs: [],
 					parameters: {
 						delayTime: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -876,7 +920,8 @@ describe('AudioCanvas', () => {
 					type: 'clock' as const,
 					parameters: {
 						tempo: { base: 120, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'delay' as const,
@@ -886,7 +931,8 @@ describe('AudioCanvas', () => {
 					],
 					parameters: {
 						delayTime: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -950,14 +996,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -1011,14 +1059,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [{ id: '2', output: 'audio' }] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -1063,14 +1113,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -1100,14 +1152,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'sequencer' as const,
 					parameters: {},
 					tempoInBpm: 80,
 					notes: [],
-					loopLength: 4
+					loopLength: 4,
+					ui
 				}
 			};
 			const audioNodeDatabase: AudioNodeDatabase = {};
@@ -1158,14 +1212,16 @@ describe('AudioCanvas', () => {
 					parameters: {},
 					tempoInBpm: 80,
 					notes: [],
-					loopLength: 4
+					loopLength: 4,
+					ui
 				},
 				'2': {
 					type: 'sine-oscillator' as const,
 					parameters: {
 						frequency: { base: 440, inputs: [{ id: '1', output: 'frequency' }] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -1188,14 +1244,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -1237,14 +1295,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -1277,14 +1337,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -1317,14 +1379,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -1350,14 +1414,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -1385,14 +1451,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio' }] }
-					}
+					},
+					ui
 				},
 				'3': {
 					type: 'multiply' as const,
@@ -1402,7 +1470,8 @@ describe('AudioCanvas', () => {
 							base: 0,
 							inputs: []
 						}
-					}
+					},
+					ui
 				}
 			};
 
@@ -1419,14 +1488,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio', multiply: 0.2 }] }
-					}
+					},
+					ui
 				}
 			};
 
@@ -1458,14 +1529,16 @@ describe('AudioCanvas', () => {
 					parameters: {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
-					}
+					},
+					ui
 				},
 				'2': {
 					type: 'gain' as const,
 					inputs: [{ id: '1', output: 'audio', input: 'audio' }],
 					parameters: {
 						gain: { base: 0.5, inputs: [{ id: '1', output: 'audio', multiply: 0.2 }] }
-					}
+					},
+					ui
 				}
 			};
 

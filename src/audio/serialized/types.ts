@@ -17,7 +17,7 @@ export type SerializedAudioElement<
 	} & {
 		[key: string]: SerializedAudioParameter;
 	};
-	ui?: UIInformation;
+	ui: UIInformation;
 };
 
 export type Position = {
@@ -27,7 +27,7 @@ export type Position = {
 
 export type UIInformation = {
 	position: Position;
-	primmaryColor?: string;
+	primaryColor: string;
 };
 
 export type SerializedAudioElementWithId<

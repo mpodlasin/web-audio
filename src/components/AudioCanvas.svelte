@@ -772,12 +772,12 @@
 	let changeColorModalIsOpen = false;
 	let changedColorNodeId = '';
 	$: changedColorNode = audioGraph[changedColorNodeId];
-	let changedNodeColor: string | undefined;
+	let changedNodeColor: string;
 
 	const openChangeColorModal = (nodeId: string) => () => {
 		changeColorModalIsOpen = true;
 		changedColorNodeId = nodeId;
-		changedNodeColor = audioGraph[nodeId]?.ui?.primmaryColor;
+		changedNodeColor = audioGraph[nodeId]?.ui.primaryColor ?? '#000000';
 		closeMenu();
 	};
 
@@ -904,7 +904,7 @@
 					selected={selectedNodeIds.some((selectedId) => selectedId === id)}
 					instantiatedNode={audioNodeDatabase[id]}
 					position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
-					color={node.ui?.primmaryColor}
+					color={node.ui.primaryColor}
 					{draggingLine}
 					on:drag={handleDragNode}
 					on:dragstart={handleDragStart}

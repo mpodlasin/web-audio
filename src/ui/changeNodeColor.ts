@@ -15,8 +15,8 @@ export const changeNodeColor = (
 			...node,
 			ui: {
 				...node.ui,
-				primmaryColor: color
-			} as any
+				primaryColor: color
+			}
 		}
 	};
 };

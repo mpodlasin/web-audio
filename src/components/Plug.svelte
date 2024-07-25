@@ -87,7 +87,12 @@
 		height: 12px;
 		border-radius: 50%;
 		background-color: var(---neutral-700);
-		border: 2px solid var(--neutral-500);
+		border: 1px solid var(--primary-500);
+		transition: transform 0.2s;
+	}
+
+	.plug:hover {
+		transform: scaleX(120%) scaleY(120%);
 	}
 
 	.menu h2 {

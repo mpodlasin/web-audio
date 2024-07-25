@@ -143,7 +143,7 @@ export const addNode = <S extends SerializedAudioElements>(
 			...(tutorialId ? { tutorialId } : {}),
 			ui: {
 				position,
-				primmaryColor: defaultColor
+				primaryColor: defaultColor
 			},
 			parameters: Object.fromEntries(
 				Object.entries(staticNodeDefinition.parameters).map(([key, value]) => [
