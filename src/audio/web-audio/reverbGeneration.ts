@@ -77,7 +77,7 @@ export function generateReverb(
 			chan[j] = randomSample() * Math.pow(decayBase, j);
 		}
 		for (let j = 0; j < fadeInSampleFrames; j++) {
-			chan[j] *= j / fadeInSampleFrames;
+			chan[j] = (chan[j] ?? 0) * (j / fadeInSampleFrames)
 		}
 	}
 	applyGradualLowpass(
