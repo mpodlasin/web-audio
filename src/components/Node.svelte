@@ -9,13 +9,17 @@
 		readableNames,
 		getCategoryReadableName,
 		EmptyCustomAudioNode,
-		type SerializedAudioElements
+		type SerializedAudioElements,
+
+		CustomValueNode
+
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
 	import OscilloscopeNode from './OscilloscopeNode.svelte';
 	import OnOffButton from './OnOffButton.svelte';
 	import TutorialNode from './TutorialNode.svelte';
+	import ValueNode from './ValueNode.svelte';
 
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
@@ -153,6 +157,13 @@
 				{running}
 				on:nodeParameterChange
 			/>
+		</div>
+	{/if}
+	{#if node.type === 'value' && instantiatedNode instanceof CustomValueNode}
+		<div class="special">
+			<ValueNode
+				valueNode={instantiatedNode}
+				{running} />
 		</div>
 	{/if}
 	{#if node.type === 'tutorial' && instantiatedNode instanceof EmptyCustomAudioNode}

@@ -319,6 +319,11 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			slow: buttonParameter
 		}
 	},
+	value: {
+		inputs: [numberInputOutputDefinition],
+		outputs: [],
+		parameters: {}
+	},
 	convolution: {
 		inputs: [audioInputOutputDefinition],
 		outputs: [audioInputOutputDefinition],
@@ -468,7 +473,8 @@ export const readableNames: { [P in NodeType]: string } = {
 	'square-lfo': 'Square',
 	'triangle-lfo': 'Triangle',
 	pattern: 'Pattern',
-	tutorial: 'Tutorial'
+	tutorial: 'Tutorial',
+	value: 'Value',
 };
 
 export const categorizedNodeTypes = {
@@ -487,7 +493,7 @@ export const categorizedNodeTypes = {
 	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
 	clock: ['clock', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
-	visualization: ['oscilloscope'] as NodeType[],
+	visualization: ['oscilloscope', 'value'] as NodeType[],
 	internal: ['tutorial'] as NodeType[]
 };
 

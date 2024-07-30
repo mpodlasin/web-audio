@@ -35,7 +35,8 @@ import {
 	CustomTriangleLFONode,
 	CustomSineLFONode,
 	CustomPatternNode,
-	EmptyCustomAudioNode
+	EmptyCustomAudioNode,
+	CustomValueNode
 } from './nodes';
 import {
 	isCustomAudioScheduledSourceNode,
@@ -452,6 +453,8 @@ function createCustomAudioNode(
 			return new CustomPatternNode(id);
 		case 'tutorial':
 			return new EmptyCustomAudioNode();
+		case 'value':
+			return new CustomValueNode(id);
 	}
 }
 

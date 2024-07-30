@@ -446,6 +446,12 @@ export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode
 	}
 }
 
+export class CustomValueNode extends GenericCustomAudioNodeWithWebApiNode<AnalyserNode> {
+	constructor(id: string) {
+		super(globalContext.createAnalyser(), id, 'value');
+	}
+}
+
 export class ADEnvelopeNode extends GenericCustomAudioNode implements CustomAudioNode {
 	readonly attack: ConstantSourceNode;
 	readonly gateLength: AudioWorkletNode;
