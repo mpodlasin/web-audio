@@ -3,7 +3,7 @@
 ### Basics
 
 1. [Your First Sounds](/learn/your-first-sounds)
-2. _[Types of Signals](/learn/types-of-signals) (coming soon)_
+2. [Types of Signals](/learn/types-of-signals)
 
 ### Building Blocks of Modular Synthesis
 

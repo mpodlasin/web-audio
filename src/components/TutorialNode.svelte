@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { SerializedAudioElements, SerializedTutorialNode } from '../audio/serialized';
 	import type { Tutorial } from './Tutorial/types';
-	import { tutorial1 } from './Tutorial/Tutorial1/index';
+	import { tutorial1, tutorial2 } from './Tutorial';
 	import Button from './Button.svelte';
 
 	export let audioGraph: SerializedAudioElements;
@@ -10,7 +10,8 @@
 	const localStorageKey = 'tutorial_steps';
 
 	const tutorials: Record<string, Tutorial> = {
-		tutorial1: tutorial1
+		tutorial1: tutorial1,
+		tutorial2: tutorial2
 	};
 
 	$: tutorialId = node.tutorialId;

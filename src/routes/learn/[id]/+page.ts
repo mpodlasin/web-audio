@@ -4,6 +4,10 @@ const routes: Record<string, { title: string; tutorialId: string }> = {
 	'your-first-sounds': {
 		title: '1. Your First Sounds',
 		tutorialId: 'tutorial1'
+	},
+	'types-of-signals': {
+		title: '2. Types of Signals',
+		tutorialId: 'tutorial2'
 	}
 };
 
