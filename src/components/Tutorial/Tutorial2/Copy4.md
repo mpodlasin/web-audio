@@ -4,7 +4,7 @@ It's probably quite easy to conceptualize what is happening here.
 
 You may think that a new number is sent only when the value knob on `Number` node changes. That's not true.
 
-If you have play button turned on, the numbers are being transmitted between the nodes constantly. 
+If you have play button turned on, the numbers are being transmitted between the nodes constantly.
 
 Most likely your device processes audio with the frequency of 44100 Hz.
 

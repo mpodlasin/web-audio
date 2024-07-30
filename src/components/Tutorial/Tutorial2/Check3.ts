@@ -6,5 +6,5 @@ export default function (audioGraph: SerializedAudioElements) {
 	// Value parameter on Number node was changed from 0;
 	const numberNode = values.find((node) => node.type === 'number');
 
-    return numberNode?.parameters?.['value']?.base !== 0;
+	return numberNode?.parameters?.['value']?.base !== 0;
 }
