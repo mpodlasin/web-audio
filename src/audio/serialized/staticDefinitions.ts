@@ -324,6 +324,18 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		outputs: [],
 		parameters: {}
 	},
+	number: {
+		inputs: [],
+		outputs: [numberInputOutputDefinition],
+		parameters: {
+			value: {
+				minValue: -10_000,
+				maxValue: 10_000,
+				polarity: 'bi',
+				defaultValue: 0,
+			},
+		}
+	},
 	convolution: {
 		inputs: [audioInputOutputDefinition],
 		outputs: [audioInputOutputDefinition],
@@ -475,6 +487,7 @@ export const readableNames: { [P in NodeType]: string } = {
 	pattern: 'Pattern',
 	tutorial: 'Tutorial',
 	value: 'Value',
+	number: 'Number',
 };
 
 export const categorizedNodeTypes = {
@@ -490,7 +503,7 @@ export const categorizedNodeTypes = {
 	effects: ['convolution', 'delay'] as NodeType[],
 	gain: ['gain', 'pan'] as NodeType[],
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
-	math: ['multiply', 'bipolar-to-unipolar'] as NodeType[],
+	math: ['number', 'multiply', 'bipolar-to-unipolar'] as NodeType[],
 	clock: ['clock', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
 	visualization: ['oscilloscope', 'value'] as NodeType[],

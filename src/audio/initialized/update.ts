@@ -36,7 +36,8 @@ import {
 	CustomSineLFONode,
 	CustomPatternNode,
 	EmptyCustomAudioNode,
-	CustomValueNode
+	CustomValueNode,
+	CustomNumberNode
 } from './nodes';
 import {
 	isCustomAudioScheduledSourceNode,
@@ -455,6 +456,8 @@ function createCustomAudioNode(
 			return new EmptyCustomAudioNode();
 		case 'value':
 			return new CustomValueNode(id);
+		case 'number':
+			return new CustomNumberNode(id);
 	}
 }
 

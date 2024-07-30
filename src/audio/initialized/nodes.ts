@@ -452,6 +452,24 @@ export class CustomValueNode extends GenericCustomAudioNodeWithWebApiNode<Analys
 	}
 }
 
+export class CustomNumberNode extends GenericCustomAudioNodeWithWebApiNode<ConstantSourceNode> {
+	constructor(id: string) {
+		const node = globalContext.createConstantSource();
+
+		node.start();
+
+		super(node, id, 'number');
+	}
+
+	getAudioParam(parameterName: string): AudioParam {
+		if (parameterName === 'value') {
+			return this.webApiNode.offset;
+		}
+
+		throw new Error(`Parameter ${parameterName} does not exist on Number node`);
+	}
+}
+
 export class ADEnvelopeNode extends GenericCustomAudioNode implements CustomAudioNode {
 	readonly attack: ConstantSourceNode;
 	readonly gateLength: AudioWorkletNode;

@@ -124,6 +124,8 @@ export type SerializedTutorialNode = SerializedAudioElement<'tutorial', never> &
 
 export type SerializedValueNode = SerializedAudioElement<'value', never>;
 
+export type SerializedNumberNode = SerializedAudioElement<'number', never>;
+
 export type AllowedSerializedAudioElements =
 	| SerializedSineOscillatorNode
 	| SerializedSawOscillatorNode
@@ -154,6 +156,7 @@ export type AllowedSerializedAudioElements =
 	| SerializedSquareLFONode
 	| SerializedPatternNode
 	| SerializedTutorialNode
-	| SerializedValueNode;
+	| SerializedValueNode
+	| SerializedNumberNode;
 
 export type NodeType = AllowedSerializedAudioElements['type'];
