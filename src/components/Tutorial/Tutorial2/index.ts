@@ -7,6 +7,6 @@ export const tutorial2: Tutorial = {
 		{
 			copy: copy1,
 			check: check1
-		},
+		}
 	]
 };

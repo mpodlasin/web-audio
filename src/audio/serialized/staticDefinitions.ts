@@ -332,8 +332,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				minValue: -10_000,
 				maxValue: 10_000,
 				polarity: 'bi',
-				defaultValue: 0,
-			},
+				defaultValue: 0
+			}
 		}
 	},
 	convolution: {
@@ -487,7 +487,7 @@ export const readableNames: { [P in NodeType]: string } = {
 	pattern: 'Pattern',
 	tutorial: 'Tutorial',
 	value: 'Value',
-	number: 'Number',
+	number: 'Number'
 };
 
 export const categorizedNodeTypes = {
@@ -555,7 +555,7 @@ export const defaultCategoryNodeColors: { [i: string]: string } = {
 	effects: '#9370DB',
 	pitch: '#DAA520',
 	gain: '#d22d4e',
-	io: '#d54ca3',
+	io: '#d54ca3'
 };
 
 const allCategoriesHaveDefaultColors = Object.keys(categorizedNodeTypes).every(

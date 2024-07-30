@@ -10,9 +10,7 @@
 		getCategoryReadableName,
 		EmptyCustomAudioNode,
 		type SerializedAudioElements,
-
 		CustomValueNode
-
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
@@ -161,9 +159,7 @@
 	{/if}
 	{#if node.type === 'value' && instantiatedNode instanceof CustomValueNode}
 		<div class="special">
-			<ValueNode
-				valueNode={instantiatedNode}
-				{running} />
+			<ValueNode valueNode={instantiatedNode} {running} />
 		</div>
 	{/if}
 	{#if node.type === 'tutorial' && instantiatedNode instanceof EmptyCustomAudioNode}
