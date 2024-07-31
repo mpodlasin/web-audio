@@ -1,0 +1,1 @@
+Now set knob on `Gain` node to value 0.5.
