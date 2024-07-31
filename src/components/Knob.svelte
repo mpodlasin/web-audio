@@ -200,21 +200,29 @@
 	let numberParameterInput = false;
 	let editedNumber = numberParameter;
 
-	const handleParameterValueClick = (event: MouseEvent) => {
-		if (event.detail === 2) {
-			numberParameterInput = true;
-			editedNumber = Number(numberParameter.toFixed(2));
+	const handleParameterValueClick = (event: PointerEvent) => {
+		event.stopPropagation();
+		event.preventDefault();
 
-			setTimeout(() => {
-				window.addEventListener('click', closeInput);
-			});
-		}
+		numberParameterInput = true;
+		editedNumber = Number(numberParameter.toFixed(2));
+
+		window.addEventListener('pointerup', closeInput, { capture: true, once: true });
+		window.addEventListener('pointerdown', e => e.stopPropagation(), { capture: true, once: true })
 	};
 
-	const closeInput = () => {
-		numberParameterInput = false;
+	let input: HTMLInputElement;
 
-		window.removeEventListener('click', closeInput);
+	const closeInput = (event: PointerEvent) => {
+		event.stopPropagation();
+
+		if (event.target === input) {
+			window.addEventListener('pointerup', closeInput, { capture: true, once: true });
+			window.addEventListener('pointerdown', e => e.stopPropagation(), { capture: true, once: true })
+			return;
+		}
+
+		numberParameterInput = false;
 	};
 
 	const handleInputEnter = (event: KeyboardEvent) => {
@@ -254,9 +262,9 @@
 	</div>
 	{#if numberParameterInput}
 		<!-- svelte-ignore a11y-autofocus -->
-		<input autofocus type="number" bind:value={editedNumber} on:keydown={handleInputEnter} />
+		<input bind:this={input} autofocus type="number" bind:value={editedNumber} on:keydown={handleInputEnter} />
 	{:else if numberParameter !== null}
-		<div class="value" on:click={handleParameterValueClick} on:keypress={() => {}}>
+		<div class="value" on:pointerdown={e => e.stopPropagation()} on:pointerup={handleParameterValueClick} on:keypress={() => {}}>
 			{numberParameter.toFixed(2)}
 			{#if unit}
 				{' '}{unit}
