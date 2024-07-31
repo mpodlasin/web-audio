@@ -6,5 +6,5 @@ export default function (audioGraph: SerializedAudioElements) {
 	// Factor on Mult was set to be below 0.5
 	const multNode = values.find((node) => node.type === 'multiply');
 
-    return (multNode?.parameters?.factor.base ?? 0) <= 0.5;
+	return (multNode?.parameters?.factor.base ?? 0) <= 0.5;
 }

@@ -6,5 +6,5 @@ export default function (audioGraph: SerializedAudioElements) {
 	// Gain node was deleted;
 	const gainNode = values.find((node) => node.type === 'gain');
 
-    return gainNode === undefined;
+	return gainNode === undefined;
 }
