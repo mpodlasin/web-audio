@@ -7,6 +7,8 @@ export default function (audioGraph: SerializedAudioElements) {
 	const numberNode = values.find((node) => node.type === 'number');
 
     const numberValue = numberNode?.parameters?.value.base ?? 0;
+	const epsilon = 0.01;
+	const target = 50;
 
-    return 50 <= numberValue && numberValue <= 60;
+    return target - epsilon < numberValue && numberValue < target + epsilon;
 }
