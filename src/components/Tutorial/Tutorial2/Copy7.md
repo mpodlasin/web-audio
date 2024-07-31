@@ -19,4 +19,3 @@ In previous lesson we used `Gain` node to affect the volume of `Sine` oscillator
 Let's check how it will affect the numbers displayed.
 
 Create `Gain` node and insert it between `Sine` and `Value` nodes.
-

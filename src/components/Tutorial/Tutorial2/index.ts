@@ -44,11 +44,11 @@ export const tutorial2: Tutorial = {
 		},
 		{
 			copy: copy7,
-			check: check7,
+			check: check7
 		},
 		{
 			copy: copy8,
-			check: check8,
+			check: check8
 		}
 	]
 };

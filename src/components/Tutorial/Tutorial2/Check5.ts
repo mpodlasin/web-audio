@@ -14,7 +14,7 @@ export default function (audioGraph: SerializedAudioElements) {
 
 	const numberNodeWasDisconnectedFromValueNode =
 		valueNode?.inputs?.every((input) => input.id !== numberNodeId) ?? false;
-	const sineNodeWasConnectedToValueNode = 
+	const sineNodeWasConnectedToValueNode =
 		valueNode?.inputs?.some((input) => input.id === sineNodeId) ?? false;
 
 	return numberNodeWasDisconnectedFromValueNode && sineNodeWasConnectedToValueNode;
