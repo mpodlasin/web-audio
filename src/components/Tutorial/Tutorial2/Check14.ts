@@ -6,5 +6,5 @@ export default function (audioGraph: SerializedAudioElements) {
 	//  node was created.
 	const clockNode = values.find((node) => node.type === 'clock');
 
-    return clockNode !== undefined;
+	return clockNode !== undefined;
 }

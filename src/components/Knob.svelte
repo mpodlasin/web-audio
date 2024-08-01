@@ -208,7 +208,10 @@
 		editedNumber = Number(numberParameter.toFixed(2));
 
 		window.addEventListener('pointerup', closeInput, { capture: true, once: true });
-		window.addEventListener('pointerdown', e => e.stopPropagation(), { capture: true, once: true })
+		window.addEventListener('pointerdown', (e) => e.stopPropagation(), {
+			capture: true,
+			once: true
+		});
 	};
 
 	let input: HTMLInputElement;
@@ -218,7 +221,10 @@
 
 		if (event.target === input) {
 			window.addEventListener('pointerup', closeInput, { capture: true, once: true });
-			window.addEventListener('pointerdown', e => e.stopPropagation(), { capture: true, once: true })
+			window.addEventListener('pointerdown', (e) => e.stopPropagation(), {
+				capture: true,
+				once: true
+			});
 			return;
 		}
 
@@ -262,9 +268,20 @@
 	</div>
 	{#if numberParameterInput}
 		<!-- svelte-ignore a11y-autofocus -->
-		<input bind:this={input} autofocus type="number" bind:value={editedNumber} on:keydown={handleInputEnter} />
+		<input
+			bind:this={input}
+			autofocus
+			type="number"
+			bind:value={editedNumber}
+			on:keydown={handleInputEnter}
+		/>
 	{:else if numberParameter !== null}
-		<div class="value" on:pointerdown={e => e.stopPropagation()} on:pointerup={handleParameterValueClick} on:keypress={() => {}}>
+		<div
+			class="value"
+			on:pointerdown={(e) => e.stopPropagation()}
+			on:pointerup={handleParameterValueClick}
+			on:keypress={() => {}}
+		>
 			{numberParameter.toFixed(2)}
 			{#if unit}
 				{' '}{unit}

@@ -1,4 +1,4 @@
-Now perhaps you are bit susprised. 
+Now perhaps you are bit susprised.
 
 It seems that signal from the `Clock` is constantly zero? How is it "a clock" in that case?
 
