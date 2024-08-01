@@ -10,5 +10,5 @@ export default function (audioGraph: SerializedAudioElements) {
 
 	const clockNodeId = entries.find(entry => entry[1] === clockNode)?.[0];
 
-	return valueNode?.inputs?.find(input => input.id === clockNodeId);
+	return valueNode?.inputs?.some(input => input.id === clockNodeId) ?? false;
 }
