@@ -8,4 +8,4 @@ Note that we added an audio signal, coming from `Sine` oscillator node to a simp
 
 This again emphasises that in `AudioCanvas` all signals are just streams of numbers.
 
-To continue driving on this point, let's see the output of `Sequencer` node. Create it.
+To continue driving on this point, let's see the output of `Clock` node. Create it.
