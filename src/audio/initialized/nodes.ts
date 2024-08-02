@@ -778,7 +778,7 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 	private feedbackGain: GainNode;
 	private output: GainNode;
 	private mix: ConstantSourceNode;
-	private measureGate: AudioWorkletNode;
+	private measureTrigger: AudioWorkletNode;
 
 	constructor(id: string) {
 		super(id, 'delay');
@@ -786,7 +786,7 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 			allowedSerializedAudioElementStaticDefinitions['delay'].parameters['delayTime']?.maxValue;
 		const delay = globalContext.createDelay(delayMaxValue);
 
-		const measureGate = new AudioWorkletNode(globalContext, 'measure-gate');
+		const measureTrigger = new AudioWorkletNode(globalContext, 'measure-gate');
 
 		const mix = globalContext.createConstantSource();
 		const negate = globalContext.createGain();
@@ -796,7 +796,7 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 		const dryGain = globalContext.createGain();
 		const wetGain = globalContext.createGain();
 
-		measureGate.connect(delay.delayTime);
+		measureTrigger.connect(delay.delayTime);
 
 		input.gain.value = 1;
 		output.gain.value = 1;
@@ -825,12 +825,12 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 		this.delay = delay;
 		this.feedbackGain = feedbackGain;
 		this.output = output;
-		this.measureGate = measureGate;
+		this.measureTrigger = measureTrigger;
 	}
 
 	getInputNode(name?: string): AudioNode | null {
-		if (name === 'gate') {
-			return this.measureGate;
+		if (name === 'trigger') {
+			return this.measureTrigger;
 		}
 
 		return this.input;

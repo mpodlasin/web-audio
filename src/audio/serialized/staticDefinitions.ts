@@ -25,6 +25,13 @@ const audioInputOutputDefinition: StaticInputOutputDefinition = {
 	maxValue: 1
 };
 
+const triggerInputOutputDefinition: StaticInputOutputDefinition = {
+	id: 'gate',
+	name: 'Gate',
+	minValue: 0,
+	maxValue: 1
+};
+
 const gateInputOutputDefinition: StaticInputOutputDefinition = {
 	id: 'gate',
 	name: 'Gate',
@@ -154,7 +161,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	sequencer: {
 		inputs: [
 			{
-				...gateInputOutputDefinition,
+				...triggerInputOutputDefinition,
 				contextDescription: 'Signal triggering next step in the sequencer.'
 			}
 		],
@@ -268,7 +275,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	delay: {
-		inputs: [audioInputOutputDefinition, gateInputOutputDefinition],
+		inputs: [audioInputOutputDefinition, triggerInputOutputDefinition],
 		outputs: [audioInputOutputDefinition],
 		parameters: {
 			delayTime: {
@@ -351,7 +358,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	},
 	clock: {
 		inputs: [],
-		outputs: [gateInputOutputDefinition],
+		outputs: [triggerInputOutputDefinition],
 		parameters: {
 			tempo: {
 				defaultValue: 120,
@@ -385,7 +392,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	},
 	'ad-envelope': {
 		showCategory: true,
-		inputs: [gateInputOutputDefinition],
+		inputs: [triggerInputOutputDefinition],
 		outputs: [envelopeInputOutputDefinition],
 		parameters: {
 			attack: {
@@ -410,7 +417,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		parameters: {}
 	},
 	'gate-length': {
-		inputs: [gateInputOutputDefinition],
+		inputs: [triggerInputOutputDefinition],
 		outputs: [gateInputOutputDefinition],
 		parameters: {
 			length: {
@@ -423,7 +430,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	'measure-gate': {
-		inputs: [gateInputOutputDefinition],
+		inputs: [triggerInputOutputDefinition],
 		outputs: [secondsInputOutputDefinition],
 		parameters: {}
 	},
@@ -432,8 +439,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	'square-lfo': lfoDefinition,
 	'triangle-lfo': lfoDefinition,
 	pattern: {
-		inputs: [gateInputOutputDefinition],
-		outputs: [gateInputOutputDefinition],
+		inputs: [triggerInputOutputDefinition],
+		outputs: [triggerInputOutputDefinition],
 		parameters: {
 			step1: { ...buttonParameter, highlightIndex: 0 },
 			step2: { ...buttonParameter, highlightIndex: 1 },
