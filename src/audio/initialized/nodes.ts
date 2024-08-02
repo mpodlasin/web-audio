@@ -778,7 +778,7 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 	private feedbackGain: GainNode;
 	private output: GainNode;
 	private mix: ConstantSourceNode;
-	private triggerMeasure: AudioWorkletNode;
+	private measureGate: AudioWorkletNode;
 
 	constructor(id: string) {
 		super(id, 'delay');
@@ -786,7 +786,7 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 			allowedSerializedAudioElementStaticDefinitions['delay'].parameters['delayTime']?.maxValue;
 		const delay = globalContext.createDelay(delayMaxValue);
 
-		const triggerMeasure = new AudioWorkletNode(globalContext, 'measure-gate');
+		const measureGate = new AudioWorkletNode(globalContext, 'measure-gate');
 
 		const mix = globalContext.createConstantSource();
 		const negate = globalContext.createGain();
@@ -796,7 +796,7 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 		const dryGain = globalContext.createGain();
 		const wetGain = globalContext.createGain();
 
-		triggerMeasure.connect(delay.delayTime);
+		measureGate.connect(delay.delayTime);
 
 		input.gain.value = 1;
 		output.gain.value = 1;
@@ -825,12 +825,12 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 		this.delay = delay;
 		this.feedbackGain = feedbackGain;
 		this.output = output;
-		this.triggerMeasure = triggerMeasure;
+		this.measureGate = measureGate;
 	}
 
 	getInputNode(name?: string): AudioNode | null {
-		if (name === 'trigger') {
-			return this.triggerMeasure;
+		if (name === 'gate') {
+			return this.measureGate;
 		}
 
 		return this.input;
@@ -977,16 +977,16 @@ export class MidiNode extends GenericCustomAudioNode {
 	private midiAccess: MIDIAccess | null = null;
 
 	readonly frequency: ConstantSourceNode;
-	readonly trigger: ConstantSourceNode;
+	readonly gate: ConstantSourceNode;
 
 	constructor(id: string) {
 		super(id, 'midi');
 
 		const frequency = globalContext.createConstantSource();
-		const trigger = globalContext.createConstantSource();
+		const gate = globalContext.createConstantSource();
 
 		this.frequency = frequency;
-		this.trigger = trigger;
+		this.gate = gate;
 	}
 
 	getAudioParam(): AudioParam {
@@ -998,8 +998,8 @@ export class MidiNode extends GenericCustomAudioNode {
 	}
 
 	getOutputNode(name?: string): AudioNode {
-		if (name === 'trigger') {
-			return this.trigger;
+		if (name === 'gate') {
+			return this.gate;
 		}
 
 		return this.frequency;
@@ -1030,11 +1030,11 @@ export class MidiNode extends GenericCustomAudioNode {
 		const note = event.data?.[1] ?? 0;
 
 		if (status === 144) {
-			this.trigger.offset.value = 1;
+			this.gate.offset.value = 1;
 		}
 
 		if (status === 128) {
-			this.trigger.offset.value = 0;
+			this.gate.offset.value = 0;
 		}
 
 		if (note) {

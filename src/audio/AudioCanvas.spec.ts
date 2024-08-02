@@ -227,7 +227,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'ar-envelope' as const,
-					inputs: [{ id: '1', output: 'trigger', input: 'trigger' }],
+					inputs: [{ id: '1', output: 'gate', input: 'gate' }],
 					parameters: {
 						attack: { base: 0, inputs: [] },
 						release: { base: 0, inputs: [] }
@@ -429,7 +429,7 @@ describe('AudioCanvas', () => {
 			);
 		});
 
-		it('adds connection between midi trigger output and envelope', () => {
+		it('adds connection between midi gate output and envelope', () => {
 			const audioElements = {
 				'1': {
 					type: 'midi' as const,
@@ -455,17 +455,17 @@ describe('AudioCanvas', () => {
 				{
 					type: 'output',
 					nodeId: '1',
-					id: 'trigger'
+					id: 'gate'
 				},
 				{
 					type: 'input',
 					nodeId: '2',
-					id: 'trigger'
+					id: 'gate'
 				}
 			);
 
 			expect(newAudioElements['2']?.inputs).toEqual([
-				{ id: '1', output: 'trigger', input: 'trigger' }
+				{ id: '1', output: 'gate', input: 'gate' }
 			]);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
@@ -476,11 +476,11 @@ describe('AudioCanvas', () => {
 			expect(audioNodeDatabase['1']).toBeInstanceOf(MidiNode);
 
 			expect(
-				(audioNodeDatabase['1'] as MidiNode).getOutputNode('trigger').connect
+				(audioNodeDatabase['1'] as MidiNode).getOutputNode('gate').connect
 			).toHaveBeenCalledWith(audioNodeDatabase['2']?.getInputNode());
 		});
 
-		it('adds connection between clock and delay trigger input', () => {
+		it('adds connection between clock and delay gate input', () => {
 			const audioElements = {
 				'1': {
 					type: 'clock' as const,
@@ -507,17 +507,17 @@ describe('AudioCanvas', () => {
 				{
 					type: 'output',
 					nodeId: '1',
-					id: 'trigger'
+					id: 'gate'
 				},
 				{
 					type: 'input',
 					nodeId: '2',
-					id: 'trigger'
+					id: 'gate'
 				}
 			);
 
 			expect(newAudioElements['2']?.inputs).toEqual([
-				{ id: '1', output: 'trigger', input: 'trigger' }
+				{ id: '1', output: 'gate', input: 'gate' }
 			]);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
@@ -529,7 +529,7 @@ describe('AudioCanvas', () => {
 			expect(audioNodeDatabase['2']).toBeInstanceOf(CustomDelayNode);
 
 			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().connect).toHaveBeenCalledWith(
-				(audioNodeDatabase['2'] as CustomDelayNode).getInputNode('trigger')
+				(audioNodeDatabase['2'] as CustomDelayNode).getInputNode('gate')
 			);
 		});
 
@@ -568,12 +568,12 @@ describe('AudioCanvas', () => {
 				{
 					type: 'output',
 					nodeId: '1',
-					id: 'trigger'
+					id: 'gate'
 				},
 				{
 					type: 'input',
 					nodeId: '3',
-					id: 'trigger'
+					id: 'gate'
 				}
 			);
 
@@ -592,7 +592,7 @@ describe('AudioCanvas', () => {
 			);
 
 			expect(newAudioElements['3']?.inputs).toEqual([
-				{ id: '1', output: 'trigger', input: 'trigger' },
+				{ id: '1', output: 'gate', input: 'gate' },
 				{ id: '2', output: 'audio', input: 'audio' }
 			]);
 
@@ -610,7 +610,7 @@ describe('AudioCanvas', () => {
 				(audioNodeDatabase['2'] as CustomSineOscillatorNode).getOutputNode().connect
 			).toHaveBeenCalledWith((audioNodeDatabase['3'] as CustomDelayNode).getInputNode());
 			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().connect).toHaveBeenCalledWith(
-				(audioNodeDatabase['3'] as CustomDelayNode).getInputNode('trigger')
+				(audioNodeDatabase['3'] as CustomDelayNode).getInputNode('gate')
 			);
 		});
 
@@ -669,7 +669,7 @@ describe('AudioCanvas', () => {
 			);
 		});
 
-		it('removes connection between clock and delay trigger input', () => {
+		it('removes connection between clock and delay gate input', () => {
 			const audioElements = {
 				'1': {
 					type: 'clock' as const,
@@ -689,7 +689,7 @@ describe('AudioCanvas', () => {
 				'3': {
 					type: 'delay' as const,
 					inputs: [
-						{ id: '1', output: 'trigger', input: 'trigger' },
+						{ id: '1', output: 'gate', input: 'gate' },
 						{ id: '2', output: 'audio', input: 'audio' }
 					],
 					parameters: {
@@ -708,12 +708,12 @@ describe('AudioCanvas', () => {
 				{
 					type: 'output',
 					nodeId: '1',
-					id: 'trigger'
+					id: 'gate'
 				},
 				{
 					type: 'input',
 					nodeId: '3',
-					id: 'trigger'
+					id: 'gate'
 				}
 			);
 
@@ -722,7 +722,7 @@ describe('AudioCanvas', () => {
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
 			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect).toHaveBeenCalledWith(
-				audioNodeDatabase['3']?.getInputNode('trigger')
+				audioNodeDatabase['3']?.getInputNode('gate')
 			);
 		});
 
@@ -804,7 +804,7 @@ describe('AudioCanvas', () => {
 				'3': {
 					type: 'delay' as const,
 					inputs: [
-						{ id: '1', output: 'trigger', input: 'audio' },
+						{ id: '1', output: 'gate', input: 'audio' },
 						{ id: '2', output: 'audio', input: 'audio' }
 					],
 					parameters: {
@@ -823,7 +823,7 @@ describe('AudioCanvas', () => {
 				{
 					type: 'output',
 					nodeId: '1',
-					id: 'trigger'
+					id: 'gate'
 				},
 				{
 					type: 'input',
@@ -869,23 +869,23 @@ describe('AudioCanvas', () => {
 				{
 					type: 'output',
 					nodeId: '1',
-					id: 'trigger'
+					id: 'gate'
 				},
 				{
 					type: 'input',
 					nodeId: '2',
-					id: 'trigger'
+					id: 'gate'
 				}
 			);
 
 			expect(intermediateAudioElements['2']?.inputs).toEqual([
-				{ id: '1', output: 'trigger', input: 'trigger' }
+				{ id: '1', output: 'gate', input: 'gate' }
 			]);
 
 			updateAudioCanvas(intermediateAudioElements, audioElements, audioNodeDatabase);
 
 			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().connect).toHaveBeenCalledWith(
-				audioNodeDatabase['2']?.getInputNode('trigger')
+				audioNodeDatabase['2']?.getInputNode('gate')
 			);
 
 			const newAudioElements = addConnection(
@@ -893,7 +893,7 @@ describe('AudioCanvas', () => {
 				{
 					type: 'output',
 					nodeId: '1',
-					id: 'trigger'
+					id: 'gate'
 				},
 				{
 					type: 'input',
@@ -903,8 +903,8 @@ describe('AudioCanvas', () => {
 			);
 
 			expect(newAudioElements['2']?.inputs).toEqual([
-				{ id: '1', output: 'trigger', input: 'trigger' },
-				{ id: '1', output: 'trigger', input: 'audio' }
+				{ id: '1', output: 'gate', input: 'gate' },
+				{ id: '1', output: 'gate', input: 'audio' }
 			]);
 
 			updateAudioCanvas(newAudioElements, intermediateAudioElements, audioNodeDatabase);
@@ -926,8 +926,8 @@ describe('AudioCanvas', () => {
 				'2': {
 					type: 'delay' as const,
 					inputs: [
-						{ id: '1', output: 'trigger', input: 'audio' },
-						{ id: '1', output: 'trigger', input: 'trigger' }
+						{ id: '1', output: 'gate', input: 'audio' },
+						{ id: '1', output: 'gate', input: 'gate' }
 					],
 					parameters: {
 						delayTime: { base: 0.5, inputs: [] }
@@ -945,7 +945,7 @@ describe('AudioCanvas', () => {
 				{
 					type: 'output',
 					nodeId: '1',
-					id: 'trigger'
+					id: 'gate'
 				},
 				{
 					type: 'input',
@@ -955,7 +955,7 @@ describe('AudioCanvas', () => {
 			);
 
 			expect(newAudioElements['2']?.inputs).toEqual([
-				{ id: '1', output: 'trigger', input: 'trigger' }
+				{ id: '1', output: 'gate', input: 'gate' }
 			]);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
@@ -969,12 +969,12 @@ describe('AudioCanvas', () => {
 				{
 					type: 'output',
 					nodeId: '1',
-					id: 'trigger'
+					id: 'gate'
 				},
 				{
 					type: 'input',
 					nodeId: '2',
-					id: 'trigger'
+					id: 'gate'
 				}
 			);
 
@@ -985,7 +985,7 @@ describe('AudioCanvas', () => {
 			updateAudioCanvas(newerAudioElements, newAudioElements, audioNodeDatabase);
 
 			expect((audioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect).toHaveBeenCalledWith(
-				audioNodeDatabase['2']?.getInputNode('trigger')
+				audioNodeDatabase['2']?.getInputNode('gate')
 			);
 		});
 

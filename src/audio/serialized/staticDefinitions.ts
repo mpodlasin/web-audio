@@ -25,9 +25,9 @@ const audioInputOutputDefinition: StaticInputOutputDefinition = {
 	maxValue: 1
 };
 
-const triggerInputOutputDefinition: StaticInputOutputDefinition = {
-	id: 'trigger',
-	name: 'Trigger',
+const gateInputOutputDefinition: StaticInputOutputDefinition = {
+	id: 'gate',
+	name: 'Gate',
 	minValue: 0,
 	maxValue: 1
 };
@@ -154,7 +154,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	sequencer: {
 		inputs: [
 			{
-				...triggerInputOutputDefinition,
+				...gateInputOutputDefinition,
 				contextDescription: 'Signal triggering next step in the sequencer.'
 			}
 		],
@@ -268,7 +268,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	delay: {
-		inputs: [audioInputOutputDefinition, triggerInputOutputDefinition],
+		inputs: [audioInputOutputDefinition, gateInputOutputDefinition],
 		outputs: [audioInputOutputDefinition],
 		parameters: {
 			delayTime: {
@@ -351,7 +351,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	},
 	clock: {
 		inputs: [],
-		outputs: [triggerInputOutputDefinition],
+		outputs: [gateInputOutputDefinition],
 		parameters: {
 			tempo: {
 				defaultValue: 120,
@@ -364,7 +364,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	},
 	'ar-envelope': {
 		showCategory: true,
-		inputs: [triggerInputOutputDefinition],
+		inputs: [gateInputOutputDefinition],
 		outputs: [envelopeInputOutputDefinition],
 		parameters: {
 			attack: {
@@ -385,7 +385,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	},
 	'ad-envelope': {
 		showCategory: true,
-		inputs: [triggerInputOutputDefinition],
+		inputs: [gateInputOutputDefinition],
 		outputs: [envelopeInputOutputDefinition],
 		parameters: {
 			attack: {
@@ -406,12 +406,12 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	},
 	midi: {
 		inputs: [],
-		outputs: [frequencyInputOutputDefinition, triggerInputOutputDefinition],
+		outputs: [frequencyInputOutputDefinition, gateInputOutputDefinition],
 		parameters: {}
 	},
 	'gate-length': {
-		inputs: [triggerInputOutputDefinition],
-		outputs: [triggerInputOutputDefinition],
+		inputs: [gateInputOutputDefinition],
+		outputs: [gateInputOutputDefinition],
 		parameters: {
 			length: {
 				minValue: 0,
@@ -423,7 +423,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		}
 	},
 	'measure-gate': {
-		inputs: [triggerInputOutputDefinition],
+		inputs: [gateInputOutputDefinition],
 		outputs: [secondsInputOutputDefinition],
 		parameters: {}
 	},
@@ -432,8 +432,8 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	'square-lfo': lfoDefinition,
 	'triangle-lfo': lfoDefinition,
 	pattern: {
-		inputs: [triggerInputOutputDefinition],
-		outputs: [triggerInputOutputDefinition],
+		inputs: [gateInputOutputDefinition],
+		outputs: [gateInputOutputDefinition],
 		parameters: {
 			step1: { ...buttonParameter, highlightIndex: 0 },
 			step2: { ...buttonParameter, highlightIndex: 1 },
