@@ -26,8 +26,8 @@ const audioInputOutputDefinition: StaticInputOutputDefinition = {
 };
 
 const triggerInputOutputDefinition: StaticInputOutputDefinition = {
-	id: 'gate',
-	name: 'Gate',
+	id: 'trigger',
+	name: 'Trigger',
 	minValue: 0,
 	maxValue: 1
 };
