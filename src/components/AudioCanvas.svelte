@@ -1014,6 +1014,9 @@
 				</div>
 			</ChangeColorModal>
 		{/if}
+		<div class="beta-info">
+			This app is in beta. Report bugs on our <a href="https://discord.com/channels/1270016157000400916/1270016157000400920">Discord Server</a>.
+		</div>
 	</div>
 </div>
 
@@ -1054,5 +1057,13 @@
 
 	.nodes {
 		transform-origin: top left;
+	}
+
+	.beta-info {
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		font-size: 12px;
+		background-color: var(--neutral-700);
 	}
 </style>
