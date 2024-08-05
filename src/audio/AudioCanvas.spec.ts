@@ -464,7 +464,9 @@ describe('AudioCanvas', () => {
 				}
 			);
 
-			expect(newAudioElements['2']?.inputs).toEqual([{ id: '1', output: 'trigger', input: 'trigger' }]);
+			expect(newAudioElements['2']?.inputs).toEqual([
+				{ id: '1', output: 'trigger', input: 'trigger' }
+			]);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
@@ -514,7 +516,9 @@ describe('AudioCanvas', () => {
 				}
 			);
 
-			expect(newAudioElements['2']?.inputs).toEqual([{ id: '1', output: 'trigger', input: 'trigger' }]);
+			expect(newAudioElements['2']?.inputs).toEqual([
+				{ id: '1', output: 'trigger', input: 'trigger' }
+			]);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
@@ -950,7 +954,9 @@ describe('AudioCanvas', () => {
 				}
 			);
 
-			expect(newAudioElements['2']?.inputs).toEqual([{ id: '1', output: 'trigger', input: 'trigger' }]);
+			expect(newAudioElements['2']?.inputs).toEqual([
+				{ id: '1', output: 'trigger', input: 'trigger' }
+			]);
 
 			updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
 
