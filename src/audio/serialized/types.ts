@@ -80,15 +80,9 @@ export type SerializedClockNode = SerializedAudioElement<'clock', 'tempo'>;
 
 export type SerializedPanNode = SerializedAudioElement<'pan', 'pan'>;
 
-export type SerializedSequencerNode = SerializedAudioElement<'sequencer', never>;
+export type SerializedSequencerNode = SerializedAudioElement<'sequencer', 'frequency1' | 'frequency2' | 'frequency3' | 'frequency4' | 'frequency5' | 'frequency6' | 'frequency7' | 'frequency8'>;
 
 export type SerializedMidiNode = SerializedAudioElement<'midi', never>;
-
-export type SerializedSequencerNote = {
-	note: string;
-	time: number;
-	duration: number;
-};
 
 export type SerializedAREnvelopeNode = SerializedAudioElement<'ar-envelope', 'attack' | 'release'>;
 
