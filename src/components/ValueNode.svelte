@@ -9,9 +9,13 @@
 	$: dataArray = new Float32Array(bufferLength);
 	$: value = dataArray[0] ?? 0;
 
+	let drawing = false;
+
 	function draw() {
-		if (!running) return;
-		if (!analyser) return;
+		if (!running || !analyser) {
+			drawing = false;
+			return;
+		}
 
 		requestAnimationFrame(draw);
 
@@ -20,12 +24,10 @@
 		value = dataArray[0] ?? 0;
 	}
 
-	let started = false;
-
 	$: {
-		if (running && !started) {
+		if (running && !drawing) {
 			draw();
-			started = true;
+			drawing = true;
 		}
 	}
 </script>

@@ -42,12 +42,13 @@
 
 	let lastPosition = 0;
 
+	let drawing = false;
+
 	function drawSlowMode() {
-		if (!running) return;
-		if (canvasCtx === null) return;
-		if (!canvas) return;
-		if (!analyser) return;
-		if (mode !== 'slow') return;
+		if (!running || canvasCtx === null || !canvas || !analyser || mode !== 'slow') {
+			drawing = false;
+			return;
+		}
 
 		requestAnimationFrame(drawSlowMode);
 
@@ -76,11 +77,10 @@
 	}
 
 	function drawFastMode() {
-		if (!running) return;
-		if (canvasCtx === null) return;
-		if (!canvas) return;
-		if (!analyser) return;
-		if (mode !== 'fast') return;
+		if (!running || canvasCtx === null || !canvas || !analyser || mode !== 'fast') {
+			drawing = false;
+			return;
+		}
 
 		requestAnimationFrame(drawFastMode);
 
@@ -114,16 +114,14 @@
 		canvasCtx.stroke();
 	}
 
-	let started = false;
-
 	$: {
-		if (running && canvasCtx && !started) {
+		if (running && canvasCtx && !drawing) {
 			if (mode === 'fast') {
 				drawFastMode();
 			} else {
 				drawSlowMode();
 			}
-			started = true;
+			drawing = true;
 		}
 	}
 </script>
