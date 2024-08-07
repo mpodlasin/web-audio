@@ -4,7 +4,7 @@ This type of signal is called either a _trigger_ or _gate_ signal.
 
 Trigger signal usually means very brief jump from 0 to 1 and back, just like `Clock` node by itself does.
 
-Gate signal means similar signal, but just potentially staying longer in its 1 state. 
+Gate signal means similar signal, but just potentially staying longer in its 1 state.
 
 For example if you played a MIDI keyboard and you pressed a keyboard button, we could simulate it with a gate signal, where 0 would mean "not pressed" and 1 would mean "pressed".
 

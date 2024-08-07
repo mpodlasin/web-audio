@@ -12,6 +12,6 @@ It does it so briefly that `Value` node may even have trouble detecting that con
 
 And even if it gets detected, value changes back to 0 so fast that you can only see a flicker, if anything.
 
-There is however a way to fix that. 
+There is however a way to fix that.
 
 Create `Gate Length` node, found in `Clock` section.

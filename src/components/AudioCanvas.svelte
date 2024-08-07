@@ -1015,7 +1015,10 @@
 			</ChangeColorModal>
 		{/if}
 		<div class="beta-info">
-			This app is in beta. Report bugs on our <a href="https://discord.com/channels/1270016157000400916/1270016157000400920">Discord Server</a>.
+			This app is in beta. Report bugs on our <a
+				href="https://discord.com/channels/1270016157000400916/1270016157000400920"
+				>Discord Server</a
+			>.
 		</div>
 	</div>
 </div>

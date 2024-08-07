@@ -6,4 +6,4 @@ However no unit information in the actual signal - again, signals are just strea
 
 So we could perfectly fine use numbers from `Sequencer` to control some parameter with different units than hertz, or with no units at all.
 
-We will see a case like that that in the next tutorial, where we will use what we learned today, but on a more musical example.
+We will see a case like that that in the next tutorial, where we will use what we've learned today, but on a more musical example.

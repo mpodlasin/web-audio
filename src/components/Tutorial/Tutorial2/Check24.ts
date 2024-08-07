@@ -15,7 +15,8 @@ export default function (audioGraph: SerializedAudioElements) {
 	const sequencerIsConnectedToValue =
 		valueNode?.inputs?.some((input) => input.id === sequencerNodeId) ?? false;
 
-	const gateLengthIsStillConnectedToValue = valueNode?.inputs?.some((input) => input.id === gateLengthNodeId) ?? false;
+	const gateLengthIsStillConnectedToValue =
+		valueNode?.inputs?.some((input) => input.id === gateLengthNodeId) ?? false;
 
 	return sequencerIsConnectedToValue && gateLengthIsStillConnectedToValue;
 }
