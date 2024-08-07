@@ -4,7 +4,9 @@ export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 
 	// Tempo on Clock node is below 20 BPM
-	const gateLengthNode = values.find((node) => node.type === 'gate-length');
+	const clockNode = values.find((node) => node.type === 'clock');
 
-	return gateLengthNode !== undefined;
+	const tempo = clockNode?.parameters?.tempo.base ?? 0;
+
+	return tempo < 20;
 }

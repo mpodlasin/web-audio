@@ -1,11 +1,16 @@
-Now (given that play button is still on) you can see numbers fluctuating again, but now between values of 49.5 and 50.5.
+Now (given that the play button is still on) you can see numbers fluctuating again, this time between values of 49.5 and 50.5.
 
 As you've probably guessed, having to lines routed to the same input results in two streams of numbers being _added_ together.
 
-Since we are adding 50 to a sine wave of values between -0.5 and 0.5, we end up with range of 49.5 (50 - 0.5) and 50 (50 + 0.5).
+We have two signals:
 
-Note that we added an audio signal, coming from `Sine` oscillator node to a simple number coming from `Number` node.
+- a constant value of 50,
+- a sine wave reduced by multiplication to a range of -0.5 to 0.5.
 
-This again emphasises that in `AudioCanvas` all signals are just streams of numbers.
+Since we are adding 50 to values between -0.5 and 0.5, we end up with range of 49.5 (50 - 0.5) and 50.5 (50 + 0.5).
 
-To continue driving on this point, let's see the output of `Clock` node. Create it.
+Note that we added an audio signal, coming from `Sine` oscillator node (via `Mult`) to a number coming from `Number` node.
+
+This again shows us that in `AudioCanvas` all signals are just streams of numbers.
+
+To continue driving this point home, let's see the output of a `Clock` node. Create it.

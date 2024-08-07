@@ -4,7 +4,8 @@ export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 	const entries = Object.entries(audioGraph);
 
-	// Gain node was created and inserted between Sine and Value nodes.
+	// Gain node was created and inserted between Sine and Value nodes,
+	// and connection from Sine to Value was removed
 	const gainNode = values.find((node) => node.type === 'gain');
 	const sineNode = values.find((node) => node.type === 'sine-oscillator');
 	const valueNode = values.find((node) => node.type === 'value');
@@ -19,5 +20,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	const sineNodeWasConnectedToGain =
 		gainNode?.inputs?.some((input) => input.id === sineNodeId) ?? false;
 
-	return gainNodeExists && gainNodeWasConnectedtoValue && sineNodeWasConnectedToGain;
+	const sineWasDisconnectedFromValue = valueNode?.inputs?.every(input => input.id !== sineNodeId);
+
+	return gainNodeExists && gainNodeWasConnectedtoValue && sineNodeWasConnectedToGain && sineWasDisconnectedFromValue;
 }

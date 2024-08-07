@@ -1,6 +1,6 @@
 Welcome in second part of `AudioCanvas` electronic music tutorial.
 
-In previous lesson we learnt how to create and connect nodes in order to create synthesisers playing music.
+In previous lesson we learned how to create and connect nodes in order to create synthesisers playing music.
 
 Today we will focus more on those connections exactly.
 

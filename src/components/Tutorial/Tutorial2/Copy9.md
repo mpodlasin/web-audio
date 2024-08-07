@@ -1,8 +1,8 @@
-Now you can see that the numbers are now limited to range of -0.5 to 0.5.
+Now you can see that the numbers displayed in `Value` are limited to the range of -0.5 to 0.5.
 
-After all, it makes intuitive sense that if speaker cone moves less, it produces less strong, therefore quiter, sound.
+It makes intuitive sense that if speaker cone moves less, it produces a quieter sound.
 
-It also seems that `Gain` node does nothing more that simply performs simple multiplication by factor set on the knob.
+It also seems that `Gain` node does nothing more that simply performs regular number multiplication by a factor set on its knob.
 
 And that's exactly correct!
 

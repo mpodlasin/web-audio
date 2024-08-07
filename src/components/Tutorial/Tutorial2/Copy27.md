@@ -1,15 +1,13 @@
-You can see now how signals from `Sequencer` and `Clock` (via `Gate Length`) nodes gets combined.
+Look at the `Value` node for a while and observe how signals from `Sequencer` and `Gate Length` nodes get combined.
 
-When `Clock` ticks, sequencer starts sending out the value of the next step.
+Let's say that a certain step you've set in `Sequencer` is equal to 600 Hz.
 
-At the same time `Gate Length` prolongs the signal from `Clock`.
+When `Clock` ticks (that is changes its value from 0 to 1 for a brief moment), `Sequencer` starts sending out number 600.
 
-That signal is equal 1, and this gets added to frequency value from `Sequencer`.
+At the same time `Gate Length` makes the "on" signal from `Clock` longer - it emits number 1.
 
-After 1 second gate signal comes back to value 0, so `Value` shows exactly the frequency coming from `Sequencer`.
+Those two numbers get added because we connected two lines to the same input, so we see 601 displayed in `Value` node.
 
-Let's say that a step you've set in `Sequencer` is equal to 600Hz.
+After 1 second the gate signal from `Gate Length` returns to value 0, so a number displayed in `Value` changes to 600.
 
-Then, at the tick of the `Clock` you will see the number 601 (600Hz from sequencer + 1 symbolizing "gate on" from `Gate Length`).
-
-After one second this number will change back to 600, as signal from `Gate Length` returns back to 0 after 1 second.
+After that `Clock` ticks again and the whole cycle starts again, but with a new `Sequencer` step.
