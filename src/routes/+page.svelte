@@ -17,6 +17,12 @@
 				</div>
 			</a>
 		</div>
+		<div>
+			<h2>Examples</h2>
+			<ul>
+				<li><a href="/examples/first-example">First example</a></li>
+			</ul>
+		</div>
 	</main>
 </div>
 
