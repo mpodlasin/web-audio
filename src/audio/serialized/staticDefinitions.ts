@@ -456,6 +456,11 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		inputs: [],
 		outputs: [],
 		parameters: {}
+	},
+	comment: {
+		inputs: [],
+		outputs: [],
+		parameters: {}
 	}
 };
 
@@ -494,7 +499,8 @@ export const readableNames: { [P in NodeType]: string } = {
 	pattern: 'Pattern',
 	tutorial: 'Tutorial',
 	value: 'Value',
-	number: 'Number'
+	number: 'Number',
+	comment: 'Comment'
 };
 
 export const categorizedNodeTypes = {
@@ -513,7 +519,7 @@ export const categorizedNodeTypes = {
 	math: ['number', 'multiply', 'bipolar-to-unipolar'] as NodeType[],
 	clock: ['clock', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
-	visualization: ['oscilloscope', 'value'] as NodeType[],
+	visualization: ['oscilloscope', 'value', 'comment'] as NodeType[],
 	internal: ['tutorial'] as NodeType[]
 };
 

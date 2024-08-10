@@ -412,3 +412,21 @@ export const changeParameterMultiply = <S extends SerializedAudioElements>(
 		}
 	};
 };
+
+export const changeComment = <S extends SerializedAudioElements>(
+	audioGraph: S,
+	nodeId: string,
+	comment: string
+): S => {
+	const node = audioGraph[nodeId];
+
+	if (!node) return audioGraph;
+
+	return {
+		...audioGraph,
+		[nodeId]: {
+			...node,
+			comment
+		}
+	}
+}

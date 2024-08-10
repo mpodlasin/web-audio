@@ -125,6 +125,7 @@
 		on:knobMouseUp
 		on:plugCreated
 		on:knobCreated
+		on:commentChanged
 	/>
 </div>
 

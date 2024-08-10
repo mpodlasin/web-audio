@@ -18,6 +18,7 @@
 	import OnOffButton from './OnOffButton.svelte';
 	import TutorialNode from './TutorialNode.svelte';
 	import ValueNode from './ValueNode.svelte';
+	import CommentNode from './CommentNode.svelte';
 
 	export let id: string;
 	export let node: AllowedSerializedAudioElements;
@@ -164,6 +165,9 @@
 	{/if}
 	{#if node.type === 'tutorial' && instantiatedNode instanceof EmptyCustomAudioNode}
 		<TutorialNode {node} {audioGraph} />
+	{/if}
+	{#if node.type === 'comment' && instantiatedNode instanceof EmptyCustomAudioNode}
+		<CommentNode {id} {node} on:commentChanged />
 	{/if}
 	<div class="inputs-and-outputs">
 		<div class="inputs">

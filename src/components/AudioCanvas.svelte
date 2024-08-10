@@ -13,7 +13,10 @@
 		type Position,
 		insertExistingNodes,
 		changeParameterMultiply,
-		type NodeType
+		type NodeType,
+
+		changeComment
+
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
@@ -835,6 +838,14 @@
 
 		dispatcher('sizeChange', size);
 	};
+
+	// COMMENTS ---------------------------------
+	const handleCommentChanged = (e: CustomEvent<{ comment: string; nodeId: string }>) => {
+		const { nodeId, comment } = e.detail;
+
+		console.log('changing comment', nodeId, comment);
+		updateAudioGraphHistory(audioGraph => changeComment(audioGraph, nodeId, comment))
+	};
 </script>
 
 <div
@@ -920,6 +931,7 @@
 					on:click={handleSelectNodeClick(id)}
 					on:plugCreated={handlePlugCreated}
 					on:knobCreated={handleKnobCreated}
+					on:commentChanged={handleCommentChanged}
 				/>
 			{/each}
 		</div>

@@ -126,6 +126,10 @@ export type SerializedTutorialNode = SerializedAudioElement<'tutorial', never> &
 	tutorialId: string;
 };
 
+export type SerializedCommentNode = SerializedAudioElement<'comment', never> & {
+	comment: string;
+}
+
 export type SerializedValueNode = SerializedAudioElement<'value', never>;
 
 export type SerializedNumberNode = SerializedAudioElement<'number', 'value'>;
@@ -161,6 +165,7 @@ export type AllowedSerializedAudioElements =
 	| SerializedPatternNode
 	| SerializedTutorialNode
 	| SerializedValueNode
-	| SerializedNumberNode;
+	| SerializedNumberNode
+	| SerializedCommentNode;
 
 export type NodeType = AllowedSerializedAudioElements['type'];

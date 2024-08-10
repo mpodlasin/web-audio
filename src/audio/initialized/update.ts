@@ -454,6 +454,8 @@ function createCustomAudioNode(
 			return new CustomPatternNode(id);
 		case 'tutorial':
 			return new EmptyCustomAudioNode();
+		case 'comment':
+			return new EmptyCustomAudioNode();
 		case 'value':
 			return new CustomValueNode(id);
 		case 'number':
