@@ -5,18 +5,18 @@ const examples: Record<string, { title: string; example: SerializedAudioElements
 	'first-example': {
 		title: 'First Example',
 		example: {}
-	},
+	}
 };
 
 export const load = ({ params }) => {
 	const { id } = params;
 
 	if (id in examples) {
-        const config = examples[id];
+		const config = examples[id];
 
-        if (config) {
-            return { id, ...config };
-        }
+		if (config) {
+			return { id, ...config };
+		}
 	}
 
 	throw redirect(300, '/');

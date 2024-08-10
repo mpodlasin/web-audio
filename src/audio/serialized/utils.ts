@@ -428,5 +428,5 @@ export const changeComment = <S extends SerializedAudioElements>(
 			...node,
 			comment
 		}
-	}
-}
+	};
+};

@@ -128,7 +128,7 @@ export type SerializedTutorialNode = SerializedAudioElement<'tutorial', never> &
 
 export type SerializedCommentNode = SerializedAudioElement<'comment', never> & {
 	comment: string;
-}
+};
 
 export type SerializedValueNode = SerializedAudioElement<'value', never>;
 

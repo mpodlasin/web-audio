@@ -16,6 +16,6 @@ One last thing.
 
 Whenver you hover over an input or output of a node, you will see a tooltip with brief info about inputs/outputs type, range and sometimes short description.
 
-Try it out on the nodes you see on the screen. 
+Try it out on the nodes you see on the screen.
 
 See you in the next tutorial!

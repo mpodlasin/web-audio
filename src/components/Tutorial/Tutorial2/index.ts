@@ -174,7 +174,7 @@ export const tutorial2: Tutorial = {
 		},
 		{
 			copy: copy29,
-			check: check29,
+			check: check29
 		}
 	]
 };

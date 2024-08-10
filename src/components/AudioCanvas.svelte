@@ -14,9 +14,7 @@
 		insertExistingNodes,
 		changeParameterMultiply,
 		type NodeType,
-
 		changeComment
-
 	} from '../audio/AudioCanvas';
 	import DraggableNode from '../components/DraggableNode.svelte';
 	import ProjectHeader from './ProjectHeader.svelte';
@@ -844,7 +842,7 @@
 		const { nodeId, comment } = e.detail;
 
 		console.log('changing comment', nodeId, comment);
-		updateAudioGraphHistory(audioGraph => changeComment(audioGraph, nodeId, comment))
+		updateAudioGraphHistory((audioGraph) => changeComment(audioGraph, nodeId, comment));
 	};
 </script>
 

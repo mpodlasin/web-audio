@@ -1,84 +1,100 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte";
-    import { type SerializedCommentNode } from "../audio/serialized";
+	import { createEventDispatcher } from 'svelte';
+	import { type SerializedCommentNode } from '../audio/serialized';
 
-    const dispatcher = createEventDispatcher();
+	const dispatcher = createEventDispatcher();
 
-    export let id: string;
-    export let node: SerializedCommentNode;
-    $: comment = node.comment;
+	export let id: string;
+	export let node: SerializedCommentNode;
+	$: comment = node.comment;
 
-    let editMode = false;
+	let editMode = false;
 
-    let editedComment = '';
+	let editedComment = '';
 
-    const stopEditing = () => {
-        editMode = false;
+	const stopEditing = () => {
+		editMode = false;
 
-        dispatcher('commentChanged', {
-            comment: editedComment,
-            nodeId: id
-        })
+		dispatcher('commentChanged', {
+			comment: editedComment,
+			nodeId: id
+		});
 
-        editedComment = '';
-    }
-    
-    let textarea: HTMLTextAreaElement;
+		editedComment = '';
+	};
 
-    const stopPropagation = (e: Event) => e.stopPropagation();
+	let textarea: HTMLTextAreaElement;
 
-    const stopEditingOnClick = (e: MouseEvent) => {
-        e.stopPropagation();
+	const stopPropagation = (e: Event) => e.stopPropagation();
 
-        if (e.target === textarea) {
-            window.addEventListener('click', stopEditingOnClick, { once: true, capture: true });
-            window.addEventListener('pointerup', stopPropagation, { once: true, capture: true });
-            window.addEventListener('pointerdown', stopPropagation, { once: true, capture: true });
+	const stopEditingOnClick = (e: MouseEvent) => {
+		e.stopPropagation();
 
-            return;
-        }
+		if (e.target === textarea) {
+			window.addEventListener('click', stopEditingOnClick, { once: true, capture: true });
+			window.addEventListener('pointerup', stopPropagation, { once: true, capture: true });
+			window.addEventListener('pointerdown', stopPropagation, { once: true, capture: true });
 
-        stopEditing();
-    }
+			return;
+		}
 
-    const handleCommentClick = (e: MouseEvent) => {
-        e.stopPropagation();
+		stopEditing();
+	};
 
-        editMode = true;
-        editedComment = comment;
+	const handleCommentClick = (e: MouseEvent) => {
+		e.stopPropagation();
 
-        window.addEventListener('click', stopEditingOnClick, { once: true, capture: true });
-        window.addEventListener('pointerup', stopPropagation, { once: true, capture: true });
-        window.addEventListener('pointerdown', stopPropagation, { once: true, capture: true });
-    }
+		editMode = true;
+		editedComment = comment;
 
-    const handleEnter = (e: KeyboardEvent) => {
-        if (e.code === 'Enter') {
-            stopEditing();
+		window.addEventListener('click', stopEditingOnClick, { once: true, capture: true });
+		window.addEventListener('pointerup', stopPropagation, { once: true, capture: true });
+		window.addEventListener('pointerdown', stopPropagation, { once: true, capture: true });
+	};
 
-            window.removeEventListener('click', stopEditingOnClick, { capture: true });
-            window.removeEventListener('pointerup', stopPropagation, { capture: true });
-            window.removeEventListener('pointerdown', stopPropagation, { capture: true });
-        }
-    }
+	const handleEnter = (e: KeyboardEvent) => {
+		if (e.code === 'Enter') {
+			stopEditing();
+
+			window.removeEventListener('click', stopEditingOnClick, { capture: true });
+			window.removeEventListener('pointerup', stopPropagation, { capture: true });
+			window.removeEventListener('pointerdown', stopPropagation, { capture: true });
+		}
+	};
 </script>
-{#if editMode}
-    <!-- svelte-ignore a11y-autofocus -->
-    <textarea bind:this={textarea} autofocus rows={5} on:keypress={handleEnter} bind:value={editedComment} />
-{:else}
-    <div class="comment" on:click={handleCommentClick} on:pointerup={e => e.stopPropagation()} on:pointerdown={e => e.stopPropagation()} on:keypress={() => {}}>{comment || 'Empty comment'}</div>
-{/if}
-<style>
-    .comment {
-        font-size: 12px;
-    }
 
-    textarea {
-        background-color: var(--neutral-700);
-        color: var(--neutral-300);
-        border-radius: 4px;
-        width: 200px;
-        padding: 4px;
-        font-size: 12px;
-    }
+{#if editMode}
+	<!-- svelte-ignore a11y-autofocus -->
+	<textarea
+		bind:this={textarea}
+		autofocus
+		rows={5}
+		on:keypress={handleEnter}
+		bind:value={editedComment}
+	/>
+{:else}
+	<div
+		class="comment"
+		on:click={handleCommentClick}
+		on:pointerup={(e) => e.stopPropagation()}
+		on:pointerdown={(e) => e.stopPropagation()}
+		on:keypress={() => {}}
+	>
+		{comment || 'Empty comment'}
+	</div>
+{/if}
+
+<style>
+	.comment {
+		font-size: 12px;
+	}
+
+	textarea {
+		background-color: var(--neutral-700);
+		color: var(--neutral-300);
+		border-radius: 4px;
+		width: 200px;
+		padding: 4px;
+		font-size: 12px;
+	}
 </style>
