@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { createProject, type Projects } from '../../../ui/project';
+	import { example1 } from '../../../examples/example1';
+	import { type Projects } from '../../../ui/project';
 
 	export let data;
 
@@ -13,7 +14,11 @@
 	let projects: Projects = projectsString !== null ? JSON.parse(projectsString) : {};
 
 	if (!projects[title]) {
-		projects[title] = createProject(title);
+		projects[title] = {
+			...example1,
+			created: new Date().toISOString(),
+			lastChanged: new Date().toISOString()
+		};
 
 		localStorage.setItem(audioGraphLocalStorageKey, JSON.stringify(projects));
 	}
