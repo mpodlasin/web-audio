@@ -42,7 +42,7 @@ export const example1: Project = {
 			type: 'gain',
 			inputs: [{ id: 'e2415bdb-1771-4a50-9296-8be64c009692', output: 'audio', input: 'audio' }],
 			ui: { position: { x: -17.4609375, y: -420.3515625 }, primaryColor: '#d22d4e' },
-			parameters: { gain: { base: 0.18014564043209877, inputs: [] } }
+			parameters: { gain: { base: 0, inputs: [] } }
 		},
 		'6f177223-532b-4df1-9eb6-c5e023d99e32': {
 			type: 'sequencer',
