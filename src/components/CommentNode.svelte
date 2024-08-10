@@ -87,6 +87,7 @@
 <style>
 	.comment {
 		font-size: 12px;
+		max-width: 210px;
 	}
 
 	textarea {
