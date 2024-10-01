@@ -20,7 +20,8 @@ import {
 	changeParameterMultiply,
 	MidiNode,
 	CustomDelayNode,
-	ClockNode
+	ClockNode,
+	SerializedAudioParameter
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 
@@ -28,6 +29,17 @@ const ui = {
 	position: { x: 0, y: 0 },
 	primaryColor: '#000000'
 };
+
+const sequencerParameters = Object.fromEntries([1, 2, 3, 4, 5, 6, 7, 8].map(n => `frequency${n}`).map(parameterName => [parameterName, { base: 440, inputs: [] }])) as unknown as {
+	frequency1: SerializedAudioParameter;
+	frequency2: SerializedAudioParameter;
+	frequency3: SerializedAudioParameter;
+	frequency4: SerializedAudioParameter;
+	frequency5: SerializedAudioParameter;
+	frequency6: SerializedAudioParameter;
+	frequency7: SerializedAudioParameter;
+	frequency8: SerializedAudioParameter;
+}
 
 describe('AudioCanvas', () => {
 	afterEach(() => {
@@ -214,15 +226,7 @@ describe('AudioCanvas', () => {
 			const audioElements = {
 				'1': {
 					type: 'sequencer' as const,
-					parameters: {},
-					tempoInBpm: 80,
-					notes: [
-						{ time: 0, duration: 1, note: 'A3' },
-						{ time: 1, duration: 1, note: 'C3' },
-						{ time: 2, duration: 1, note: 'E3' },
-						{ time: 3, duration: 1, note: 'F3' }
-					],
-					loopLength: 4,
+					parameters: sequencerParameters,
 					ui
 				},
 				'2': {
@@ -1157,10 +1161,7 @@ describe('AudioCanvas', () => {
 				},
 				'2': {
 					type: 'sequencer' as const,
-					parameters: {},
-					tempoInBpm: 80,
-					notes: [],
-					loopLength: 4,
+					parameters: sequencerParameters,
 					ui
 				}
 			};
@@ -1209,10 +1210,7 @@ describe('AudioCanvas', () => {
 			const audioElements = {
 				'1': {
 					type: 'sequencer' as const,
-					parameters: {},
-					tempoInBpm: 80,
-					notes: [],
-					loopLength: 4,
+					parameters: sequencerParameters,
 					ui
 				},
 				'2': {

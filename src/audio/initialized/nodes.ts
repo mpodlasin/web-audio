@@ -626,6 +626,7 @@ export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNodeWithT
 export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode {
 	private gateLength: AudioNode;
 	private tempo: ConstantSourceNode;
+	private notes: ConstantSourceNode;
 
 	constructor(id: string) {
 		super(id, 'clock');
@@ -643,6 +644,10 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 		tempo.start();
 		this.tempo = tempo;
 
+		const notes = globalContext.createConstantSource();
+		notes.start();
+		this.notes = notes;
+
 		const bpmToFrequencyGain = globalContext.createGain();
 		bpmToFrequencyGain.gain.value = 1 / 60;
 
@@ -656,6 +661,10 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 	getAudioParam(parameterName: string): AudioParam {
 		if (parameterName === 'tempo') {
 			return this.tempo.offset;
+		}
+
+		if (parameterName === 'notes') {
+			return this.notes.offset;
 		}
 
 		throw new Error(`Parmeter ${parameterName} does not exist on Clock node`);

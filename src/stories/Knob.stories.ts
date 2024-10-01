@@ -41,3 +41,18 @@ export const Controlled: Story = {
 		audioParamAnalyser: undefined
 	}
 };
+
+export const Discrete: Story = {
+	args: {
+		nodeId: '123',
+		parameterName: 'frequency',
+		parameter: { base: 1, inputs: [] },
+		minValue: 1,
+		maxValue: 10,
+		defaultValue: 1,
+		polarity: 'uni',
+		draggingLine: false,
+		audioParamAnalyser: undefined,
+		discrete: true,
+	}
+}

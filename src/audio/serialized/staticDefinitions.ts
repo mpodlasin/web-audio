@@ -154,6 +154,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				binary?: boolean;
 				linear?: boolean;
 				highlightIndex?: number;
+				discrete?: boolean;
 			};
 		};
 	};
@@ -366,6 +367,13 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				maxValue: 1000,
 				unit: 'BPM',
 				polarity: 'uni'
+			},
+			notes: {
+				defaultValue: 1,
+				minValue: 1,
+				maxValue: 4,
+				polarity: 'uni',
+				discrete: true,
 			}
 		}
 	},

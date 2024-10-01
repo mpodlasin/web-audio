@@ -16,6 +16,7 @@
 	export let polarity: Polarity;
 	export let draggingLine: boolean;
 	export let linear: boolean = false;
+	export let discrete: boolean = false;
 
 	let knobWrapper: HTMLDivElement;
 	let knob: HTMLDivElement;
@@ -117,7 +118,7 @@
 		event.preventDefault();
 		event.stopPropagation();
 
-		if (isDragging && draggingStartPosition) {
+		if (isDragging && draggingStartPosition && !discrete) {
 			const factor = event.shiftKey ? 10 : 3;
 			const { y } = draggingStartPosition;
 			const { clientY } = event;
@@ -135,6 +136,30 @@
 				parameterName,
 				value: Math.max(minValue, Math.min(maxValue, newValue))
 			});
+		}
+
+		if (isDragging && draggingStartPosition && discrete) {
+			const factor = event.shiftKey ? 10 : 3;
+			const { y } = draggingStartPosition;
+			const { clientY } = event;
+			const dy = y - clientY;
+			const normalizedValueChange = dy / factor;
+
+			const newAngle = previousAngle + normalizedValueChange;
+
+			const newValue = denormalizeNumberParameter(
+				demapNumberParameter(demapFromAngle(newAngle, polarity), linear),
+				polarity
+			);
+
+			console.log(newValue, numberParameter);
+
+			if (newValue >= numberParameter + 1 || newValue <= numberParameter - 1) {
+				dispatcher('change', {
+					parameterName,
+					value: Math.max(minValue, Math.min(maxValue, newValue))
+				});
+			}
 		}
 	}
 

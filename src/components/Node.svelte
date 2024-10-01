@@ -135,6 +135,7 @@
 							unit={staticDefinition.parameters[nodeParameter[0]]?.unit ?? null}
 							polarity={staticDefinition.parameters[nodeParameter[0]]?.polarity ?? 'uni'}
 							linear={staticDefinition.parameters[nodeParameter[0]]?.linear}
+							discrete={staticDefinition.parameters[nodeParameter[0]]?.discrete}
 							{draggingLine}
 							nodeId={id}
 							on:change={handleParameterChange}
