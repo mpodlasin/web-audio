@@ -1,11 +1,13 @@
-What a difference, right?
+Now you can play the melody again.
 
-Reverb effect makes everything sound much more organic and pleasant.
+It probably sounds a bit better. But if you are still not happy with the melody, keep playing with `Sequencer` node knobs until you find something that you like.
 
-The next thing that we might want to change is the fact that we hear `Sine` oscillator constantly, not leaving any breathing room.
+Now, even though the melody is nice, the sound itself if still weirdly dry and artificial.
 
-For example when you pluck a guitar string, it vibrates but then slows down over time, making the sound quieter and quieter until it completely ends.
+We can quickly fix that, by adding an echo effect, often called _reverb_.
 
-We can simulate that by using an `AD` envelope node, that you can find in `Envelope` section.
+You can do that by using `Convolution` node, to be found in `Effect` section.
 
-Create it.
+Create it and add it between `Sine` and `Gain` nodes.
+
+_(Note that in order to do that, you will first have to remove the line currently connecting `Sine` with `Gain`. Don't be scared to do that while the play button is on, to see how it will affect the sound.)_

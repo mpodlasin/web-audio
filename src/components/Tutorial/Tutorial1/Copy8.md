@@ -1,6 +1,6 @@
 We are now ready to hear the sound.
 
-First, press play in the top left corner of the screen.
+First, press play button located above this tutorial - next to tutorial name.
 
 Then, click on the `Gain` node and drag the knob up, until the volume is at a comfortable level.
 

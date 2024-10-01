@@ -1,11 +1,7 @@
-Now the `Seqencer` and `Sine` nodes are setup correctly.
+Great. Now `Sequencer` node is connected to frequency parameter of `Sine` node.
 
-But we need one more thing.
+You have to be aware that when connecting a node to parameter, what happens is that signal from the cable is _added_ to value set by the parameter knob.
 
-The `Sequencer` node will not play by itself.
+This means that if we want to _only_ use values from the sequencer, we should reduce value of frequency knob to 0Hz.
 
-It requires something that would tell it (via its input) how fast it should go from one step to another - a source of tempo.
-
-`Clock` node serves exactly that purpose - you will find it in `Clock` section.
-
-Create `Clock` node and connect it to input of `Sequencer` node.
+Drag the frequency knob to 0, just as you would do it with regular, unconnected knob.

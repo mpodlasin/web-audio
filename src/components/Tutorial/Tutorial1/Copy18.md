@@ -1,7 +1,5 @@
-Before we can play the melody, we have to choose to which notes `Pitch Quantizer` will quantize to.
+Now connect `Sequencer` node to `Pitch Quantizer`.
 
-If you know musical scales, you can choose whatever notes you prefer.
+And then connect `Pitch Quantizer` to frequency parameter of `Sine` node, just as you did before.
 
-If you do not, we recommend choosing `A`, `C`, `E` and `F`.
-
-Choose at least 3 notes on the `Pitch Quantizer`
+This way signal flows from `Sequencer` to `Pitch Quantizer`, which adjusts frequency being sent to its input to fit a standard western musical scale, before sending adjusted frequency further to the parameter of `Sine` node.

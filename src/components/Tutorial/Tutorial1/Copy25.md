@@ -1,5 +1,5 @@
-Now you can understand better how `AD Envelope` works by playing with decay paramter.
+Perhaps you can hear the "pluck" sound already.
 
-Decrease it slowly until it is below 20ms.
+To make it more clear, you can reduce the mix parameter of `Convolution` to bring the reverb effect down.
 
-You will hear plucks getting shorter and shorter, giving the melody snappier feeling.
+Set the mix parameter below 0.25.

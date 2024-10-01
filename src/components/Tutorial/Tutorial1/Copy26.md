@@ -1,5 +1,5 @@
-Now play around with attack parameter.
+Now you can understand better how `AD Envelope` works by playing with decay paramter.
 
-Increase it slowly until it is larger than 100ms.
+Decrease it slowly until it is below 20ms.
 
-A guitar-like pluck changed now into something more resembling a flute or something like that.
+You will hear plucks getting shorter and shorter, giving the melody snappier feeling.

@@ -1,5 +1,7 @@
-Now connect `Sequencer` node to `Pitch Quantizer`.
+We want to insert `Pitch Quantizer` node between `Sequencer` and `Sine` nodes.
 
-And then connect `Pitch Quantizer` to frequency parameter of `Sine` node, just as you did before.
+In order to do that, we need to first remove line that is currently connecting `Sequencer` and `Sine` frequency parameter.
 
-This way signal flows from `Sequencer` to `Pitch Quantizer`, which adjusts frequency being sent to its input to fit a standard western musical scale, before sending adjusted frequency further to the parameter of `Sine` node.
+You can do that by clicking or tapping on the line connecting them and choosing `Delete` from context menu.
+
+Remove line between `Sequencer` and `Sine`.

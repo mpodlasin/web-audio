@@ -1,9 +1,11 @@
-We said that we want to control the loudness of the sound (like a dimnishing loudness of a guitar string).
+What a difference, right?
 
-Remember which node was responsible for controlling loudness?
+Reverb effect makes everything sound much more organic and pleasant.
 
-It was the `Gain` node.
+The next thing that we might want to change is the fact that we hear `Sine` oscillator constantly, not leaving any breathing room.
 
-But we still want to keep our "global" `Gain` that controls overall volume coming out of your speakers.
+For example when you pluck a guitar string, it vibrates but then slows down over time, making the sound quieter and quieter until it completely ends.
 
-Having that in mind, create _another_ `Gain` node and insert it between `Sine` and `Convolution` node.
+We can simulate that by using an `AD` envelope node, that you can find in `Envelope` section.
+
+Create it.

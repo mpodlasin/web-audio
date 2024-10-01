@@ -2,27 +2,23 @@ import type { SerializedAudioElements } from '../../../audio/serialized';
 
 export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
-	const entries = Object.entries(audioGraph);
 
-	// AD Envelope was connected to gain parameter of Gain node
-	// and Clock was connected to AD Envelope
+	// Another gain node was created and was inserted between Sine and Convolution nodes.
+	const gainNodes = values.filter((node) => node.type === 'gain');
+	const thereAreTwoGainNodes = gainNodes.length == 2;
 
 	const convolutionNode = values.find((node) => node.type === 'convolution');
+
 	const gainConnectedToConvolution = convolutionNode?.inputs
 		?.map((input) => audioGraph[input.id])
 		.find((node) => node && node.type === 'gain');
 
-	const adEnvelopeNode = values.find((node) => node.type === 'ad-envelope');
-	const adEnvelopeNodeId = entries.find((entry) => entry[1] === adEnvelopeNode)?.[0];
+	if (!gainConnectedToConvolution) return false;
 
-	const adEnvelopeWasConnectedToGain =
-		gainConnectedToConvolution?.parameters?.['gain'].inputs.some(
-			(input) => input.id === adEnvelopeNodeId
-		) ?? false;
-	const clockWasConnectedToAdEnvelope =
-		adEnvelopeNode?.inputs
+	const sineWasConnectedToGainConnectedToConvolution =
+		gainConnectedToConvolution.inputs
 			?.map((input) => audioGraph[input.id])
-			.some((node) => node && node.type === 'clock') ?? false;
+			.some((node) => node && node.type === 'sine-oscillator') ?? false;
 
-	return adEnvelopeWasConnectedToGain && clockWasConnectedToAdEnvelope;
+	return thereAreTwoGainNodes && sineWasConnectedToGainConnectedToConvolution;
 }

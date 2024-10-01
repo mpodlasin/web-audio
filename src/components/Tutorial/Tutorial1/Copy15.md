@@ -1,13 +1,11 @@
-Now (if you have the play button pressed) you can hear a "melody" playing.
+Now the `Seqencer` and `Sine` nodes are setup correctly.
 
-But you might feel a bit underwhelmed. The "melody" probably doesn't sound too melodic at all.
+But we need one more thing.
 
-That's because western music scales - the ones our ears are used to - consist of very specific frequency values (or intervals, to be precise).
+The `Sequencer` node will not play by itself.
 
-Because the frequency values you have chosen are more or less random, the melody probably does not sound too pleasing to your ear.
+It requires something that would tell it (via its input) how fast it should go from one step to another - a source of tempo.
 
-There is however a way to force frequency values from `Sequencer` to "fit" notes of typical western scale.
+`Clock` node serves exactly that purpose - you will find it in `Clock` section.
 
-We can use a `Pitch Quantizer` node - found in `Pitch` section.
-
-Create it.
+Create `Clock` node and connect it to input of `Sequencer` node.

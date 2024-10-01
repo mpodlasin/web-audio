@@ -1,7 +1,11 @@
-Great. Now `Sequencer` node is connected to frequency parameter of `Sine` node.
+Now that we have our sequence ready, we would like to somehow "transfer" it from sequencer to frequency knob of `Sine` node.
 
-You have to be aware that when connecting a node to parameter, what happens is that signal from the cable is _added_ to value set by the parameter knob.
+Note that `Sequencer` node has an output - that's where our sequence will be coming from.
 
-This means that if we want to _only_ use values from the sequencer, we should reduce value of frequency knob to 0Hz.
+However `Sine` node does not have any inputs - just an output - so how can we control its frequency?
 
-Drag the frequency knob to 0, just as you would do it with regular, unconnected knob.
+It turns out that nothing stops us from connecting line from `Sequencer` to the frequency knob itself!
+
+Yup, you've read that right. Start dragging a line from `Sequencer` and place it over the frequency knob on the `Sine` node.
+
+Once you let go, you will see the line "snapping" to knob, just as it would to a regular input circle.

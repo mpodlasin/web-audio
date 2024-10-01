@@ -3,10 +3,11 @@ import type { SerializedAudioElements } from '../../../audio/serialized';
 export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 
-	// Decay property on AD Envelope node was moved below 20ms.
+	// Mix on convolution was brought down below 0.25
 
-	const envelopeNode = values.find((node) => node.type === 'ad-envelope');
-	const decayProperty = envelopeNode?.parameters?.['decay'].base ?? 200;
+	const convolutionNode = values.find((node) => node.type === 'convolution');
 
-	return decayProperty <= 20;
+	const convolutionMix = convolutionNode?.parameters?.['mix']?.base ?? 0;
+
+	return convolutionMix < 0.25;
 }

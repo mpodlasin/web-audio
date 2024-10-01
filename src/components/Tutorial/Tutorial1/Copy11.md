@@ -1,9 +1,11 @@
-`Sequencer` node might look scary, but it actually works in a simple manner.
+As you've heard, by controlling the frequency we can control what would call a "pitch" of the sound.
 
-Each knob represents a frequency at a given step. So, when music is played, frequency will change from step to step.
+We measure frequency in hertz (Hz), but if you don't really understand what that means, do not worry.
 
-By default all frequency knobs are set to 440Hz.
+For now, all you need to know is that we want to change frequency over time in order to play melodies with our oscillator.
 
-But we don't want the same frequency at each step - this would be boring.
+But we don't want to do it by hand, as that would be both difficult and tiring!
 
-Set each frequency knob on `Sequencer` node to a value different than default 440Hz - it can be any value you wish.
+Instead can use `Sequencer` node (in `Pitch` section of the menu), which will do it for us.
+
+Create `Sequencer` node.

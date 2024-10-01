@@ -1,5 +1,5 @@
-The current tempo might make you fall asleep in a second, so let's crank it up!
+Now play around with attack parameter.
 
-Slowly increase the tempo parameter of the `Clock` node to be above 240 BPM.
+Increase it slowly until it is larger than 100ms.
 
-You will start hearing the melody speed up gradually.
+A guitar-like pluck changed now into something more resembling a flute or something like that.

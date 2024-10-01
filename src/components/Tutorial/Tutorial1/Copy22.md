@@ -1,9 +1,9 @@
-Now connect output of `AD Envelope` node to parameter (not input!) of `Gain` node that you just created.
+We said that we want to control the loudness of the sound (like a dimnishing loudness of a guitar string).
 
-This way `AD Envelope` will control loudness of sine oscillator and give it that "guitar-like" pluck sound.
+Remember which node was responsible for controlling loudness?
 
-However `AD Envelope` node needs to know _when_ to do that.
+It was the `Gain` node.
 
-Luckily we already have a perfect source for this kind of information - and that's the `Clock` node.
+But we still want to keep our "global" `Gain` that controls overall volume coming out of your speakers.
 
-So connect output of `Clock` node to input of `AD Envelope` node.
+Having that in mind, create _another_ `Gain` node and insert it between `Sine` and `Convolution` node.
