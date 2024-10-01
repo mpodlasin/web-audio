@@ -96,8 +96,8 @@
 	const demapNumberParameter = (mappedNumberParameter: number, linear: boolean) =>
 		linear ? mappedNumberParameter : Math.pow(mappedNumberParameter, 3);
 
-	const mapToAngle = (numberParameter: number) => angleSpread * numberParameter;
-	const demapFromAngle = (angle: number) => angle / angleSpread;
+	const mapToAngle = (numberParameter: number, polarity: Polarity) => polarity === 'uni' ? angleSpread * numberParameter : angleSpread * numberParameter / 2;
+	const demapFromAngle = (angle: number, polarity: Polarity) => polarity === 'uni' ? angle / angleSpread : angle / angleSpread * 2;
 
 	const rotateAngle = (angle: number, polarity: Polarity) =>
 		polarity === 'bi' ? angle : angle - angleSpread / 2;
@@ -106,8 +106,10 @@
 
 	$: normalizedNumberParameter = normalizeNumberParameter(numberParameter, polarity);
 	$: mappedNumberParameter = mapNumberParameter(normalizedNumberParameter, linear);
-	$: nonRotatedAngle = mapToAngle(mappedNumberParameter);
+	$: nonRotatedAngle = mapToAngle(mappedNumberParameter, polarity);
 	$: angle = rotateAngle(nonRotatedAngle, polarity);
+
+	$: console.log(nonRotatedAngle);
 
 	let previousAngle = angle ?? 0;
 
@@ -125,7 +127,7 @@
 			const newAngle = previousAngle + normalizedValueChange;
 
 			const newValue = denormalizeNumberParameter(
-				demapNumberParameter(demapFromAngle(derotateAngle(newAngle, polarity)), linear),
+				demapNumberParameter(demapFromAngle(derotateAngle(newAngle, polarity), polarity), linear),
 				polarity
 			);
 
@@ -145,7 +147,7 @@
 			const newAngle = previousAngle + normalizedValueChange;
 
 			const newValue = denormalizeNumberParameter(
-				demapNumberParameter(demapFromAngle(derotateAngle(newAngle, polarity)), linear),
+				demapNumberParameter(demapFromAngle(derotateAngle(newAngle, polarity), polarity), linear),
 				polarity
 			);
 
