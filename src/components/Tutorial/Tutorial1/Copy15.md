@@ -4,7 +4,7 @@ But we need one more thing.
 
 The `Sequencer` node will not play by itself.
 
-It requires something that would tell it (via its input) how fast it should go from one step to another - a source of tempo.
+It requires something that would tell it (via its input) how fast it should go from one step to another - a source of a tempo.
 
 `Clock` node serves exactly that purpose - you will find it in `Clock` section.
 
