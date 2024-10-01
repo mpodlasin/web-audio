@@ -80,37 +80,29 @@
 		});
 	}
 
-	const normalizeNumberParameter = (numberParameter: number, polarity: Polarity) =>
-		polarity === 'uni'
-			? numberParameter / (maxValue - minValue)
-			: (numberParameter / (maxValue - minValue)) * 2;
+	const angleSpread = 270;
 
-	const denormalizeNumberParameter = (normalizedNumberParameter: number, polarity: Polarity) =>
-		polarity === 'uni'
-			? normalizedNumberParameter * (maxValue - minValue)
-			: (normalizedNumberParameter * (maxValue - minValue)) / 2;
-
-	$: normalizedNumberParameter = normalizeNumberParameter(numberParameter, polarity);
+	const normalizeNumberParameter = (numberParameter: number, polarity: Polarity) => polarity === 'uni' ? (numberParameter - minValue) / (maxValue - minValue) : numberParameter / maxValue;
+	const denormalizeNumberParameter = (normalizedNumberParameter: number, polarity: Polarity) => polarity === 'uni' ? (normalizedNumberParameter * (maxValue - minValue)) + minValue : numberParameter * maxValue;
 
 	const mapNumberParameter = (numberParameter: number, linear: boolean) =>
 		linear ? numberParameter : Math.cbrt(numberParameter);
-
 	const demapNumberParameter = (mappedNumberParameter: number, linear: boolean) =>
 		linear ? mappedNumberParameter : Math.pow(mappedNumberParameter, 3);
 
-	$: mappedNumberParameter = mapNumberParameter(normalizedNumberParameter, linear);
-
-	const angleSpread = 270;
-
 	const mapToAngle = (numberParameter: number, polarity: Polarity) =>
 		polarity === 'uni'
-			? angleSpread * numberParameter - angleSpread / 2
-			: (angleSpread / 2) * numberParameter;
-
+			? angleSpread * numberParameter : angleSpread * numberParameter;
 	const demapFromAngle = (angle: number, polarity: Polarity) =>
-		polarity === 'uni' ? (angle + angleSpread / 2) / angleSpread : angle / (angleSpread / 2);
+		polarity === 'uni' ? angle / angleSpread : angle / angleSpread;
 
-	$: angle = mapToAngle(mappedNumberParameter, polarity);
+	const rotateAngle = (angle: number) => angle - (angleSpread / 2);
+	const derotateAngle = (angle: number) => angle + (angleSpread / 2);
+
+	$: normalizedNumberParameter = normalizeNumberParameter(numberParameter, polarity);
+	$: mappedNumberParameter = mapNumberParameter(normalizedNumberParameter, linear);
+	$: nonRotatedAngle = mapToAngle(mappedNumberParameter, polarity);
+	$: angle = rotateAngle(nonRotatedAngle);
 
 	let previousAngle = angle ?? 0;
 
@@ -128,8 +120,8 @@
 			const newAngle = previousAngle + normalizedValueChange;
 
 			const newValue = denormalizeNumberParameter(
-				demapNumberParameter(demapFromAngle(newAngle, polarity), linear),
-				polarity
+				demapNumberParameter(demapFromAngle(derotateAngle(newAngle), polarity), linear),
+				polarity,
 			);
 
 			dispatcher('change', {
@@ -148,16 +140,14 @@
 			const newAngle = previousAngle + normalizedValueChange;
 
 			const newValue = denormalizeNumberParameter(
-				demapNumberParameter(demapFromAngle(newAngle, polarity), linear),
-				polarity
+				demapNumberParameter(demapFromAngle(derotateAngle(newAngle), polarity), linear),
+				polarity,
 			);
-
-			console.log(newValue, numberParameter);
 
 			if (newValue >= numberParameter + 1 || newValue <= numberParameter - 1) {
 				dispatcher('change', {
 					parameterName,
-					value: Math.max(minValue, Math.min(maxValue, newValue))
+					value: Math.max(minValue, Math.min(maxValue, Math.round(newValue)))
 				});
 			}
 		}

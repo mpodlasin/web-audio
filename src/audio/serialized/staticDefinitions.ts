@@ -373,7 +373,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				minValue: 1,
 				maxValue: 4,
 				polarity: 'uni',
-				discrete: true,
+				linear: true,
 			}
 		}
 	},
