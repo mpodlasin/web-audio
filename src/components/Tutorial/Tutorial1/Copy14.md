@@ -1,6 +1,6 @@
 Now `Sequencer` node is connected to frequency knob of `Sine` node.
 
-Since now, instead of saying "knob", we will be using the term _parameter_ of a node. 
+Since now, instead of saying "knob", we will be using the term _parameter_ of a node.
 
 Since `Sine` node has two knobs, it has two parameters - a frequency parameter and a detune parameter.
 

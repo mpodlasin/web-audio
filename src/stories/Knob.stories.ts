@@ -53,6 +53,6 @@ export const Discrete: Story = {
 		polarity: 'uni',
 		draggingLine: false,
 		audioParamAnalyser: undefined,
-		discrete: true,
+		discrete: true
 	}
-}
+};

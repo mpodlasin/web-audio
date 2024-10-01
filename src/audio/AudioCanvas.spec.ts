@@ -30,7 +30,11 @@ const ui = {
 	primaryColor: '#000000'
 };
 
-const sequencerParameters = Object.fromEntries([1, 2, 3, 4, 5, 6, 7, 8].map(n => `frequency${n}`).map(parameterName => [parameterName, { base: 440, inputs: [] }])) as unknown as {
+const sequencerParameters = Object.fromEntries(
+	[1, 2, 3, 4, 5, 6, 7, 8]
+		.map((n) => `frequency${n}`)
+		.map((parameterName) => [parameterName, { base: 440, inputs: [] }])
+) as unknown as {
 	frequency1: SerializedAudioParameter;
 	frequency2: SerializedAudioParameter;
 	frequency3: SerializedAudioParameter;
@@ -39,7 +43,7 @@ const sequencerParameters = Object.fromEntries([1, 2, 3, 4, 5, 6, 7, 8].map(n =>
 	frequency6: SerializedAudioParameter;
 	frequency7: SerializedAudioParameter;
 	frequency8: SerializedAudioParameter;
-}
+};
 
 describe('AudioCanvas', () => {
 	afterEach(() => {
