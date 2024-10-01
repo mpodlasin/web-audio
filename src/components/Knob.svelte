@@ -109,8 +109,6 @@
 	$: nonRotatedAngle = mapToAngle(mappedNumberParameter, polarity);
 	$: angle = rotateAngle(nonRotatedAngle, polarity);
 
-	$: console.log(nonRotatedAngle);
-
 	let previousAngle = angle ?? 0;
 
 	function handlePointerMove(event: PointerEvent) {
@@ -191,7 +189,7 @@
 	$: sum = animatedValue + numberParameter;
 	$: normalizedSum = normalizeNumberParameter(sum, polarity);
 	$: mappedSum = mapNumberParameter(normalizedSum, linear);
-	$: clippedSum = Math.max(minValue, Math.min(maxValue, mappedSum));
+	$: clippedSum = polarity === 'uni' ? Math.max(0, Math.min(1, mappedSum)) : Math.max(-1, Math.min(1, mappedSum));
 
 	let highlightStyle = '';
 
