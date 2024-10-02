@@ -1,7 +1,9 @@
-Now we need to reduce the value on gain knob to 0, just as we did before with `Sine` frequency parameter.
+We connected `AD Envelope` node to `Gain` node so that `AD Envelope` can control the volume of the sound.
 
-That's because when "pluck" ends, we want it to go completely silent.
+However `AD Envelope` needs to know _when_ to do that.
 
-If you wanted to leave a little bit of sound at the end of every pluck, you could potentially leave that parameter higher.
+To stay with our guitar analogy, `AD Envelope` needs to know when to pluck the string of a guitar.
 
-But for now set it to 0.
+Luckily we already have a perfect source for this kind of information - and that's the `Clock` node.
+
+So connect output of `Clock` node to input of `AD Envelope` node.

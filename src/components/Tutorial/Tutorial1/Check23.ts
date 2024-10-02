@@ -5,7 +5,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	const entries = Object.entries(audioGraph);
 
 	// AD Envelope was connected to gain parameter of Gain node
-	// and Clock was connected to AD Envelope
+	// and gain knob on Gain connected to Convolution was set to 0
 
 	const convolutionNode = values.find((node) => node.type === 'convolution');
 	const gainConnectedToConvolution = convolutionNode?.inputs
@@ -19,10 +19,8 @@ export default function (audioGraph: SerializedAudioElements) {
 		gainConnectedToConvolution?.parameters?.['gain'].inputs.some(
 			(input) => input.id === adEnvelopeNodeId
 		) ?? false;
-	const clockWasConnectedToAdEnvelope =
-		adEnvelopeNode?.inputs
-			?.map((input) => audioGraph[input.id])
-			.some((node) => node && node.type === 'clock') ?? false;
 
-	return adEnvelopeWasConnectedToGain && clockWasConnectedToAdEnvelope;
+	const gainParameter = gainConnectedToConvolution?.parameters?.['gain'].base ?? 0;
+
+	return adEnvelopeWasConnectedToGain && gainParameter === 0;
 }

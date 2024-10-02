@@ -1,5 +1,7 @@
-Now you can understand better how `AD Envelope` works by playing with decay paramter.
+Now you can understand better how `AD Envelope` works by playing with the decay paramter.
 
 Decrease it slowly until it is below 20ms.
 
-You will hear plucks getting shorter and shorter, giving the melody snappier feeling.
+You will hear plucks getting shorter and shorter, making the melody feel snappier and more percussive.
+
+We went from guitar to cymbals.

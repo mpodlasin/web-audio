@@ -1,5 +1,5 @@
-The current tempo might make you fall asleep in a second, so let's crank it up!
+The current tempo, managed by the `Clock` node is set to 120 BPM (beats per minute).
 
-Slowly increase the tempo parameter of the `Clock` node to be above 240 BPM.
+Let's decrease it, to see how it will affect the whole composition.
 
-You will start hearing the melody speed up gradually.
+Slowly decrease tempo parameter of the `Clock` node to be below 70 BPM.

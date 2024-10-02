@@ -1,5 +1,5 @@
-Now play around with attack parameter.
+Now play around with the attack parameter of the `AD Envelope` node.
 
 Increase it slowly until it is larger than 100ms.
 
-A guitar-like pluck changed now into something more resembling a flute or something like that.
+Now cymbals have morphed into some kind of flute.
