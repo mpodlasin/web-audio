@@ -644,7 +644,7 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 		this.tempo = tempo;
 
 		const bpmToFrequencyGain = globalContext.createGain();
-		bpmToFrequencyGain.gain.value = 1 / 60;
+		bpmToFrequencyGain.gain.value = 1 / 60 * 4;
 
 		tempo.connect(bpmToFrequencyGain);
 		bpmToFrequencyGain.connect(squareOscillator.frequency);
