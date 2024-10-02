@@ -367,13 +367,6 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				maxValue: 1000,
 				unit: 'BPM',
 				polarity: 'uni'
-			},
-			notes: {
-				defaultValue: 1,
-				minValue: 1,
-				maxValue: 4,
-				polarity: 'uni',
-				linear: true
 			}
 		}
 	},

@@ -136,7 +136,7 @@
 		}
 
 		if (isDragging && draggingStartPosition && discrete) {
-			const factor = event.shiftKey ? 10 : 3;
+			const factor = event.shiftKey ? 5 : 2;
 			const { y } = draggingStartPosition;
 			const { clientY } = event;
 			const dy = y - clientY;
@@ -302,7 +302,11 @@
 			on:pointerup={handleParameterValueClick}
 			on:keypress={() => {}}
 		>
-			{numberParameter.toFixed(2)}
+			{#if !discrete}
+				{numberParameter.toFixed(2)}
+			{:else}
+				{numberParameter}
+			{/if}
 			{#if unit}
 				{' '}{unit}
 			{/if}
