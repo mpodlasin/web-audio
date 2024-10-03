@@ -1,0 +1,1 @@
+Let's create a `Clock` node and connect it to both `Value` and `Oscilloscope` nodes.
