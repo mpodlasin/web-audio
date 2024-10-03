@@ -1,8 +1,8 @@
-Welcome in second part of `AudioCanvas` electronic music tutorial.
+Welcome in the second part of the `AudioCanvas` electronic music tutorial.
 
-In previous lesson we learned how to create and connect nodes in order to create synthesisers playing music.
+In the previous lesson we learned how to create and connect nodes in order to create music.
 
-Today we will focus more on those connections exactly.
+Today we will focus more on the connections between nodes.
 
 Nodes connected with a line exchange information between eachother - a signal. But what exactly is that signal?
 
