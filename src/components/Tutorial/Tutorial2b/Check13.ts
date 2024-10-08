@@ -4,7 +4,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 
 	// Sine node was deleted.
-	const sineNode = values.find(node => node.type === 'sine-oscillator');
+	const sineNode = values.find((node) => node.type === 'sine-oscillator');
 
-    return sineNode === undefined;
+	return sineNode === undefined;
 }

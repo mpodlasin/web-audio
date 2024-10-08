@@ -96,8 +96,10 @@
 	const demapNumberParameter = (mappedNumberParameter: number, linear: boolean) =>
 		linear ? mappedNumberParameter : Math.pow(mappedNumberParameter, 3);
 
-	const mapToAngle = (numberParameter: number, polarity: Polarity) => polarity === 'uni' ? angleSpread * numberParameter : angleSpread * numberParameter / 2;
-	const demapFromAngle = (angle: number, polarity: Polarity) => polarity === 'uni' ? angle / angleSpread : angle / angleSpread * 2;
+	const mapToAngle = (numberParameter: number, polarity: Polarity) =>
+		polarity === 'uni' ? angleSpread * numberParameter : (angleSpread * numberParameter) / 2;
+	const demapFromAngle = (angle: number, polarity: Polarity) =>
+		polarity === 'uni' ? angle / angleSpread : (angle / angleSpread) * 2;
 
 	const rotateAngle = (angle: number, polarity: Polarity) =>
 		polarity === 'bi' ? angle : angle - angleSpread / 2;
@@ -189,7 +191,8 @@
 	$: sum = animatedValue + numberParameter;
 	$: normalizedSum = normalizeNumberParameter(sum, polarity);
 	$: mappedSum = mapNumberParameter(normalizedSum, linear);
-	$: clippedSum = polarity === 'uni' ? Math.max(0, Math.min(1, mappedSum)) : Math.max(-1, Math.min(1, mappedSum));
+	$: clippedSum =
+		polarity === 'uni' ? Math.max(0, Math.min(1, mappedSum)) : Math.max(-1, Math.min(1, mappedSum));
 
 	let highlightStyle = '';
 

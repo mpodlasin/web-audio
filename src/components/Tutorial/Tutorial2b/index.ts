@@ -66,43 +66,43 @@ export const tutorial2: Tutorial = {
 		},
 		{
 			copy: copy8,
-			check: check8,
+			check: check8
 		},
 		{
 			copy: copy9,
-			check: check9,
+			check: check9
 		},
 		{
 			copy: copy10,
-			check: check10,
+			check: check10
 		},
 		{
 			copy: copy11,
-			check: check11,
+			check: check11
 		},
 		{
 			copy: copy12,
-			check: check12,
+			check: check12
 		},
 		{
 			copy: copy13,
-			check: check13,
+			check: check13
 		},
 		{
 			copy: copy14,
-			check: check14,
+			check: check14
 		},
 		{
 			copy: copy15,
-			check: check15,
+			check: check15
 		},
 		{
 			copy: copy16,
-			check: check16,
+			check: check16
 		},
 		{
 			copy: copy17,
-			check: check17,
+			check: check17
 		}
 	]
 };

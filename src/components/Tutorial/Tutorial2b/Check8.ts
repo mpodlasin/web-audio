@@ -4,7 +4,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 
 	// Number node was deleted.
-	const numberNode = values.find(node => node.type === 'number');
+	const numberNode = values.find((node) => node.type === 'number');
 
-    return numberNode === undefined;
+	return numberNode === undefined;
 }

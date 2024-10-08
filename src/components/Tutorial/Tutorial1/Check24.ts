@@ -11,6 +11,5 @@ export default function (audioGraph: SerializedAudioElements) {
 			?.map((input) => audioGraph[input.id])
 			.some((node) => node && node.type === 'clock') ?? false;
 
-
 	return clockWasConnectedToAdEnvelope;
 }

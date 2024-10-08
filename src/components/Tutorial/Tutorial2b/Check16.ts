@@ -5,7 +5,7 @@ export default function (audioGraph: SerializedAudioElements) {
 
 	// Gate Length node was created.
 
-    const gateLengthNode = values.find(node => node.type === 'gate-length');
+	const gateLengthNode = values.find((node) => node.type === 'gate-length');
 
 	return gateLengthNode !== undefined;
 }
