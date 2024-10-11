@@ -1,0 +1,1 @@
+Now decrease the length parameter on the `Gate Length` node to be around 0.5s (half a second).
