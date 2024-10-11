@@ -7,7 +7,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	const gateLengthNode = values.find((node) => node.type === 'gate-length');
 
 	const lengthParameter = gateLengthNode?.parameters?.length.base ?? 0;
-    const epsilon = 0.005;
+	const epsilon = 0.005;
 
-    return Math.abs(lengthParameter - 0.5) < epsilon;
+	return Math.abs(lengthParameter - 0.5) < epsilon;
 }
