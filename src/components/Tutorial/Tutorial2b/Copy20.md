@@ -1,5 +1,3 @@
-Look now at the `Value` node.
+Now lets slowly decrease the length parameter on the `Gate Length` node, while observing the graph on the `Oscilloscope` node.
 
-Half of the time it shows number 0, half of the time it shows number 1.
-
-Similarily graph on the `Oscilloscope` jumps repeatedly between middle and up position.
+Decrease the parameter until it reaches 0.25 seconds.
