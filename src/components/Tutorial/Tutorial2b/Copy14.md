@@ -1,6 +1,6 @@
-Let's create a `Clock` node and connect it to both `Value` and `Oscilloscope` nodes.
+Create a `Clock` node and connect it to both `Value` and `Oscilloscope` nodes.
 
-Now reduce BPM parameter to be _exactly_ 15 BPM.
+Now reduce the tempo parameter to be _exactly_ 15 BPM.
 
 Most likely you won't be able to do it by dragging the knob with your mouse.
 
