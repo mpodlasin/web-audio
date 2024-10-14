@@ -1,9 +1,7 @@
-At the same time, if you look at `Value` node, you _might_ see the number 0 flicker every second or so.
+Every second however, the `Clock` node emits the number 1 for an extremely brief moment.
 
-Again, `Clock` is just way to fast to see clearly what is going on.
+This moment is so brief that you _might_ see only a brief flicker when looking at the number displayed by the `Value` node.
 
-There is however a node that will help prolong the signal from the `Clock` node.
+This moment is also so brief that, depending on the device you are using, `Oscilloscope` may not even catch it!
 
-It's called `Gate Length` and it can be found in the `Clock` section of the node creation menu.
-
-Create it.
+If it does, it shows a vertical line, signifying sudden jump to the value 1.

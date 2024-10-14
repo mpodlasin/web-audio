@@ -2,12 +2,43 @@ import type { SerializedAudioElements } from '../../../audio/serialized';
 
 export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
+	const entries = Object.entries(audioGraph);
 
-	// Length parameter on gate length node is around 0.5 s.
+	// Clock was disconnected from Value and Oscilloscope nodes.
+	const clockNode = values.find((node) => node.type === 'clock');
+	const clockNodeId = entries.find((entry) => entry[1] === clockNode)?.[0];
+
+	const valueNode = values.find((node) => node.type === 'value');
+	const oscilloscopeNode = values.find((node) => node.type === 'oscilloscope');
+
+	const clockWasDisconnectedFromValue = valueNode?.inputs?.every(
+		(input) => input.id !== clockNodeId
+	);
+	const clockWasDisconnectedFromOscilloscope = oscilloscopeNode?.inputs?.every(
+		(input) => input.id !== clockNodeId
+	);
+
+	// Clock was connected to Gate Length
 	const gateLengthNode = values.find((node) => node.type === 'gate-length');
+	const gateLengthNodeId = entries.find((entry) => entry[1] === gateLengthNode)?.[0];
+	const clockWasConnectedToGateLength = gateLengthNode?.inputs?.some(
+		(input) => input.id === clockNodeId
+	);
 
-	const lengthParameter = gateLengthNode?.parameters?.length.base ?? 0;
-	const epsilon = 0.005;
+	// Gate Length was connected to Value and Oscilloscope
+	const gateLengthWasConnectedToValue = valueNode?.inputs?.some(
+		(input) => input.id === gateLengthNodeId
+	);
+	const gateLengthWasConnectedToOscilloscope = oscilloscopeNode?.inputs?.some(
+		(input) => input.id === gateLengthNodeId
+	);
 
-	return Math.abs(lengthParameter - 0.5) < epsilon;
+	return (
+		(clockWasDisconnectedFromValue &&
+			clockWasDisconnectedFromOscilloscope &&
+			clockWasConnectedToGateLength &&
+			gateLengthWasConnectedToValue &&
+			gateLengthWasConnectedToOscilloscope) ??
+		false
+	);
 }

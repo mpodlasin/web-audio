@@ -1,7 +1,7 @@
-We want to insert `Gate Length` between `Clock` and the two other nodes.
+Since `Oscilloscope` is not 100% reliable with such short signals, we would like to prolong the tick moment of the `Clock` node.
 
-In order to do that we need to delete the connections we have so far.
+We would like to have a node that detects the moment the signal from the `Clock` changes from 0 to 1 and then outputs number 1 for as long as we tell it to.
 
-Next, connect `Clock` to `Gate Length`.
+That is precisely what `Gate Length` node is doing. You will find it in the `Clock` section of the node creation menu.
 
-Then, connect `Gate Length` to `Value` and connect `Gate Length` to `Oscilloscope`.
+Create `Gate Length` node.

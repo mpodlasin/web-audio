@@ -1,5 +1,5 @@
-Perhaps you can see short "bursts" on the `Oscilloscope` already.
+Most of the time `Clock` emits the number 0.
 
-Depending on your device, you may se however that some ticks seem missing.
+You can tell that's true by looking at the `Value` node.
 
-That's because ticks from the clock are extremely short. So short in fact, that `Oscilloscope` may not even detect them at all!
+Also, if you'll look at the `Oscilloscope` node you will see that most of the time the graph is located in the middle of the window.
