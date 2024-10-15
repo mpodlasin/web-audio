@@ -1,11 +1,9 @@
-Just as before, the `Clock` node and the `Gate Length` node emit streams of numbers.
-
-Both of those nodes can only emit one of two numbers - 0 or 1.
+Both `Clock` and `Gate Length` nodes can only emit one of two numbers - 0 or 1.
 
 You can think of the 0 representing the "off" state, while 1 representing the "on" state.
 
-Another way to think about it is in terms of pressing the keyboard on the piano.
+Another way to think about it is in terms of pressing the key on the piano.
 
-Number 1 could represent the key being pressed.
+Change from 0 to 1 would then signify pressing the key.
 
-Then the `Clock` node would control _how often_ the key gets pressed, while `Gate Length` node would control _for how long_ it stays pressed.
+Change from 1 to 0 would signify letting the key go.
