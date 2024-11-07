@@ -57,8 +57,6 @@ export class ADEnvelope extends AudioWorkletProcessor {
                 attack,
                 decay,
             }
-
-            console.log(this.envelopeEvent);
         }
 
         this.handleEnvelopeEvent(_currentFrame, outputs);
