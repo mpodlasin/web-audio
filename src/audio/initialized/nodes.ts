@@ -470,62 +470,9 @@ export class CustomNumberNode extends GenericCustomAudioNodeWithWebApiNode<Const
 	}
 }
 
-export class ADEnvelopeNode extends GenericCustomAudioNode implements CustomAudioNode {
-	readonly attack: ConstantSourceNode;
-	readonly gateLength: AudioWorkletNode;
-	readonly arEnvelope: AudioWorkletNode;
-
+export class ADEnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(id, 'ad-envelope');
-
-		const attack = globalContext.createConstantSource();
-		attack.start();
-
-		const attackInSecondsGain = globalContext.createGain();
-
-		attackInSecondsGain.gain.value = 1 / 1000;
-
-		const gateLength = new AudioWorkletNode(globalContext, 'gate-length');
-
-		const arEnvelope = new AudioWorkletNode(globalContext, 'ar-envelope');
-
-		const envelopeAttackParameter = arEnvelope.parameters.get('attack');
-		const lengthParameter = gateLength.parameters.get('length');
-
-		if (envelopeAttackParameter) {
-			attack.connect(envelopeAttackParameter);
-		}
-
-		if (lengthParameter) {
-			attack.connect(attackInSecondsGain);
-			attackInSecondsGain.connect(lengthParameter);
-		}
-
-		gateLength.connect(arEnvelope);
-
-		this.attack = attack;
-		this.gateLength = gateLength;
-		this.arEnvelope = arEnvelope;
-	}
-
-	getAudioParam(parameterName: string): AudioParam {
-		if (parameterName === 'decay') {
-			return accessParameter(this.arEnvelope, 'release');
-		}
-
-		if (parameterName === 'attack') {
-			return this.attack.offset;
-		}
-
-		throw new Error(`Parmeter ${parameterName} does not exist on AD Envelope node`);
-	}
-
-	getInputNode(): AudioNode | null {
-		return this.gateLength;
-	}
-
-	getOutputNode(): AudioNode {
-		return this.arEnvelope;
+		super(new AudioWorkletNode(globalContext, 'ad-envelope'), id, 'ad-envelope');
 	}
 }
 

@@ -1,5 +1,6 @@
 import { globalContext } from '../GlobalContext';
 import arEnvelopeNodeWorkletUrl from './ar-envelope.js?worker&url';
+import adEnvelopeNodeWorkletUrl from './ad-envelope.js?worker&url';
 import sequencerNodeWorkletUrl from './sequencer.js?worker&url';
 import pitchQuantizerNodeWorkletUrl from './pitchQuantizer.js?worker&url';
 import scalerNodeWorkletUrl from './scaler.js?worker&url';
@@ -13,6 +14,7 @@ export async function loadCustomNodes() {
 	try {
 		await Promise.all([
 			globalContext.audioWorklet.addModule(arEnvelopeNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(adEnvelopeNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(sequencerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(pitchQuantizerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl),
