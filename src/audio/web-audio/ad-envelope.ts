@@ -105,7 +105,7 @@ export class ADEnvelope extends AudioWorkletProcessor {
     }
 
     decayFn(x: number, decay: number) {
-        const e = Math.E;
+        const e = 7;
 
         return (e**(x / -decay) - 1 / e) * e / (e - 1);
     }
