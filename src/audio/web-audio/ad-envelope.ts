@@ -105,8 +105,6 @@ export class ADEnvelope extends AudioWorkletProcessor {
         }
     }
 
-	// TODO: fix
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     attackFn(x: number, attack: number, startingValue: number) {
         return (x / attack * (1 - startingValue)) + startingValue;
     }
