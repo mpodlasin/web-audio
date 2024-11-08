@@ -1,5 +1,6 @@
 interface EnvelopeEvent {
     start: number;
+	startValue: number;
     attack: number;
     decay: number;
 }
@@ -24,7 +25,7 @@ export class ADEnvelope extends AudioWorkletProcessor {
 				name: 'decay',
 				defaultValue: 0,
 				minValue: 0,
-				maxValue: 1000
+				maxValue: 5000
 			},
 			{
 				name: 'running',
@@ -36,6 +37,7 @@ export class ADEnvelope extends AudioWorkletProcessor {
 	}
 
     envelopeEvent: EnvelopeEvent | null = null;
+	lastEnvelopeValue = 0;
 
 	process(
 		inputs: Float32Array[][],
@@ -56,6 +58,7 @@ export class ADEnvelope extends AudioWorkletProcessor {
                 start: _currentFrame + trigger,
                 attack,
                 decay,
+				startValue: this.lastEnvelopeValue
             }
         }
 
@@ -82,7 +85,7 @@ export class ADEnvelope extends AudioWorkletProcessor {
                         const sampleIndex = currentFrame + i;
 
                         if (start <= sampleIndex && sampleIndex <= middle) {
-                            out[i] = this.attackFn(sampleIndex - start, this.millisecondsToSamples(event.attack));
+                            out[i] = this.attackFn(sampleIndex - start, this.millisecondsToSamples(event.attack), event.startValue);
                         }
 
                         if (middle <= sampleIndex && sampleIndex <= end) {
@@ -92,14 +95,20 @@ export class ADEnvelope extends AudioWorkletProcessor {
                         if (sampleIndex > end) {
                             this.envelopeEvent = null;
                         }
+
+						if (i + 1 === out.length) {
+							this.lastEnvelopeValue = out[i] ?? 0;
+						}
                     }
                 })
             })
         }
     }
 
-    attackFn(x: number, attack: number) {
-        return x / attack;
+	// TODO: fix
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    attackFn(x: number, attack: number, startingValue: number) {
+        return (x / attack * (1 - startingValue)) + startingValue;
     }
 
     decayFn(x: number, decay: number) {
