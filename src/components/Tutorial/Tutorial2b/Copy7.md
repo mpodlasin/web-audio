@@ -6,4 +6,4 @@ You can validate that by nudging `Number` knob slightly and immediately moving b
 
 That is what we meant previously about nodes exchanging numbers _constantly_.
 
-If the play button is presset, `Number` node is constantly sending numbers (currently zeros) to the `Oscilloscope` and `Value` nodes.
+If the play button is on, `Number` node is constantly sending numbers (currently zeros) to the `Oscilloscope` and `Value` nodes.

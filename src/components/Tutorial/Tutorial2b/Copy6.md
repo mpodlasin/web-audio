@@ -2,9 +2,9 @@ Horizonstal axis of the `Oscilloscope` window represents time. As you were movin
 
 Vertical axis represents the value of the number sent to the input of the node.
 
-If the number sent is 1 or higher, we see it drawn at the very top of the window.
+If the number sent is between 0 and 1, we see it drawn in the upper half of the window
 
-If the number sent is -1 or lower, we see it drawn at the bottom.
+If the number sent is between -1 and 0, we see it drawn at the bottom.
 
 If the number is 0, we see it exactly in the middle of the window.
 

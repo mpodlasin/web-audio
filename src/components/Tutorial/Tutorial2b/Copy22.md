@@ -1,4 +1,4 @@
-Both `Clock` and `Gate Length` nodes can only emit one of two numbers - 0 or 1.
+As we now see, both `Clock` and `Gate Length` nodes can only emit one of two numbers - 0 or 1.
 
 You can think of the 0 representing the "off" state, while 1 representing the "on" state.
 
