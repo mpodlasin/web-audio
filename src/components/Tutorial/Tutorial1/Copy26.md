@@ -1,6 +1,6 @@
 Now you can understand better how `AD Envelope` works by playing with the decay paramter.
 
-Decrease it slowly until it is below 20ms.
+Decrease it slowly until it is below 40ms.
 
 You will hear plucks getting shorter and shorter, making the melody feel snappier and more percussive.
 
