@@ -14,8 +14,8 @@ export default function (audioGraph: SerializedAudioElements) {
 	const tempo = clockNode?.parameters?.tempo.base ?? 0;
 	const epsilon = 0.01;
 
-	const clockIsConnectedToValue = valueNode?.inputs?.some(input => input.id === clockNodeId);
-	const clockIsConnectedToOscilloscope = oscilloscopeNode?.inputs?.some(input => input.id === clockNodeId);
+	const clockIsConnectedToValue = valueNode?.inputs?.some(input => input.id === clockNodeId) ?? false;
+	const clockIsConnectedToOscilloscope = oscilloscopeNode?.inputs?.some(input => input.id === clockNodeId) ?? false;
 
 	return clockIsConnectedToValue && clockIsConnectedToOscilloscope && Math.abs(tempo - 15) < epsilon;
 }

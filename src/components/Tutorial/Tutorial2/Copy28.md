@@ -1,3 +1,7 @@
-Since the clock ticks every second, and the length of the decay parameter is equal to one second (1000 milliseconds) as well.
+We said that `AD Envelope` emulates plucking a guitar string.
 
-This means that the 
+When the pluck happens, at the beginning the sound it the loudest and then it gradually becomes quieter and quieter.
+
+That's exactly what we are seeing on the `Oscilloscope`, where numbers emitted from `AD Envelope` suddenly jump to 1 and then slowly decrease until they reach 0, over the span of half a second.
+
+This happens in reaction to trigger signal from the `Clock` node, which happens every second.
