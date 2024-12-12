@@ -1,3 +1,7 @@
-Now insert `Gate Length` node between `Clock` and `Value`.
+We want to insert `Gate Length` between `Clock` and the two other nodes.
 
-Next set parameter value on `Gate Length` to 0.2 second.
+In order to do that we need to delete the connections we have so far.
+
+Next, connect `Clock` to `Gate Length`.
+
+Then, connect `Gate Length` to `Value` and connect `Gate Length` to `Oscilloscope`.

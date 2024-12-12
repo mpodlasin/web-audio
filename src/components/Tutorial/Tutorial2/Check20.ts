@@ -3,8 +3,11 @@ import type { SerializedAudioElements } from '../../../audio/serialized';
 export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 
-	// Length on Gate Length was increased above 2 seconds.
+	// Length parameter on gate length node is equal to 0.25.
 	const gateLengthNode = values.find((node) => node.type === 'gate-length');
 
-	return (gateLengthNode?.parameters?.length.base ?? 0) > 2;
+	const lengthParameter = gateLengthNode?.parameters?.length.base ?? 0;
+	const epsilon = 0.005;
+
+	return Math.abs(lengthParameter - 0.25) < epsilon;
 }

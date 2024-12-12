@@ -1,16 +1,12 @@
-Even though `Sequencer` expects a trigger signal, we see that sending gate signals of arbitrary lengths works as well.
+So far we've seen 4 types of signals:
 
-That's because, again, the only thing that matters to a `Sequencer` (or any node that expects a "trigger-like" signal) is a signal that jumps from 0 to 1.
+- `Number` node emitting numbers
+- `Sine` node emitting audio
+- `Clock` emitting triggers
+- `Gate Length` emitting gates
 
-To summarise, so far we have seen 4 types of signals:
+Even though those nodes differ in function so much, all of them in the end simply emit streams of numbers:
 
-- number signal coming from `Number` node
-- audio signal coming from `Sine` node
-- trigger signal coming from `Clock` node
-- gate signal coming from `Gate Length` node
-
-Even though we can categorize them as separate, in the end all of them are just streams of numbers.
-
-Because of that we can freely mix and match them with eachother.
-
-We can see that once again if we connect the output of `Sequencer` node to the `Value` node input, while still keeping the connection from `Gate Length`.
+- `Number` emits arbitrary numbers
+- `Sine` emits numbers in range -1 to 1
+- `Clock` and `Gate Length` nodes both emit only numbers 0 and 1

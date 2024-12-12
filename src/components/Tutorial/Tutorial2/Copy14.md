@@ -1,16 +1,9 @@
-Now (given that the play button is still on) you can see numbers fluctuating again, this time between values of 49.5 and 50.5.
+Create a `Clock` node and connect it to both `Value` and `Oscilloscope` nodes.
 
-As you've probably guessed, having to lines routed to the same input results in two streams of numbers being _added_ together.
+Now reduce the tempo parameter to be _exactly_ 15 BPM.
 
-We have two signals:
+Most likely you won't be able to do it by dragging the knob with your mouse.
 
-- a constant value of 50,
-- a sine wave reduced by multiplication to a range of -0.5 to 0.5.
+You can however click on the value (120 BPM) displayed under the knob, enter the value with the keyboard and then press enter.
 
-Since we are adding 50 to values between -0.5 and 0.5, we end up with range of 49.5 (50 - 0.5) and 50.5 (50 + 0.5).
-
-Note that we added an audio signal, coming from `Sine` oscillator node (via `Mult`) to a number coming from `Number` node.
-
-This again shows us that in `AudioCanvas` all signals are just streams of numbers.
-
-To continue driving this point home, let's see the output of a `Clock` node. Create it.
+Setting the `Clock` node to 15 BPM means that the clock will "tick" exactly once per second.

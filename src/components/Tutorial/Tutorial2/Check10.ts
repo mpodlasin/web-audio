@@ -4,19 +4,10 @@ export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 	const entries = Object.entries(audioGraph);
 
-	// Mult was created and connected between Sine and Value nodes.
-	const multNode = values.find((node) => node.type === 'multiply');
+	// Sine frequency is below 0.10 Hz, but above 0.05 Hz.
 	const sineNode = values.find((node) => node.type === 'sine-oscillator');
-	const valueNode = values.find((node) => node.type === 'value');
 
-	const multNodeId = entries.find((entry) => entry[1] === multNode)?.[0];
-	const sineNodeId = entries.find((entry) => entry[1] === sineNode)?.[0];
+	const frequency = sineNode?.parameters?.frequency.base ?? 0;
 
-	const multNodeWasCreated = multNode !== undefined;
-	const multWasConnectedToValue =
-		valueNode?.inputs?.some((input) => input.id === multNodeId) ?? false;
-	const sineWasConnectedToMult =
-		multNode?.inputs?.some((input) => input.id === sineNodeId) ?? false;
-
-	return multNodeWasCreated && sineWasConnectedToMult && multWasConnectedToValue;
+	return frequency < 0.1 && frequency > 0.05;
 }

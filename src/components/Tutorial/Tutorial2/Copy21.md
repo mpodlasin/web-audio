@@ -1,9 +1,9 @@
-The difference between a trigger and gate signal is just a matter of convention.
+It should be now much easier to see what is going on.
 
-After all how short a gate signal has to be, in order to be considered a trigger?
+Take a look at the `Value` node.
 
-To further emphasize this, let's create a node that requires a trigger signal.
+For one quarter of a second it displays 1. 
 
-We can use `Sequencer` node, which on an incoming trigger signal advances to the next step in the sequence.
+For 3 quarters it displays 0. 
 
-Create `Sequencer` node.
+This whole cycle takes exactly one second.

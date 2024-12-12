@@ -10,6 +10,6 @@ Most likely your device processes audio with the frequency of 44100 Hz.
 
 This means that every second 44100 numbers are being sent from `Number` to `Value` node!
 
-If you are _not_ changing the knob on `Number`, it is simply the same number being sent over and over again!
+We can further emphasize that by using another tool from `Visualization` category - `Oscilloscope`.
 
-In order to explain why it works this way, let's create a good old `Sine` node from `Oscillator` section.
+Create `Oscilloscope` and connect `Number` node to it.

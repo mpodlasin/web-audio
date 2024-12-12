@@ -1,9 +1,7 @@
-Place `Value` node next to `Sequencer` and observe how the two nodes change.
+The state where number 1 is being emitted is called a _gate_ and overall this kind of binary, on/off signal is called a gate signal.
 
-You can see that `Sequencer` advances to the next step when number returned from `Gate Length` jumps from 0 to 1.
+So we can say that `Gate Length` node emits gates of specified length.
 
-Note that when number in `Value` returns from 1 to 0, this does _not_ affect the sequencer.
+On the other hand, if the length of the gate is irrelevant, or if the gate is extremely short, we call it a _trigger_ signal, since it is usually used to trigger some action.
 
-The length of the gate signal (that is how long the number displayed in `Value` stays being 1) does not matter either.
-
-To make sure that's true, gradually shorten the length in `Gate Length` from above 2 seconds to below 0.10 seconds.
+So we can say that `Clock` node emits triggers.

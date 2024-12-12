@@ -1,3 +1,5 @@
-Before we connect `Clock` to `Value` node, let's clean up a bit.
+Most of the time `Clock` emits the number 0.
 
-Remove `Sine`, `Mult` and `Number` nodes - we won't need them anymore.
+You can tell that's true by looking at the `Value` node.
+
+Also, if you'll look at the `Oscilloscope` node you will see that most of the time the graph is located in the middle of the window.

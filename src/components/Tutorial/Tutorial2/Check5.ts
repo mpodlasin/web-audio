@@ -2,20 +2,10 @@ import type { SerializedAudioElements } from '../../../audio/serialized';
 
 export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
-	const entries = Object.entries(audioGraph);
 
-	// Number and Value nodes where disconnected and Sine was connected to Value.
+	// Number node has value between -1 and 1.
 	const numberNode = values.find((node) => node.type === 'number');
-	const valueNode = values.find((node) => node.type === 'value');
-	const sineNode = values.find((node) => node.type === 'sine-oscillator');
+	const numberValue = numberNode?.parameters?.value.base ?? 100;
 
-	const numberNodeId = entries.find((entry) => entry[1] === numberNode)?.[0];
-	const sineNodeId = entries.find((entry) => entry[1] === sineNode)?.[0];
-
-	const numberNodeWasDisconnectedFromValueNode =
-		valueNode?.inputs?.every((input) => input.id !== numberNodeId) ?? false;
-	const sineNodeWasConnectedToValueNode =
-		valueNode?.inputs?.some((input) => input.id === sineNodeId) ?? false;
-
-	return numberNodeWasDisconnectedFromValueNode && sineNodeWasConnectedToValueNode;
+	return -1 <= numberValue && numberValue <= 1;
 }
