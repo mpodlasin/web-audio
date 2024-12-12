@@ -7,6 +7,7 @@ Let's list all of signal types we learnt so far, with examples of related nodes 
 
 | Signal type   | Nodes                  | Numbers               |
 | ------------- | ---------------------- | --------------------- |
+| number        | `Number`               | arbitrary numbers     | 
 | audio         | `Sine`                 | in range -1 to 1      |
 | gate, trigger | `Clock`, `Gate Length` | either 0 or 1         |
 | envelope      | `AD Enevelope`         | in range 0 to 1       |
