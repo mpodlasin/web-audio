@@ -1,5 +1,7 @@
-For now it is only important to note that _all_ signals flowing in `AudioCanvas` - so all signals flowing in cables connecting nodes - are streams of numbers.
+In future tutorials we will explain in more detail how the stream of numbers represents a sound.
 
-We will now keep driving this point home, by investigating other nodes that we used in the previous tutorial.
+For now it is only important to note that _all_ signals flowing in `AudioCanvas` - so all signals flowing in cables connecting nodes - are simply of numbers, no matter what they represent.
 
-Let's start by deleting `Sine` node.
+We will now keep driving this point home, by investigating other nodes and that we used in the previous tutorial and their outputs.
+
+Let's start by deleting the `Sine` node.

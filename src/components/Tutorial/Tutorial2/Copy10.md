@@ -1,6 +1,6 @@
-Don't trust the output of the `Oscilloscope` just yet. In its current form it is not reliable for fast changing signals.
+Don't trust the output of the `Oscilloscope` just yet. It is not reliable for fast changing signals.
 
-Note also the `Value` node - the number displayed there changes too fast to see any patterns.
+Note also the `Value` node - the numbers displayed there change too fast to see any patterns.
 
 Let's slow down the `Sine` oscillator _a lot_.
 
