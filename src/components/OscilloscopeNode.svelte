@@ -52,7 +52,7 @@
 
 		requestAnimationFrame(drawSlowMode);
 
-		analyser.getByteTimeDomainData(dataArray);
+		analyser.getByteTimeDomainData(dataArray); 
 
 		canvasCtx.lineWidth = 1;
 		canvasCtx.strokeStyle = primaryColor;
@@ -127,7 +127,17 @@
 </script>
 
 <div class="container">
-	<canvas bind:this={canvas} />
+	<div class="canvas-container">
+		<div class="canvas-background">
+			<div class="middle-line" />
+		</div>
+		<canvas bind:this={canvas} />
+	</div>
+	<div class="labels">
+		<span>1</span>
+		<span>0</span>
+		<span>-1</span>
+	</div>
 	<!-- <OnOffButton label="slow" active={slowParameter?.base === 1} on:change={handleSlowModeChange} /> -->
 </div>
 
@@ -135,11 +145,45 @@
 	.container {
 		display: flex;
 		flex-direction: row;
-		align-items: center;
-		gap: 1em;
+		align-items: stretch;
+		gap: 2px;
 	}
+
+	.canvas-container {
+		position: relative;
+	}
+
 	canvas {
 		border: 1px solid var(--neutral-500);
-		border-radius: 4px;
+		position: relative;
+		z-index: 1;
+	}
+
+	.canvas-background {
+		position: absolute;
+		top: 0;
+		bottom: 4px; /* why? */
+		left: 0;
+		right: 0;
+	}
+
+	.middle-line {
+		border-top: 1px dashed var(--neutral-500);
+		position: absolute;
+		top: 50%;
+		left: 0;
+		right: 0;
+	}
+
+	.labels {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: space-between;
+		font-size: 12px;
+		color: var(--neutral-500);
+
+		margin-top: -6px;
+		margin-bottom: -3px;
 	}
 </style>
