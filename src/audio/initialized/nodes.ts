@@ -808,7 +808,7 @@ export class CustomLFONode
 	private mult: GainNode;
 	private scalerOn: ConstantSourceNode;
 	private minusOne: ConstantSourceNode;
-	private negateOn: ConstantSourceNode;
+	private invertOn: ConstantSourceNode;
 
 	static oscillatorTypeToNodeType: { [P in OscillatorType]: NodeType } = {
 		custom: 'sine-oscillator',
@@ -854,7 +854,7 @@ export class CustomLFONode
 		this.mult = mult;
 		this.scalerOn = scalerOn;
 		this.minusOne = minusOne;
-		this.negateOn = negateOn;
+		this.invertOn = negateOn;
 	}
 
 	getInputNode(): AudioNode | null {
@@ -866,8 +866,8 @@ export class CustomLFONode
 	}
 
 	getAudioParam(parameterName: string): AudioParam {
-		if (parameterName === 'negate') {
-			return this.negateOn.offset;
+		if (parameterName === 'invert') {
+			return this.invertOn.offset;
 		}
 
 		if (parameterName === 'unipolar') {
@@ -885,14 +885,14 @@ export class CustomLFONode
 		this.oscillator.start(when);
 		this.scalerOn.start(when);
 		this.minusOne.start(when);
-		this.negateOn.start(when);
+		this.invertOn.start(when);
 	}
 
 	stop(when?: number | undefined): void {
 		this.oscillator.stop(when);
 		this.scalerOn.stop(when);
 		this.minusOne.stop(when);
-		this.negateOn.stop(when);
+		this.invertOn.stop(when);
 	}
 }
 
