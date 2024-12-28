@@ -304,7 +304,15 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 	destination: {
 		inputs: [audioInputOutputDefinition],
 		outputs: [],
-		parameters: {}
+		parameters: {
+			volume: {
+				minValue: 0,
+				maxValue: 1,
+				defaultValue: 0,
+				polarity: 'uni',
+				linear: true
+			}
+		}
 	},
 	oscilloscope: {
 		inputs: [

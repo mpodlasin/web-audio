@@ -215,7 +215,7 @@ describe('AudioCanvas', () => {
 				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).output.connect
 			).toHaveBeenCalledWith((audioNodeDatabase['2'] as CustomGainNode).webApiNode);
 			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.connect).toHaveBeenCalledWith(
-				(audioNodeDatabase['3'] as DestinationNode).webApiNode
+				(audioNodeDatabase['3'] as DestinationNode).getInputNode()
 			);
 			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.gain.value).toBe(0.5);
 			expect((audioNodeDatabase['1'] as CustomSquareOscillatorNode).leftOscillator.type).toBe(

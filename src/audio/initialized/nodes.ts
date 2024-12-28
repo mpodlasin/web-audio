@@ -639,9 +639,34 @@ export class _ClockNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkle
 	}
 }
 
-export class DestinationNode extends GenericCustomAudioNodeWithWebApiNode<AudioDestinationNode> {
+export class DestinationNode extends GenericCustomAudioNode implements CustomAudioNode {
+	private audioDesinationNode: AudioDestinationNode;
+	private gainNode: GainNode;
+
 	constructor(id: string) {
-		super(globalContext.destination, id, 'destination');
+		super(id, 'destination');
+
+		this.audioDesinationNode = globalContext.destination;
+		this.gainNode = globalContext.createGain();
+
+		this.gainNode.connect(this.audioDesinationNode);
+	}
+
+
+	getAudioParam(parameterName: string): AudioParam {
+		if (parameterName === 'volume') {
+			return this.gainNode.gain;
+		}
+
+		throw new Error(`Parmeter ${parameterName} does not exist on Destination node`);
+	}
+
+	getInputNode(): AudioNode | null {
+		return this.gainNode;
+	}
+
+	getOutputNode(): AudioNode {
+		return this.audioDesinationNode;
 	}
 }
 
