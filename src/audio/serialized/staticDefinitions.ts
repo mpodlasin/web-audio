@@ -115,8 +115,8 @@ const oscillatorDefinition = {
 	parameters: {
 		frequency: frequencyParameter,
 		detune: {
-			minValue: -4800,
-			maxValue: 4800,
+			minValue: -1200,
+			maxValue: 1200,
 			unit: 'cents',
 			defaultValue: 0,
 			polarity: 'bi' as const
