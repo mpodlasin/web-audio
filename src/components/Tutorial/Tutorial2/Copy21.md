@@ -1,9 +1,3 @@
-It should be now much easier to see what is going on.
+As you decreased the knob, you saw how the graph displayed in the `Oscilloscope` node was in the "up" position for shorter and shorter periods of time.
 
-Take a look at the `Value` node.
-
-For one quarter of a second it displays 1. 
-
-For 3 quarters it displays 0. 
-
-This whole cycle takes exactly one second.
+Now, in each cycle, graph is up for 1/4th of the period and in the middle for 3/4th of the period - that's because we've set `Gate Length` parameter to quarter of a second.
