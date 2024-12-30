@@ -1,13 +1,15 @@
 class WorkletProcessor extends AudioWorkletProcessor {
 	private WEBEAUDIO_FRAME_SIZE: number;
-	private leftInputBuffer: any;
-	private leftOutputBuffer: any;
-	private rightInputBuffer: any;
-	private rightOutputBuffer: any;
-	private filter: any;
+	private leftInputBuffer: Float32Array = new Float32Array();
+	private leftOutputBuffer: Float32Array = new Float32Array();
+	private rightInputBuffer: Float32Array = new Float32Array();
+	private rightOutputBuffer: Float32Array = new Float32Array();
+	private nativeProcess: () => void = () => { /* do nothing */ };
 
-	constructor() {
-		super();
+	constructor(
+		options: AudioWorkletNodeOptions | undefined,
+	) {
+		super(options);
 		this.WEBEAUDIO_FRAME_SIZE = 128;
 
 		this.port.onmessage = (e) => {
@@ -39,15 +41,22 @@ class WorkletProcessor extends AudioWorkletProcessor {
 					rightOutputBufferPtr,
 					this.WEBEAUDIO_FRAME_SIZE
 				);
-				this.filter = exports.filter;
+				this.nativeProcess = exports.process;
 			});
 		};
 	}
 	process(inputList: Float32Array[][], outputList: Float32Array[][]) {
-		this.leftInputBuffer.set(inputList[0]?.[0]);
-		this.rightInputBuffer.set(inputList[0]?.[1]);
+		const leftInput = inputList[0]?.[0];
+		const rightInput = inputList[0]?.[1]
 
-		this.filter();
+		if (leftInput) {
+			this.leftInputBuffer.set(leftInput);
+		}
+		if (rightInput) {
+			this.rightInputBuffer.set(rightInput);
+		}
+
+		this.nativeProcess();
 
 		outputList[0]?.[0]?.set(this.leftOutputBuffer);
 		outputList[0]?.[1]?.set(this.rightOutputBuffer);
@@ -72,6 +81,3 @@ declare const AudioWorkletProcessor: {
 };
 
 declare const registerProcessor: (name: string, value: object) => void;
-
-declare const currentFrame: number;
-declare const sampleRate: number;

@@ -31,7 +31,7 @@ EMSCRIPTEN_KEEPALIVE
         return rightOutputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
-    void filter() {
+    void process() {
         //  just copy in to out !
         for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
             rightOutputBuffer[i] = rightInputBuffer[i];
