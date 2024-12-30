@@ -52,7 +52,7 @@
 
 		requestAnimationFrame(drawSlowMode);
 
-		analyser.getByteTimeDomainData(dataArray); 
+		analyser.getByteTimeDomainData(dataArray);
 
 		canvasCtx.lineWidth = 1;
 		canvasCtx.strokeStyle = primaryColor;

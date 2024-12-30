@@ -7,11 +7,11 @@ export default function (audioGraph: SerializedAudioElements) {
 	const gateLengthNode = values.find((node) => node.type === 'gate-length');
 	const gateLengthNodeWasDeleted = gateLengthNode === undefined;
 
-    const clockNode = values.find((node) => node.type === 'clock');
+	const clockNode = values.find((node) => node.type === 'clock');
 	const clockNodeWasNotDeleted = clockNode !== undefined;
 
-    const adEnvelopeNode = values.find((node) => node.type === 'ad-envelope');
-    const adEnvelopeNodeWasCreated = adEnvelopeNode !== undefined;
+	const adEnvelopeNode = values.find((node) => node.type === 'ad-envelope');
+	const adEnvelopeNodeWasCreated = adEnvelopeNode !== undefined;
 
-    return gateLengthNodeWasDeleted && clockNodeWasNotDeleted && adEnvelopeNodeWasCreated;
+	return gateLengthNodeWasDeleted && clockNodeWasNotDeleted && adEnvelopeNodeWasCreated;
 }

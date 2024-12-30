@@ -77,7 +77,8 @@
 		color: var(--primary-500);
 	}
 
-	.copy :global(th), .copy :global(td) {
+	.copy :global(th),
+	.copy :global(td) {
 		border: 0.5px solid var(--neutral-500);
 		padding: 4px;
 	}

@@ -1,8 +1,8 @@
 interface EnvelopeEvent {
-    start: number;
+	start: number;
 	startValue: number;
-    attack: number;
-    decay: number;
+	attack: number;
+	decay: number;
 }
 
 export class ADEnvelope extends AudioWorkletProcessor {
@@ -32,11 +32,11 @@ export class ADEnvelope extends AudioWorkletProcessor {
 				defalueValue: 0,
 				minValue: 0,
 				maxValue: 1
-			},
+			}
 		];
 	}
 
-    envelopeEvent: EnvelopeEvent | null = null;
+	envelopeEvent: EnvelopeEvent | null = null;
 	lastEnvelopeValue = 0;
 
 	process(
@@ -48,76 +48,83 @@ export class ADEnvelope extends AudioWorkletProcessor {
 		const attackParameter = parameters.attack ?? [];
 		const decayParameter = parameters.decay ?? [];
 
-        const attack = attackParameter[0] ?? 0;
-        const decay = decayParameter[0] ?? 0;
+		const attack = attackParameter[0] ?? 0;
+		const decay = decayParameter[0] ?? 0;
 
-        const trigger = this.detectTrigger(inputs);
+		const trigger = this.detectTrigger(inputs);
 
-        if (trigger) {
-            this.envelopeEvent = {
-                start: _currentFrame + trigger,
-                attack,
-                decay,
+		if (trigger) {
+			this.envelopeEvent = {
+				start: _currentFrame + trigger,
+				attack,
+				decay,
 				startValue: this.lastEnvelopeValue
-            }
-        }
+			};
+		}
 
-        this.handleEnvelopeEvent(_currentFrame, outputs);
+		this.handleEnvelopeEvent(_currentFrame, outputs);
 
 		return true;
 	}
 
-    millisecondsToSamples(ms: number) {
-        return ms / 1000 * this._sampleRate;
-    }
+	millisecondsToSamples(ms: number) {
+		return (ms / 1000) * this._sampleRate;
+	}
 
-    handleEnvelopeEvent(currentFrame: number, outputs: Float32Array[][]) {
-        const event = this.envelopeEvent;
+	handleEnvelopeEvent(currentFrame: number, outputs: Float32Array[][]) {
+		const event = this.envelopeEvent;
 
-        if (event) {
-            const start = event.start;
-            const middle = event.start + this.millisecondsToSamples(event.attack);
-            const end = event.start + this.millisecondsToSamples(event.attack) + this.millisecondsToSamples(event.decay);
+		if (event) {
+			const start = event.start;
+			const middle = event.start + this.millisecondsToSamples(event.attack);
+			const end =
+				event.start +
+				this.millisecondsToSamples(event.attack) +
+				this.millisecondsToSamples(event.decay);
 
-            outputs.forEach(output => {
-                output.forEach(out => {
-                    for (let i = 0; i < out.length; i++) {
-                        const sampleIndex = currentFrame + i;
+			outputs.forEach((output) => {
+				output.forEach((out) => {
+					for (let i = 0; i < out.length; i++) {
+						const sampleIndex = currentFrame + i;
 
-                        if (start <= sampleIndex && sampleIndex <= middle) {
-                            out[i] = this.attackFn(sampleIndex - start, this.millisecondsToSamples(event.attack), event.startValue);
-                        }
+						if (start <= sampleIndex && sampleIndex <= middle) {
+							out[i] = this.attackFn(
+								sampleIndex - start,
+								this.millisecondsToSamples(event.attack),
+								event.startValue
+							);
+						}
 
-                        if (middle <= sampleIndex && sampleIndex <= end) {
-                            out[i] = this.decayFn(sampleIndex - middle, this.millisecondsToSamples(event.decay));
-                        }
+						if (middle <= sampleIndex && sampleIndex <= end) {
+							out[i] = this.decayFn(sampleIndex - middle, this.millisecondsToSamples(event.decay));
+						}
 
-                        if (sampleIndex > end) {
-                            this.envelopeEvent = null;
-                        }
+						if (sampleIndex > end) {
+							this.envelopeEvent = null;
+						}
 
 						if (i + 1 === out.length) {
 							this.lastEnvelopeValue = out[i] ?? 0;
 						}
-                    }
-                })
-            })
-        }
-    }
+					}
+				});
+			});
+		}
+	}
 
-    attackFn(x: number, attack: number, startingValue: number) {
-        return (x / attack * (1 - startingValue)) + startingValue;
-    }
+	attackFn(x: number, attack: number, startingValue: number) {
+		return (x / attack) * (1 - startingValue) + startingValue;
+	}
 
-    decayFn(x: number, decay: number) {
-        const e = 7;
+	decayFn(x: number, decay: number) {
+		const e = 7;
 
-        return (e**(x / -decay) - 1 / e) * e / (e - 1);
-    }
+		return ((e ** (x / -decay) - 1 / e) * e) / (e - 1);
+	}
 
-    lastValueOfPreviousProcess = 0;
+	lastValueOfPreviousProcess = 0;
 
-    detectTrigger(inputList: Float32Array[][]): number | null {
+	detectTrigger(inputList: Float32Array[][]): number | null {
 		let triggerIndex: number | null = null;
 
 		inputList.forEach((input) => {

@@ -12,7 +12,7 @@ import {
 	type Destination
 } from './types';
 import { accessParameter } from './update';
-import wasmModuleUrl from '../web-audio/wasm/a.out.wasm?url';
+import wasmModuleUrl from '../web-audio/wasm/filterKernel.wasm?url';
 
 abstract class GenericCustomAudioNode implements CustomAudioNode {
 	constructor(private id: string, protected type: NodeType) {}
@@ -653,7 +653,6 @@ export class DestinationNode extends GenericCustomAudioNode implements CustomAud
 		this.gainNode.connect(this.audioDesinationNode);
 	}
 
-
 	getAudioParam(parameterName: string): AudioParam {
 		if (parameterName === 'volume') {
 			return this.gainNode.gain;
@@ -1023,13 +1022,13 @@ export class WasmNode extends GenericCustomAudioNode implements CustomAudioNode 
 	constructor(id: string) {
 		super(id, 'wasm');
 
-		this.wasm = new AudioWorkletNode(globalContext, 'wasm')
+		this.wasm = new AudioWorkletNode(globalContext, 'wasm');
 
 		fetch(wasmModuleUrl).then(async (response) => {
 			console.log(response);
 			const byteCode = await response.arrayBuffer();
 			this.wasm.port.postMessage(byteCode);
-		})
+		});
 	}
 
 	getAudioParam(parameterName: string): AudioParam {

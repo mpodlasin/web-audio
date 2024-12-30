@@ -8,21 +8,33 @@
 
 #define WEBEAUDIO_FRAME_SIZE 128
 
-static float inputBuffer[WEBEAUDIO_FRAME_SIZE];
-static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
+static float leftInputBuffer[WEBEAUDIO_FRAME_SIZE];
+static float leftOutputBuffer[WEBEAUDIO_FRAME_SIZE];
+
+static float rightInputBuffer[WEBEAUDIO_FRAME_SIZE];
+static float rightOutputBuffer[WEBEAUDIO_FRAME_SIZE];
 
 EMSCRIPTEN_KEEPALIVE
-    float* inputBufferPtr() {
-        return inputBuffer;
+    float* leftInputBufferPtr() {
+        return leftInputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* outputBufferPtr() {
-        return outputBuffer;
+    float* leftOutputBufferPtr() {
+        return leftOutputBuffer;
+    }
+EMSCRIPTEN_KEEPALIVE
+    float* rightInputBufferPtr() {
+        return rightInputBuffer;
+    }
+EMSCRIPTEN_KEEPALIVE
+    float* rightOutputBufferPtr() {
+        return rightOutputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
     void filter() {
         //  just copy in to out !
-        for (int i=0 ; i<128 ; i++) {
-            outputBuffer[i] = inputBuffer[i];
+        for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
+            rightOutputBuffer[i] = rightInputBuffer[i];
+            leftOutputBuffer[i] = leftInputBuffer[i];
         }
     }

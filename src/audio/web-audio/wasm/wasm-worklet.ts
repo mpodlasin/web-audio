@@ -1,44 +1,59 @@
 class WorkletProcessor extends AudioWorkletProcessor {
-    private WEBEAUDIO_FRAME_SIZE: number;
-    private inputStart: any;
-    private outputStart: any;
-    private inputBuffer: any;
-    private outputBuffer: any;
-    private filter: any;
+	private WEBEAUDIO_FRAME_SIZE: number;
+	private leftInputBuffer: any;
+	private leftOutputBuffer: any;
+	private rightInputBuffer: any;
+	private rightOutputBuffer: any;
+	private filter: any;
 
-    constructor() {
-        super();
-        this.WEBEAUDIO_FRAME_SIZE = 128;
+	constructor() {
+		super();
+		this.WEBEAUDIO_FRAME_SIZE = 128;
 
-        this.port.onmessage = (e) => {
-            //  Instanciate 
-            WebAssembly.instantiate(e.data)
-            .then((result) => {
-                /* result : {module: Module, instance: Instance} */
-                //  exposes C functions to the outside world. only for readness
-                const exports = result.instance.exports;
-                //  Gets pointer to wasm module memory
-                this.inputStart   = (exports.inputBufferPtr as any)();
-                this.outputStart  = (exports.outputBufferPtr as any)();
-                //  Create shadow buffer of float.
-                this.inputBuffer  = new Float32Array((exports.memory as any).buffer,
-                                                     this.inputStart,
-                                                     this.WEBEAUDIO_FRAME_SIZE);
-                this.outputBuffer = new Float32Array((exports.memory as any).buffer,
-                                                     this.outputStart,
-                                                     this.WEBEAUDIO_FRAME_SIZE);
-                //  Gets the filter function
-                this.filter = exports.filter;
-            });
-        }
-    }
-    process(inputList: Float32Array[][], outputList: Float32Array[][]) {  
-        this.inputBuffer.set(inputList[0]?.[0]);
-        this.filter();
-        outputList[0]?.[0]?.set(this.outputBuffer);
-        
-        return true;
-    }
+		this.port.onmessage = (e) => {
+			WebAssembly.instantiate(e.data).then((result) => {
+				const exports = result.instance.exports as any;
+
+				const leftInputBufferPtr = exports.leftInputBufferPtr();
+				const rightInputBufferPtr = exports.rightInputBufferPtr();
+				const leftOutputBufferPtr = exports.leftOutputBufferPtr();
+				const rightOutputBufferPtr = exports.rightOutputBufferPtr();
+
+				this.leftInputBuffer = new Float32Array(
+					exports.memory.buffer,
+					leftInputBufferPtr,
+					this.WEBEAUDIO_FRAME_SIZE
+				);
+				this.rightInputBuffer = new Float32Array(
+					exports.memory.buffer,
+					rightInputBufferPtr,
+					this.WEBEAUDIO_FRAME_SIZE
+				);
+				this.leftOutputBuffer = new Float32Array(
+					exports.memory.buffer,
+					leftOutputBufferPtr,
+					this.WEBEAUDIO_FRAME_SIZE
+				);
+				this.rightOutputBuffer = new Float32Array(
+					exports.memory.buffer,
+					rightOutputBufferPtr,
+					this.WEBEAUDIO_FRAME_SIZE
+				);
+				this.filter = exports.filter;
+			});
+		};
+	}
+	process(inputList: Float32Array[][], outputList: Float32Array[][]) {
+		this.leftInputBuffer.set(inputList[0]?.[0]);
+		this.rightInputBuffer.set(inputList[0]?.[1]);
+
+		this.filter();
+
+		outputList[0]?.[0]?.set(this.leftOutputBuffer);
+		outputList[0]?.[1]?.set(this.rightOutputBuffer);
+
+		return true;
+	}
 }
 registerProcessor('wasm', WorkletProcessor);
 

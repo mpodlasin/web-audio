@@ -1,4 +1,4 @@
-Now we see that the `Value` node displays the number 1 constantly. 
+Now we see that the `Value` node displays the number 1 constantly.
 
 Graph on the `Oscilloscope` node is always in its "up" position.
 

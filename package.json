@@ -13,7 +13,8 @@
 		"test:watch": "jest --watchAll",
 		"test": "jest --coverage",
 		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
+		"build-storybook": "storybook build",
+		"compile:wasm": "emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/filterKernel.c -o ./src/audio/web-audio/wasm/filterKernel.wasm --no-entry"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.22.5",
