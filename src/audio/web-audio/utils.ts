@@ -9,6 +9,7 @@ import measureGateNodeWorkletUrl from './measure-gate.js?worker&url';
 import patternNodeWorkletUrl from './pattern.js?worker&url';
 import clockCounterNodeWorkletUrl from './clock-counter.js?worker&url';
 import pulseToTriggerNodeWorkletUrl from './pulse-to-trigger.js?worker&url';
+import wasmWorkletUrl from './wasm/wasm-worklet.js?worker&url';
 
 export async function loadCustomNodes() {
 	try {
@@ -22,7 +23,8 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(measureGateNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(patternNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(clockCounterNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(pulseToTriggerNodeWorkletUrl)
+			globalContext.audioWorklet.addModule(pulseToTriggerNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(wasmWorkletUrl)
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');
