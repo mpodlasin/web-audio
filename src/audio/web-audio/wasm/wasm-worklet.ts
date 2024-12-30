@@ -4,11 +4,11 @@ class WorkletProcessor extends AudioWorkletProcessor {
 	private leftOutputBuffer: Float32Array = new Float32Array();
 	private rightInputBuffer: Float32Array = new Float32Array();
 	private rightOutputBuffer: Float32Array = new Float32Array();
-	private nativeProcess: () => void = () => { /* do nothing */ };
+	private nativeProcess: () => void = () => {
+		/* do nothing */
+	};
 
-	constructor(
-		options: AudioWorkletNodeOptions | undefined,
-	) {
+	constructor(options: AudioWorkletNodeOptions | undefined) {
 		super(options);
 		this.WEBEAUDIO_FRAME_SIZE = 128;
 
@@ -47,7 +47,7 @@ class WorkletProcessor extends AudioWorkletProcessor {
 	}
 	process(inputList: Float32Array[][], outputList: Float32Array[][]) {
 		const leftInput = inputList[0]?.[0];
-		const rightInput = inputList[0]?.[1]
+		const rightInput = inputList[0]?.[1];
 
 		if (leftInput) {
 			this.leftInputBuffer.set(leftInput);

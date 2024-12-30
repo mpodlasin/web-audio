@@ -6,35 +6,6 @@ export class PulseToTrigger extends AudioWorkletProcessor {
 		super(options);
 	}
 
-	static get parameterDescriptors() {
-		return [
-			{
-				name: 'attack',
-				defaultValue: 0,
-				minValue: 0,
-				maxValue: 1000
-			},
-			{
-				name: 'release',
-				defaultValue: 0,
-				minValue: 0,
-				maxValue: 1000
-			},
-			{
-				name: 'running',
-				defalueValue: 0,
-				minValue: 0,
-				maxValue: 1
-			},
-			{
-				name: 'release-fall',
-				defaultValue: 1,
-				minValue: 0,
-				maxValue: 1
-			}
-		];
-	}
-
 	process(
 		inputs: Float32Array[][],
 		outputs: Float32Array[][],

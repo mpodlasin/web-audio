@@ -1,0 +1,1 @@
+emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/pulse-to-trigger/pulse-to-trigger.c -o ./src/audio/web-audio/wasm/pulse-to-trigger/pulse-to-trigger.wasm --no-entry

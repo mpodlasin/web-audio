@@ -37,8 +37,7 @@ import {
 	CustomPatternNode,
 	EmptyCustomAudioNode,
 	CustomValueNode,
-	CustomNumberNode,
-	WasmNode
+	CustomNumberNode
 } from './nodes';
 import {
 	isCustomAudioScheduledSourceNode,
@@ -461,8 +460,6 @@ function createCustomAudioNode(
 			return new CustomValueNode(id);
 		case 'number':
 			return new CustomNumberNode(id);
-		case 'wasm':
-			return new WasmNode(id);
 	}
 }
 

@@ -30,11 +30,23 @@ EMSCRIPTEN_KEEPALIVE
     float* rightOutputBufferPtr() {
         return rightOutputBuffer;
     }
+
+    void processChannel(float inputBuffer[], float outputBuffer[]) {
+        for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
+            float input = inputBuffer[i];
+
+            if (input <= 0) {
+                outputBuffer[i] = 0;
+            } else {
+                outputBuffer[i] = 1;
+            }
+        }
+    }
 EMSCRIPTEN_KEEPALIVE
     void process() {
         //  just copy in to out !
         for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
-            rightOutputBuffer[i] = rightInputBuffer[i];
-            leftOutputBuffer[i] = leftInputBuffer[i];
+            processChannel(rightInputBuffer, rightOutputBuffer);
+            processChannel(leftInputBuffer, leftOutputBuffer);
         }
     }

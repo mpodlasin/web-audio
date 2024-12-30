@@ -8,8 +8,9 @@ import gateLengthNodeWorkletUrl from './gate-length.js?worker&url';
 import measureGateNodeWorkletUrl from './measure-gate.js?worker&url';
 import patternNodeWorkletUrl from './pattern.js?worker&url';
 import clockCounterNodeWorkletUrl from './clock-counter.js?worker&url';
-import pulseToTriggerNodeWorkletUrl from './pulse-to-trigger.js?worker&url';
 import wasmWorkletUrl from './wasm/wasm-worklet.js?worker&url';
+
+import pulseToTriggerWasmUrl from './wasm/pulse-to-trigger/pulse-to-trigger.wasm?url';
 
 export async function loadCustomNodes() {
 	try {
@@ -23,10 +24,20 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(measureGateNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(patternNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(clockCounterNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(pulseToTriggerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(wasmWorkletUrl)
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');
 	}
 }
+
+export const createPulseToTriggerWorklet = () => {
+	const wasmWorklet = new AudioWorkletNode(globalContext, 'wasm');
+
+	fetch(pulseToTriggerWasmUrl).then(async (response) => {
+		const byteCode = await response.arrayBuffer();
+		wasmWorklet.port.postMessage(byteCode);
+	});
+
+	return wasmWorklet;
+};

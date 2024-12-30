@@ -1,6 +1,7 @@
 import { globalContext } from '../GlobalContext';
 import { allowedSerializedAudioElementStaticDefinitions, type NodeType } from '../serialized';
 import { generateReverb } from '../web-audio/reverbGeneration';
+import { createPulseToTriggerWorklet } from '../web-audio/utils';
 import {
 	type CustomAudioNode,
 	type CustomAudioNodeWithWebApiNode,
@@ -12,7 +13,6 @@ import {
 	type Destination
 } from './types';
 import { accessParameter } from './update';
-import wasmModuleUrl from '../web-audio/wasm/filterKernel.wasm?url';
 
 abstract class GenericCustomAudioNode implements CustomAudioNode {
 	constructor(private id: string, protected type: NodeType) {}
@@ -583,7 +583,7 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 		squareOscillator.type = 'square';
 		squareOscillator.frequency.value = 0;
 
-		const pulseToTrigger = new AudioWorkletNode(globalContext, 'pulse-to-trigger');
+		const pulseToTrigger = createPulseToTriggerWorklet();
 		const gateLength = new AudioWorkletNode(globalContext, 'gate-length');
 		this.gateLength = gateLength;
 
@@ -1013,33 +1013,5 @@ export class MidiNode extends GenericCustomAudioNode {
 			const freq = midiNoteToFrequency(note);
 			this.frequency.offset.value = freq;
 		}
-	}
-}
-
-export class WasmNode extends GenericCustomAudioNode implements CustomAudioNode {
-	private wasm: AudioWorkletNode;
-
-	constructor(id: string) {
-		super(id, 'wasm');
-
-		this.wasm = new AudioWorkletNode(globalContext, 'wasm');
-
-		fetch(wasmModuleUrl).then(async (response) => {
-			console.log(response);
-			const byteCode = await response.arrayBuffer();
-			this.wasm.port.postMessage(byteCode);
-		});
-	}
-
-	getAudioParam(parameterName: string): AudioParam {
-		throw new Error(`Parmeter ${parameterName} does not exist on Wasm node`);
-	}
-
-	getInputNode(): AudioNode | null {
-		return this.wasm;
-	}
-
-	getOutputNode(): AudioNode {
-		return this.wasm;
 	}
 }
