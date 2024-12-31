@@ -6,11 +6,13 @@ import pitchQuantizerNodeWorkletUrl from './pitchQuantizer.js?worker&url';
 import scalerNodeWorkletUrl from './scaler.js?worker&url';
 import gateLengthNodeWorkletUrl from './gate-length.js?worker&url';
 import patternNodeWorkletUrl from './pattern.js?worker&url';
-import clockCounterNodeWorkletUrl from './clock-counter.js?worker&url';
+//WASM
 import wasmWorkletUrl from './wasm/wasm-worklet.js?worker&url';
+import clockCounterNodeWorkletUrl from './wasm/clock-counter/clock-counter-worklet.js?worker&url';
 
 import pulseToTriggerWasmUrl from './wasm/pulse-to-trigger/pulse-to-trigger.wasm?url';
 import measureGateWasmUrl from './wasm/measure-gate/measure-gate.wasm?url';
+import clockCounterWasmUrl from './wasm/clock-counter/clock-counter.wasm?url';
 
 export async function loadCustomNodes() {
 	try {
@@ -22,16 +24,17 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(patternNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(clockCounterNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(wasmWorkletUrl)
+			// WASM
+			globalContext.audioWorklet.addModule(wasmWorkletUrl),
+			globalContext.audioWorklet.addModule(clockCounterNodeWorkletUrl)
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');
 	}
 }
 
-const createWasmWorklet = (wasmUrl: string) => {
-	const wasmWorklet = new AudioWorkletNode(globalContext, 'wasm');
+const createWasmWorklet = (workletName: string, wasmUrl: string) => {
+	const wasmWorklet = new AudioWorkletNode(globalContext, workletName);
 
 	fetch(wasmUrl).then(async (response) => {
 		const byteCode = await response.arrayBuffer();
@@ -41,5 +44,6 @@ const createWasmWorklet = (wasmUrl: string) => {
 	return wasmWorklet;
 };
 
-export const createPulseToTriggerWorklet = () => createWasmWorklet(pulseToTriggerWasmUrl);
-export const createMeasureGateWorklet = () => createWasmWorklet(measureGateWasmUrl);
+export const createPulseToTriggerWorklet = () => createWasmWorklet('wasm', pulseToTriggerWasmUrl);
+export const createMeasureGateWorklet = () => createWasmWorklet('wasm', measureGateWasmUrl);
+export const createClockCounterWorklet = () => createWasmWorklet('clock-counter', clockCounterWasmUrl);

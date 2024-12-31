@@ -1,7 +1,7 @@
 import { globalContext } from '../GlobalContext';
 import { allowedSerializedAudioElementStaticDefinitions, type NodeType } from '../serialized';
 import { generateReverb } from '../web-audio/reverbGeneration';
-import { createMeasureGateWorklet, createPulseToTriggerWorklet } from '../web-audio/utils';
+import { createClockCounterWorklet, createMeasureGateWorklet, createPulseToTriggerWorklet } from '../web-audio/utils';
 import {
 	type CustomAudioNode,
 	type CustomAudioNodeWithWebApiNode,
@@ -500,7 +500,7 @@ export class GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight extends Ge
 	private input: GainNode;
 
 	constructor(node: AudioWorkletNode, id: string, type: NodeType) {
-		const counter = new AudioWorkletNode(globalContext, 'clock-counter');
+		const counter = createClockCounterWorklet();
 		const counterAnalyser = globalContext.createAnalyser();
 		const input = globalContext.createGain();
 
