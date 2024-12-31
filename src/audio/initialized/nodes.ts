@@ -4,6 +4,7 @@ import { generateReverb } from '../web-audio/reverbGeneration';
 import {
 	createClockCounterWorklet,
 	createMeasureGateWorklet,
+	createPatternWorklet,
 	createPulseToTriggerWorklet
 } from '../web-audio/utils';
 import {
@@ -571,7 +572,7 @@ export class SequencerNode extends GenericCustomAudioNodeWithWebApiNodeWithTrigg
 
 export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'pattern'), id, 'pattern');
+		super(createPatternWorklet(), id, 'pattern');
 	}
 }
 

@@ -5,14 +5,15 @@ import sequencerNodeWorkletUrl from './sequencer.js?worker&url';
 import pitchQuantizerNodeWorkletUrl from './pitchQuantizer.js?worker&url';
 import scalerNodeWorkletUrl from './scaler.js?worker&url';
 import gateLengthNodeWorkletUrl from './gate-length.js?worker&url';
-import patternNodeWorkletUrl from './pattern.js?worker&url';
 //WASM
 import wasmWorkletUrl from './wasm/wasm-worklet.js?worker&url';
 import clockCounterNodeWorkletUrl from './wasm/clock-counter/clock-counter-worklet.js?worker&url';
+import patternNodeWorkletUrl from './wasm/pattern/pattern-worklet.js?worker&url';
 
 import pulseToTriggerWasmUrl from './wasm/pulse-to-trigger/pulse-to-trigger.wasm?url';
 import measureGateWasmUrl from './wasm/measure-gate/measure-gate.wasm?url';
 import clockCounterWasmUrl from './wasm/clock-counter/clock-counter.wasm?url';
+import patternWasmUrl from './wasm/pattern/pattern.wasm?url';
 
 export async function loadCustomNodes() {
 	try {
@@ -48,3 +49,5 @@ export const createPulseToTriggerWorklet = () => createWasmWorklet('wasm', pulse
 export const createMeasureGateWorklet = () => createWasmWorklet('wasm', measureGateWasmUrl);
 export const createClockCounterWorklet = () =>
 	createWasmWorklet('clock-counter', clockCounterWasmUrl);
+export const createPatternWorklet = () =>
+	createWasmWorklet('pattern', patternWasmUrl);
