@@ -15,7 +15,7 @@ class PatternProcessor extends AudioWorkletProcessor {
 				defaultValue: 0,
 				minValue: 0,
 				maxValue: 1
-			})),
+			}))
 		];
 	}
 
