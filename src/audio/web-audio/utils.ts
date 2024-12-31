@@ -11,6 +11,7 @@ import clockCounterNodeWorkletUrl from './clock-counter.js?worker&url';
 import wasmWorkletUrl from './wasm/wasm-worklet.js?worker&url';
 
 import pulseToTriggerWasmUrl from './wasm/pulse-to-trigger/pulse-to-trigger.wasm?url';
+import measureGateWasmUrl from './wasm/measure-gate/measure-gate.wasm?url';
 
 export async function loadCustomNodes() {
 	try {
@@ -31,13 +32,16 @@ export async function loadCustomNodes() {
 	}
 }
 
-export const createPulseToTriggerWorklet = () => {
+const createWasmWorklet = (wasmUrl: string) => {
 	const wasmWorklet = new AudioWorkletNode(globalContext, 'wasm');
 
-	fetch(pulseToTriggerWasmUrl).then(async (response) => {
+	fetch(wasmUrl).then(async (response) => {
 		const byteCode = await response.arrayBuffer();
 		wasmWorklet.port.postMessage(byteCode);
 	});
 
 	return wasmWorklet;
 };
+
+export const createPulseToTriggerWorklet = () => createWasmWorklet(pulseToTriggerWasmUrl);
+export const createMeasureGateWorklet = () => createWasmWorklet(measureGateWasmUrl);

@@ -1,9 +1,3 @@
-/*
- *  compilation directive
- *
- *  emcc -O3 -s WASM=1 filterKernel.c -o filterKernel.wasm --no-entry
- */
-
 #include <emscripten.h>
 
 #define WEBEAUDIO_FRAME_SIZE 128
@@ -44,9 +38,6 @@ EMSCRIPTEN_KEEPALIVE
     }
 EMSCRIPTEN_KEEPALIVE
     void process() {
-        //  just copy in to out !
-        for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
-            processChannel(rightInputBuffer, rightOutputBuffer);
-            processChannel(leftInputBuffer, leftOutputBuffer);
-        }
+        processChannel(rightInputBuffer, rightOutputBuffer);
+        processChannel(leftInputBuffer, leftOutputBuffer);
     }

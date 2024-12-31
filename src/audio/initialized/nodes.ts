@@ -1,7 +1,7 @@
 import { globalContext } from '../GlobalContext';
 import { allowedSerializedAudioElementStaticDefinitions, type NodeType } from '../serialized';
 import { generateReverb } from '../web-audio/reverbGeneration';
-import { createPulseToTriggerWorklet } from '../web-audio/utils';
+import { createMeasureGateWorklet, createPulseToTriggerWorklet } from '../web-audio/utils';
 import {
 	type CustomAudioNode,
 	type CustomAudioNodeWithWebApiNode,
@@ -491,7 +491,7 @@ export class PitchQuantizerNode extends GenericCustomAudioNodeWithWebApiNode<Aud
 
 export class MeasureGateNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'measure-gate'), id, 'measure-gate');
+		super(createMeasureGateWorklet(), id, 'measure-gate');
 	}
 }
 
@@ -758,7 +758,7 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 			allowedSerializedAudioElementStaticDefinitions['delay'].parameters['delayTime']?.maxValue;
 		const delay = globalContext.createDelay(delayMaxValue);
 
-		const measureTrigger = new AudioWorkletNode(globalContext, 'measure-gate');
+		const measureTrigger = createMeasureGateWorklet();
 
 		const mix = globalContext.createConstantSource();
 		const negate = globalContext.createGain();
