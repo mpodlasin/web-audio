@@ -15,7 +15,7 @@ class GateLengthWorklet extends AudioWorkletProcessor {
 				defaultValue: 1 / 100,
 				minValue: 0,
 				maxValue: 60
-			},
+			}
 		];
 	}
 

@@ -70,10 +70,10 @@ class PitchQuantizerProcessor extends AudioWorkletProcessor {
 			parameters['D']?.[0] ?? 0,
 			parameters['D#']?.[0] ?? 0,
 			parameters['E']?.[0] ?? 0,
-            parameters['F']?.[0] ?? 0,
-            parameters['F#']?.[0] ?? 0,
-            parameters['G']?.[0] ?? 0,
-            parameters['G#']?.[0] ?? 0,
+			parameters['F']?.[0] ?? 0,
+			parameters['F#']?.[0] ?? 0,
+			parameters['G']?.[0] ?? 0,
+			parameters['G#']?.[0] ?? 0
 		];
 		this.notesBuffer.set(notes);
 

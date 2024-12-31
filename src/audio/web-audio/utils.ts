@@ -30,7 +30,7 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(sequencerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(patternNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(pitchQuantizerNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl)
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');
@@ -54,5 +54,6 @@ export const createClockCounterWorklet = () =>
 	createWasmWorklet('clock-counter', clockCounterWasmUrl);
 export const createPatternWorklet = () => createWasmWorklet('pattern', patternWasmUrl);
 export const createSequencerWorklet = () => createWasmWorklet('sequencer', sequencerWasmUrl);
-export const createPitchQuantizerWorklet = () => createWasmWorklet('pitch-quantizer', pitchQuantizerWasmUrl);
+export const createPitchQuantizerWorklet = () =>
+	createWasmWorklet('pitch-quantizer', pitchQuantizerWasmUrl);
 export const createGateLengthWorklet = () => createWasmWorklet('gate-length', gateLengthWasmUrl);
