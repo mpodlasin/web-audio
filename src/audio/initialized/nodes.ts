@@ -5,6 +5,7 @@ import {
 	createClockCounterWorklet,
 	createMeasureGateWorklet,
 	createPatternWorklet,
+	createPitchQuantizerWorklet,
 	createPulseToTriggerWorklet,
 	createSequencerWorklet
 } from '../web-audio/utils';
@@ -491,7 +492,7 @@ export class AREnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWo
 
 export class PitchQuantizerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'pitch-quantizer'), id, 'pitch-quantizer');
+		super(createPitchQuantizerWorklet(), id, 'pitch-quantizer');
 	}
 }
 
