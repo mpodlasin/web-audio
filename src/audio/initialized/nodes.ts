@@ -626,28 +626,6 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 	}
 }
 
-export class _ClockNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
-	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'trigger'), id, 'clock');
-	}
-
-	start() {
-		const running = this.webApiNode.parameters.get('running');
-
-		if (running) {
-			running.value = 1;
-		}
-	}
-
-	stop() {
-		const running = this.webApiNode.parameters.get('running');
-
-		if (running) {
-			running.value = 0;
-		}
-	}
-}
-
 export class DestinationNode extends GenericCustomAudioNode implements CustomAudioNode {
 	private audioDesinationNode: AudioDestinationNode;
 	private gainNode: GainNode;
