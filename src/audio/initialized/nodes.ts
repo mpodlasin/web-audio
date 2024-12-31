@@ -5,7 +5,8 @@ import {
 	createClockCounterWorklet,
 	createMeasureGateWorklet,
 	createPatternWorklet,
-	createPulseToTriggerWorklet
+	createPulseToTriggerWorklet,
+	createSequencerWorklet
 } from '../web-audio/utils';
 import {
 	type CustomAudioNode,
@@ -566,7 +567,7 @@ export class GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight extends Ge
 
 export class SequencerNode extends GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'sequencer'), id, 'sequencer');
+		super(createSequencerWorklet(), id, 'sequencer');
 	}
 }
 
