@@ -87,7 +87,7 @@ class PatternProcessor extends AudioWorkletProcessor {
 			parameters.step7?.[0] ?? 0,
 			parameters.step8?.[0] ?? 0
 		];
-        this.stepsBuffer.set(steps);
+		this.stepsBuffer.set(steps);
 
 		const leftInput = inputList[0]?.[0];
 		const rightInput = inputList[0]?.[1];
