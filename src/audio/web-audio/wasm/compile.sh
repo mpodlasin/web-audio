@@ -4,3 +4,4 @@ emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/clock-counter/clock-counter.c -o .
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/pattern/pattern.c -o ./src/audio/web-audio/wasm/pattern/pattern.wasm --no-entry
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/sequencer/sequencer.c -o ./src/audio/web-audio/wasm/sequencer/sequencer.wasm --no-entry
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/pitch-quantizer/pitch-quantizer.c -o ./src/audio/web-audio/wasm/pitch-quantizer/pitch-quantizer.wasm --no-entry
+emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/gate-length/gate-length.c -o ./src/audio/web-audio/wasm/gate-length/gate-length.wasm --no-entry

@@ -3,6 +3,7 @@ import { allowedSerializedAudioElementStaticDefinitions, type NodeType } from '.
 import { generateReverb } from '../web-audio/reverbGeneration';
 import {
 	createClockCounterWorklet,
+	createGateLengthWorklet,
 	createMeasureGateWorklet,
 	createPatternWorklet,
 	createPitchQuantizerWorklet,
@@ -339,7 +340,7 @@ export class CustomPanNode extends GenericCustomAudioNodeWithWebApiNode<StereoPa
 
 export class CustomGateLengthNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'gate-length'), id, 'gate-length');
+		super(createGateLengthWorklet(), id, 'gate-length');
 	}
 }
 
@@ -591,7 +592,7 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 		squareOscillator.frequency.value = 0;
 
 		const pulseToTrigger = createPulseToTriggerWorklet();
-		const gateLength = new AudioWorkletNode(globalContext, 'gate-length');
+		const gateLength = createGateLengthWorklet();
 		this.gateLength = gateLength;
 
 		const tempo = globalContext.createConstantSource();
