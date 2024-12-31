@@ -1,9 +1,7 @@
 class ClockCounterProcessor extends AudioWorkletProcessor {
 	private WEBEAUDIO_FRAME_SIZE: number;
-	private leftInputBuffer: Float32Array = new Float32Array();
-	private leftOutputBuffer: Float32Array = new Float32Array();
-	private rightInputBuffer: Float32Array = new Float32Array();
-	private rightOutputBuffer: Float32Array = new Float32Array();
+	private inputBuffer: Float32Array = new Float32Array();
+	private outputBuffer: Float32Array = new Float32Array();
 	private moduloParameterBuffer: Float32Array = new Float32Array();
 	private nativeProcess: (currentFrame: number, sampleRate: number) => void = () => {
 		/* do nothing */
@@ -32,31 +30,19 @@ class ClockCounterProcessor extends AudioWorkletProcessor {
 			WebAssembly.instantiate(e.data).then((result) => {
 				const exports = result.instance.exports as any;
 
-				const leftInputBufferPtr = exports.leftInputBufferPtr();
-				const rightInputBufferPtr = exports.rightInputBufferPtr();
-				const leftOutputBufferPtr = exports.leftOutputBufferPtr();
-				const rightOutputBufferPtr = exports.rightOutputBufferPtr();
+				const inputBufferPtr = exports.inputBufferPtr();
+				const outputBufferPtr = exports.outputBufferPtr();
 				const moduloParameterPtr = exports.moduloParameterPtr();
 
 				this.moduloParameterBuffer = new Float32Array(exports.memory.buffer, moduloParameterPtr, 1);
-				this.leftInputBuffer = new Float32Array(
+				this.inputBuffer = new Float32Array(
 					exports.memory.buffer,
-					leftInputBufferPtr,
+					inputBufferPtr,
 					this.WEBEAUDIO_FRAME_SIZE
 				);
-				this.rightInputBuffer = new Float32Array(
+				this.outputBuffer = new Float32Array(
 					exports.memory.buffer,
-					rightInputBufferPtr,
-					this.WEBEAUDIO_FRAME_SIZE
-				);
-				this.leftOutputBuffer = new Float32Array(
-					exports.memory.buffer,
-					leftOutputBufferPtr,
-					this.WEBEAUDIO_FRAME_SIZE
-				);
-				this.rightOutputBuffer = new Float32Array(
-					exports.memory.buffer,
-					rightOutputBufferPtr,
+					outputBufferPtr,
 					this.WEBEAUDIO_FRAME_SIZE
 				);
 				this.nativeProcess = exports.process;
@@ -77,22 +63,16 @@ class ClockCounterProcessor extends AudioWorkletProcessor {
 			this.moduloParameterBuffer.set(moduloParameter);
 		}
 
-		const leftInput = inputList[0]?.[0];
-		const rightInput = inputList[0]?.[1];
+		const input = inputList[0]?.[0];
 
-		if (leftInput) {
-			this.leftInputBuffer.set(leftInput);
-		}
-		if (rightInput) {
-			this.rightInputBuffer.set(rightInput);
+		if (input) {
+			this.inputBuffer.set(input);
 		}
 
 		this.nativeProcess(_currentFrame, this._sampleRate);
 		this.debug && console.log(this.debug());
 
-		outputList[0]?.[0]?.set(this.leftOutputBuffer);
-		outputList[0]?.[1]?.set(this.rightOutputBuffer);
-
+		outputList[0]?.[0]?.set(this.outputBuffer);
 		return true;
 	}
 }
