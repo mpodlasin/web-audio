@@ -7,6 +7,7 @@ class WorkletProcessor extends AudioWorkletProcessor {
 	private nativeProcess: (currentFrame: number, sampleRate: number) => void = () => {
 		/* do nothing */
 	};
+	private debug: (() => number) | undefined = undefined;
 
 	constructor(
 		options: AudioWorkletNodeOptions | undefined,
@@ -45,6 +46,7 @@ class WorkletProcessor extends AudioWorkletProcessor {
 					this.WEBEAUDIO_FRAME_SIZE
 				);
 				this.nativeProcess = exports.process;
+				this.debug = exports.debug;
 			});
 		};
 	}
@@ -66,6 +68,7 @@ class WorkletProcessor extends AudioWorkletProcessor {
 		}
 
 		this.nativeProcess(_currentFrame, this._sampleRate);
+		this.debug && console.log(this.debug());
 
 		outputList[0]?.[0]?.set(this.leftOutputBuffer);
 		outputList[0]?.[1]?.set(this.rightOutputBuffer);

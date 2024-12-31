@@ -8,12 +8,13 @@ static float leftOutputBuffer[WEBEAUDIO_FRAME_SIZE];
 static float rightInputBuffer[WEBEAUDIO_FRAME_SIZE];
 static float rightOutputBuffer[WEBEAUDIO_FRAME_SIZE];
 
-static float triggers[WEBEAUDIO_FRAME_SIZE];
+static float leftLastValueOfPreviousProcess = 0;
+static int leftLastTriggerIndex = 0;
+static int leftPreviousToLastTriggerIndex = 0;
 
-static float lastValueOfPreviousProcess = 0;
-
-static int lastTriggerIndex = 0;
-static int previousToLastTriggerIndex = 0;
+static float rightLastValueOfPreviousProcess = 0;
+static int rightLastTriggerIndex = 0;
+static int rightPreviousToLastTriggerIndex = 0;
 
 EMSCRIPTEN_KEEPALIVE
     float* leftInputBufferPtr() {
@@ -32,47 +33,50 @@ EMSCRIPTEN_KEEPALIVE
         return rightOutputBuffer;
     }
 
-    void cleanTriggers() {
+    void processChannel(
+        float inputBuffer[], 
+        float outputBuffer[], 
+        int currentFrame, 
+        int sampleRate, 
+        int* previousToLastTriggerIndex,
+        int* lastTriggerIndex,
+        float* lastValueOfPreviousProcess
+    ) {
         for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
-            triggers[i] = -1;
-        }
-    }
 
-    void detectTriggers(float inputBuffer[]) {
-        cleanTriggers();
-
-        int triggersIndex = 1;
-
-        if (lastValueOfPreviousProcess == 0 && inputBuffer[0] == 1) {
-            triggers[0] = 0;
-        }
-
-        for (int i = 1; i < WEBEAUDIO_FRAME_SIZE; i++) {
-            if (inputBuffer[i] == 1 && inputBuffer[i - 1] == 0) {
-                triggers[triggersIndex] = i;
-                triggersIndex++;
+            if ((i == 0 && lastValueOfPreviousProcess == 0 && inputBuffer[0] == 1) || (i > 0 && inputBuffer[i] == 1 && inputBuffer[i-1] == 0)) {
+                *previousToLastTriggerIndex = *lastTriggerIndex;
+                *lastTriggerIndex = i + currentFrame;
             }
+
+            outputBuffer[i] = (*lastTriggerIndex - *previousToLastTriggerIndex) / (float)sampleRate;
         }
 
-        lastValueOfPreviousProcess = inputBuffer[WEBEAUDIO_FRAME_SIZE - 1];
-    }
-
-    void processChannel(float inputBuffer[], float outputBuffer[], int currentFrame, int sampleRate) {
-        detectTriggers(inputBuffer);
-
-        for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
-            for (int t = 0; t < WEBEAUDIO_FRAME_SIZE; t++) {
-                if (triggers[t] == i) {
-                    previousToLastTriggerIndex = lastTriggerIndex;
-                    lastTriggerIndex = i + currentFrame;
-                }
-
-                outputBuffer[i] = (lastTriggerIndex - previousToLastTriggerIndex) / sampleRate;
-            }
-        }
+        *lastValueOfPreviousProcess = inputBuffer[WEBEAUDIO_FRAME_SIZE - 1];
     }
 EMSCRIPTEN_KEEPALIVE
     void process(int currentFrame, int sampleRate) {
-        processChannel(rightInputBuffer, rightOutputBuffer, currentFrame, sampleRate);
-        processChannel(leftInputBuffer, leftOutputBuffer, currentFrame, sampleRate);
+        processChannel(
+            leftInputBuffer, 
+            leftOutputBuffer, 
+            currentFrame, 
+            sampleRate, 
+            &leftPreviousToLastTriggerIndex, 
+            &leftLastTriggerIndex,
+            &leftLastValueOfPreviousProcess,
+        );
+        processChannel(
+            rightInputBuffer, 
+            rightOutputBuffer, 
+            currentFrame, 
+            sampleRate, 
+            &rightPreviousToLastTriggerIndex, 
+            &rightLastTriggerIndex,
+            &rightLastValueOfPreviousProcess,
+        );
     }
+
+// EMSCRIPTEN_KEEPALIVE
+//     float debug() {
+//         return (lastTriggerIndex - previousToLastTriggerIndex) / (float)48000;
+//     }

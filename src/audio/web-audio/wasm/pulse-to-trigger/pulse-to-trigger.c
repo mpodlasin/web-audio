@@ -29,7 +29,7 @@ EMSCRIPTEN_KEEPALIVE
         for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
             float input = inputBuffer[i];
 
-            if (input <= 0) {
+            if (input < 0) {
                 outputBuffer[i] = 0;
             } else {
                 outputBuffer[i] = 1;
