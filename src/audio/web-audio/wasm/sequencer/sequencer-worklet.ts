@@ -67,7 +67,7 @@ class SequencerProcessor extends AudioWorkletProcessor {
 			parameters.frequency7?.[0] ?? 0,
 			parameters.frequency8?.[0] ?? 0
 		];
-        this.frequenciesBuffer.set(frequencies);
+		this.frequenciesBuffer.set(frequencies);
 
 		const input = inputList[0]?.[0];
 
