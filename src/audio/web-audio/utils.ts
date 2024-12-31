@@ -46,4 +46,5 @@ const createWasmWorklet = (workletName: string, wasmUrl: string) => {
 
 export const createPulseToTriggerWorklet = () => createWasmWorklet('wasm', pulseToTriggerWasmUrl);
 export const createMeasureGateWorklet = () => createWasmWorklet('wasm', measureGateWasmUrl);
-export const createClockCounterWorklet = () => createWasmWorklet('clock-counter', clockCounterWasmUrl);
+export const createClockCounterWorklet = () =>
+	createWasmWorklet('clock-counter', clockCounterWasmUrl);

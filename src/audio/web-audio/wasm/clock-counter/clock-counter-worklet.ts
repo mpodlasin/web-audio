@@ -4,13 +4,13 @@ class ClockCounterProcessor extends AudioWorkletProcessor {
 	private leftOutputBuffer: Float32Array = new Float32Array();
 	private rightInputBuffer: Float32Array = new Float32Array();
 	private rightOutputBuffer: Float32Array = new Float32Array();
-    private moduloParameterBuffer: Float32Array = new Float32Array();
+	private moduloParameterBuffer: Float32Array = new Float32Array();
 	private nativeProcess: (currentFrame: number, sampleRate: number) => void = () => {
 		/* do nothing */
 	};
 	private debug: (() => number) | undefined = undefined;
 
-    static get parameterDescriptors() {
+	static get parameterDescriptors() {
 		return [
 			{
 				name: 'modulo',
@@ -36,13 +36,9 @@ class ClockCounterProcessor extends AudioWorkletProcessor {
 				const rightInputBufferPtr = exports.rightInputBufferPtr();
 				const leftOutputBufferPtr = exports.leftOutputBufferPtr();
 				const rightOutputBufferPtr = exports.rightOutputBufferPtr();
-                const moduloParameterPtr = exports.moduloParameterPtr();
+				const moduloParameterPtr = exports.moduloParameterPtr();
 
-                this.moduloParameterBuffer = new Float32Array(
-					exports.memory.buffer,
-					moduloParameterPtr,
-					1
-				);
+				this.moduloParameterBuffer = new Float32Array(exports.memory.buffer, moduloParameterPtr, 1);
 				this.leftInputBuffer = new Float32Array(
 					exports.memory.buffer,
 					leftInputBufferPtr,
@@ -75,11 +71,11 @@ class ClockCounterProcessor extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame = currentFrame
 	) {
-        const moduloParameter = parameters['modulo'];
+		const moduloParameter = parameters['modulo'];
 
-        if (moduloParameter) {
-            this.moduloParameterBuffer.set(moduloParameter);
-        }
+		if (moduloParameter) {
+			this.moduloParameterBuffer.set(moduloParameter);
+		}
 
 		const leftInput = inputList[0]?.[0];
 		const rightInput = inputList[0]?.[1];

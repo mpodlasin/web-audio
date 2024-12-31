@@ -1,7 +1,11 @@
 import { globalContext } from '../GlobalContext';
 import { allowedSerializedAudioElementStaticDefinitions, type NodeType } from '../serialized';
 import { generateReverb } from '../web-audio/reverbGeneration';
-import { createClockCounterWorklet, createMeasureGateWorklet, createPulseToTriggerWorklet } from '../web-audio/utils';
+import {
+	createClockCounterWorklet,
+	createMeasureGateWorklet,
+	createPulseToTriggerWorklet
+} from '../web-audio/utils';
 import {
 	type CustomAudioNode,
 	type CustomAudioNodeWithWebApiNode,
