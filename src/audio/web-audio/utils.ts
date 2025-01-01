@@ -24,14 +24,14 @@ export async function loadCustomNodes() {
 		await Promise.all([
 			globalContext.audioWorklet.addModule(arEnvelopeNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(adEnvelopeNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl),
 			// WASM
 			globalContext.audioWorklet.addModule(wasmWorkletUrl),
 			globalContext.audioWorklet.addModule(clockCounterNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(sequencerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(patternNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(pitchQuantizerNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl)
+			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl)
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');

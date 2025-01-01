@@ -76,10 +76,10 @@ class ScalerProcessor extends AudioWorkletProcessor {
 		_currentFrame = currentFrame
 	) {
 		const fromTo = [
-            parameters['a-from']?.[0] ?? 0,
-            parameters['a-to']?.[0] ?? 0,
-            parameters['b-from']?.[0] ?? 0,
-            parameters['b-to']?.[0] ?? 0,
+			parameters['a-from']?.[0] ?? 0,
+			parameters['a-to']?.[0] ?? 0,
+			parameters['b-from']?.[0] ?? 0,
+			parameters['b-to']?.[0] ?? 0
 		];
 		this.fromToBuffer.set(fromTo);
 
