@@ -10,7 +10,8 @@ import {
 	createPitchQuantizerWorklet,
 	createPulseToTriggerWorklet,
 	createScalerWorklet,
-	createSequencerWorklet
+	createSequencerWorklet,
+	createSquareOscillatorWorklet
 } from '../web-audio/utils';
 import {
 	type CustomAudioNode,
@@ -809,29 +810,18 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 
 export class CustomLFONode
 	extends GenericCustomAudioNode
-	implements CustomAudioScheduledSourceNode
-{
-	private oscillator: OscillatorNode;
+	implements CustomAudioScheduledSourceNode {
+
 	private mult: GainNode;
 	private scalerOn: ConstantSourceNode;
 	private minusOne: ConstantSourceNode;
 	private invertOn: ConstantSourceNode;
 
-	static oscillatorTypeToNodeType: { [P in OscillatorType]: NodeType } = {
-		custom: 'sine-oscillator',
-		sine: 'sine-oscillator',
-		sawtooth: 'saw-oscillator',
-		triangle: 'triangle-oscillator',
-		square: 'square-oscillator'
-	};
-
-	constructor(id: string, type: OscillatorType) {
-		super(id, CustomLFONode.oscillatorTypeToNodeType[type]);
-
-		const oscillator = globalContext.createOscillator();
+	constructor(id: string, nodeType: NodeType, private oscillator: AudioNode) {
+		super(id, nodeType);
 
 		const invertSaw = globalContext.createGain();
-		invertSaw.gain.value = type == 'sawtooth' ? -1 : 1;
+		invertSaw.gain.value = nodeType == 'saw-lfo' ? -1 : 1;
 
 		const mult = globalContext.createGain();
 		const negate = globalContext.createGain();
@@ -848,8 +838,6 @@ export class CustomLFONode
 		const minusOne = globalContext.createConstantSource();
 		minusOne.offset.value = -1;
 		scalerOn.offset.value = 0;
-
-		oscillator.type = type;
 
 		oscillator.connect(invertSaw).connect(scaler).connect(negate).connect(mult);
 
@@ -892,14 +880,12 @@ export class CustomLFONode
 	}
 
 	start(when?: number | undefined): void {
-		this.oscillator.start(when);
 		this.scalerOn.start(when);
 		this.minusOne.start(when);
 		this.invertOn.start(when);
 	}
 
 	stop(when?: number | undefined): void {
-		this.oscillator.stop(when);
 		this.scalerOn.stop(when);
 		this.minusOne.stop(when);
 		this.invertOn.stop(when);
@@ -908,25 +894,32 @@ export class CustomLFONode
 
 export class CustomSineLFONode extends CustomLFONode {
 	constructor(id: string) {
-		super(id, 'sine');
+		const oscillator = globalContext.createOscillator();
+		oscillator.type = 'sine';
+		super(id, 'sine-lfo', oscillator);
 	}
 }
 
 export class CustomSawLFONode extends CustomLFONode {
 	constructor(id: string) {
-		super(id, 'sawtooth');
+		const oscillator = globalContext.createOscillator();
+		oscillator.type = 'sine';
+		super(id, 'saw-lfo', oscillator);
 	}
 }
 
 export class CustomTriangleLFONode extends CustomLFONode {
 	constructor(id: string) {
-		super(id, 'triangle');
+		const oscillator = globalContext.createOscillator();
+		oscillator.type = 'sine';
+		super(id, 'triangle-lfo', oscillator);
 	}
 }
 
 export class CustomSquareLFONode extends CustomLFONode {
 	constructor(id: string) {
-		super(id, 'square');
+		const oscillator = createSquareOscillatorWorklet();
+		super(id, 'square-lfo', oscillator);
 	}
 }
 

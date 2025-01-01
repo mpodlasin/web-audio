@@ -7,6 +7,7 @@ import pitchQuantizerNodeWorkletUrl from './wasm/pitch-quantizer/pitch-quantizer
 import gateLengthNodeWorkletUrl from './wasm/gate-length/gate-length-worklet.js?worker&url';
 import scalerNodeWorkletUrl from './wasm/scaler/scaler-worklet.js?worker&url';
 import adEnvelopeNodeWorkletUrl from './wasm/ad-envelope/ad-envelope-worklet.js?worker&url';
+import squareOscillatorNodeWorkletUrl from './wasm/square-oscillator/square-oscillator-worklet.js?worker&url';
 
 import pulseToTriggerWasmUrl from './wasm/pulse-to-trigger/pulse-to-trigger.wasm?url';
 import measureGateWasmUrl from './wasm/measure-gate/measure-gate.wasm?url';
@@ -17,6 +18,7 @@ import pitchQuantizerWasmUrl from './wasm/pitch-quantizer/pitch-quantizer.wasm?u
 import gateLengthWasmUrl from './wasm/gate-length/gate-length.wasm?url';
 import scalerWasmUrl from './wasm/scaler/scaler.wasm?url';
 import adEnvelopeWasmUrl from './wasm/ad-envelope/ad-envelope.wasm?url';
+import squareOscillatorWasmUrl from './wasm/square-oscillator/square-oscillator.wasm?url';
 
 export async function loadCustomNodes() {
 	try {
@@ -29,6 +31,7 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(adEnvelopeNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(squareOscillatorNodeWorkletUrl),
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');
@@ -57,3 +60,4 @@ export const createPitchQuantizerWorklet = () =>
 export const createGateLengthWorklet = () => createWasmWorklet('gate-length', gateLengthWasmUrl);
 export const createScalerWorklet = () => createWasmWorklet('scaler', scalerWasmUrl);
 export const createAdEnvelopeWorklet = () => createWasmWorklet('ad-envelope', adEnvelopeWasmUrl);
+export const createSquareOscillatorWorklet = () => createWasmWorklet('square-oscillator', squareOscillatorWasmUrl);
