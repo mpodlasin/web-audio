@@ -21,7 +21,7 @@ class AdEnvelopeProcessor extends AudioWorkletProcessor {
 				defaultValue: 0,
 				minValue: 0,
 				maxValue: 5000
-			},
+			}
 		];
 	}
 
@@ -63,10 +63,7 @@ class AdEnvelopeProcessor extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame = currentFrame
 	) {
-		const fromTo = [
-			parameters['attack']?.[0] ?? 0,
-			parameters['decay']?.[0] ?? 0,
-		];
+		const fromTo = [parameters['attack']?.[0] ?? 0, parameters['decay']?.[0] ?? 0];
 		this.attackDecayBuffer.set(fromTo);
 
 		const input = inputList[0]?.[0];
