@@ -8,7 +8,6 @@ import {
 	createMeasureGateWorklet,
 	createPatternWorklet,
 	createPitchQuantizerWorklet,
-	createPulseToTriggerWorklet,
 	createScalerWorklet,
 	createSequencerWorklet,
 	createSquareOscillatorWorklet
@@ -583,12 +582,9 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 	constructor(id: string) {
 		super(id, 'clock');
 
-		const squareOscillator = globalContext.createOscillator();
-		squareOscillator.start();
-		squareOscillator.type = 'square';
-		squareOscillator.frequency.value = 0;
+		const squareOscillator = createSquareOscillatorWorklet();
+		const scaler = createScalerWorklet();
 
-		const pulseToTrigger = createPulseToTriggerWorklet();
 		const gateLength = createGateLengthWorklet();
 		this.gateLength = gateLength;
 
@@ -600,10 +596,13 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 		bpmToFrequencyGain.gain.value = (1 / 60) * 4;
 
 		tempo.connect(bpmToFrequencyGain);
-		bpmToFrequencyGain.connect(squareOscillator.frequency);
+		const frequency = squareOscillator.parameters.get('frequency');
+		if (frequency) {
+			bpmToFrequencyGain.connect(frequency);
+		}
 
-		squareOscillator.connect(pulseToTrigger);
-		pulseToTrigger.connect(gateLength);
+		squareOscillator.connect(scaler);
+		scaler.connect(gateLength);
 	}
 
 	getAudioParam(parameterName: string): AudioParam {

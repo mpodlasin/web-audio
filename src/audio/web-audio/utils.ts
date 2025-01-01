@@ -9,7 +9,6 @@ import scalerNodeWorkletUrl from './wasm/scaler/scaler-worklet.js?worker&url';
 import adEnvelopeNodeWorkletUrl from './wasm/ad-envelope/ad-envelope-worklet.js?worker&url';
 import squareOscillatorNodeWorkletUrl from './wasm/square-oscillator/square-oscillator-worklet.js?worker&url';
 
-import pulseToTriggerWasmUrl from './wasm/pulse-to-trigger/pulse-to-trigger.wasm?url';
 import measureGateWasmUrl from './wasm/measure-gate/measure-gate.wasm?url';
 import clockCounterWasmUrl from './wasm/clock-counter/clock-counter.wasm?url';
 import patternWasmUrl from './wasm/pattern/pattern.wasm?url';
@@ -49,7 +48,6 @@ const createWasmWorklet = (workletName: string, wasmUrl: string) => {
 	return wasmWorklet;
 };
 
-export const createPulseToTriggerWorklet = () => createWasmWorklet('wasm', pulseToTriggerWasmUrl);
 export const createMeasureGateWorklet = () => createWasmWorklet('wasm', measureGateWasmUrl);
 export const createClockCounterWorklet = () =>
 	createWasmWorklet('clock-counter', clockCounterWasmUrl);
