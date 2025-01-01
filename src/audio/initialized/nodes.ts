@@ -830,6 +830,9 @@ export class CustomLFONode
 
 		const oscillator = globalContext.createOscillator();
 
+		const invertSaw = globalContext.createGain();
+		invertSaw.gain.value = type == 'sawtooth' ? -1 : 1;
+
 		const mult = globalContext.createGain();
 		const negate = globalContext.createGain();
 		const timesMinusTwo = globalContext.createGain();
@@ -848,7 +851,7 @@ export class CustomLFONode
 
 		oscillator.type = type;
 
-		oscillator.connect(scaler).connect(negate).connect(mult);
+		oscillator.connect(invertSaw).connect(scaler).connect(negate).connect(mult);
 
 		const aTo = scaler.parameters.get('a-to');
 
