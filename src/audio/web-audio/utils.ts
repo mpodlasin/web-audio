@@ -1,6 +1,4 @@
 import { globalContext } from '../GlobalContext';
-import arEnvelopeNodeWorkletUrl from './ar-envelope.js?worker&url';
-//WASM
 import wasmWorkletUrl from './wasm/wasm-worklet.js?worker&url';
 import clockCounterNodeWorkletUrl from './wasm/clock-counter/clock-counter-worklet.js?worker&url';
 import patternNodeWorkletUrl from './wasm/pattern/pattern-worklet.js?worker&url';
@@ -23,16 +21,14 @@ import adEnvelopeWasmUrl from './wasm/ad-envelope/ad-envelope.wasm?url';
 export async function loadCustomNodes() {
 	try {
 		await Promise.all([
-			globalContext.audioWorklet.addModule(arEnvelopeNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(adEnvelopeNodeWorkletUrl),
-			// WASM
 			globalContext.audioWorklet.addModule(wasmWorkletUrl),
 			globalContext.audioWorklet.addModule(clockCounterNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(sequencerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(patternNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(pitchQuantizerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl)
+			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(adEnvelopeNodeWorkletUrl),
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');

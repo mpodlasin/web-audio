@@ -94,8 +94,6 @@ export type SerializedSequencerNode = SerializedAudioElement<
 
 export type SerializedMidiNode = SerializedAudioElement<'midi', never>;
 
-export type SerializedAREnvelopeNode = SerializedAudioElement<'ar-envelope', 'attack' | 'release'>;
-
 export type SerializedADEnvelopeNode = SerializedAudioElement<'ad-envelope', 'attack' | 'decay'>;
 
 export type SerializedOscilloscopeNode = SerializedAudioElement<'oscilloscope', 'slow'>;
@@ -146,7 +144,6 @@ export type AllowedSerializedAudioElements =
 	| SerializedDestinationNode
 	| SerializedClockNode
 	| SerializedADEnvelopeNode
-	| SerializedAREnvelopeNode
 	| SerializedSequencerNode
 	| SerializedMidiNode
 	| SerializedOscilloscopeNode

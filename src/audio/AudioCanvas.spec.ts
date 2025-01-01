@@ -234,11 +234,11 @@ describe('AudioCanvas', () => {
 					ui
 				},
 				'2': {
-					type: 'ar-envelope' as const,
+					type: 'ad-envelope' as const,
 					inputs: [{ id: '1', output: 'trigger', input: 'trigger' }],
 					parameters: {
 						attack: { base: 0, inputs: [] },
-						release: { base: 0, inputs: [] }
+						decay: { base: 0, inputs: [] }
 					},
 					ui
 				},
@@ -445,11 +445,11 @@ describe('AudioCanvas', () => {
 					ui
 				},
 				'2': {
-					type: 'ar-envelope' as const,
+					type: 'ad-envelope' as const,
 					inputs: [],
 					parameters: {
 						attack: { base: 0.5, inputs: [] },
-						release: { base: 0, inputs: [] }
+						decay: { base: 0, inputs: [] }
 					},
 					ui
 				}

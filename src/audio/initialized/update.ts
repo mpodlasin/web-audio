@@ -20,7 +20,6 @@ import {
 	CustomSquareOscillatorNode,
 	CustomTriangleOscillatorNode,
 	DestinationNode,
-	AREnvelopeNode,
 	MidiNode,
 	PitchQuantizerNode,
 	SequencerNode,
@@ -418,8 +417,6 @@ function createCustomAudioNode(
 			return new DestinationNode(id);
 		case 'clock':
 			return new ClockNode(id);
-		case 'ar-envelope':
-			return new AREnvelopeNode(id);
 		case 'ad-envelope':
 			return new ADEnvelopeNode(id);
 		case 'sequencer':

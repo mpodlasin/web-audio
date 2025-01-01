@@ -487,12 +487,6 @@ export class ADEnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWo
 	}
 }
 
-export class AREnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
-	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'ar-envelope'), id, 'ar-envelope');
-	}
-}
-
 export class PitchQuantizerNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
 		super(createPitchQuantizerWorklet(), id, 'pitch-quantizer');

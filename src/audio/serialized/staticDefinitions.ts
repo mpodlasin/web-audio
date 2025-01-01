@@ -378,27 +378,6 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			}
 		}
 	},
-	'ar-envelope': {
-		showCategory: true,
-		inputs: [gateInputOutputDefinition],
-		outputs: [envelopeInputOutputDefinition],
-		parameters: {
-			attack: {
-				minValue: 0,
-				maxValue: 5 * 1000,
-				unit: 'ms',
-				defaultValue: 0,
-				polarity: 'uni'
-			},
-			release: {
-				minValue: 0,
-				maxValue: 5 * 1000,
-				unit: 'ms',
-				defaultValue: 200,
-				polarity: 'uni'
-			}
-		}
-	},
 	'ad-envelope': {
 		showCategory: true,
 		inputs: [triggerInputOutputDefinition],
@@ -482,7 +461,6 @@ export const readableNames: { [P in NodeType]: string } = {
 	'square-oscillator': 'Square',
 	'saw-oscillator': 'Saw',
 	'triangle-oscillator': 'Triangle',
-	'ar-envelope': 'AR',
 	'ad-envelope': 'AD',
 	'bipolar-to-unipolar': 'Bi → Uni',
 	convolution: 'Convolution',
@@ -520,7 +498,7 @@ export const categorizedNodeTypes = {
 		'triangle-oscillator'
 	] as NodeType[],
 	lfo: ['sine-lfo', 'saw-lfo', 'square-lfo', 'triangle-lfo'],
-	envelope: ['ar-envelope', 'ad-envelope'] as NodeType[],
+	envelope: ['ad-envelope'] as NodeType[],
 	filter: ['lowpass-filter', 'bandpass-filter', 'highpass-filter'] as NodeType[],
 	effects: ['convolution', 'delay'] as NodeType[],
 	gain: ['gain', 'pan'] as NodeType[],
