@@ -1,6 +1,5 @@
 import { globalContext } from '../GlobalContext';
 import arEnvelopeNodeWorkletUrl from './ar-envelope.js?worker&url';
-import adEnvelopeNodeWorkletUrl from './ad-envelope.js?worker&url';
 //WASM
 import wasmWorkletUrl from './wasm/wasm-worklet.js?worker&url';
 import clockCounterNodeWorkletUrl from './wasm/clock-counter/clock-counter-worklet.js?worker&url';
@@ -9,6 +8,7 @@ import sequencerNodeWorkletUrl from './wasm/sequencer/sequencer-worklet.js?worke
 import pitchQuantizerNodeWorkletUrl from './wasm/pitch-quantizer/pitch-quantizer-worklet.js?worker&url';
 import gateLengthNodeWorkletUrl from './wasm/gate-length/gate-length-worklet.js?worker&url';
 import scalerNodeWorkletUrl from './wasm/scaler/scaler-worklet.js?worker&url';
+import adEnvelopeNodeWorkletUrl from './wasm/ad-envelope/ad-envelope-worklet.js?worker&url';
 
 import pulseToTriggerWasmUrl from './wasm/pulse-to-trigger/pulse-to-trigger.wasm?url';
 import measureGateWasmUrl from './wasm/measure-gate/measure-gate.wasm?url';
@@ -18,6 +18,7 @@ import sequencerWasmUrl from './wasm/sequencer/sequencer.wasm?url';
 import pitchQuantizerWasmUrl from './wasm/pitch-quantizer/pitch-quantizer.wasm?url';
 import gateLengthWasmUrl from './wasm/gate-length/gate-length.wasm?url';
 import scalerWasmUrl from './wasm/scaler/scaler.wasm?url';
+import adEnvelopeWasmUrl from './wasm/ad-envelope/ad-envelope.wasm?url';
 
 export async function loadCustomNodes() {
 	try {
@@ -59,3 +60,4 @@ export const createPitchQuantizerWorklet = () =>
 	createWasmWorklet('pitch-quantizer', pitchQuantizerWasmUrl);
 export const createGateLengthWorklet = () => createWasmWorklet('gate-length', gateLengthWasmUrl);
 export const createScalerWorklet = () => createWasmWorklet('scaler', scalerWasmUrl);
+export const createAdEnvelopeWorklet = () => createWasmWorklet('ad-envelope', adEnvelopeWasmUrl);

@@ -2,6 +2,7 @@ import { globalContext } from '../GlobalContext';
 import { allowedSerializedAudioElementStaticDefinitions, type NodeType } from '../serialized';
 import { generateReverb } from '../web-audio/reverbGeneration';
 import {
+	createAdEnvelopeWorklet,
 	createClockCounterWorklet,
 	createGateLengthWorklet,
 	createMeasureGateWorklet,
@@ -482,7 +483,7 @@ export class CustomNumberNode extends GenericCustomAudioNodeWithWebApiNode<Const
 
 export class ADEnvelopeNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'ad-envelope'), id, 'ad-envelope');
+		super(createAdEnvelopeWorklet(), id, 'ad-envelope');
 	}
 }
 

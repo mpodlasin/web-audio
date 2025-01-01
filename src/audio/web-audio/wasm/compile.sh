@@ -6,3 +6,4 @@ emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/sequencer/sequencer.c -o ./src/aud
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/pitch-quantizer/pitch-quantizer.c -o ./src/audio/web-audio/wasm/pitch-quantizer/pitch-quantizer.wasm --no-entry
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/gate-length/gate-length.c -o ./src/audio/web-audio/wasm/gate-length/gate-length.wasm --no-entry
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/scaler/scaler.c -o ./src/audio/web-audio/wasm/scaler/scaler.wasm --no-entry
+emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/ad-envelope/ad-envelope.c -o ./src/audio/web-audio/wasm/ad-envelope/ad-envelope.wasm --no-entry
