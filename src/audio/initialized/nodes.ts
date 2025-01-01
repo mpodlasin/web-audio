@@ -8,6 +8,7 @@ import {
 	createPatternWorklet,
 	createPitchQuantizerWorklet,
 	createPulseToTriggerWorklet,
+	createScalerWorklet,
 	createSequencerWorklet
 } from '../web-audio/utils';
 import {
@@ -346,7 +347,7 @@ export class CustomGateLengthNode extends GenericCustomAudioNodeWithWebApiNode<A
 
 export class CustomBipolarToUnipolarNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
-		super(new AudioWorkletNode(globalContext, 'scaler'), id, 'bipolar-to-unipolar');
+		super(createScalerWorklet(), id, 'bipolar-to-unipolar');
 	}
 }
 
@@ -844,7 +845,7 @@ export class CustomLFONode
 		timesMinusTwo.gain.value = -2;
 		negate.gain.value = 1;
 
-		const scaler = new AudioWorkletNode(globalContext, 'scaler');
+		const scaler = createScalerWorklet();
 		const scalerOn = globalContext.createConstantSource();
 		const minusOne = globalContext.createConstantSource();
 		minusOne.offset.value = -1;
