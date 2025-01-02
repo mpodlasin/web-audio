@@ -16,7 +16,6 @@ import {
 import {
 	type CustomAudioNode,
 	type CustomAudioNodeWithWebApiNode,
-	type CustomAudioScheduledSourceNode,
 	type CustomAudioParam,
 	isCustomAudioParam,
 	isCustomAudioNode,
@@ -41,15 +40,7 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 
 	abstract getInputNode(): AudioNode | null;
 
-	disconnect(): void {
-		const staticDefinition = allowedSerializedAudioElementStaticDefinitions[this.type];
-
-		const outputs = staticDefinition.outputs;
-
-		outputs.forEach((output) => {
-			this.getOutput(output.id).disconnect();
-		});
-	}
+	abstract cleanup(): void;
 
 	getOutput(name?: string): Output {
 		const id = this.id;
@@ -198,30 +189,22 @@ export class GenericCustomAudioNodeWithWebApiNode<T extends AudioNode>
 	getAudioParam(parameterName: string): AudioParam {
 		return accessParameter(this.webApiNode, parameterName);
 	}
-}
 
-export class CustomAudioNodeWithWebApiAudioScheduledSourceNode<T extends AudioScheduledSourceNode>
-	extends GenericCustomAudioNodeWithWebApiNode<T>
-	implements CustomAudioScheduledSourceNode
-{
-	start(when?: number): void {
-		this.webApiNode.start(when);
-	}
-
-	stop(when?: number): void {
-		this.webApiNode.stop(when);
+	cleanup(): void {
+		this.webApiNode.disconnect();
 	}
 }
 
-export class CustomOscillatorNode
-	extends GenericCustomAudioNode
-	implements CustomAudioScheduledSourceNode
-{
+export class CustomOscillatorNode extends GenericCustomAudioNode {
 	readonly output: GainNode;
 	readonly leftOscillator: OscillatorNode;
 	readonly rightOscillator: OscillatorNode;
 	readonly frequency: ConstantSourceNode;
 	readonly detune: ConstantSourceNode;
+	readonly leftPan: StereoPannerNode;
+	readonly rightPan: StereoPannerNode;
+	readonly gain: GainNode;
+	readonly minusOne: GainNode;
 
 	static oscillatorTypeToNodeType: { [P in OscillatorType]: NodeType } = {
 		custom: 'sine-oscillator',
@@ -276,20 +259,15 @@ export class CustomOscillatorNode
 		this.output = gain;
 		this.leftOscillator = leftOscillator;
 		this.rightOscillator = rightOscillator;
-	}
+		this.leftPan = leftPan;
+		this.rightPan = rightPan;
+		this.minusOne = minusOne;
+		this.gain = gain;
 
-	start(when?: number | undefined): void {
-		this.frequency.start(when);
-		this.detune.start(when);
-		this.leftOscillator.start(when);
-		this.rightOscillator.start(when);
-	}
-
-	stop(when?: number | undefined): void {
-		this.frequency.stop(when);
-		this.detune.stop(when);
-		this.leftOscillator.stop(when);
-		this.rightOscillator.stop(when);
+		this.detune.start();
+		this.frequency.start();
+		this.rightOscillator.start();
+		this.leftOscillator.start();
 	}
 
 	getInputNode(): AudioNode | null {
@@ -308,6 +286,23 @@ export class CustomOscillatorNode
 		} else {
 			throw Error(`Unknown parameter ${parameterName}`);
 		}
+	}
+
+	cleanup(): void {
+		this.detune.stop();
+		this.frequency.stop();
+		this.rightOscillator.stop();
+		this.leftOscillator.stop();
+
+		this.output.disconnect();
+		this.frequency.disconnect();
+		this.detune.disconnect();
+		this.rightOscillator.disconnect();
+		this.leftOscillator.disconnect();
+		this.leftPan.disconnect();
+		this.rightPan.disconnect();
+		this.minusOne.disconnect();
+		this.gain.disconnect();
 	}
 }
 
@@ -363,7 +358,7 @@ export class EmptyCustomAudioNode implements CustomAudioNode {
 	getParameter(): CustomAudioParam {
 		throw new Error('Method not implemented.');
 	}
-	disconnect() {
+	cleanup() {
 		// Needs to be empty because of cleanup that happens on AudioCanvas unmount.
 	}
 	onHighlightParameter(): void {
@@ -579,21 +574,19 @@ export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNodeWithT
 export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode {
 	private gateLength: AudioNode;
 	private tempo: ConstantSourceNode;
+	private squareOscillator: AudioNode;
+	private scaler: AudioNode;
+	private bpmToFrequencyGain: GainNode;
 
 	constructor(id: string) {
 		super(id, 'clock');
 
 		const squareOscillator = createSquareOscillatorWorklet();
 		const scaler = createScalerWorklet();
-
 		const gateLength = createGateLengthWorklet();
-		this.gateLength = gateLength;
-
 		const tempo = globalContext.createConstantSource();
-		tempo.start();
-		this.tempo = tempo;
-
 		const bpmToFrequencyGain = globalContext.createGain();
+
 		bpmToFrequencyGain.gain.value = (1 / 60) * 4;
 
 		tempo.connect(bpmToFrequencyGain);
@@ -604,6 +597,14 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 
 		squareOscillator.connect(scaler);
 		scaler.connect(gateLength);
+
+		this.gateLength = gateLength;
+		this.tempo = tempo;
+		this.squareOscillator = squareOscillator;
+		this.scaler = scaler;
+		this.bpmToFrequencyGain = bpmToFrequencyGain;
+
+		tempo.start();
 	}
 
 	getAudioParam(parameterName: string): AudioParam {
@@ -620,6 +621,18 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 
 	getOutputNode(): AudioNode {
 		return this.gateLength;
+	}
+
+	cleanup(): void {
+		console.log('disconnect');
+
+		this.tempo.stop();
+
+		this.gateLength.disconnect();
+		this.tempo.disconnect();
+		this.squareOscillator.disconnect();
+		this.scaler.disconnect();
+		this.bpmToFrequencyGain.disconnect();
 	}
 }
 
@@ -651,6 +664,10 @@ export class DestinationNode extends GenericCustomAudioNode implements CustomAud
 	getOutputNode(): AudioNode {
 		return this.audioDesinationNode;
 	}
+
+	cleanup(): void {
+		this.gainNode.disconnect();
+	}
 }
 
 export class CustomConvolutionNode extends GenericCustomAudioNode {
@@ -670,11 +687,15 @@ export class CustomConvolutionNode extends GenericCustomAudioNode {
 	private convolution: ConvolverNode;
 	private output: GainNode;
 	private mix: ConstantSourceNode;
+	private wetGain: GainNode;
+	private dryGain: GainNode;
 
 	constructor(id: string) {
 		super(id, 'convolution');
-
+	
 		const convolution = globalContext.createConvolver();
+
+		CustomConvolutionNode.fetchReverb(convolution);
 
 		const mix = globalContext.createConstantSource();
 		const negate = globalContext.createGain();
@@ -691,8 +712,6 @@ export class CustomConvolutionNode extends GenericCustomAudioNode {
 		dryGain.gain.value = 1;
 		wetGain.gain.value = 0;
 
-		mix.start();
-
 		input.connect(dryGain);
 		input.connect(convolution).connect(wetGain);
 
@@ -706,8 +725,10 @@ export class CustomConvolutionNode extends GenericCustomAudioNode {
 		this.input = input;
 		this.convolution = convolution;
 		this.output = output;
+		this.dryGain = dryGain;
+		this.wetGain = wetGain;
 
-		CustomConvolutionNode.fetchReverb(convolution);
+		mix.start();
 	}
 
 	getInputNode(): AudioNode | null {
@@ -725,6 +746,16 @@ export class CustomConvolutionNode extends GenericCustomAudioNode {
 
 		return accessParameter(this.convolution, parameterName);
 	}
+	cleanup(): void {
+		this.mix.stop();
+
+		this.mix.disconnect();
+		this.input.disconnect();
+		this.convolution.disconnect();
+		this.output.disconnect();
+		this.dryGain.disconnect();
+		this.wetGain.disconnect();
+	}
 }
 
 export class CustomDelayNode extends GenericCustomAudioNode {
@@ -734,6 +765,8 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 	private output: GainNode;
 	private mix: ConstantSourceNode;
 	private measureTrigger: AudioWorkletNode;
+	private dryGain: GainNode;
+	private wetGain: GainNode;
 
 	constructor(id: string) {
 		super(id, 'delay');
@@ -761,8 +794,6 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 		dryGain.gain.value = 1;
 		wetGain.gain.value = 0;
 
-		mix.start();
-
 		input.connect(dryGain);
 		input.connect(delay).connect(wetGain);
 
@@ -781,6 +812,11 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 		this.feedbackGain = feedbackGain;
 		this.output = output;
 		this.measureTrigger = measureTrigger;
+		this.wetGain = wetGain;
+		this.dryGain = dryGain;
+
+
+		mix.start();
 	}
 
 	getInputNode(name?: string): AudioNode | null {
@@ -806,16 +842,29 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 
 		return accessParameter(this.delay, parameterName);
 	}
+
+	cleanup(): void {
+		this.mix.stop();
+
+		this.mix.disconnect();
+		this.input.disconnect();
+		this.delay.disconnect();
+		this.feedbackGain.disconnect();
+		this.output.disconnect();
+		this.measureTrigger.disconnect();
+		this.wetGain.disconnect();
+		this.dryGain.disconnect();
+	}
 }
 
-export class CustomLFONode
-	extends GenericCustomAudioNode
-	implements CustomAudioScheduledSourceNode {
+export class CustomLFONode extends GenericCustomAudioNode {
 
 	private mult: GainNode;
 	private scalerOn: ConstantSourceNode;
 	private minusOne: ConstantSourceNode;
 	private invertOn: ConstantSourceNode;
+	private negate: GainNode;
+	private timesMinusTwo: GainNode;
 
 	constructor(id: string, nodeType: NodeType, private oscillator: AudioNode) {
 		super(id, nodeType);
@@ -823,9 +872,9 @@ export class CustomLFONode
 		const mult = globalContext.createGain();
 		const negate = globalContext.createGain();
 		const timesMinusTwo = globalContext.createGain();
-		const negateOn = globalContext.createConstantSource();
+		const invertOn = globalContext.createConstantSource();
 
-		negateOn.connect(timesMinusTwo).connect(negate.gain);
+		invertOn.connect(timesMinusTwo).connect(negate.gain);
 
 		timesMinusTwo.gain.value = -2;
 		negate.gain.value = 1;
@@ -849,7 +898,13 @@ export class CustomLFONode
 		this.mult = mult;
 		this.scalerOn = scalerOn;
 		this.minusOne = minusOne;
-		this.invertOn = negateOn;
+		this.invertOn = invertOn;
+		this.negate = negate;
+		this.timesMinusTwo = timesMinusTwo;
+
+		this.scalerOn.start();
+		this.invertOn.start();
+		this.minusOne.start();
 	}
 
 	getInputNode(): AudioNode | null {
@@ -876,16 +931,18 @@ export class CustomLFONode
 		return accessParameter(this.oscillator, parameterName);
 	}
 
-	start(when?: number | undefined): void {
-		this.scalerOn.start(when);
-		this.minusOne.start(when);
-		this.invertOn.start(when);
-	}
+	cleanup(): void {
+		this.scalerOn.stop();
+		this.invertOn.stop();
+		this.minusOne.stop();
 
-	stop(when?: number | undefined): void {
-		this.scalerOn.stop(when);
-		this.minusOne.stop(when);
-		this.invertOn.stop(when);
+		this.oscillator.disconnect();
+		this.mult.disconnect();
+		this.scalerOn.disconnect();
+		this.minusOne.disconnect();
+		this.invertOn.disconnect();
+		this.negate.disconnect();
+		this.timesMinusTwo.disconnect();
 	}
 }
 
@@ -935,6 +992,18 @@ export class MidiNode extends GenericCustomAudioNode {
 
 		this.frequency = frequency;
 		this.gate = gate;
+
+		this.frequency.start();
+		this.gate.start();
+
+		navigator.requestMIDIAccess().then((midiAccess) => {
+			this.midiAccess = midiAccess;
+
+			this.midiAccess.inputs.forEach((input) => {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				input.addEventListener('midimessage', this.handleMidiMessage.bind(this) as any);
+			});
+		});
 	}
 
 	getAudioParam(): AudioParam {
@@ -953,24 +1022,19 @@ export class MidiNode extends GenericCustomAudioNode {
 		return this.frequency;
 	}
 
-	start(): void {
-		navigator.requestMIDIAccess().then((midiAccess) => {
-			this.midiAccess = midiAccess;
-
-			this.midiAccess.inputs.forEach((input) => {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				input.addEventListener('midimessage', this.handleMidiMessage.bind(this) as any);
-			});
-		});
-	}
-
-	stop(): void {
+	cleanup(): void {
 		if (this.midiAccess !== null) {
 			this.midiAccess.inputs.forEach((input) => {
 				// eslint-disable-next-line @typescript-eslint/no-explicit-any
 				input.removeEventListener('midimessage', this.handleMidiMessage.bind(this) as any);
 			});
 		}
+
+		this.frequency.stop();
+		this.gate.stop();
+
+		this.frequency.disconnect();
+		this.gate.disconnect();
 	}
 
 	private handleMidiMessage(event: MIDIMessageEvent) {

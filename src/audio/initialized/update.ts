@@ -39,7 +39,6 @@ import {
 	CustomNumberNode
 } from './nodes';
 import {
-	isCustomAudioScheduledSourceNode,
 	type CustomAudioNode,
 	type AudioNodeDatabase
 } from './types';
@@ -56,15 +55,7 @@ export const updateAudioCanvas = (
 		if (newAudioElement === undefined) {
 			const node = audioNodeDatabase[id];
 			if (node !== undefined) {
-				if (isCustomAudioScheduledSourceNode(node)) {
-					try {
-						node.stop();
-					} catch {
-						/* Do nothing */
-					}
-				}
-
-				node.disconnect();
+				node.cleanup();
 			}
 
 			delete audioNodeDatabase[id];
@@ -80,9 +71,6 @@ export const updateAudioCanvas = (
 			const createdAudioNode = createCustomAudioNode(id, newAudioElement);
 
 			if (createdAudioNode !== null) {
-				if (isCustomAudioScheduledSourceNode(createdAudioNode)) {
-					createdAudioNode.start();
-				}
 				audioNodeDatabase[id] = createdAudioNode;
 			}
 		}

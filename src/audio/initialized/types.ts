@@ -30,7 +30,7 @@ export interface CustomAudioNode {
 	getOutput(name?: string): Output;
 	getInputNode(name?: string): AudioNode | null;
 	getParameter(parameterName: string): CustomAudioParam;
-	disconnect(): void;
+	cleanup(): void;
 	onHighlightParameter(callback: (parameterName: string) => void): void;
 }
 
@@ -45,17 +45,6 @@ export function isCustomAudioNode(customAudioNode: unknown): customAudioNode is 
 		'getOutputNode' in customAudioNode &&
 		'onHighlightParameter' in customAudioNode
 	);
-}
-
-export interface CustomAudioScheduledSourceNode extends CustomAudioNode {
-	start(when?: number): void;
-	stop(when?: number): void;
-}
-
-export function isCustomAudioScheduledSourceNode(
-	customAudioNode: CustomAudioNode
-): customAudioNode is CustomAudioScheduledSourceNode {
-	return 'start' in customAudioNode && 'stop' in customAudioNode;
 }
 
 export interface CustomAudioNodeWithWebApiNode<T extends AudioNode = AudioNode>
