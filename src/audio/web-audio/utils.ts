@@ -31,7 +31,7 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(adEnvelopeNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(oscillatorNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(oscillatorNodeWorkletUrl)
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');
@@ -40,12 +40,12 @@ export async function loadCustomNodes() {
 
 export class KillableAudioWorkletNode extends AudioWorkletNode {
 	disconnect(): void;
-    disconnect(output: number): void;
-    disconnect(destinationNode: AudioNode): void;
-    disconnect(destinationNode: AudioNode, output: number): void;
-    disconnect(destinationNode: AudioNode, output: number, input: number): void;
-    disconnect(destinationParam: AudioParam): void;
-    disconnect(destinationParam: AudioParam, output: number): void;
+	disconnect(output: number): void;
+	disconnect(destinationNode: AudioNode): void;
+	disconnect(destinationNode: AudioNode, output: number): void;
+	disconnect(destinationNode: AudioNode, output: number, input: number): void;
+	disconnect(destinationParam: AudioParam): void;
+	disconnect(destinationParam: AudioParam, output: number): void;
 	disconnect(...args: []) {
 		super.disconnect(...args);
 		this.port.postMessage('kill');
@@ -73,5 +73,7 @@ export const createPitchQuantizerWorklet = () =>
 export const createGateLengthWorklet = () => createWasmWorklet('gate-length', gateLengthWasmUrl);
 export const createScalerWorklet = () => createWasmWorklet('scaler', scalerWasmUrl);
 export const createAdEnvelopeWorklet = () => createWasmWorklet('ad-envelope', adEnvelopeWasmUrl);
-export const createSquareOscillatorWorklet = () => createWasmWorklet('custom-oscillator', squareOscillatorWasmUrl);
-export const createSawOscillatorWorklet = () => createWasmWorklet('custom-oscillator', sawOscillatorWasmUrl);
+export const createSquareOscillatorWorklet = () =>
+	createWasmWorklet('custom-oscillator', squareOscillatorWasmUrl);
+export const createSawOscillatorWorklet = () =>
+	createWasmWorklet('custom-oscillator', sawOscillatorWasmUrl);

@@ -11,7 +11,7 @@ import {
 	createSawOscillatorWorklet,
 	createScalerWorklet,
 	createSequencerWorklet,
-	createSquareOscillatorWorklet,
+	createSquareOscillatorWorklet
 } from '../web-audio/utils';
 import {
 	type CustomAudioNode,
@@ -690,7 +690,7 @@ export class CustomConvolutionNode extends GenericCustomAudioNode {
 
 	constructor(id: string) {
 		super(id, 'convolution');
-	
+
 		const convolution = globalContext.createConvolver();
 
 		CustomConvolutionNode.fetchReverb(convolution);
@@ -813,7 +813,6 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 		this.wetGain = wetGain;
 		this.dryGain = dryGain;
 
-
 		mix.start();
 	}
 
@@ -856,7 +855,6 @@ export class CustomDelayNode extends GenericCustomAudioNode {
 }
 
 export class CustomLFONode extends GenericCustomAudioNode {
-
 	private mult: GainNode;
 	private scalerOn: ConstantSourceNode;
 	private minusOne: ConstantSourceNode;

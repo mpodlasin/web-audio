@@ -38,10 +38,7 @@ import {
 	CustomValueNode,
 	CustomNumberNode
 } from './nodes';
-import {
-	type CustomAudioNode,
-	type AudioNodeDatabase
-} from './types';
+import { type CustomAudioNode, type AudioNodeDatabase } from './types';
 
 export const updateAudioCanvas = (
 	newAudioElements: SerializedAudioElements,
