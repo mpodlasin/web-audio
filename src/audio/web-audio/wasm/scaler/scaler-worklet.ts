@@ -3,9 +3,7 @@ class ScalerProcessor extends AudioWorkletProcessor {
 	private inputBuffer: Float32Array = new Float32Array();
 	private outputBuffer: Float32Array = new Float32Array();
 	private fromToBuffer: Float32Array = new Float32Array();
-	private nativeProcess: (currentFrame: number, sampleRate: number) => void = () => {
-		/* do nothing */
-	};
+	private nativeProcess: ((currentFrame: number, sampleRate: number) => void) | undefined = undefined;
 	private debug: (() => number) | undefined = undefined;
 
 	static get parameterDescriptors() {
@@ -75,6 +73,8 @@ class ScalerProcessor extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame = currentFrame
 	) {
+		if (!this.nativeProcess) return true;
+
 		const fromTo = [
 			parameters['a-from']?.[0] ?? 0,
 			parameters['a-to']?.[0] ?? 0,

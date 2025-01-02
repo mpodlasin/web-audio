@@ -2,9 +2,7 @@ class WorkletProcessor extends AudioWorkletProcessor {
 	private WEBEAUDIO_FRAME_SIZE: number;
 	private inputBuffer: Float32Array = new Float32Array();
 	private outputBuffer: Float32Array = new Float32Array();
-	private nativeProcess: (currentFrame: number, sampleRate: number) => void = () => {
-		/* do nothing */
-	};
+	private nativeProcess: ((currentFrame: number, sampleRate: number) => void) | undefined = undefined;
 	private debug: (() => number) | undefined = undefined;
 
 	constructor(
@@ -43,6 +41,8 @@ class WorkletProcessor extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame = currentFrame
 	) {
+		if (!this.nativeProcess) return true;
+
 		const input = inputList[0]?.[0];
 
 		if (input) {

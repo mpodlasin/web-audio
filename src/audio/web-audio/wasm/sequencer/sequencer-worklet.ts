@@ -3,9 +3,7 @@ class SequencerProcessor extends AudioWorkletProcessor {
 	private inputBuffer: Float32Array = new Float32Array();
 	private outputBuffer: Float32Array = new Float32Array();
 	private frequenciesBuffer: Float32Array = new Float32Array();
-	private nativeProcess: (currentFrame: number, sampleRate: number) => void = () => {
-		/* do nothing */
-	};
+	private nativeProcess: ((currentFrame: number, sampleRate: number) => void) | undefined = undefined;
 	private debug: (() => number) | undefined = undefined;
 
 	static get parameterDescriptors() {
@@ -57,6 +55,8 @@ class SequencerProcessor extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame = currentFrame
 	) {
+		if (!this.nativeProcess) return true;
+
 		const frequencies = [
 			parameters.frequency1?.[0] ?? 0,
 			parameters.frequency2?.[0] ?? 0,

@@ -3,9 +3,7 @@ class PitchQuantizerProcessor extends AudioWorkletProcessor {
 	private inputBuffer: Float32Array = new Float32Array();
 	private outputBuffer: Float32Array = new Float32Array();
 	private notesBuffer: Float32Array = new Float32Array();
-	private nativeProcess: (currentFrame: number, sampleRate: number) => void = () => {
-		/* do nothing */
-	};
+	private nativeProcess: ((currentFrame: number, sampleRate: number) => void) | undefined = undefined;
 	private debug: (() => number) | undefined = undefined;
 
 	static parameterDescriptors = [
@@ -61,6 +59,8 @@ class PitchQuantizerProcessor extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame = currentFrame
 	) {
+		if (!this.nativeProcess) return true;
+
 		const notes = [
 			parameters['A']?.[0] ?? 0,
 			parameters['A#']?.[0] ?? 0,

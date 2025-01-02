@@ -3,9 +3,7 @@ class AdEnvelopeProcessor extends AudioWorkletProcessor {
 	private inputBuffer: Float32Array = new Float32Array();
 	private outputBuffer: Float32Array = new Float32Array();
 	private attackDecayBuffer: Float32Array = new Float32Array();
-	private nativeProcess: (currentFrame: number, sampleRate: number) => void = () => {
-		/* do nothing */
-	};
+	private nativeProcess: ((currentFrame: number, sampleRate: number) => void) | undefined = undefined;
 	private debug: (() => number) | undefined = undefined;
 
 	static get parameterDescriptors() {
@@ -63,6 +61,8 @@ class AdEnvelopeProcessor extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame = currentFrame
 	) {
+		if (!this.nativeProcess) return true;
+
 		const fromTo = [parameters['attack']?.[0] ?? 0, parameters['decay']?.[0] ?? 0];
 		this.attackDecayBuffer.set(fromTo);
 
