@@ -38,8 +38,22 @@ export async function loadCustomNodes() {
 	}
 }
 
+export class KillableAudioWorkletNode extends AudioWorkletNode {
+	disconnect(): void;
+    disconnect(output: number): void;
+    disconnect(destinationNode: AudioNode): void;
+    disconnect(destinationNode: AudioNode, output: number): void;
+    disconnect(destinationNode: AudioNode, output: number, input: number): void;
+    disconnect(destinationParam: AudioParam): void;
+    disconnect(destinationParam: AudioParam, output: number): void;
+	disconnect(...args: []) {
+		super.disconnect(...args);
+		this.port.postMessage('kill');
+	}
+}
+
 const createWasmWorklet = (workletName: string, wasmUrl: string) => {
-	const wasmWorklet = new AudioWorkletNode(globalContext, workletName);
+	const wasmWorklet = new KillableAudioWorkletNode(globalContext, workletName);
 
 	fetch(wasmUrl).then(async (response) => {
 		const byteCode = await response.arrayBuffer();

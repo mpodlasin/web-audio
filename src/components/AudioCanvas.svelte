@@ -58,7 +58,7 @@
 		if (temporaryGraphHistory.length >= 2) {
 			temporaryGraphHistory = [...temporaryGraphHistory, map(temporaryGraphHistory.at(-1) ?? {})];
 
-			updateAudioCanvas(
+			audioNodeDatabase = updateAudioCanvas(
 				temporaryGraphHistory.at(-1) ?? {},
 				temporaryGraphHistory.at(-2) ?? {},
 				audioNodeDatabase
@@ -72,7 +72,7 @@
 
 			audioGraphHistory = newAudioGraphHistory;
 
-			updateAudioCanvas(
+			audioNodeDatabase = updateAudioCanvas(
 				audioGraphHistory.at(-1) ?? {},
 				audioGraphHistory.at(-2) ?? {},
 				audioNodeDatabase
@@ -90,7 +90,7 @@
 
 		audioGraphHistory = newAudioGraphHistory;
 
-		updateAudioCanvas(previousAudioGraph, audioGraph, audioNodeDatabase);
+		audioNodeDatabase = updateAudioCanvas(previousAudioGraph, audioGraph, audioNodeDatabase);
 	};
 
 	const startTemporaryAction = () => {
@@ -115,7 +115,7 @@
 
 	onMount(() => {
 		return () => {
-			updateAudioCanvas({}, audioGraph, audioNodeDatabase);
+			audioNodeDatabase = updateAudioCanvas({}, audioGraph, audioNodeDatabase);
 		};
 	});
 

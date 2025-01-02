@@ -11,7 +11,7 @@ import {
 	createSawOscillatorWorklet,
 	createScalerWorklet,
 	createSequencerWorklet,
-	createSquareOscillatorWorklet
+	createSquareOscillatorWorklet,
 } from '../web-audio/utils';
 import {
 	type CustomAudioNode,
@@ -624,8 +624,6 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 	}
 
 	cleanup(): void {
-		console.log('disconnect');
-
 		this.tempo.stop();
 
 		this.gateLength.disconnect();

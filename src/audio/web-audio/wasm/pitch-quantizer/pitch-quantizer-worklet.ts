@@ -5,6 +5,7 @@ class PitchQuantizerProcessor extends AudioWorkletProcessor {
 	private notesBuffer: Float32Array = new Float32Array();
 	private nativeProcess: ((currentFrame: number, sampleRate: number) => void) | undefined = undefined;
 	private debug: (() => number) | undefined = undefined;
+	private kill = false;
 
 	static parameterDescriptors = [
 		{ name: 'A', defaultValue: 0, minValue: 0, maxValue: 1 },
@@ -29,6 +30,11 @@ class PitchQuantizerProcessor extends AudioWorkletProcessor {
 		this.WEBEAUDIO_FRAME_SIZE = 128;
 
 		this.port.onmessage = (e) => {
+			if (e.data === 'kill') {
+				this.kill = true;
+				return;
+			}
+
 			WebAssembly.instantiate(e.data).then((result) => {
 				const exports = result.instance.exports as any;
 
@@ -59,6 +65,7 @@ class PitchQuantizerProcessor extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame = currentFrame
 	) {
+		if (this.kill) return false;
 		if (!this.nativeProcess) return true;
 
 		const notes = [

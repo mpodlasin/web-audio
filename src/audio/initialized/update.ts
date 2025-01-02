@@ -46,8 +46,10 @@ import {
 export const updateAudioCanvas = (
 	newAudioElements: SerializedAudioElements,
 	oldAudioElements: SerializedAudioElements,
-	audioNodeDatabase: AudioNodeDatabase
-) => {
+	oldAudioNodeDatabase: AudioNodeDatabase
+): AudioNodeDatabase => {
+	const audioNodeDatabase: AudioNodeDatabase = { ...oldAudioNodeDatabase };
+
 	/* remove deleted nodes */
 	Object.entries(oldAudioElements).forEach(([id]) => {
 		const newAudioElement = newAudioElements[id];
@@ -56,9 +58,8 @@ export const updateAudioCanvas = (
 			const node = audioNodeDatabase[id];
 			if (node !== undefined) {
 				node.cleanup();
+				delete audioNodeDatabase[id];
 			}
-
-			delete audioNodeDatabase[id];
 		}
 	});
 
@@ -242,6 +243,8 @@ export const updateAudioCanvas = (
 			}
 		});
 	});
+
+	return audioNodeDatabase;
 };
 
 function connectAudioElementsToParameters(

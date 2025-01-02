@@ -5,6 +5,7 @@ class AdEnvelopeProcessor extends AudioWorkletProcessor {
 	private attackDecayBuffer: Float32Array = new Float32Array();
 	private nativeProcess: ((currentFrame: number, sampleRate: number) => void) | undefined = undefined;
 	private debug: (() => number) | undefined = undefined;
+	private kill = false;
 
 	static get parameterDescriptors() {
 		return [
@@ -31,6 +32,11 @@ class AdEnvelopeProcessor extends AudioWorkletProcessor {
 		this.WEBEAUDIO_FRAME_SIZE = 128;
 
 		this.port.onmessage = (e) => {
+			if (e.data === 'kill') {
+				this.kill = true;
+				return;
+			}
+
 			WebAssembly.instantiate(e.data).then((result) => {
 				const exports = result.instance.exports as any;
 
@@ -61,6 +67,7 @@ class AdEnvelopeProcessor extends AudioWorkletProcessor {
 		parameters: Record<string, Float32Array>,
 		_currentFrame = currentFrame
 	) {
+		if (this.kill) return false;
 		if (!this.nativeProcess) return true;
 
 		const fromTo = [parameters['attack']?.[0] ?? 0, parameters['decay']?.[0] ?? 0];
