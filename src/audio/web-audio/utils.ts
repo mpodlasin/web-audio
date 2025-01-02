@@ -7,7 +7,7 @@ import pitchQuantizerNodeWorkletUrl from './wasm/pitch-quantizer/pitch-quantizer
 import gateLengthNodeWorkletUrl from './wasm/gate-length/gate-length-worklet.js?worker&url';
 import scalerNodeWorkletUrl from './wasm/scaler/scaler-worklet.js?worker&url';
 import adEnvelopeNodeWorkletUrl from './wasm/ad-envelope/ad-envelope-worklet.js?worker&url';
-import squareOscillatorNodeWorkletUrl from './wasm/square-oscillator/square-oscillator-worklet.js?worker&url';
+import oscillatorNodeWorkletUrl from './wasm/oscillator-worklet.js?worker&url';
 
 import measureGateWasmUrl from './wasm/measure-gate/measure-gate.wasm?url';
 import clockCounterWasmUrl from './wasm/clock-counter/clock-counter.wasm?url';
@@ -18,6 +18,7 @@ import gateLengthWasmUrl from './wasm/gate-length/gate-length.wasm?url';
 import scalerWasmUrl from './wasm/scaler/scaler.wasm?url';
 import adEnvelopeWasmUrl from './wasm/ad-envelope/ad-envelope.wasm?url';
 import squareOscillatorWasmUrl from './wasm/square-oscillator/square-oscillator.wasm?url';
+import sawOscillatorWasmUrl from './wasm/saw-oscillator/saw-oscillator.wasm?url';
 
 export async function loadCustomNodes() {
 	try {
@@ -30,7 +31,7 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(adEnvelopeNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(squareOscillatorNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(oscillatorNodeWorkletUrl),
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');
@@ -58,4 +59,5 @@ export const createPitchQuantizerWorklet = () =>
 export const createGateLengthWorklet = () => createWasmWorklet('gate-length', gateLengthWasmUrl);
 export const createScalerWorklet = () => createWasmWorklet('scaler', scalerWasmUrl);
 export const createAdEnvelopeWorklet = () => createWasmWorklet('ad-envelope', adEnvelopeWasmUrl);
-export const createSquareOscillatorWorklet = () => createWasmWorklet('square-oscillator', squareOscillatorWasmUrl);
+export const createSquareOscillatorWorklet = () => createWasmWorklet('custom-oscillator', squareOscillatorWasmUrl);
+export const createSawOscillatorWorklet = () => createWasmWorklet('custom-oscillator', sawOscillatorWasmUrl);

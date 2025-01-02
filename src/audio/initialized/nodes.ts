@@ -8,6 +8,7 @@ import {
 	createMeasureGateWorklet,
 	createPatternWorklet,
 	createPitchQuantizerWorklet,
+	createSawOscillatorWorklet,
 	createScalerWorklet,
 	createSequencerWorklet,
 	createSquareOscillatorWorklet
@@ -819,9 +820,6 @@ export class CustomLFONode
 	constructor(id: string, nodeType: NodeType, private oscillator: AudioNode) {
 		super(id, nodeType);
 
-		const invertSaw = globalContext.createGain();
-		invertSaw.gain.value = nodeType == 'saw-lfo' ? -1 : 1;
-
 		const mult = globalContext.createGain();
 		const negate = globalContext.createGain();
 		const timesMinusTwo = globalContext.createGain();
@@ -838,7 +836,7 @@ export class CustomLFONode
 		minusOne.offset.value = -1;
 		scalerOn.offset.value = 0;
 
-		oscillator.connect(invertSaw).connect(scaler).connect(negate).connect(mult);
+		oscillator.connect(scaler).connect(negate).connect(mult);
 
 		const aTo = scaler.parameters.get('a-to');
 
@@ -895,14 +893,14 @@ export class CustomSineLFONode extends CustomLFONode {
 	constructor(id: string) {
 		const oscillator = globalContext.createOscillator();
 		oscillator.type = 'sine';
+		oscillator.start();
 		super(id, 'sine-lfo', oscillator);
 	}
 }
 
 export class CustomSawLFONode extends CustomLFONode {
 	constructor(id: string) {
-		const oscillator = globalContext.createOscillator();
-		oscillator.type = 'sine';
+		const oscillator = createSawOscillatorWorklet();
 		super(id, 'saw-lfo', oscillator);
 	}
 }
@@ -910,7 +908,8 @@ export class CustomSawLFONode extends CustomLFONode {
 export class CustomTriangleLFONode extends CustomLFONode {
 	constructor(id: string) {
 		const oscillator = globalContext.createOscillator();
-		oscillator.type = 'sine';
+		oscillator.type = 'triangle';
+		oscillator.start();
 		super(id, 'triangle-lfo', oscillator);
 	}
 }

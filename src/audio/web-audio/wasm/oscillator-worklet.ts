@@ -1,4 +1,4 @@
-class SquareOscillatorProcessor extends AudioWorkletProcessor {
+class OscillatorProcessor extends AudioWorkletProcessor {
 	private WEBEAUDIO_FRAME_SIZE: number;
 	private inputBuffer: Float32Array = new Float32Array();
 	private outputBuffer: Float32Array = new Float32Array();
@@ -74,4 +74,4 @@ class SquareOscillatorProcessor extends AudioWorkletProcessor {
 		return true;
 	}
 }
-registerProcessor('square-oscillator', SquareOscillatorProcessor);
+registerProcessor('custom-oscillator', OscillatorProcessor);
