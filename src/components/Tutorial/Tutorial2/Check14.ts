@@ -11,7 +11,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	const valueNode = values.find((node) => node.type === 'value');
 	const clockNodeId = entries.find((entry) => entry[1] === clockNode)?.[0];
 
-	const tempo = clockNode?.parameters?.tempo.base ?? 0;
+	const tempo = clockNode?.parameters?.tempo?.base ?? 0;
 	const epsilon = 0.01;
 
 	const clockIsConnectedToValue =

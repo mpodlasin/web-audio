@@ -3,18 +3,15 @@ export type SerializedAudioElements = {
 };
 
 export type SerializedAudioElementsWithIds = {
-	[key: string]: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>;
+	[key: string]: SerializedAudioElementWithId<NodeType>;
 };
 
 export type SerializedAudioElement<
-	T extends AllowedSerializedAudioElements['type'],
-	P extends string
+	T extends NodeType
 > = {
 	type: T;
 	inputs?: Inputs;
 	parameters?: {
-		[key in P]: SerializedAudioParameter;
-	} & {
 		[key: string]: SerializedAudioParameter;
 	};
 	ui: UIInformation;
@@ -31,9 +28,8 @@ export type UIInformation = {
 };
 
 export type SerializedAudioElementWithId<
-	T extends AllowedSerializedAudioElements['type'],
-	P extends string
-> = SerializedAudioElement<T, P> & {
+	T extends NodeType
+> = SerializedAudioElement<T> & {
 	id: string;
 };
 
@@ -45,92 +41,78 @@ export type SerializedAudioParameter = {
 };
 
 export type SerializedSineOscillatorNode = SerializedAudioElement<
-	'sine-oscillator',
-	'frequency' | 'detune'
+	'sine-oscillator'
 >;
 
 export type SerializedSawOscillatorNode = SerializedAudioElement<
-	'saw-oscillator',
-	'frequency' | 'detune'
+	'saw-oscillator'
 >;
 
 export type SerializedSquareOscillatorNode = SerializedAudioElement<
-	'square-oscillator',
-	'frequency' | 'detune'
+	'square-oscillator'
 >;
 
 export type SerializedTriangleOscillatorNode = SerializedAudioElement<
-	'triangle-oscillator',
-	'frequency' | 'detune'
+	'triangle-oscillator'
 >;
 
-export type SerializedLowpassFilterNode = SerializedAudioElement<'lowpass-filter', 'frequency'>;
+export type SerializedLowpassFilterNode = SerializedAudioElement<'lowpass-filter'>;
 
-export type SerializedBandpassFilterNode = SerializedAudioElement<'bandpass-filter', 'frequency'>;
+export type SerializedBandpassFilterNode = SerializedAudioElement<'bandpass-filter'>;
 
-export type SerializedHighpassFilterNode = SerializedAudioElement<'highpass-filter', 'frequency'>;
+export type SerializedHighpassFilterNode = SerializedAudioElement<'highpass-filter'>;
 
-export type SerializedGainNode = SerializedAudioElement<'gain', 'gain'>;
+export type SerializedGainNode = SerializedAudioElement<'gain'>;
 
-export type SerializedMultiplyNode = SerializedAudioElement<'multiply', 'factor'>;
+export type SerializedMultiplyNode = SerializedAudioElement<'multiply'>;
 
-export type SerializedDestinationNode = SerializedAudioElement<'destination', never>;
+export type SerializedDestinationNode = SerializedAudioElement<'destination'>;
 
-export type SerializedClockNode = SerializedAudioElement<'clock', 'tempo'>;
+export type SerializedClockNode = SerializedAudioElement<'clock'>;
 
-export type SerializedPanNode = SerializedAudioElement<'pan', 'pan'>;
+export type SerializedPanNode = SerializedAudioElement<'pan'>;
 
-export type SerializedSequencerNode = SerializedAudioElement<
-	'sequencer',
-	| 'frequency1'
-	| 'frequency2'
-	| 'frequency3'
-	| 'frequency4'
-	| 'frequency5'
-	| 'frequency6'
-	| 'frequency7'
-	| 'frequency8'
->;
+export type SerializedSequencerNode = SerializedAudioElement<'sequencer'>;
 
-export type SerializedMidiNode = SerializedAudioElement<'midi', never>;
+export type SerializedMidiNode = SerializedAudioElement<'midi'>;
 
-export type SerializedADEnvelopeNode = SerializedAudioElement<'ad-envelope', 'attack' | 'decay'>;
+export type SerializedADEnvelopeNode = SerializedAudioElement<'ad-envelope'>;
 
-export type SerializedOscilloscopeNode = SerializedAudioElement<'oscilloscope', 'slow'>;
+export type SerializedOscilloscopeNode = SerializedAudioElement<'oscilloscope'>;
 
-export type SerializedConvolutionNode = SerializedAudioElement<'convolution', never>;
+export type SerializedConvolutionNode = SerializedAudioElement<'convolution'>;
 
-export type SerializedDelayNode = SerializedAudioElement<'delay', 'delayTime'>;
+export type SerializedDelayNode = SerializedAudioElement<'delay'>;
 
-export type SerializedPitchQuantizerNode = SerializedAudioElement<'pitch-quantizer', never>;
+export type SerializedPitchQuantizerNode = SerializedAudioElement<'pitch-quantizer'>;
 
-export type SerializedBipolarToUnipolar = SerializedAudioElement<'bipolar-to-unipolar', never>;
+export type SerializedBipolarToUnipolar = SerializedAudioElement<'bipolar-to-unipolar'>;
 
-export type SerializedGateLengthNode = SerializedAudioElement<'gate-length', 'length'>;
+export type SerializedGateLengthNode = SerializedAudioElement<'gate-length'>;
 
-export type SerializedMeasureGateNode = SerializedAudioElement<'measure-gate', never>;
+export type SerializedMeasureGateNode = SerializedAudioElement<'measure-gate'>;
 
-export type SerializedSineLFONode = SerializedAudioElement<'sine-lfo', never>;
+export type SerializedSineLFONode = SerializedAudioElement<'sine-lfo'>;
 
-export type SerializedSawLFONode = SerializedAudioElement<'saw-lfo', never>;
+export type SerializedSawLFONode = SerializedAudioElement<'saw-lfo'>;
 
-export type SerializedTriangleLFONode = SerializedAudioElement<'triangle-lfo', never>;
+export type SerializedTriangleLFONode = SerializedAudioElement<'triangle-lfo'>;
 
-export type SerializedSquareLFONode = SerializedAudioElement<'square-lfo', never>;
+export type SerializedSquareLFONode = SerializedAudioElement<'square-lfo'>;
 
-export type SerializedPatternNode = SerializedAudioElement<'pattern', never>;
+export type SerializedPatternNode = SerializedAudioElement<'pattern'>;
 
-export type SerializedTutorialNode = SerializedAudioElement<'tutorial', never> & {
+export type SerializedTutorialNode = SerializedAudioElement<'tutorial'> & {
 	tutorialId: string;
 };
 
-export type SerializedCommentNode = SerializedAudioElement<'comment', never> & {
+export type SerializedCommentNode = SerializedAudioElement<'comment'> & {
 	comment: string;
 };
 
-export type SerializedValueNode = SerializedAudioElement<'value', never>;
+export type SerializedValueNode = SerializedAudioElement<'value'>;
 
-export type SerializedNumberNode = SerializedAudioElement<'number', 'value'>;
+export type SerializedNumberNode = SerializedAudioElement<'number'>;
 
 export type AllowedSerializedAudioElements =
 	| SerializedSineOscillatorNode

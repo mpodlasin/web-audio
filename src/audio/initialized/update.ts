@@ -1,5 +1,5 @@
 import type {
-	AllowedSerializedAudioElements,
+	NodeType,
 	SerializedAudioElementWithId,
 	SerializedAudioElementsWithIds,
 	SerializedAudioElement,
@@ -245,7 +245,7 @@ export const updateAudioCanvas = (
 };
 
 function connectAudioElementsToParameters(
-	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
+	audioElementA: SerializedAudioElementWithId<NodeType>,
 	audioElementsWithIds: SerializedAudioElementsWithIds,
 	audioNodeDatabase: AudioNodeDatabase
 ): void {
@@ -262,7 +262,7 @@ function connectAudioElementsToParameters(
 }
 
 function setParameterValues(
-	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
+	audioElementA: SerializedAudioElementWithId<NodeType>,
 	audioNodeDatabase: AudioNodeDatabase
 ): void {
 	if (audioElementA.parameters) {
@@ -273,7 +273,7 @@ function setParameterValues(
 }
 
 function setParameterValue(
-	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
+	audioElementA: SerializedAudioElementWithId<NodeType>,
 	parameterName: string,
 	audioNodeDatabase: AudioNodeDatabase
 ) {
@@ -286,7 +286,7 @@ function setParameterValue(
 }
 
 function connectAudioElementsToParameter(
-	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
+	audioElementA: SerializedAudioElementWithId<NodeType>,
 	audioElementsWithIds: SerializedAudioElementsWithIds,
 	parameterName: string,
 	audioNodeDatabase: AudioNodeDatabase
@@ -319,7 +319,7 @@ function connectAudioElementsToParameter(
 }
 
 function findInputsAndConnectAudioElements(
-	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
+	audioElementA: SerializedAudioElementWithId<NodeType>,
 	audioElementsWithIds: SerializedAudioElementsWithIds,
 	audioNodeDatabase: AudioNodeDatabase
 ): void {
@@ -341,8 +341,8 @@ function findInputsAndConnectAudioElements(
 }
 
 function connectAudioElements(
-	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
-	audioElementB: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
+	audioElementA: SerializedAudioElementWithId<NodeType>,
+	audioElementB: SerializedAudioElementWithId<NodeType>,
 	audioNodeDatabase: AudioNodeDatabase,
 	output?: string,
 	input?: string
@@ -360,8 +360,8 @@ function connectAudioElements(
 }
 
 function disconnectAudioElements(
-	audioElementA: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
-	audioElementB: SerializedAudioElementWithId<AllowedSerializedAudioElements['type'], string>,
+	audioElementA: SerializedAudioElementWithId<NodeType>,
+	audioElementB: SerializedAudioElementWithId<NodeType>,
 	audioNodeDatabase: AudioNodeDatabase,
 	output?: string,
 	input?: string
@@ -380,7 +380,7 @@ function disconnectAudioElements(
 
 function createCustomAudioNode(
 	id: string,
-	audioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
+	audioElement: SerializedAudioElement<NodeType>
 ): CustomAudioNode {
 	switch (audioElement.type) {
 		case 'sine-oscillator':
@@ -510,8 +510,8 @@ export function accessParameter(audioNode: AudioNode, parameterName: string): Au
 }
 
 function getAddedInputs(
-	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
-	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
+	newAudioElement: SerializedAudioElement<NodeType>,
+	oldAudioElement: SerializedAudioElement<NodeType>
 ) {
 	const addedInputs: Inputs = [];
 
@@ -531,8 +531,8 @@ function getAddedInputs(
 }
 
 function getRemovedInputs(
-	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
-	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
+	newAudioElement: SerializedAudioElement<NodeType>,
+	oldAudioElement: SerializedAudioElement<NodeType>
 ) {
 	const removedInputs: Inputs = [];
 
@@ -552,8 +552,8 @@ function getRemovedInputs(
 }
 
 const getParametersWithChangedValues = (
-	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
-	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
+	newAudioElement: SerializedAudioElement<NodeType>,
+	oldAudioElement: SerializedAudioElement<NodeType>
 ): string[] => {
 	const changedParameters: string[] = [];
 
@@ -576,8 +576,8 @@ const getParametersWithChangedValues = (
 };
 
 const getParametersWithChangedMultipliers = (
-	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
-	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
+	newAudioElement: SerializedAudioElement<NodeType>,
+	oldAudioElement: SerializedAudioElement<NodeType>
 ): { parameterName: string; inputId: string; value: number }[] => {
 	const changedParameters: { parameterName: string; inputId: string; value: number }[] = [];
 
@@ -612,8 +612,8 @@ const getParametersWithChangedMultipliers = (
 };
 
 const getParametersWithAddedInputs = (
-	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
-	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
+	newAudioElement: SerializedAudioElement<NodeType>,
+	oldAudioElement: SerializedAudioElement<NodeType>
 ): string[] => {
 	const changedParameters: string[] = [];
 
@@ -636,8 +636,8 @@ const getParametersWithAddedInputs = (
 };
 
 const getRemovedParameterInputs = (
-	newAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>,
-	oldAudioElement: SerializedAudioElement<AllowedSerializedAudioElements['type'], string>
+	newAudioElement: SerializedAudioElement<NodeType>,
+	oldAudioElement: SerializedAudioElement<NodeType>
 ): [string, string, string][] => {
 	const removedParameterInputs: [string, string, string][] = [];
 

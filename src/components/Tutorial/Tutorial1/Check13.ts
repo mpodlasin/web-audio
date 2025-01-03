@@ -10,7 +10,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	const sequencerNodeId = entries.find((entry) => entry[1] === sequencerNode)?.[0];
 
 	return (
-		sineNode?.parameters?.['frequency'].inputs.some((input) => input.id === sequencerNodeId) ??
+		sineNode?.parameters?.['frequency']?.inputs.some((input) => input.id === sequencerNodeId) ??
 		false
 	);
 }

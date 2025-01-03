@@ -16,11 +16,11 @@ export default function (audioGraph: SerializedAudioElements) {
 	const adEnvelopeNodeId = entries.find((entry) => entry[1] === adEnvelopeNode)?.[0];
 
 	const adEnvelopeWasConnectedToGain =
-		gainConnectedToConvolution?.parameters?.['gain'].inputs.some(
+		gainConnectedToConvolution?.parameters?.['gain']?.inputs.some(
 			(input) => input.id === adEnvelopeNodeId
 		) ?? false;
 
-	const gainParameter = gainConnectedToConvolution?.parameters?.['gain'].base ?? 0;
+	const gainParameter = gainConnectedToConvolution?.parameters?.['gain']?.base ?? 0;
 
 	return adEnvelopeWasConnectedToGain && gainParameter === 0;
 }

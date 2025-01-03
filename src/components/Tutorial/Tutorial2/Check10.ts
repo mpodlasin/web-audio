@@ -7,7 +7,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	// Sine frequency is below 0.10 Hz, but above 0.05 Hz.
 	const sineNode = values.find((node) => node.type === 'sine-oscillator');
 
-	const frequency = sineNode?.parameters?.frequency.base ?? 0;
+	const frequency = sineNode?.parameters?.frequency?.base ?? 0;
 
 	return frequency < 0.1 && frequency > 0.05;
 }

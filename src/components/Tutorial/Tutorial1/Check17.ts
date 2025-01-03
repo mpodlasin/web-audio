@@ -11,7 +11,7 @@ export default function (audioGraph: SerializedAudioElements) {
 
 	if (sequencerNode && sineNode && sequencerNodeId) {
 		return (
-			sineNode.parameters?.['frequency'].inputs.every((input) => input.id !== sequencerNodeId) ??
+			sineNode.parameters?.['frequency']?.inputs.every((input) => input.id !== sequencerNodeId) ??
 			false
 		);
 	}

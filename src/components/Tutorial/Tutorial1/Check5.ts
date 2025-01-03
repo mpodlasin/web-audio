@@ -10,7 +10,7 @@ export default function (audioGraph: SerializedAudioElements) {
 		const gainId = entries.find((entry) => entry[1] === gain)?.[0];
 
 		if (gain && gainId) {
-			return gain.parameters?.['gain'].base === 0;
+			return gain.parameters?.['gain']?.base === 0;
 		}
 	}
 

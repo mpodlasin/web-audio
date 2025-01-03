@@ -2,7 +2,7 @@ import {
 	allowedSerializedAudioElementStaticDefinitions,
 	getDefaultColorForNode
 } from './staticDefinitions';
-import type { AllowedSerializedAudioElements, Position, SerializedAudioElements } from './types';
+import type { NodeType, Position, SerializedAudioElements } from './types';
 
 export const generateId = (audioGraph: SerializedAudioElements, offset = 0) => {
 	return self.crypto.randomUUID
@@ -126,7 +126,7 @@ export const insertExistingNodes = (
 
 export const addNode = <S extends SerializedAudioElements>(
 	audioGraph: S,
-	type: AllowedSerializedAudioElements['type'],
+	type: NodeType,
 	position?: Position,
 	tutorialId?: string,
 	nextId: string = generateId(audioGraph)

@@ -1495,7 +1495,7 @@ describe('AudioCanvas', () => {
 				input: 'audio',
 				output: 'audio'
 			});
-			expect(newAudioElements['4']?.parameters?.['gain'].inputs[0]?.id).toBe('3');
+			expect(newAudioElements['4']?.parameters?.['gain']?.inputs[0]?.id).toBe('3');
 		});
 
 		it('adds copied node to inputs and parameters of other nodes', () => {
@@ -1528,8 +1528,8 @@ describe('AudioCanvas', () => {
 				{ id: '1', output: 'audio', input: 'audio' },
 				{ id: '3', output: 'audio', input: 'audio' }
 			]);
-			expect(newAudioElements['2']?.parameters?.['gain'].inputs.length).toBe(2);
-			expect(newAudioElements['2']?.parameters?.['gain'].inputs['1']).toEqual({
+			expect(newAudioElements['2']?.parameters?.['gain']?.inputs.length).toBe(2);
+			expect(newAudioElements['2']?.parameters?.['gain']?.inputs['1']).toEqual({
 				id: '3',
 				output: 'audio'
 			});
@@ -1569,7 +1569,7 @@ describe('AudioCanvas', () => {
 			const newAudioElements = insertExistingNodes(audioElements, ['3'], { x: 0, y: 0 });
 
 			expect(newAudioElements['2']?.inputs?.length).toBe(1);
-			expect(newAudioElements['2']?.parameters?.['gain'].inputs.length).toBe(1);
+			expect(newAudioElements['2']?.parameters?.['gain']?.inputs.length).toBe(1);
 		});
 
 		it('multiplies sine signal passed to gain parameter', () => {
