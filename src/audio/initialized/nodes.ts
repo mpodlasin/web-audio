@@ -69,12 +69,7 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 				outputNode.connect(destination);
 			},
 
-			disconnect(destination: Destination | undefined) {
-				if (destination === undefined) {
-					outputNode.disconnect();
-					return;
-				}
-
+			disconnect(destination: Destination) {
 				if (destination instanceof AudioParam) {
 					outputNode.disconnect(destination);
 					return;

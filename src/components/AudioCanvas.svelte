@@ -840,8 +840,6 @@
 	// COMMENTS ---------------------------------
 	const handleCommentChanged = (e: CustomEvent<{ comment: string; nodeId: string }>) => {
 		const { nodeId, comment } = e.detail;
-
-		console.log('changing comment', nodeId, comment);
 		updateAudioGraphHistory((audioGraph) => changeComment(audioGraph, nodeId, comment));
 	};
 </script>

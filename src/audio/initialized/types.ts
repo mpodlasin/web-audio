@@ -23,7 +23,7 @@ export type Destination = CustomAudioNode | AudioParam | CustomAudioParam | Audi
 
 export interface Output {
 	connect(destination: Destination): void;
-	disconnect(desination?: Destination): void;
+	disconnect(desination: Destination): void;
 }
 
 export interface CustomAudioNode {
@@ -38,8 +38,7 @@ export function isCustomAudioNode(customAudioNode: unknown): customAudioNode is 
 	return (
 		typeof customAudioNode === 'object' &&
 		customAudioNode !== null &&
-		'connect' in customAudioNode &&
-		'disconnect' in customAudioNode &&
+		'cleanup' in customAudioNode &&
 		'getParameter' in customAudioNode &&
 		'getInputNode' in customAudioNode &&
 		'getOutputNode' in customAudioNode &&
