@@ -4,7 +4,7 @@
 jest.fn(() => {
 	const { AudioWorkletNodeMock } = jest.requireActual('./mocks');
 	return new AudioWorkletNodeMock();
-})
+});
 
 jest.mock('./web-audio/utils', () => ({
 	createAdEnvelopeWorklet: jest.fn(() => {
@@ -46,7 +46,7 @@ jest.mock('./web-audio/utils', () => ({
 	createSquareOscillatorWorklet: jest.fn(() => {
 		const { AudioWorkletNodeMock } = jest.requireActual('./mocks');
 		return new AudioWorkletNodeMock();
-	}),
+	})
 }));
 
 import './mocks';
@@ -361,12 +361,20 @@ describe('AudioCanvas', () => {
 
 			const newAudioElements = addNode(audioElements, 'sine-oscillator');
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(nextAudioNodeDatabase['1']).toBeDefined();
 			expect(nextAudioNodeDatabase['2']).toBeDefined();
-			expect((nextAudioNodeDatabase['2'] as CustomSineOscillatorNode).frequency.offset.value).toBe(440);
-			expect((nextAudioNodeDatabase['2'] as CustomSineOscillatorNode).leftOscillator.type).toBe('sine');
+			expect((nextAudioNodeDatabase['2'] as CustomSineOscillatorNode).frequency.offset.value).toBe(
+				440
+			);
+			expect((nextAudioNodeDatabase['2'] as CustomSineOscillatorNode).leftOscillator.type).toBe(
+				'sine'
+			);
 			expect((nextAudioNodeDatabase['2'] as CustomSineOscillatorNode).rightOscillator.type).toBe(
 				'sine'
 			);
@@ -401,7 +409,11 @@ describe('AudioCanvas', () => {
 				}
 			};
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(nextAudioNodeDatabase['1']).toBeDefined();
 			expect(nextAudioNodeDatabase['2']).toBeDefined();
@@ -412,9 +424,9 @@ describe('AudioCanvas', () => {
 			expect((nextAudioNodeDatabase['1'] as CustomSquareOscillatorNode).leftOscillator.type).toBe(
 				'square'
 			);
-			expect((nextAudioNodeDatabase['1'] as CustomSquareOscillatorNode).frequency.offset.value).toBe(
-				333
-			);
+			expect(
+				(nextAudioNodeDatabase['1'] as CustomSquareOscillatorNode).frequency.offset.value
+			).toBe(333);
 		});
 
 		it('adds connection between oscillator and gain', () => {
@@ -454,7 +466,11 @@ describe('AudioCanvas', () => {
 
 			expect(newAudioElements['2']?.inputs).toEqual([{ id: '1', output: 'audio', input: 'audio' }]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(nextAudioNodeDatabase['1']).toBeDefined();
 			expect(nextAudioNodeDatabase['2']).toBeDefined();
@@ -465,9 +481,9 @@ describe('AudioCanvas', () => {
 			expect((nextAudioNodeDatabase['1'] as CustomSquareOscillatorNode).leftOscillator.type).toBe(
 				'square'
 			);
-			expect((nextAudioNodeDatabase['1'] as CustomSquareOscillatorNode).frequency.offset.value).toBe(
-				333
-			);
+			expect(
+				(nextAudioNodeDatabase['1'] as CustomSquareOscillatorNode).frequency.offset.value
+			).toBe(333);
 		});
 
 		it('adds connection between midi trigger output and envelope', () => {
@@ -507,7 +523,11 @@ describe('AudioCanvas', () => {
 				{ id: '1', output: 'trigger', input: 'trigger' }
 			]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(nextAudioNodeDatabase['1']).toBeDefined();
 			expect(nextAudioNodeDatabase['2']).toBeDefined();
@@ -557,7 +577,11 @@ describe('AudioCanvas', () => {
 				{ id: '1', output: 'trigger', input: 'trigger' }
 			]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(nextAudioNodeDatabase['1']).toBeDefined();
 			expect(nextAudioNodeDatabase['2']).toBeDefined();
@@ -565,7 +589,9 @@ describe('AudioCanvas', () => {
 			expect(nextAudioNodeDatabase['1']).toBeInstanceOf(ClockNode);
 			expect(nextAudioNodeDatabase['2']).toBeInstanceOf(CustomDelayNode);
 
-			expect((nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect).toHaveBeenCalledWith(
+			expect(
+				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect
+			).toHaveBeenCalledWith(
 				(nextAudioNodeDatabase['2'] as CustomDelayNode).getInputNode('trigger')
 			);
 		});
@@ -631,7 +657,11 @@ describe('AudioCanvas', () => {
 				{ id: '2', output: 'audio', input: 'audio' }
 			]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(nextAudioNodeDatabase['1']).toBeDefined();
 			expect(nextAudioNodeDatabase['2']).toBeDefined();
@@ -644,7 +674,9 @@ describe('AudioCanvas', () => {
 			expect(
 				(nextAudioNodeDatabase['2'] as CustomSineOscillatorNode).getOutputNode().connect
 			).toHaveBeenCalledWith((nextAudioNodeDatabase['3'] as CustomDelayNode).getInputNode());
-			expect((nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect).toHaveBeenCalledWith(
+			expect(
+				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect
+			).toHaveBeenCalledWith(
 				(nextAudioNodeDatabase['3'] as CustomDelayNode).getInputNode('trigger')
 			);
 		});
@@ -686,7 +718,11 @@ describe('AudioCanvas', () => {
 
 			expect(newAudioElements['2']?.inputs).toEqual([]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(nextAudioNodeDatabase['1']).toBeDefined();
 			expect(nextAudioNodeDatabase['2']).toBeDefined();
@@ -697,9 +733,9 @@ describe('AudioCanvas', () => {
 			expect((nextAudioNodeDatabase['1'] as CustomSquareOscillatorNode).leftOscillator.type).toBe(
 				'square'
 			);
-			expect((nextAudioNodeDatabase['1'] as CustomSquareOscillatorNode).frequency.offset.value).toBe(
-				333
-			);
+			expect(
+				(nextAudioNodeDatabase['1'] as CustomSquareOscillatorNode).frequency.offset.value
+			).toBe(333);
 		});
 
 		it('removes connection between clock and delay trigger input', () => {
@@ -750,11 +786,15 @@ describe('AudioCanvas', () => {
 
 			expect(newAudioElements['3']?.inputs).toEqual([{ id: '2', output: 'audio', input: 'audio' }]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
-
-			expect((nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect).toHaveBeenCalledWith(
-				nextAudioNodeDatabase['3']?.getInputNode('trigger')
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
 			);
+
+			expect(
+				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
+			).toHaveBeenCalledWith(nextAudioNodeDatabase['3']?.getInputNode('trigger'));
 		});
 
 		it('removes input form one node when two are present', () => {
@@ -806,7 +846,11 @@ describe('AudioCanvas', () => {
 
 			expect(newAudioElements['3']?.inputs).toEqual([{ id: '2', output: 'audio', input: 'audio' }]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(
 				(nextAudioNodeDatabase['1'] as CustomSineOscillatorNode).getOutputNode().disconnect
@@ -861,11 +905,15 @@ describe('AudioCanvas', () => {
 
 			expect(newAudioElements['3']?.inputs).toEqual([{ id: '2', output: 'audio', input: 'audio' }]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
-
-			expect((nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect).toHaveBeenCalledWith(
-				nextAudioNodeDatabase['3']?.getInputNode('audio')
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
 			);
+
+			expect(
+				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
+			).toHaveBeenCalledWith(nextAudioNodeDatabase['3']?.getInputNode('audio'));
 		});
 
 		it('adds two connections from clock to delay', () => {
@@ -907,11 +955,15 @@ describe('AudioCanvas', () => {
 				{ id: '1', output: 'trigger', input: 'trigger' }
 			]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(intermediateAudioElements, audioElements, audioNodeDatabase);
-
-			expect((nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect).toHaveBeenCalledWith(
-				nextAudioNodeDatabase['2']?.getInputNode('trigger')
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				intermediateAudioElements,
+				audioElements,
+				audioNodeDatabase
 			);
+
+			expect(
+				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect
+			).toHaveBeenCalledWith(nextAudioNodeDatabase['2']?.getInputNode('trigger'));
 
 			const newAudioElements = addConnection(
 				intermediateAudioElements,
@@ -932,11 +984,15 @@ describe('AudioCanvas', () => {
 				{ id: '1', output: 'trigger', input: 'audio' }
 			]);
 
-			const nextNextAudioNodeDatabase = updateAudioCanvas(newAudioElements, intermediateAudioElements, nextAudioNodeDatabase);
-
-			expect((nextNextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect).toHaveBeenCalledWith(
-				nextNextAudioNodeDatabase['2']?.getInputNode('audio')
+			const nextNextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				intermediateAudioElements,
+				nextAudioNodeDatabase
 			);
+
+			expect(
+				(nextNextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect
+			).toHaveBeenCalledWith(nextNextAudioNodeDatabase['2']?.getInputNode('audio'));
 		});
 
 		it('removes two connections from clock to delay', () => {
@@ -981,11 +1037,15 @@ describe('AudioCanvas', () => {
 				{ id: '1', output: 'trigger', input: 'trigger' }
 			]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
-
-			expect((nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect).toHaveBeenCalledWith(
-				nextAudioNodeDatabase['2']?.getInputNode('audio')
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
 			);
+
+			expect(
+				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
+			).toHaveBeenCalledWith(nextAudioNodeDatabase['2']?.getInputNode('audio'));
 
 			const newerAudioElements = removeConnection(
 				newAudioElements,
@@ -1005,11 +1065,15 @@ describe('AudioCanvas', () => {
 
 			jest.clearAllMocks();
 
-			const nextNextAudioNodeDatabase = updateAudioCanvas(newerAudioElements, newAudioElements, nextAudioNodeDatabase);
-
-			expect((nextNextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect).toHaveBeenCalledWith(
-				nextNextAudioNodeDatabase['2']?.getInputNode('trigger')
+			const nextNextAudioNodeDatabase = updateAudioCanvas(
+				newerAudioElements,
+				newAudioElements,
+				nextAudioNodeDatabase
 			);
+
+			expect(
+				(nextNextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
+			).toHaveBeenCalledWith(nextNextAudioNodeDatabase['2']?.getInputNode('trigger'));
 		});
 
 		it('adds connection between gain and oscillator detune parameter', () => {
@@ -1051,11 +1115,17 @@ describe('AudioCanvas', () => {
 				{ id: '2', output: 'audio', multiply: 1 }
 			]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(nextAudioNodeDatabase['1']).toBeDefined();
 			expect(nextAudioNodeDatabase['2']).toBeDefined();
-			expect((nextAudioNodeDatabase['2'] as CustomGainNode).webApiNode.connect).toHaveBeenCalledWith(
+			expect(
+				(nextAudioNodeDatabase['2'] as CustomGainNode).webApiNode.connect
+			).toHaveBeenCalledWith(
 				(nextAudioNodeDatabase['1'] as CustomSquareOscillatorNode)
 					.getParameter('detune')
 					.getMultiplierForInput('2')
@@ -1110,11 +1180,17 @@ describe('AudioCanvas', () => {
 
 			expect(newAudioElements['1']?.parameters.detune.inputs.length).toEqual(0);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(nextAudioNodeDatabase['1']).toBeDefined();
 			expect(nextAudioNodeDatabase['2']).toBeDefined();
-			expect((nextAudioNodeDatabase['2'] as CustomGainNode).webApiNode.disconnect).toHaveBeenCalledWith(
+			expect(
+				(nextAudioNodeDatabase['2'] as CustomGainNode).webApiNode.disconnect
+			).toHaveBeenCalledWith(
 				(nextAudioNodeDatabase['1'] as CustomSquareOscillatorNode)
 					.getParameter('detune')
 					.getMultiplierForInput('2')
@@ -1153,7 +1229,11 @@ describe('AudioCanvas', () => {
 			expect(newAudioElements['1']).toBeUndefined();
 			expect(newAudioElements['2']?.inputs).toEqual([]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(nextAudioNodeDatabase['1']).toBeUndefined();
 			expect(nextAudioNodeDatabase['2']).toBeDefined();
@@ -1198,7 +1278,11 @@ describe('AudioCanvas', () => {
 				{ id: '2', output: 'frequency', multiply: 1 }
 			]);
 
-			const nextAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const nextAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(nextAudioNodeDatabase['1']).toBeDefined();
 			expect(nextAudioNodeDatabase['2']).toBeDefined();
@@ -1279,12 +1363,18 @@ describe('AudioCanvas', () => {
 
 			const newAudioElements = { ...audioElements };
 
-			const newAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const newAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(
 				(newAudioNodeDatabase['1'] as CustomSquareOscillatorNode).output.connect
 			).toHaveBeenCalledTimes(1);
-			expect((newAudioNodeDatabase['2'] as CustomGainNode).webApiNode.connect).not.toHaveBeenCalled();
+			expect(
+				(newAudioNodeDatabase['2'] as CustomGainNode).webApiNode.connect
+			).not.toHaveBeenCalled();
 			expect(
 				(newAudioNodeDatabase['1'] as CustomSquareOscillatorNode).output.disconnect
 			).not.toHaveBeenCalled();
@@ -1548,11 +1638,16 @@ describe('AudioCanvas', () => {
 
 			expect(newAudioElements['2'].parameters['gain'].inputs[0]?.multiply).toBe(0.5);
 
-			const newAudioNodeDatabase = updateAudioCanvas(newAudioElements, audioElements, audioNodeDatabase);
+			const newAudioNodeDatabase = updateAudioCanvas(
+				newAudioElements,
+				audioElements,
+				audioNodeDatabase
+			);
 
 			expect(
-				(newAudioNodeDatabase['2'] as CustomGainNode).getParameter('gain').getMultiplierForInput('1')
-					.gain.value
+				(newAudioNodeDatabase['2'] as CustomGainNode)
+					.getParameter('gain')
+					.getMultiplierForInput('1').gain.value
 			).toBe(0.5);
 		});
 	});
