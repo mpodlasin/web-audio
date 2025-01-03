@@ -23,6 +23,7 @@ import {
 	type Destination
 } from './types';
 import { accessParameter } from './update';
+import { midiNoteToFrequency } from './utils';
 
 abstract class GenericCustomAudioNode implements CustomAudioNode {
 	constructor(private id: string, protected type: NodeType) {}
