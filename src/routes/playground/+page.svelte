@@ -69,10 +69,22 @@
 
 		delete projectsCopy[event.detail];
 
-		projects = projectsCopy;
+		if (Object.entries(projectsCopy).length === 0) {
+			projects = {
+					'Project 1': createProject('Project 1')
+			  };
+
+			  if (event.detail === 'Project 1') {
+				window.location.reload();
+			  }
+		} else {
+			projects = projectsCopy;
+		}
+
+		const newProjectNames = Object.values(projects).map(project => project.name);
 
 		if (chosenProjectName === event.detail) {
-			chosenProjectName = projectNames[0] ?? 'Project 1';
+			chosenProjectName = newProjectNames[0]!;
 		}
 	};
 
