@@ -7,7 +7,7 @@ export default function (audioGraph: SerializedAudioElements) {
 
 	const convolutionNode = values.find((node) => node.type === 'convolution');
 
-	const convolutionMix = convolutionNode?.parameters?.['mix']?.base ?? 0;
+	const convolutionMix = convolutionNode?.parameters['mix']?.base ?? 0;
 
 	return convolutionMix < 0.25;
 }

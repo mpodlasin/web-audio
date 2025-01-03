@@ -6,7 +6,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	// Decay property on AD Envelope node was moved below 40ms.
 
 	const envelopeNode = values.find((node) => node.type === 'ad-envelope');
-	const decayProperty = envelopeNode?.parameters?.['decay']?.base ?? 200;
+	const decayProperty = envelopeNode?.parameters['decay']?.base ?? 200;
 
 	return decayProperty <= 40;
 }
