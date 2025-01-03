@@ -10,7 +10,7 @@ export type SerializedAudioElement<
 	T extends NodeType
 > = {
 	type: T;
-	inputs?: Inputs;
+	inputs: Inputs;
 	parameters: {
 		[key: string]: SerializedAudioParameter;
 	};

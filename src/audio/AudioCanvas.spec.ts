@@ -108,6 +108,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				}
 			};
@@ -140,6 +141,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -182,6 +184,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 440, inputs: [{ id: '2', output: 'audio' }] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -190,6 +193,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 30, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				}
 			};
@@ -233,6 +237,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -275,6 +280,7 @@ describe('AudioCanvas', () => {
 				'1': {
 					type: 'sequencer' as const,
 					parameters: sequencerParameters,
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -292,6 +298,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 440, inputs: [{ id: '1', output: 'frequency' }] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'4': {
@@ -328,6 +335,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				}
 			};
@@ -354,6 +362,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				}
 			};
@@ -390,6 +399,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				}
 			};
@@ -439,6 +449,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -493,6 +504,7 @@ describe('AudioCanvas', () => {
 				'1': {
 					type: 'midi' as const,
 					parameters: {},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -548,6 +560,7 @@ describe('AudioCanvas', () => {
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -605,6 +618,7 @@ describe('AudioCanvas', () => {
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -613,6 +627,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 0, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'3': {
@@ -691,6 +706,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -747,6 +763,7 @@ describe('AudioCanvas', () => {
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -755,6 +772,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 0, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'3': {
@@ -807,6 +825,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 0, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -815,6 +834,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 0, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'3': {
@@ -866,6 +886,7 @@ describe('AudioCanvas', () => {
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -874,6 +895,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 0, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'3': {
@@ -925,6 +947,7 @@ describe('AudioCanvas', () => {
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1004,6 +1027,7 @@ describe('AudioCanvas', () => {
 					parameters: {
 						tempo: { base: 120, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1086,6 +1110,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1153,6 +1178,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [{ id: '2', output: 'audio' }] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1211,6 +1237,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1252,11 +1279,13 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
 					type: 'sequencer' as const,
 					parameters: sequencerParameters,
+					inputs: [],
 					ui
 				}
 			};
@@ -1308,6 +1337,7 @@ describe('AudioCanvas', () => {
 				'1': {
 					type: 'sequencer' as const,
 					parameters: sequencerParameters,
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1316,6 +1346,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 440, inputs: [{ id: '1', output: 'frequency' }] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				}
 			};
@@ -1338,6 +1369,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1393,6 +1425,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1433,6 +1466,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1473,6 +1507,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1508,6 +1543,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1545,6 +1581,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1582,6 +1619,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
@@ -1622,6 +1660,7 @@ describe('AudioCanvas', () => {
 						frequency: { base: 333, inputs: [] },
 						detune: { base: 0, inputs: [] }
 					},
+					inputs: [],
 					ui
 				},
 				'2': {
