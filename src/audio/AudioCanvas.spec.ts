@@ -246,6 +246,7 @@ describe('AudioCanvas', () => {
 				'3': {
 					type: 'destination' as const,
 					inputs: [{ id: '2', output: 'audio', input: 'audio' }],
+					parameters: {},
 					ui
 				}
 			};
@@ -304,6 +305,7 @@ describe('AudioCanvas', () => {
 				'5': {
 					type: 'destination' as const,
 					inputs: [{ id: '4', output: 'audio', input: 'audio' }],
+					parameters: {},
 					ui
 				}
 			};

@@ -11,7 +11,7 @@ export type SerializedAudioElement<
 > = {
 	type: T;
 	inputs?: Inputs;
-	parameters?: {
+	parameters: {
 		[key: string]: SerializedAudioParameter;
 	};
 	ui: UIInformation;
