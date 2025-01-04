@@ -15,9 +15,8 @@ export default function (audioGraph: SerializedAudioElements) {
 		const sequencerIsConnectedToQuantizer =
 			pitchQuantizerNode.inputs?.some((input) => input.id === sequencerNodeId) ?? false;
 		const quantizerIsConnectedToSine =
-			sineNode.parameters['frequency']?.inputs.some(
-				(input) => input.id === pitchQuantizerNodeId
-			) ?? false;
+			sineNode.parameters['frequency']?.inputs.some((input) => input.id === pitchQuantizerNodeId) ??
+			false;
 
 		return sequencerIsConnectedToQuantizer && quantizerIsConnectedToSine;
 	}

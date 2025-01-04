@@ -80,5 +80,4 @@ export const createSquareOscillatorWorklet = () =>
 	createWasmWorklet('custom-oscillator', squareOscillatorWasmUrl);
 export const createSawOscillatorWorklet = () =>
 	createWasmWorklet('custom-oscillator', sawOscillatorWasmUrl);
-export const createMinMaxWorklet = () =>
-	createWasmWorklet('min-max', minMaxWasmUrl);
+export const createMinMaxWorklet = () => createWasmWorklet('min-max', minMaxWasmUrl);

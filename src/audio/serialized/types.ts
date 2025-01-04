@@ -6,9 +6,7 @@ export type SerializedAudioElementsWithIds = {
 	[key: string]: SerializedAudioElementWithId<NodeType>;
 };
 
-export type SerializedAudioElement<
-	T extends NodeType
-> = {
+export type SerializedAudioElement<T extends NodeType> = {
 	type: T;
 	inputs: Inputs;
 	parameters: {
@@ -27,9 +25,7 @@ export type UIInformation = {
 	primaryColor: string;
 };
 
-export type SerializedAudioElementWithId<
-	T extends NodeType
-> = SerializedAudioElement<T> & {
+export type SerializedAudioElementWithId<T extends NodeType> = SerializedAudioElement<T> & {
 	id: string;
 };
 
@@ -40,21 +36,13 @@ export type SerializedAudioParameter = {
 	inputs: { id: string; output: string; multiply?: number }[];
 };
 
-export type SerializedSineOscillatorNode = SerializedAudioElement<
-	'sine-oscillator'
->;
+export type SerializedSineOscillatorNode = SerializedAudioElement<'sine-oscillator'>;
 
-export type SerializedSawOscillatorNode = SerializedAudioElement<
-	'saw-oscillator'
->;
+export type SerializedSawOscillatorNode = SerializedAudioElement<'saw-oscillator'>;
 
-export type SerializedSquareOscillatorNode = SerializedAudioElement<
-	'square-oscillator'
->;
+export type SerializedSquareOscillatorNode = SerializedAudioElement<'square-oscillator'>;
 
-export type SerializedTriangleOscillatorNode = SerializedAudioElement<
-	'triangle-oscillator'
->;
+export type SerializedTriangleOscillatorNode = SerializedAudioElement<'triangle-oscillator'>;
 
 export type SerializedLowpassFilterNode = SerializedAudioElement<'lowpass-filter'>;
 

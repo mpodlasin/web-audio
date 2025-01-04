@@ -161,7 +161,7 @@ export const removeNode = <S extends SerializedAudioElements>(audioGraph: S, nod
 	delete newAudioGraph[nodeId];
 
 	Object.values(newAudioGraph).forEach((audioElement) => {
-		audioElement.inputs = audioElement.inputs.filter((input) => input.id !== nodeId)
+		audioElement.inputs = audioElement.inputs.filter((input) => input.id !== nodeId);
 
 		for (const parameterName in audioElement.parameters) {
 			const parameterValue = audioElement.parameters[parameterName];
