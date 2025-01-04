@@ -7,6 +7,7 @@ export interface Project {
 	size: number;
 	canvasRelativePosition: Position;
 	audioCanvas: SerializedAudioElements;
+	audioCanvasVersion: 1;
 }
 
 export interface Projects {
@@ -18,6 +19,7 @@ export const createProject = (name: string): Project => ({
 	created: new Date(Date.now()).toISOString(),
 	lastChanged: new Date(Date.now()).toISOString(),
 	audioCanvas: {},
+	audioCanvasVersion: 1,
 	size: 1,
 	canvasRelativePosition: { x: 0, y: 0 }
 });
