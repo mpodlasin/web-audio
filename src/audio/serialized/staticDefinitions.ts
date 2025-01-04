@@ -92,7 +92,7 @@ const lfoDefinition = {
 	parameters: {
 		frequency: {
 			minValue: 0,
-			maxValue: 10,
+			maxValue: 30,
 			unit: 'Hz',
 			defaultValue: 1,
 			polarity: 'uni' as const
