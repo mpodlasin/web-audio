@@ -257,9 +257,10 @@
 	const handleInputEnter = (event: KeyboardEvent) => {
 		if (event.key === 'Enter') {
 			numberParameterInput = false;
+
 			dispatcher('change', {
 				parameterName,
-				value: editedNumber
+				value: Math.min(maxValue, Math.max(minValue, editedNumber))
 			});
 		}
 	};
