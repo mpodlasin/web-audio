@@ -46,6 +46,10 @@ jest.mock('./web-audio/utils', () => ({
 	createSquareOscillatorWorklet: jest.fn(() => {
 		const { AudioWorkletNodeMock } = jest.requireActual('./mocks');
 		return new AudioWorkletNodeMock();
+	}),
+	createMinMaxWorklet: jest.fn(() => {
+		const { AudioWorkletNodeMock } = jest.requireActual('./mocks');
+		return new AudioWorkletNodeMock();
 	})
 }));
 
@@ -73,6 +77,7 @@ import {
 	SerializedAudioParameter
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
+import { createMinMaxWorklet } from './web-audio/utils';
 
 const ui = {
 	position: { x: 0, y: 0 },

@@ -6,6 +6,7 @@ import {
 	createClockCounterWorklet,
 	createGateLengthWorklet,
 	createMeasureGateWorklet,
+	createMinMaxWorklet,
 	createPatternWorklet,
 	createPitchQuantizerWorklet,
 	createSawOscillatorWorklet,
@@ -28,7 +29,9 @@ import { midiNoteToFrequency } from './utils';
 abstract class GenericCustomAudioNode implements CustomAudioNode {
 	constructor(private id: string, protected type: NodeType) {}
 
+	private parameterInputs: { [parameterName: string]: ConstantSourceNode } = {};
 	private parameterAnalysers: { [parameterName: string]: AnalyserNode } = {};
+	private parameterLimiters: { [parameterName: string]: AudioWorkletNode } = {};
 	private parameterMultipliers: {
 		[parameterName: string]: {
 			[inputId: string]: GainNode;
@@ -100,16 +103,51 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 	getParameter(parameterName: string): CustomAudioParam {
 		const audioParam = this.getAudioParam(parameterName);
 
+		if (!this.parameterInputs[parameterName]) {
+			const parameterInput = globalContext.createConstantSource();
+			parameterInput.start();
+
+			this.parameterInputs[parameterName] = parameterInput;
+		}
+
+		const parameterInput = this.parameterInputs[parameterName];
+
+		if (!parameterInput) throw new Error('No parameterInput!');
+
 		if (!this.parameterAnalysers[parameterName]) {
-			this.parameterAnalysers[parameterName] = globalContext.createAnalyser();
+			const analyser = globalContext.createAnalyser();
+			this.parameterAnalysers[parameterName] = analyser;
 		}
 
 		const analyser = this.parameterAnalysers[parameterName];
 
-		if (!analyser) throw new Error();
+		if (!analyser) throw new Error('No analyser!');
+
+		if (!this.parameterLimiters[parameterName]) {
+			const staticDefinition = allowedSerializedAudioElementStaticDefinitions[this.type];
+
+			const limiter = createMinMaxWorklet();
+
+			this.parameterLimiters[parameterName] = limiter;
+
+			const minParameter = limiter.parameters.get('min');
+			const maxParameter = limiter.parameters.get('max');
+
+			if (minParameter && maxParameter) {
+				minParameter.value = staticDefinition.parameters[parameterName]?.minValue ?? 0;
+				maxParameter.value = staticDefinition.parameters[parameterName]?.maxValue ?? 0;
+			}
+
+			parameterInput.connect(limiter).connect(audioParam);
+			audioParam.value = 0;
+		}
+
+		const limiter = this.parameterLimiters[parameterName];
+
+		if (!limiter) throw new Error('No limiter!');
 
 		return {
-			audioParam,
+			audioParam: parameterInput.offset,
 			analyser,
 			getMultiplierForInput: (inputId: string) => {
 				if (!this.parameterMultipliers[parameterName]) {
@@ -122,9 +160,11 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 
 				if (!multipliersForParameter[inputId]) {
 					const multiplier = globalContext.createGain();
-					multiplier.connect(audioParam);
-					multiplier.connect(analyser);
 					multiplier.gain.value = 1;
+
+					multiplier.connect(parameterInput.offset);
+					multiplier.connect(analyser);
+
 					multipliersForParameter[inputId] = multiplier;
 				}
 

@@ -8,3 +8,4 @@ emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/scaler/scaler.c -o ./src/audio/web
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/ad-envelope/ad-envelope.c -o ./src/audio/web-audio/wasm/ad-envelope/ad-envelope.wasm --no-entry
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/square-oscillator/square-oscillator.c -o ./src/audio/web-audio/wasm/square-oscillator/square-oscillator.wasm --no-entry
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/saw-oscillator/saw-oscillator.c -o ./src/audio/web-audio/wasm/saw-oscillator/saw-oscillator.wasm --no-entry
+emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/min-max/min-max.c -o ./src/audio/web-audio/wasm/min-max/min-max.wasm --no-entry

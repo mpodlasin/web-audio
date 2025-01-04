@@ -8,6 +8,7 @@ import gateLengthNodeWorkletUrl from './wasm/gate-length/gate-length-worklet.js?
 import scalerNodeWorkletUrl from './wasm/scaler/scaler-worklet.js?worker&url';
 import adEnvelopeNodeWorkletUrl from './wasm/ad-envelope/ad-envelope-worklet.js?worker&url';
 import oscillatorNodeWorkletUrl from './wasm/oscillator-worklet.js?worker&url';
+import minMaxNodeWorkletUrl from './wasm/min-max/min-max-worklet.js?worker&url';
 
 import measureGateWasmUrl from './wasm/measure-gate/measure-gate.wasm?url';
 import clockCounterWasmUrl from './wasm/clock-counter/clock-counter.wasm?url';
@@ -19,6 +20,7 @@ import scalerWasmUrl from './wasm/scaler/scaler.wasm?url';
 import adEnvelopeWasmUrl from './wasm/ad-envelope/ad-envelope.wasm?url';
 import squareOscillatorWasmUrl from './wasm/square-oscillator/square-oscillator.wasm?url';
 import sawOscillatorWasmUrl from './wasm/saw-oscillator/saw-oscillator.wasm?url';
+import minMaxWasmUrl from './wasm/min-max/min-max.wasm?url';
 
 export async function loadCustomNodes() {
 	try {
@@ -31,7 +33,8 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(gateLengthNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(adEnvelopeNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(oscillatorNodeWorkletUrl)
+			globalContext.audioWorklet.addModule(oscillatorNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(minMaxNodeWorkletUrl)
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');
@@ -77,3 +80,5 @@ export const createSquareOscillatorWorklet = () =>
 	createWasmWorklet('custom-oscillator', squareOscillatorWasmUrl);
 export const createSawOscillatorWorklet = () =>
 	createWasmWorklet('custom-oscillator', sawOscillatorWasmUrl);
+export const createMinMaxWorklet = () =>
+	createWasmWorklet('min-max', minMaxWasmUrl);
