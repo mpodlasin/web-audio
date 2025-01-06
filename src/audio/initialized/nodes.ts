@@ -420,12 +420,12 @@ export class CustomFilterNode extends GenericCustomAudioNodeWithWebApiNode<Biqua
 		super(filter, id, CustomFilterNode.filterTypeToNodeType[type]);
 	}
 
-	getParameter(parameterName: string): CustomAudioParam {
+	getAudioParam(parameterName: string) {
 		if (parameterName === 'resonance') {
-			return super.getParameter('Q');
+			return super.getAudioParam('Q');
 		}
 
-		return super.getParameter(parameterName);
+		return super.getAudioParam(parameterName);
 	}
 }
 

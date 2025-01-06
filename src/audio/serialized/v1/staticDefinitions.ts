@@ -132,7 +132,7 @@ const filterWithResonanceDefinition = {
 		frequency: frequencyParameter,
 		resonance: {
 			minValue: 0,
-			maxValue: 770,
+			maxValue: 100,
 			defaultValue: 0,
 			polarity: 'uni' as const
 		}

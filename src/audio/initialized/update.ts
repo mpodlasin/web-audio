@@ -282,11 +282,6 @@ function setParameterValue(
 
 	if (audioNodeA !== undefined && parameterValue !== undefined) {
 		audioNodeA.getParameter(parameterName).audioParam.value = parameterValue.base;
-		console.log(
-			'setting parameter value',
-			parameterName,
-			audioNodeA.getParameter(parameterName).audioParam.value
-		);
 	}
 }
 
