@@ -37,6 +37,6 @@ export const tutorial1: Tutorial = {
 		{
 			copy: copy6,
 			check: check6
-		},
+		}
 	]
 };
