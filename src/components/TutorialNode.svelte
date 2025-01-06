@@ -3,6 +3,7 @@
 	import type { Tutorial } from './Tutorial/types';
 	import { tutorial1, tutorial2 } from './Tutorial';
 	import Button from './Button.svelte';
+	import { globalContext } from '../audio/GlobalContext';
 
 	export let audioGraph: SerializedAudioElements;
 	export let node: SerializedTutorialNode;
@@ -32,6 +33,10 @@
 
 	$: noCheckNeeded = typeof check === 'boolean';
 	$: checkResult = typeof check === 'boolean' ? check : check(audioGraph);
+
+	globalContext.addEventListener('statechange', () => {
+		checkResult = typeof check === 'boolean' ? check : check(audioGraph);
+	});
 
 	const handleContinueClick = () => {
 		currentStep = currentStep + 1;
