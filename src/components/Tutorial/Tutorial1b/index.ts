@@ -30,6 +30,22 @@ import copy15 from './Copy15.md';
 import check15 from './Check15';
 import copy16 from './Copy16.md';
 import check16 from './Check16';
+import copy17 from './Copy17.md';
+import check17 from './Check17';
+import copy18 from './Copy18.md';
+import check18 from './Check18';
+import copy19 from './Copy19.md';
+import check19 from './Check19';
+import copy20 from './Copy20.md';
+import check20 from './Check20';
+import copy21 from './Copy21.md';
+import check21 from './Check21';
+import copy22 from './Copy22.md';
+import check22 from './Check22';
+import copy23 from './Copy23.md';
+import check23 from './Check23';
+import copy24 from './Copy24.md';
+import check24 from './Check24';
 import type { Tutorial } from '../types';
 
 export const tutorial1: Tutorial = {
@@ -97,6 +113,38 @@ export const tutorial1: Tutorial = {
 		{
 			copy: copy16,
 			check: check16
+		},
+		{
+			copy: copy17,
+			check: check17
+		},
+		{
+			copy: copy18,
+			check: check18
+		},
+		{
+			copy: copy19,
+			check: check19
+		},
+		{
+			copy: copy20,
+			check: check20
+		},
+		{
+			copy: copy21,
+			check: check21
+		},
+		{
+			copy: copy22,
+			check: check22
+		},
+		{
+			copy: copy23,
+			check: check23
+		},
+		{
+			copy: copy24,
+			check: check24
 		}
 	]
 };
