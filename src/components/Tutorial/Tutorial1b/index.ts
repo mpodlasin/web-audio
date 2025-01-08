@@ -70,6 +70,10 @@ import copy35 from './Copy35.md';
 import check35 from './Check35';
 import copy36 from './Copy36.md';
 import check36 from './Check36';
+import copy37 from './Copy37.md';
+import check37 from './Check37';
+import copy38 from './Copy38.md';
+import check38 from './Check38';
 import type { Tutorial } from '../types';
 
 export const tutorial1: Tutorial = {
@@ -217,6 +221,14 @@ export const tutorial1: Tutorial = {
 		{
 			copy: copy36,
 			check: check36
+		},
+		{
+			copy: copy37,
+			check: check37
+		},
+		{
+			copy: copy38,
+			check: check38
 		}
 	]
 };
