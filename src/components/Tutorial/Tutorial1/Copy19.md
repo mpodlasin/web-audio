@@ -1,7 +1,5 @@
-This way a frequency signal can flow via the `Pitch Quantizer` which adjusts each incoming frequency to fit the notes that we will now choose.
+There is however a way to force frequency values from `Sequencer` to fit notes of a typical western scale.
 
-If you know musical scales, you can choose whatever notes you prefer.
+To that purpose we can use a `Pitch Quantizer` node - found in the `Pitch` section.
 
-If you do not, we recommend choosing any notes that _do not_ end with # sign - for example `A`, `C` and `E`.
-
-Choose 3 or more notes on the `Pitch Quantizer` - do it while the play button is on, to hear how each chosen note changes what is being played.
+Create it.

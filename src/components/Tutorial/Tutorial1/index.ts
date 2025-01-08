@@ -56,6 +56,24 @@ import copy28 from './Copy28.md';
 import check28 from './Check28';
 import copy29 from './Copy29.md';
 import check29 from './Check29';
+import copy30 from './Copy30.md';
+import check30 from './Check30';
+import copy31 from './Copy31.md';
+import check31 from './Check31';
+import copy32 from './Copy32.md';
+import check32 from './Check32';
+import copy33 from './Copy33.md';
+import check33 from './Check33';
+import copy34 from './Copy34.md';
+import check34 from './Check34';
+import copy35 from './Copy35.md';
+import check35 from './Check35';
+import copy36 from './Copy36.md';
+import check36 from './Check36';
+import copy37 from './Copy37.md';
+import check37 from './Check37';
+import copy38 from './Copy38.md';
+import check38 from './Check38';
 import type { Tutorial } from '../types';
 
 export const tutorial1: Tutorial = {
@@ -175,6 +193,42 @@ export const tutorial1: Tutorial = {
 		{
 			copy: copy29,
 			check: check29
+		},
+		{
+			copy: copy30,
+			check: check30
+		},
+		{
+			copy: copy31,
+			check: check31
+		},
+		{
+			copy: copy32,
+			check: check32
+		},
+		{
+			copy: copy33,
+			check: check33
+		},
+		{
+			copy: copy34,
+			check: check34
+		},
+		{
+			copy: copy35,
+			check: check35
+		},
+		{
+			copy: copy36,
+			check: check36
+		},
+		{
+			copy: copy37,
+			check: check37
+		},
+		{
+			copy: copy38,
+			check: check38
 		}
 	]
 };

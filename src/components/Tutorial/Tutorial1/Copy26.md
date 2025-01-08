@@ -1,7 +1,7 @@
-Now you can understand better how `AD Envelope` works by playing with the decay paramter.
+The next thing that we might want to change is the fact that we hear the `Sine` oscillator constantly, not leaving any breathing room.
 
-Decrease it slowly until it is below 40ms.
+For example when you pluck a guitar string, it vibrates but then slows down over time, making the sound quieter and quieter until it completely ends.
 
-You will hear plucks getting shorter and shorter, making the melody feel snappier and more percussive.
+We can simulate that by using an `AD` envelope node, that you can find in `Envelope` section.
 
-We went from guitar to cymbals.
+Create it.

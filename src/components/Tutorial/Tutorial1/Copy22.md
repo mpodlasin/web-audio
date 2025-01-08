@@ -1,9 +1,7 @@
-We said that we want to control the loudness of the sound (like a dimnishing loudness of a guitar string).
+A frequency signal flows now via the `Pitch Quantizer` which adjusts each incoming frequency to fit the notes that we will choose.
 
-Remember which node was responsible for controlling loudness?
+If you know musical scales, you can choose whatever notes you prefer.
 
-It was the `Gain` node.
+If you do not, we recommend choosing any notes that _do not_ end with the # sign - for example `A`, `C` and `E`.
 
-But we still want to keep our "main" `Gain` that controls overall volume coming out of your speakers.
-
-Having that in mind, create _another_ `Gain` node and insert it between `Sine` and `Convolution` node.
+Choose 3 or more notes on the `Pitch Quantizer` - do it while the play button is on, to hear how each chosen note changes what is being played.

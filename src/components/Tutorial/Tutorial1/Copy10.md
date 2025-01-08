@@ -1,7 +1,9 @@
-To make it less boring, play around with the _frequency_ of the oscillator.
+As you've heard, by controlling the frequency we can control what would call a "pitch" of the sound.
 
-Again, we will explain what exactly the frequency is in later tutorials.
+Indeed, by properly changing the frequency over time, we can play actual melodies.
 
-For now, grab with your mouse a knob labeled "frequency" (the left one on the `Sine` oscillator).
+But we don't want to do it by hand (or rather "by mouse"), as that would be both difficult and tiring.
 
-While holding the mouse key, move mouse up and down and listen how it affects the sound.
+Instead we can use a `Sequencer` node, which will do it for us.
+
+Create `Sequencer` node - it can be found in `Pitch` section of the node creation menu.

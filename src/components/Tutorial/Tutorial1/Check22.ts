@@ -3,22 +3,23 @@ import type { SerializedAudioElements } from '../../../audio/serialized';
 export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 
-	// Another gain node was created and was inserted between Sine and Convolution nodes.
-	const gainNodes = values.filter((node) => node.type === 'gain');
-	const thereAreTwoGainNodes = gainNodes.length == 2;
+	// At least 3 notes where chosen on Pitch Quantizer
+	const pitchQuantizerNode = values.find((node) => node.type === 'pitch-quantizer');
 
-	const convolutionNode = values.find((node) => node.type === 'convolution');
+	const a = pitchQuantizerNode?.parameters['A']?.base ?? 0;
+	const aSharp = pitchQuantizerNode?.parameters['A#']?.base ?? 0;
+	const b = pitchQuantizerNode?.parameters['B']?.base ?? 0;
+	const c = pitchQuantizerNode?.parameters['C']?.base ?? 0;
+	const cSharp = pitchQuantizerNode?.parameters['C#']?.base ?? 0;
+	const d = pitchQuantizerNode?.parameters['D']?.base ?? 0;
+	const dSharp = pitchQuantizerNode?.parameters['D#']?.base ?? 0;
+	const e = pitchQuantizerNode?.parameters['E']?.base ?? 0;
+	const f = pitchQuantizerNode?.parameters['F']?.base ?? 0;
+	const fSharp = pitchQuantizerNode?.parameters['F#']?.base ?? 0;
+	const g = pitchQuantizerNode?.parameters['G']?.base ?? 0;
+	const gSharp = pitchQuantizerNode?.parameters['G#']?.base ?? 0;
 
-	const gainConnectedToConvolution = convolutionNode?.inputs
-		?.map((input) => audioGraph[input.id])
-		.find((node) => node && node.type === 'gain');
-
-	if (!gainConnectedToConvolution) return false;
-
-	const sineWasConnectedToGainConnectedToConvolution =
-		gainConnectedToConvolution.inputs
-			?.map((input) => audioGraph[input.id])
-			.some((node) => node && node.type === 'sine-oscillator') ?? false;
-
-	return thereAreTwoGainNodes && sineWasConnectedToGainConnectedToConvolution;
+	return (
+		[a, aSharp, b, c, cSharp, d, dSharp, e, f, fSharp, g, gSharp].reduce((a, b) => a + b, 0) >= 3
+	);
 }

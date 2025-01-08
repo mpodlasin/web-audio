@@ -1,5 +1,11 @@
-We want to insert `Pitch Quantizer` node between `Sequencer` and `Sine` nodes.
+Now the `Seqencer` and `Sine` nodes are setup correctly.
 
-In order to do that, we need to first remove line that is currently connecting `Sequencer` and frequency parameter of the `Sine` node.
+But we need one more thing.
 
-You can do that by clicking on that line and choosing `Delete` from the context menu.
+The `Sequencer` node will not play by itself.
+
+It requires something that would tell it (via its input) how fast it should go from one step to another - a source of a tempo.
+
+`Clock` node serves exactly that purpose - you will find it in `Clock` section.
+
+Create `Clock` node and connect it to input of `Sequencer` node.

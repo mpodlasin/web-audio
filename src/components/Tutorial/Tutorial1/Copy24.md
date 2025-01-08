@@ -1,9 +1,9 @@
-We connected `AD Envelope` node to `Gain` node so that `AD Envelope` can control the volume of the sound.
+Even though the melody is nice, the sound itself if still weirdly dry and artificial.
 
-However `AD Envelope` needs to know _when_ to do that.
+We can quickly fix that, by adding an echo effect.
 
-To stay with our guitar analogy, `AD Envelope` needs to know when to pluck the string of a guitar.
+You can do that by using `Convolution` node, to be found in `Effect` section.
 
-Luckily we already have a perfect source for this kind of information - and that's the `Clock` node.
+Create it and add it between `Sine` and `Output` nodes.
 
-So connect output of `Clock` node to input of `AD Envelope` node.
+_(Note that in order to do that, you will first have to remove the line currently connecting `Sine` with `Output`. Don't be scared to do that while the play button is on, to see how it will affect the sound.)_

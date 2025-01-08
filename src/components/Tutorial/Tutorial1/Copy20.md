@@ -1,13 +1,5 @@
-Now it sounds a lot better!
+We want to insert `Pitch Quantizer` node between `Sequencer` and `Sine` nodes.
 
-But if you are still not happy with your melody, keep playing with `Sequencer` node knobs until you find something that you like.
+In order to do that, we need to first remove line that is currently connecting `Sequencer` and frequency parameter of the `Sine` node.
 
-Even though the melody is nice, the sound itself if still weirdly dry and artificial.
-
-We can quickly fix that, by adding an echo effect.
-
-You can do that by using `Convolution` node, to be found in `Effect` section.
-
-Create it and add it between `Sine` and `Gain` nodes.
-
-_(Note that in order to do that, you will first have to remove the line currently connecting `Sine` with `Gain`. Don't be scared to do that while the play button is on, to see how it will affect the sound.)_
+You can do that by clicking on that line and choosing `Delete` from the context menu.

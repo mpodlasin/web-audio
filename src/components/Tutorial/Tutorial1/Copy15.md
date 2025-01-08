@@ -1,11 +1,9 @@
-Now the `Seqencer` and `Sine` nodes are setup correctly.
+`Sequencer` node is now connected to the frequency knob of the `Sine` node.
 
-But we need one more thing.
+Beginning now, instead of saying "knob", we will be using the term _parameter_ of a node.
 
-The `Sequencer` node will not play by itself.
+For example, since `Sine` node has two knobs, it has two parameters - a frequency parameter and a detune parameter.
 
-It requires something that would tell it (via its input) how fast it should go from one step to another - a source of a tempo.
+`Output` node has only one parameter - volume.
 
-`Clock` node serves exactly that purpose - you will find it in `Clock` section.
-
-Create `Clock` node and connect it to input of `Sequencer` node.
+`Sequencer` node has 8 parameters.

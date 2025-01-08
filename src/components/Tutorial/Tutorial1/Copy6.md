@@ -1,7 +1,7 @@
-In order to hear the sound, we need to route it to the speakers or headphones.
+Now we are ready to hear the `Sine` oscillator.
 
-We can do that by using `Output` node.
+First, press play button located in the menu above.
 
-You can find the `Output` node in the `I/O` subsection of the node creation menu.
+Next, increase the volume on the `Output` node slowly, until it is at the comfortable level.
 
-Create `Output` node.
+In order to do that, hover over the gray knob visible on the `Output` node, click it, and while holding the mouse button, move the mouse _up_.

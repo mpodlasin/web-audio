@@ -4,16 +4,13 @@ export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 	const entries = Object.entries(audioGraph);
 
-	// Line between Sequencer and Sine was removed
+	// Clock node was created and connected to Sequencer node
+	const clockNode = values.find((node) => node.type === 'clock');
 	const sequencerNode = values.find((node) => node.type === 'sequencer');
-	const sineNode = values.find((node) => node.type === 'sine-oscillator');
-	const sequencerNodeId = entries.find((entry) => entry[1] === sequencerNode)?.[0];
+	const clockNodeId = entries.find((entry) => entry[1] === clockNode)?.[0];
 
-	if (sequencerNode && sineNode && sequencerNodeId) {
-		return (
-			sineNode.parameters['frequency']?.inputs.every((input) => input.id !== sequencerNodeId) ??
-			false
-		);
+	if (clockNode && sequencerNode && clockNodeId) {
+		return sequencerNode.inputs?.some((input) => input.id === clockNodeId) ?? false;
 	}
 
 	return false;

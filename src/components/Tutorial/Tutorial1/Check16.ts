@@ -3,7 +3,9 @@ import type { SerializedAudioElements } from '../../../audio/serialized';
 export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 
-	// Pitch Quantizer node was created
+	// Sine frequency is set to 0;
+	const sineNode = values.find((node) => node.type === 'sine-oscillator');
+	const frequencyParameter = sineNode?.parameters['frequency']?.base ?? 440;
 
-	return values.some((node) => node.type === 'pitch-quantizer');
+	return frequencyParameter === 0;
 }

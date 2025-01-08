@@ -1,3 +1,6 @@
-Now connect the `Gain` node to the `Output` node.
+You should now hear a tone emitted from your speakers or headphones.
 
-In order to do that connect `Gain` nodes output (right circle) to the `Output` nodes input (left and only circle).
+If you do not hear anything, make sure your audio settings are configured correctly.
+
+If you _do_ hear a tone, feel free to pause it and unpause it at any time - again using the button above.
+

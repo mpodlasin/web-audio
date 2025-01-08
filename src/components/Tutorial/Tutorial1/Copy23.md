@@ -1,7 +1,3 @@
-Connect output of `AD Envelope` node to the knob (not input!) of `Gain` node that you just created.
+Now it sounds a lot better!
 
-This way `AD Envelope` will control loudness of sine oscillator and give it that "guitar-like" pluck sound.
-
-Now reduce the value of gain parameter itself to 0, just as we did before with frequency parameter of `Sine` oscillator.
-
-That's because when the "pluck" ends, we want it to go completely silent.
+But if you are still not happy with your melody, feel free to keep playing with the frequency parameters of the `Sequencer` node and notes chosen on the `Pitch Quantizer` node until you find something that you like.

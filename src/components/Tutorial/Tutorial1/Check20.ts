@@ -4,17 +4,17 @@ export default function (audioGraph: SerializedAudioElements) {
 	const values = Object.values(audioGraph);
 	const entries = Object.entries(audioGraph);
 
-	// Convolution was added between Sine and `Gain`
-
-	const gainNode = values.find((node) => node.type === 'gain');
+	// Line between Sequencer and Sine was removed
+	const sequencerNode = values.find((node) => node.type === 'sequencer');
 	const sineNode = values.find((node) => node.type === 'sine-oscillator');
-	const sineNodeId = entries.find((entry) => entry[1] === sineNode)?.[0];
-	const maybeConvolution = gainNode?.inputs
-		?.map((input) => audioGraph[input.id])
-		.filter((node) => node && node.type === 'convolution')[0];
+	const sequencerNodeId = entries.find((entry) => entry[1] === sequencerNode)?.[0];
 
-	if (!sineNodeId) return false;
-	if (!maybeConvolution) return false;
+	if (sequencerNode && sineNode && sequencerNodeId) {
+		return (
+			sineNode.parameters['frequency']?.inputs.every((input) => input.id !== sequencerNodeId) ??
+			false
+		);
+	}
 
-	return maybeConvolution.inputs?.some((input) => input.id === sineNodeId) ?? false;
+	return false;
 }

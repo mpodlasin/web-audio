@@ -1,1 +1,0 @@
-Now insert the `Gain` node between `Sine` and `Convolution` nodes.

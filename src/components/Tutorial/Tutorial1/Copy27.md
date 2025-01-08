@@ -1,5 +1,7 @@
-Now play around with the attack parameter of the `AD Envelope` node.
+We said that we want to control the loudness of the sound (like a dimnishing loudness of a guitar string).
 
-Increase it slowly until it is larger than 70ms.
+We could control the volume parameter on the `Output` node, but we want to leave it for controling overall loudness.
 
-Now cymbals have morphed into some kind of flute - the melody feels softer.
+Instead, let's use a dedicated node which allows us to control the volume of a sound - `Gain` node, to be found in the `Gain` section of the node creation menu.
+
+Create `Gain` node.

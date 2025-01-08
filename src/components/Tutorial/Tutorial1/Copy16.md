@@ -1,13 +1,5 @@
-Now (if you have the play button pressed) you can hear a melody playing.
+You have to be aware that when connecting a node output to a parameter, what happens is that output signal is _added_ to the value set by the parameter knob.
 
-But you might feel a bit underwhelmed. The "melody" probably doesn't sound too melodic at all.
+This means that if we want to use values _only_ from the sequencer, we should reduce the value of the frequency parameter of `Sine` node to 0 Hz.
 
-That's because western music scales - the ones our ears are used to - consist of very specific frequency values (or frequency intervals, to be precise).
-
-Because the frequency values you have chosen are more or less random, the melody probably does not sound too pleasing to your ear.
-
-There is however a way to force frequency values from `Sequencer` to fit notes of a typical western scale.
-
-To that purpose we can use a `Pitch Quantizer` node - found in the `Pitch` section.
-
-Create it.
+Drag the frequency knob on the `Sine` node down until it points to 0, just as you would do with regular, unconnected knob.
