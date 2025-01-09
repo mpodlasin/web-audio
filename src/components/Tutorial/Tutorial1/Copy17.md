@@ -1,11 +1,15 @@
-Now the `Seqencer` and `Sine` nodes are setup correctly.
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
+Now the `Seqencer` and <Clr nodeType="sine-oscillator">Sine</Clr> nodes are setup correctly.
 
 But we need one more thing.
 
-The `Sequencer` node will not play by itself.
+The <Clr nodeType="sequencer">Sequencer</Clr> node will not play by itself.
 
 It requires something that would tell it (via its input) how fast it should go from one step to another - a source of a tempo.
 
-`Clock` node serves exactly that purpose - you will find it in `Clock` section.
+<Clr nodeType="clock">Clock</Clr> node serves exactly that purpose - you will find it in <Clr nodeType="clock">Clock</Clr> section.
 
-Create `Clock` node and connect it to input of `Sequencer` node.
+Create <Clr nodeType="clock">Clock</Clr> node and connect it to input of <Clr nodeType="sequencer">Sequencer</Clr> node.

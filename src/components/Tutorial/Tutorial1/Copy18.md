@@ -1,3 +1,7 @@
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
 Now (if you have the play button pressed) you can hear a melody playing.
 
 But you might feel a bit underwhelmed. The "melody" probably doesn't sound too melodic at all.

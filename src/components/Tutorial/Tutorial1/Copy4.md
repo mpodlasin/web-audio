@@ -1,5 +1,9 @@
-Now we need to connect the `Sine` oscillator to the `Output` node, just as we would connect a guitar to an amplifier with a cable.
+<script>
+    import Clr from '../Clr.svelte';
+</script>
 
-To do that, find a little circle at the bottom right corner of the `Sine` oscillator. C
+Now we need to connect the <Clr nodeType="sine-oscillator">Sine</Clr> oscillator to the <Clr nodeType="destination">Output</Clr> node, just as we would connect a guitar to an amplifier with a cable.
 
-Click and hold it, and drag a white line to the similar circle in the lower left corner of the `Output` node.
+To do that, find a little circle at the bottom right corner of the <Clr nodeType="sine-oscillator">Sine</Clr> oscillator.
+
+Click and hold it, and drag a white line to the similar circle in the lower left corner of the <Clr nodeType="destination">Output</Clr> node.

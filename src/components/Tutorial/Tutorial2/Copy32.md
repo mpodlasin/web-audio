@@ -1,3 +1,7 @@
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
 To summarise, in this tutorial we learned of several different types of signals.
 
 We also learned that all those signals are simply represented as streams of numbers. This is true both for `AudioCanvas` and for computer music in general.
@@ -7,6 +11,6 @@ Let's list all of signal types we learnt so far, with examples of related nodes 
 | Signal type   | Nodes                  | Numbers           |
 | ------------- | ---------------------- | ----------------- |
 | number        | `Number`               | arbitrary numbers |
-| audio         | `Sine`                 | in range -1 to 1  |
-| gate, trigger | `Clock`, `Gate Length` | either 0 or 1     |
+| audio         | <Clr nodeType="sine-oscillator">Sine</Clr>                 | in range -1 to 1  |
+| gate, trigger | <Clr nodeType="clock">Clock</Clr>, `Gate Length` | either 0 or 1     |
 | envelope      | `AD Enevelope`         | in range 0 to 1   |

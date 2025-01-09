@@ -1,5 +1,9 @@
-Now that we have our sequence ready, we would like to somehow transfer it from the `Sequencer` to the frequency knob of the `Sine` node.
+<script>
+    import Clr from '../Clr.svelte';
+</script>
 
-Note that `Sequencer` node has an output on the bottom right - that's where our sequence will be coming from.
+Now that we have our sequence ready, we would like to somehow transfer it from the <Clr nodeType="sequencer">Sequencer</Clr> to the frequency knob of the <Clr nodeType="sine-oscillator">Sine</Clr> node.
 
-However `Sine` node does not have any inputs - just an output - so how can we control its frequency?
+Note that <Clr nodeType="sequencer">Sequencer</Clr> node has an output on the bottom right - that's where our sequence will be coming from.
+
+However <Clr nodeType="sine-oscillator">Sine</Clr> node does not have any inputs - just an output - so how can we control its frequency?

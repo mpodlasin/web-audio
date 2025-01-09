@@ -1,6 +1,10 @@
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
 Things have been fairly obvious so far when working with a `Number` node.
 
-But what whould happen if we replaced it with a `Sine` node, that we used in the previous tutorial to generate sound?
+But what whould happen if we replaced it with a <Clr nodeType="sine-oscillator">Sine</Clr> node, that we used in the previous tutorial to generate sound?
 
 Let's check!
 

@@ -1,3 +1,7 @@
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
 A frequency signal flows now via the `Pitch Quantizer` which adjusts each incoming frequency to fit the notes that we will choose.
 
 If you know musical scales, you can choose whatever notes you prefer.

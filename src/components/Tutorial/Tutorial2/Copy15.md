@@ -1,4 +1,8 @@
-Most of the time `Clock` emits the number 0.
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
+Most of the time <Clr nodeType="clock">Clock</Clr> emits the number 0.
 
 You can tell that's true by looking at the `Value` node.
 

@@ -1,4 +1,8 @@
-Every second however, the `Clock` node emits the number 1 for an extremely brief moment.
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
+Every second however, the <Clr nodeType="clock">Clock</Clr> node emits the number 1 for an extremely brief moment.
 
 This moment is so brief that you _might_ see only a brief flicker when looking at the number displayed by the `Value` node.
 

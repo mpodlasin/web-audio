@@ -1,4 +1,8 @@
-This shows us that the `Number` node, which simply emits numbers, and the `Sine` node, which outputs audio signal, aren't that different from eachother after all.
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
+This shows us that the `Number` node, which simply emits numbers, and the <Clr nodeType="sine-oscillator">Sine</Clr> node, which outputs audio signal, aren't that different from eachother after all.
 
 That's because on the computer, an audio signal is stored and processed as precisely what we've seen - a stream of numbers.
 

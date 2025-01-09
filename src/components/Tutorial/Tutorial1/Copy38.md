@@ -1,3 +1,7 @@
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
 And that's it!
 
 You've built your own melody playing little synthesiser.
