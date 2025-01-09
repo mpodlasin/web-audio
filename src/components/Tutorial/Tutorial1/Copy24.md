@@ -6,7 +6,7 @@ Even though the melody is nice, the sound itself if still weirdly dry and artifi
 
 We can quickly fix that, by adding an echo effect.
 
-You can do that by using `Convolution` node, to be found in `Effect` section.
+You can do that by using <Clr nodeType="convolution">Convolution</Clr> node, to be found in <Clr nodeType="convolution">Effect</Clr> section.
 
 Create it and add it between <Clr nodeType="sine-oscillator">Sine</Clr> and <Clr nodeType="destination">Output</Clr> nodes.
 

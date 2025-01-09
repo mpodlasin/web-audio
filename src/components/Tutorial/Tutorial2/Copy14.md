@@ -2,7 +2,7 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Create a <Clr nodeType="clock">Clock</Clr> node and connect it to both `Value` and `Oscilloscope` nodes.
+Create a <Clr nodeType="clock">Clock</Clr> node and connect it to both <Clr nodeType="value">Value</Clr> and <Clr nodeType="oscilloscope">Oscilloscope</Clr> nodes.
 
 Now reduce the tempo parameter to be _exactly_ 15 BPM.
 

@@ -1,3 +1,7 @@
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
 In general an _envelope_ is a signal that is supposed to represent change of loudness of a sound.
 
 We see however that in `AudioCanvas` an envelope signal is nothing more than stream of numbers, as it is the case with all other signals.

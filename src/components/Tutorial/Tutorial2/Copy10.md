@@ -2,9 +2,9 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Don't trust the output of the `Oscilloscope` just yet. It is not reliable for fast changing signals.
+Don't trust the output of the <Clr nodeType="oscilloscope">Oscilloscope</Clr> just yet. It is not reliable for fast changing signals.
 
-Note also the `Value` node - the numbers displayed there change too fast to see any patterns.
+Note also the <Clr nodeType="value">Value</Clr> node - the numbers displayed there change too fast to see any patterns.
 
 Let's slow down the <Clr nodeType="sine-oscillator">Sine</Clr> oscillator _a lot_.
 

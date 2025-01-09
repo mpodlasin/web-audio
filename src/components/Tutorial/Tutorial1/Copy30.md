@@ -2,7 +2,7 @@
     import Clr from '../Clr.svelte';
 </script>
 
-This way `AD Envelope` node will control loudness of sine oscillator and give it that "guitar-like" pluck sound.
+This way <Clr nodeType="ad-envelope">AD Envelope</Clr> node will control loudness of sine oscillator and give it that "guitar-like" pluck sound.
 
 Now reduce the value of gain parameter itself to 0, just as we did before with frequency parameter of <Clr nodeType="sine-oscillator">Sine</Clr> oscillator.
 

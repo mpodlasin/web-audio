@@ -1,1 +1,5 @@
-Now increase the attack parameter of `AD Envelope` node to also equal 500ms.
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
+Now increase the attack parameter of <Clr nodeType="ad-envelope">AD Envelope</Clr> node to also equal 500ms.

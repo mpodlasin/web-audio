@@ -91,6 +91,7 @@
 	.steps {
 		font-size: 0.9em;
 		color: var(--primary-500);
+		padding-bottom: 8px;
 	}
 
 	.result {

@@ -10,7 +10,7 @@ Let's list all of signal types we learnt so far, with examples of related nodes 
 
 | Signal type   | Nodes                  | Numbers           |
 | ------------- | ---------------------- | ----------------- |
-| number        | `Number`               | arbitrary numbers |
+| number        | <Clr nodeType="number">Number</Clr>               | arbitrary numbers |
 | audio         | <Clr nodeType="sine-oscillator">Sine</Clr>                 | in range -1 to 1  |
-| gate, trigger | <Clr nodeType="clock">Clock</Clr>, `Gate Length` | either 0 or 1     |
+| gate, trigger | <Clr nodeType="clock">Clock</Clr>, <Clr nodeType="gate-length">Gate Length</Clr> | either 0 or 1     |
 | envelope      | `AD Enevelope`         | in range 0 to 1   |
