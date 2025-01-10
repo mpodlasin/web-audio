@@ -10,4 +10,4 @@ For example, since <Clr nodeType="sine-oscillator">Sine</Clr> node has two knobs
 
 <Clr nodeType="destination">Output</Clr> node has only one parameter - volume.
 
-<Clr nodeType="sequencer">Sequencer</Clr> node has 8 parameters.
+Meanwhile <Clr nodeType="sequencer">Sequencer</Clr> node has 8 parameters.

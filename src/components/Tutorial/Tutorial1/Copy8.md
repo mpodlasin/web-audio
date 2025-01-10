@@ -10,4 +10,4 @@ It may sound to you a bit unnatural, synthetic, but also pure and clean.
 
 That's not an accident. In later tutorials we will learn that sine wave is a building block of all sounds.
 
-However listening to constant sine wave can becoming tiring fast, so let's change that.
+However listening to constant sine wave can become tiring fast, so let's change that.

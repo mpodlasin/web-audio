@@ -10,4 +10,4 @@ But we don't want to do it by hand (or rather "by mouse"), as that would be both
 
 Instead we can use a <Clr nodeType="sequencer">Sequencer</Clr> node, which will do it for us.
 
-Create <Clr nodeType="sequencer">Sequencer</Clr> node - it can be found in <Clr nodeType="sequencer">Sequencer</Clr> section of the node creation menu.
+Create <Clr nodeType="sequencer">Sequencer</Clr> node - it can be found in <Clr nodeType="sequencer">Pitch</Clr> section of the node creation menu.

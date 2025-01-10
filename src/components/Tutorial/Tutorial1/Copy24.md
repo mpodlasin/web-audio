@@ -4,7 +4,7 @@
 
 Even though the melody is nice, the sound itself if still weirdly dry and artificial.
 
-We can quickly fix that, by adding an echo effect.
+We can quickly fix that, by adding a reverb effect.
 
 You can do that by using <Clr nodeType="convolution">Convolution</Clr> node, to be found in <Clr nodeType="convolution">Effect</Clr> section.
 
