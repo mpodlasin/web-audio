@@ -9,7 +9,7 @@ export default function (audioGraph: SerializedAudioElements) {
 	const adEnvelopeNode = values.find((node) => node.type === 'ad-envelope');
 	const adEnvelopeNodeId = entries.find((entry) => entry[1] === adEnvelopeNode)?.[0];
 
-    const gainNode = values.find(node => node.type === 'gain');
+	const gainNode = values.find((node) => node.type === 'gain');
 
-	return gainNode?.parameters.gain?.inputs.some(input => input.id === adEnvelopeNodeId) ?? false;
+	return gainNode?.parameters.gain?.inputs.some((input) => input.id === adEnvelopeNodeId) ?? false;
 }

@@ -6,5 +6,5 @@ export default function (audioGraph: SerializedAudioElements) {
 	// Gain parameter on the Gain node was set to 0.
 	const gainNode = values.find((node) => node.type === 'gain');
 
-    return gainNode?.parameters.gain?.base === 0;
+	return gainNode?.parameters.gain?.base === 0;
 }
