@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-You should now hear a tone emitted from your speakers or headphones.
+You should now hear a tone coming from your speakers or headphones.
 
-If you do not hear anything, make sure your audio settings are configured correctly.
+If you don’t hear anything, make sure your audio settings are set up correctly.
 
-If you do hear a tone, remember that you can pause it and unpause it at any time - again using the button above - for example when listening to the sound becomes tiring.
+If you do hear a tone, remember that you can pause and unpause it at any time using the button above - for example, when listening to the sound becomes tiring.

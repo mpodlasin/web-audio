@@ -4,8 +4,9 @@
 
 To make it less boring, play around with the _frequency_ of the oscillator.
 
-Again, we will explain what exactly the frequency is in later tutorials.
+We will explain what exactly frequency is in later tutorials.
 
-For now, grab with your mouse a knob labeled "frequency", visible on the <Clr nodeType="sine-oscillator">Sine</Clr> node.
+For now, grab the knob labeled "frequency" on the <Clr nodeType="sine-oscillator">Sine</Clr> node with your mouse.
 
-While holding the mouse key, move mouse up and down and listen how it affects the sound.
+While holding the mouse button, move the mouse up and down and listen to how it affects the sound.
+
