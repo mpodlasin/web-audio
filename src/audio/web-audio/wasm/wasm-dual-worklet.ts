@@ -1,7 +1,7 @@
 class DualWorkletProcessor extends AudioWorkletProcessor {
 	private WEBEAUDIO_FRAME_SIZE: number;
 	private leftInputBuffer: Float32Array = new Float32Array();
-    private rightInputBuffer: Float32Array = new Float32Array();
+	private rightInputBuffer: Float32Array = new Float32Array();
 	private outputBuffer: Float32Array = new Float32Array();
 	private nativeProcess: ((currentFrame: number, sampleRate: number) => void) | undefined =
 		undefined;
@@ -25,7 +25,7 @@ class DualWorkletProcessor extends AudioWorkletProcessor {
 				const exports = result.instance.exports as any;
 
 				const leftInputBufferPtr = exports.leftInputBufferPtr();
-                const rightInputBufferPtr = exports.rightInputBufferPtr();
+				const rightInputBufferPtr = exports.rightInputBufferPtr();
 				const outputBufferPtr = exports.outputBufferPtr();
 
 				this.leftInputBuffer = new Float32Array(
@@ -33,7 +33,7 @@ class DualWorkletProcessor extends AudioWorkletProcessor {
 					leftInputBufferPtr,
 					this.WEBEAUDIO_FRAME_SIZE
 				);
-                this.rightInputBuffer = new Float32Array(
+				this.rightInputBuffer = new Float32Array(
 					exports.memory.buffer,
 					rightInputBufferPtr,
 					this.WEBEAUDIO_FRAME_SIZE
@@ -64,7 +64,7 @@ class DualWorkletProcessor extends AudioWorkletProcessor {
 			this.leftInputBuffer.set(leftInput);
 		}
 
-        const rightInput = inputList[0]?.[0];
+		const rightInput = inputList[0]?.[0];
 
 		if (rightInput) {
 			this.leftInputBuffer.set(rightInput);

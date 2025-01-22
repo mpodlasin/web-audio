@@ -32,7 +32,9 @@ export interface Input {
 }
 
 export function isInput(input: unknown): input is Input {
-	return typeof input === 'object' && input !== null && 'getNode' in input && 'getInputIndex' in input;
+	return (
+		typeof input === 'object' && input !== null && 'getNode' in input && 'getInputIndex' in input
+	);
 }
 
 export interface CustomAudioNode {

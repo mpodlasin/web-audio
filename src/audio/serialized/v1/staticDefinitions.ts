@@ -440,16 +440,19 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			step8: { ...buttonParameter, highlightIndex: 7 }
 		}
 	},
-	"greater-than": {
-		inputs: [{
-			...numberInputOutputDefinition,
-			id: 'number-a',
-			name: 'Number a',
-		}, {
-			...numberInputOutputDefinition,
-			id: 'number-b',
-			name: 'Number b',
-		}],
+	'greater-than': {
+		inputs: [
+			{
+				...numberInputOutputDefinition,
+				id: 'number-a',
+				name: 'Number a'
+			},
+			{
+				...numberInputOutputDefinition,
+				id: 'number-b',
+				name: 'Number b'
+			}
+		],
 		outputs: [numberInputOutputDefinition],
 		parameters: {}
 	},
@@ -499,7 +502,7 @@ export const readableNames: { [P in NodeType]: string } = {
 	pattern: 'Pattern',
 	tutorial: 'Tutorial',
 	value: 'Value',
-	"greater-than": ">",
+	'greater-than': '>',
 	number: 'Number',
 	comment: 'Comment'
 };
