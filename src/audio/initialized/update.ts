@@ -36,7 +36,8 @@ import {
 	CustomPatternNode,
 	EmptyCustomAudioNode,
 	CustomValueNode,
-	CustomNumberNode
+	CustomNumberNode,
+	CustomGreaterThanNode
 } from './nodes';
 import { type CustomAudioNode, type AudioNodeDatabase } from './types';
 
@@ -445,6 +446,8 @@ function createCustomAudioNode(
 			return new CustomValueNode(id);
 		case 'number':
 			return new CustomNumberNode(id);
+		case 'greater-than':
+			return new CustomGreaterThanNode(id);
 	}
 }
 

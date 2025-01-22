@@ -1,5 +1,6 @@
 import { globalContext } from '../GlobalContext';
 import wasmWorkletUrl from './wasm/wasm-worklet.js?worker&url';
+import wasmDualWorkletUrl from './wasm/wasm-dual-worklet.js?worker&url';
 import clockCounterNodeWorkletUrl from './wasm/clock-counter/clock-counter-worklet.js?worker&url';
 import patternNodeWorkletUrl from './wasm/pattern/pattern-worklet.js?worker&url';
 import sequencerNodeWorkletUrl from './wasm/sequencer/sequencer-worklet.js?worker&url';
@@ -21,11 +22,13 @@ import adEnvelopeWasmUrl from './wasm/ad-envelope/ad-envelope.wasm?url';
 import squareOscillatorWasmUrl from './wasm/square-oscillator/square-oscillator.wasm?url';
 import sawOscillatorWasmUrl from './wasm/saw-oscillator/saw-oscillator.wasm?url';
 import minMaxWasmUrl from './wasm/min-max/min-max.wasm?url';
+import greaterThanWasmUrl from './wasm/greater-than/greater-than.wasm?url';
 
 export async function loadCustomNodes() {
 	try {
 		await Promise.all([
 			globalContext.audioWorklet.addModule(wasmWorkletUrl),
+			globalContext.audioWorklet.addModule(wasmDualWorkletUrl),
 			globalContext.audioWorklet.addModule(clockCounterNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(sequencerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(patternNodeWorkletUrl),
@@ -81,3 +84,4 @@ export const createSquareOscillatorWorklet = () =>
 export const createSawOscillatorWorklet = () =>
 	createWasmWorklet('custom-oscillator', sawOscillatorWasmUrl);
 export const createMinMaxWorklet = () => createWasmWorklet('min-max', minMaxWasmUrl);
+export const createGreaterThanWorklet = () => createWasmWorklet('wasm-dual', greaterThanWasmUrl);

@@ -440,6 +440,19 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			step8: { ...buttonParameter, highlightIndex: 7 }
 		}
 	},
+	"greater-than": {
+		inputs: [{
+			...numberInputOutputDefinition,
+			id: 'number-a',
+			name: 'Number a',
+		}, {
+			...numberInputOutputDefinition,
+			id: 'number-b',
+			name: 'Number b',
+		}],
+		outputs: [numberInputOutputDefinition],
+		parameters: {}
+	},
 	tutorial: {
 		inputs: [],
 		outputs: [],
@@ -486,6 +499,7 @@ export const readableNames: { [P in NodeType]: string } = {
 	pattern: 'Pattern',
 	tutorial: 'Tutorial',
 	value: 'Value',
+	"greater-than": ">",
 	number: 'Number',
 	comment: 'Comment'
 };
@@ -503,7 +517,7 @@ export const categorizedNodeTypes = {
 	effects: ['convolution', 'delay'] as NodeType[],
 	gain: ['gain', 'pan'] as NodeType[],
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
-	math: ['number', 'multiply', 'bipolar-to-unipolar'] as NodeType[],
+	math: ['number', 'multiply', 'bipolar-to-unipolar', 'greater-than'] as NodeType[],
 	clock: ['clock', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
 	visualization: ['oscilloscope', 'value', 'comment'] as NodeType[],

@@ -5,6 +5,7 @@ import {
 	createAdEnvelopeWorklet,
 	createClockCounterWorklet,
 	createGateLengthWorklet,
+	createGreaterThanWorklet,
 	createMeasureGateWorklet,
 	createMinMaxWorklet,
 	createPatternWorklet,
@@ -369,6 +370,12 @@ export class CustomTriangleOscillatorNode extends CustomOscillatorNode {
 export class CustomPanNode extends GenericCustomAudioNodeWithWebApiNode<StereoPannerNode> {
 	constructor(id: string) {
 		super(globalContext.createStereoPanner(), id, 'pan');
+	}
+}
+
+export class CustomGreaterThanNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	constructor(id: string) {
+		super(createGreaterThanWorklet(), id, 'greater-than');
 	}
 }
 
