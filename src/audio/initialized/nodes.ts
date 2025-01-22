@@ -23,7 +23,7 @@ import {
 	isCustomAudioNode,
 	type Output,
 	type Destination,
-	Input,
+	type Input,
 	isInput
 } from './types';
 import { accessParameter } from './update';

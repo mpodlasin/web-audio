@@ -64,10 +64,10 @@ class DualWorkletProcessor extends AudioWorkletProcessor {
 			this.leftInputBuffer.set(leftInput);
 		}
 
-		const rightInput = inputList[0]?.[0];
+		const rightInput = inputList[1]?.[0];
 
 		if (rightInput) {
-			this.leftInputBuffer.set(rightInput);
+			this.rightInputBuffer.set(rightInput);
 		}
 
 		this.nativeProcess(_currentFrame, this._sampleRate);
