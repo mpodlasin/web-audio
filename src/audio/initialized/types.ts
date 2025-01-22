@@ -19,16 +19,25 @@ export function isCustomAudioParam(
 	);
 }
 
-export type Destination = CustomAudioNode | AudioParam | CustomAudioParam | AudioNode;
+export type Destination = CustomAudioNode | AudioParam | CustomAudioParam | AudioNode | Input;
 
 export interface Output {
 	connect(destination: Destination): void;
 	disconnect(desination: Destination): void;
 }
 
+export interface Input {
+	getNode(): AudioNode;
+	getInputIndex(): number;
+}
+
+export function isInput(input: unknown): input is Input {
+	return typeof input === 'object' && input !== null && 'getNode' in input && 'getInputIndex' in input;
+}
+
 export interface CustomAudioNode {
 	getOutput(name?: string): Output;
-	getInputNode(name?: string): AudioNode | null;
+	getInput(name?: string): Input | null;
 	getParameter(parameterName: string): CustomAudioParam;
 	cleanup(): void;
 	onHighlightParameter(callback: (parameterName: string) => void): void;

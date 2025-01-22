@@ -22,7 +22,9 @@ import {
 	isCustomAudioParam,
 	isCustomAudioNode,
 	type Output,
-	type Destination
+	type Destination,
+	Input,
+	isInput
 } from './types';
 import { accessParameter } from './update';
 import { midiNoteToFrequency } from './utils';
@@ -47,14 +49,37 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 
 	abstract cleanup(): void;
 
+	getInput(name?: string): Input | null {
+		const inputNode = this.getInputNode();
+
+		if (inputNode === null) return null;
+
+		const staticDefinition = allowedSerializedAudioElementStaticDefinitions[this.type];
+		const inputNodeIndex = staticDefinition.inputs.findIndex(el => el.id === name);
+		const inputIndex = inputNodeIndex === -1 ? 0 : inputNodeIndex;
+
+		return {
+			getNode() {
+				return inputNode;
+			},
+			getInputIndex() {
+				return inputIndex;
+			}
+		}
+	}
+
 	getOutput(name?: string): Output {
 		const id = this.id;
 		const outputNode = this.getOutputNode(name);
 
+		const staticDefinition = allowedSerializedAudioElementStaticDefinitions[this.type];
+		const outputNodeIndex = staticDefinition.outputs.findIndex(el => el.id === name);
+		const outputIndex = outputNodeIndex === -1 ? 0 : outputNodeIndex;
+
 		return {
 			connect(destination: Destination) {
 				if (isCustomAudioNode(destination)) {
-					const inputNode = destination.getInputNode();
+					const inputNode = destination.getInput()?.getNode();
 					if (inputNode) {
 						outputNode.connect(inputNode);
 					}
@@ -68,6 +93,18 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 
 				if (destination instanceof AudioParam) {
 					outputNode.connect(destination);
+					return;
+				}
+
+				if (isInput(destination)) {
+					const inputNode = destination.getNode();
+					const inputIndex = destination.getInputIndex();
+
+					if (inputIndex === 0 && outputIndex === 0) {
+						outputNode.connect(inputNode);
+					} else {
+						outputNode.connect(inputNode, outputIndex, inputIndex);
+					}
 					return;
 				}
 
@@ -86,12 +123,19 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 				}
 
 				if (isCustomAudioNode(destination)) {
-					const inputNode = destination.getInputNode();
+					const inputNode = destination.getInput()?.getNode();
 
 					if (inputNode) {
 						outputNode.disconnect(inputNode);
 					}
 
+					return;
+				}
+
+				if (isInput(destination)) {
+					const inputNode = destination.getNode();
+					outputNode.disconnect(inputNode);
+			
 					return;
 				}
 
@@ -176,27 +220,6 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 				return multiplierForParameterAndInputId;
 			}
 		};
-	}
-
-	connect(destination: CustomAudioNode | AudioParam | CustomAudioParam): void {
-		if (destination instanceof AudioParam) {
-			this.getOutput().connect(destination);
-
-			return;
-		}
-
-		if (isCustomAudioNode(destination)) {
-			const inputNode = destination.getInputNode();
-			if (inputNode) {
-				this.getOutput().connect(inputNode);
-			}
-		}
-
-		if (isCustomAudioParam(destination)) {
-			this.getOutput().connect(destination.getMultiplierForInput(this.id));
-
-			return;
-		}
 	}
 
 	onHighlightParameter(callback: (parameterName: string) => void): void {
@@ -394,6 +417,9 @@ export class CustomBipolarToUnipolarNode extends GenericCustomAudioNodeWithWebAp
 export class EmptyCustomAudioNode implements CustomAudioNode {
 	getOutput(): Output {
 		throw new Error('Method not implemented.');
+	}
+	getInput(): Input | null {
+		throw new Error("Input not implemented!");
 	}
 	getInputNode(): AudioNode | null {
 		throw new Error('Method not implemented.');

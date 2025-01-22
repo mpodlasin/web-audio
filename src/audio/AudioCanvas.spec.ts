@@ -275,7 +275,7 @@ describe('AudioCanvas', () => {
 				(audioNodeDatabase['1'] as CustomSquareOscillatorNode).output.connect
 			).toHaveBeenCalledWith((audioNodeDatabase['2'] as CustomGainNode).webApiNode);
 			expect((audioNodeDatabase['2'] as CustomGainNode).webApiNode.connect).toHaveBeenCalledWith(
-				(audioNodeDatabase['3'] as DestinationNode).getInputNode()
+				(audioNodeDatabase['3'] as DestinationNode).getInput()?.getNode()
 			);
 			expect((audioNodeDatabase['2'] as CustomGainNode).getParameter('gain').audioParam.value).toBe(
 				0.5
@@ -573,7 +573,7 @@ describe('AudioCanvas', () => {
 
 			expect(
 				(nextAudioNodeDatabase['1'] as MidiNode).getOutputNode('trigger').connect
-			).toHaveBeenCalledWith(nextAudioNodeDatabase['2']?.getInputNode());
+			).toHaveBeenCalledWith(nextAudioNodeDatabase['2']?.getInput()?.getNode());
 		});
 
 		it('adds connection between clock and delay trigger input', () => {
@@ -630,7 +630,9 @@ describe('AudioCanvas', () => {
 			expect(
 				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect
 			).toHaveBeenCalledWith(
-				(nextAudioNodeDatabase['2'] as CustomDelayNode).getInputNode('trigger')
+				(nextAudioNodeDatabase['2'] as CustomDelayNode).getInput('trigger')?.getNode(),
+				0,
+				1
 			);
 		});
 
@@ -713,11 +715,13 @@ describe('AudioCanvas', () => {
 
 			expect(
 				(nextAudioNodeDatabase['2'] as CustomSineOscillatorNode).getOutputNode().connect
-			).toHaveBeenCalledWith((nextAudioNodeDatabase['3'] as CustomDelayNode).getInputNode());
+			).toHaveBeenCalledWith((nextAudioNodeDatabase['3'] as CustomDelayNode).getInput()?.getNode());
 			expect(
 				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect
 			).toHaveBeenCalledWith(
-				(nextAudioNodeDatabase['3'] as CustomDelayNode).getInputNode('trigger')
+				(nextAudioNodeDatabase['3'] as CustomDelayNode).getInput('trigger')?.getNode(),
+				0,
+				1
 			);
 		});
 
@@ -840,7 +844,7 @@ describe('AudioCanvas', () => {
 
 			expect(
 				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
-			).toHaveBeenCalledWith(nextAudioNodeDatabase['3']?.getInputNode('trigger'));
+			).toHaveBeenCalledWith(nextAudioNodeDatabase['3']?.getInput('trigger')?.getNode());
 		});
 
 		it('removes input form one node when two are present', () => {
@@ -902,7 +906,7 @@ describe('AudioCanvas', () => {
 
 			expect(
 				(nextAudioNodeDatabase['1'] as CustomSineOscillatorNode).getOutputNode().disconnect
-			).toHaveBeenCalledWith(nextAudioNodeDatabase['3']?.getInputNode('audio'));
+			).toHaveBeenCalledWith(nextAudioNodeDatabase['3']?.getInput('audio')?.getNode());
 		});
 
 		it('removes "weird" connection between clock node and delays audio input', () => {
@@ -963,7 +967,7 @@ describe('AudioCanvas', () => {
 
 			expect(
 				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
-			).toHaveBeenCalledWith(nextAudioNodeDatabase['3']?.getInputNode('audio'));
+			).toHaveBeenCalledWith(nextAudioNodeDatabase['3']?.getInput('audio')?.getNode());
 		});
 
 		it('adds two connections from clock to delay', () => {
@@ -1014,7 +1018,7 @@ describe('AudioCanvas', () => {
 
 			expect(
 				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect
-			).toHaveBeenCalledWith(nextAudioNodeDatabase['2']?.getInputNode('trigger'));
+			).toHaveBeenCalledWith(nextAudioNodeDatabase['2']?.getInput('trigger')?.getNode(), 0, 1);
 
 			const newAudioElements = addConnection(
 				intermediateAudioElements,
@@ -1043,7 +1047,7 @@ describe('AudioCanvas', () => {
 
 			expect(
 				(nextNextAudioNodeDatabase['1'] as ClockNode).getOutputNode().connect
-			).toHaveBeenCalledWith(nextNextAudioNodeDatabase['2']?.getInputNode('audio'));
+			).toHaveBeenCalledWith(nextNextAudioNodeDatabase['2']?.getInput('audio')?.getNode());
 		});
 
 		it('removes two connections from clock to delay', () => {
@@ -1097,7 +1101,7 @@ describe('AudioCanvas', () => {
 
 			expect(
 				(nextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
-			).toHaveBeenCalledWith(nextAudioNodeDatabase['2']?.getInputNode('audio'));
+			).toHaveBeenCalledWith(nextAudioNodeDatabase['2']?.getInput('audio')?.getNode());
 
 			const newerAudioElements = removeConnection(
 				newAudioElements,
@@ -1125,7 +1129,7 @@ describe('AudioCanvas', () => {
 
 			expect(
 				(nextNextAudioNodeDatabase['1'] as ClockNode).getOutputNode().disconnect
-			).toHaveBeenCalledWith(nextNextAudioNodeDatabase['2']?.getInputNode('trigger'));
+			).toHaveBeenCalledWith(nextNextAudioNodeDatabase['2']?.getInput('trigger')?.getNode());
 		});
 
 		it('adds connection between gain and oscillator detune parameter', () => {

@@ -352,7 +352,7 @@ function connectAudioElements(
 	const audioNodeB = audioNodeDatabase[audioElementB.id];
 
 	if (audioNodeA !== undefined && audioNodeB !== undefined) {
-		const audioNodeBInput = audioNodeB.getInputNode(input);
+		const audioNodeBInput = audioNodeB.getInput(input);
 
 		if (audioNodeBInput) {
 			audioNodeA.getOutput(output).connect(audioNodeBInput);
@@ -371,7 +371,7 @@ function disconnectAudioElements(
 	const audioNodeB = audioNodeDatabase[audioElementB.id];
 
 	if (audioNodeA !== undefined && audioNodeB !== undefined) {
-		const audioNodeBInput = audioNodeB.getInputNode(input);
+		const audioNodeBInput = audioNodeB.getInput(input);
 
 		if (audioNodeBInput) {
 			audioNodeA.getOutput(output).disconnect(audioNodeBInput);
