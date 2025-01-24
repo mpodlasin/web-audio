@@ -4,7 +4,7 @@
 
 1. [Your First Sounds](/learn/your-first-sounds)
 2. [Types of Signals](/learn/types-of-signals)
-3. _[Types of Signals - Musical Example](/learn/types-of-signals-musical-example) (coming soon)_
+3. [Synthesizing Techno Kick](/learn/synthesizing-techno-kick)
 
 ### Building Blocks of Modular Synthesis
 

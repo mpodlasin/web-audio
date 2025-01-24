@@ -8,6 +8,10 @@ const routes: Record<string, { title: string; tutorialId: string }> = {
 	'types-of-signals': {
 		title: '2. Types of Signals',
 		tutorialId: 'tutorial2'
+	},
+	'synthesizing-techno-kick': {
+		title: '3. Synthesizing Techno Kick',
+		tutorialId: 'tutorial3'
 	}
 };
 
