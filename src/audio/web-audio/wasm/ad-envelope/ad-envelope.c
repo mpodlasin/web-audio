@@ -42,7 +42,7 @@ EMSCRIPTEN_KEEPALIVE
 EMSCRIPTEN_KEEPALIVE
     void process(int currentFrame, int sampleRate) {
         for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
-            if ((i == 0 && lastValueOfPreviousProcess == 0 && inputBuffer[0] == 1) || (i > 0 && inputBuffer[i] == 1 && inputBuffer[i-1] == 0)) {
+            if ((i == 0 && lastValueOfPreviousProcess < 0.001 && inputBuffer[0] > 0.999) || (i > 0 && inputBuffer[i] >= 0.999 && inputBuffer[i-1] < 0.001)) {
                 envelopeEventStart = currentFrame + i;
                 envelopeEventStartValue = lastEnvelopeValue;
                 envelopeEventAttack = attackDecay[0];

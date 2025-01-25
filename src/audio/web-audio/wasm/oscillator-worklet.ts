@@ -79,8 +79,6 @@ class OscillatorProcessor extends AudioWorkletProcessor {
 
 		outputList[0]?.[0]?.set(this.outputBuffer);
 
-		console.log(outputList[0]?.[0]);
-
 		return true;
 	}
 }
