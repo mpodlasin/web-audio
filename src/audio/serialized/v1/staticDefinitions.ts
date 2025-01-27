@@ -456,6 +456,22 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		outputs: [numberInputOutputDefinition],
 		parameters: {}
 	},
+	'times': {
+		inputs: [
+			{
+				...numberInputOutputDefinition,
+				id: 'number-a',
+				name: 'Number a'
+			},
+			{
+				...numberInputOutputDefinition,
+				id: 'number-b',
+				name: 'Number b'
+			}
+		],
+		outputs: [numberInputOutputDefinition],
+		parameters: {}
+	},
 	tutorial: {
 		inputs: [],
 		outputs: [],
@@ -503,6 +519,7 @@ export const readableNames: { [P in NodeType]: string } = {
 	tutorial: 'Tutorial',
 	value: 'Value',
 	'greater-than': '>',
+	'times': '×',
 	number: 'Number',
 	comment: 'Comment'
 };
@@ -520,11 +537,11 @@ export const categorizedNodeTypes = {
 	effects: ['convolution', 'delay'] as NodeType[],
 	gain: ['gain', 'pan'] as NodeType[],
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
-	math: ['number', 'multiply', 'bipolar-to-unipolar', 'greater-than'] as NodeType[],
+	math: ['number', 'times', 'greater-than', 'bipolar-to-unipolar'] as NodeType[],
 	clock: ['clock', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
 	visualization: ['oscilloscope', 'value', 'comment'] as NodeType[],
-	internal: ['tutorial'] as NodeType[]
+	internal: ['tutorial', 'multiply'] as NodeType[]
 };
 
 const everyNodeIsIncludedInMenu = nodeTypes.every((nodeType) =>

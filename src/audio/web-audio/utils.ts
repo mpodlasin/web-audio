@@ -23,6 +23,7 @@ import squareOscillatorWasmUrl from './wasm/square-oscillator/square-oscillator.
 import sawOscillatorWasmUrl from './wasm/saw-oscillator/saw-oscillator.wasm?url';
 import minMaxWasmUrl from './wasm/min-max/min-max.wasm?url';
 import greaterThanWasmUrl from './wasm/greater-than/greater-than.wasm?url';
+import timesWasmUrl from './wasm/times/times.wasm?url';
 
 export async function loadCustomNodes() {
 	try {
@@ -85,3 +86,4 @@ export const createSawOscillatorWorklet = () =>
 	createWasmWorklet('custom-oscillator', sawOscillatorWasmUrl);
 export const createMinMaxWorklet = () => createWasmWorklet('min-max', minMaxWasmUrl);
 export const createGreaterThanWorklet = () => createWasmWorklet('wasm-dual', greaterThanWasmUrl, { numberOfInputs: 2 });
+export const createTimesWorklet = () => createWasmWorklet('wasm-dual', timesWasmUrl, { numberOfInputs: 2 });

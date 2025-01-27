@@ -13,7 +13,8 @@ import {
 	createSawOscillatorWorklet,
 	createScalerWorklet,
 	createSequencerWorklet,
-	createSquareOscillatorWorklet
+	createSquareOscillatorWorklet,
+	createTimesWorklet
 } from '../web-audio/utils';
 import {
 	type CustomAudioNode,
@@ -399,6 +400,12 @@ export class CustomPanNode extends GenericCustomAudioNodeWithWebApiNode<StereoPa
 export class CustomGreaterThanNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
 		super(createGreaterThanWorklet(), id, 'greater-than');
+	}
+}
+
+export class CustomTimesNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	constructor(id: string) {
+		super(createTimesWorklet(), id, 'times');
 	}
 }
 
