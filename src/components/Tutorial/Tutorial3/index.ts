@@ -74,6 +74,18 @@ import copy37 from './Copy37.md';
 import check37 from './Check37';
 import copy38 from './Copy38.md';
 import check38 from './Check38';
+import copy39 from './Copy39.md';
+import check39 from './Check39';
+import copy40 from './Copy40.md';
+import check40 from './Check40';
+import copy41 from './Copy41.md';
+import check41 from './Check41';
+import copy42 from './Copy42.md';
+import check42 from './Check42';
+import copy43 from './Copy43.md';
+import check43 from './Check43';
+import copy44 from './Copy44.md';
+import check44 from './Check44';
 
 import type { Tutorial } from '../types';
 
@@ -230,6 +242,30 @@ export const tutorial3: Tutorial = {
 		{
 			copy: copy38,
 			check: check38
+		},
+		{
+			copy: copy39,
+			check: check39
+		},
+		{
+			copy: copy40,
+			check: check40
+		},
+		{
+			copy: copy41,
+			check: check41
+		},
+		{
+			copy: copy42,
+			check: check42
+		},
+		{
+			copy: copy43,
+			check: check43
+		},
+		{
+			copy: copy44,
+			check: check44
 		},
 	]
 };

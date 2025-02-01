@@ -12,7 +12,7 @@ export default function (audioGraph: SerializedAudioElements) {
     // Check if Sine Oscillator is connected to Triangle Oscillator with multiplication set to 250
     const sineIsConnectedWithMult250 =
         triangleOscillator?.parameters?.frequency?.inputs?.some(
-            (input) => input.id === sineOscillatorId && input.multiply === 250
+            (input) => input.id === sineOscillatorId && input.multiply === 100
         ) ?? false;
 
     return sineOscillator && triangleOscillator && sineIsConnectedWithMult250;
