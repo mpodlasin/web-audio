@@ -58,34 +58,6 @@ import copy29 from './Copy29.md';
 import check29 from './Check29';
 import copy30 from './Copy30.md';
 import check30 from './Check30';
-import copy31 from './Copy31.md';
-import check31 from './Check31';
-import copy32 from './Copy32.md';
-import check32 from './Check32';
-import copy33 from './Copy33.md';
-import check33 from './Check33';
-import copy34 from './Copy34.md';
-import check34 from './Check34';
-import copy35 from './Copy35.md';
-import check35 from './Check35';
-import copy36 from './Copy36.md';
-import check36 from './Check36';
-import copy37 from './Copy37.md';
-import check37 from './Check37';
-import copy38 from './Copy38.md';
-import check38 from './Check38';
-import copy39 from './Copy39.md';
-import check39 from './Check39';
-import copy40 from './Copy40.md';
-import check40 from './Check40';
-import copy41 from './Copy41.md';
-import check41 from './Check41';
-import copy42 from './Copy42.md';
-import check42 from './Check42';
-import copy43 from './Copy43.md';
-import check43 from './Check43';
-import copy44 from './Copy44.md';
-import check44 from './Check44';
 
 import type { Tutorial } from '../types';
 
@@ -210,62 +182,6 @@ export const tutorial3: Tutorial = {
 		{
 			copy: copy30,
 			check: check30
-		},
-		{
-			copy: copy31,
-			check: check31
-		},
-		{
-			copy: copy32,
-			check: check32
-		},
-		{
-			copy: copy33,
-			check: check33
-		},
-		{
-			copy: copy34,
-			check: check34
-		},
-		{
-			copy: copy35,
-			check: check35
-		},
-		{
-			copy: copy36, 
-			check: check36
-		},
-		{
-			copy: copy37, 
-			check: check37
-		},
-		{
-			copy: copy38,
-			check: check38
-		},
-		{
-			copy: copy39,
-			check: check39
-		},
-		{
-			copy: copy40,
-			check: check40
-		},
-		{
-			copy: copy41,
-			check: check41
-		},
-		{
-			copy: copy42,
-			check: check42
-		},
-		{
-			copy: copy43,
-			check: check43
-		},
-		{
-			copy: copy44,
-			check: check44
 		},
 	]
 };
