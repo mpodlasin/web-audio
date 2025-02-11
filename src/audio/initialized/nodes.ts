@@ -529,6 +529,13 @@ export class CustomOscilloscopeNode extends GenericCustomAudioNodeWithWebApiNode
 	}
 }
 
+export class CustomSpectrumNode extends GenericCustomAudioNodeWithWebApiNode<AnalyserNode> {
+	constructor(id: string) {
+		super(globalContext.createAnalyser(), id, 'spectrum');
+	}
+}
+
+
 export class CustomValueNode extends GenericCustomAudioNodeWithWebApiNode<AnalyserNode> {
 	constructor(id: string) {
 		super(globalContext.createAnalyser(), id, 'value');

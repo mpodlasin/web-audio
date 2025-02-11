@@ -335,6 +335,21 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 			slow: buttonParameter
 		}
 	},
+	spectrum: {
+		inputs: [
+			{
+				...audioInputOutputDefinition,
+				contextDescription: 'Signal to be visualized.'
+			}
+		],
+		outputs: [
+			{
+				...audioInputOutputDefinition,
+				contextDescription: 'Pass-through.'
+			}
+		],
+		parameters: {}
+	},
 	value: {
 		inputs: [numberInputOutputDefinition],
 		outputs: [],
@@ -521,7 +536,8 @@ export const readableNames: { [P in NodeType]: string } = {
 	'greater-than': '>',
 	times: '×',
 	number: 'Number',
-	comment: 'Comment'
+	comment: 'Comment',
+	spectrum: 'Spectrum'
 };
 
 export const categorizedNodeTypes = {
@@ -540,7 +556,7 @@ export const categorizedNodeTypes = {
 	math: ['number', 'times', 'greater-than', 'bipolar-to-unipolar'] as NodeType[],
 	clock: ['clock', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
-	visualization: ['oscilloscope', 'value', 'comment'] as NodeType[],
+	visualization: ['oscilloscope', 'spectrum', 'value', 'comment'] as NodeType[],
 	internal: ['tutorial', 'multiply'] as NodeType[]
 };
 

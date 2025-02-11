@@ -38,7 +38,8 @@ import {
 	CustomValueNode,
 	CustomNumberNode,
 	CustomGreaterThanNode,
-	CustomTimesNode
+	CustomTimesNode,
+	CustomSpectrumNode
 } from './nodes';
 import { type CustomAudioNode, type AudioNodeDatabase } from './types';
 
@@ -451,6 +452,8 @@ function createCustomAudioNode(
 			return new CustomGreaterThanNode(id);
 		case 'times':
 			return new CustomTimesNode(id);
+		case 'spectrum':
+			return new CustomSpectrumNode(id);
 	}
 }
 
