@@ -2,8 +2,6 @@
 	import type { CustomSpectrumNode } from '../audio/initialized';
 	import type { SerializedSpectrumNode } from '../audio/serialized';
 
-	export let id: string;
-	export let serializedNode: SerializedSpectrumNode;
 	export let oscilloscopeNode: CustomSpectrumNode;
 	export let running: boolean;
 
@@ -49,7 +47,7 @@
 
 		for (let i = 0; i < bufferLength; i++) {
 			const v = (dataArray[i] ?? 0) / 256.0;
-			const y = ((1 - v) * canvas.height);
+			const y = (1 - v) * canvas.height;
 
 			if (i === 0) {
 				canvasCtx.moveTo(x, y);

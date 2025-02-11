@@ -11,9 +11,7 @@
 		EmptyCustomAudioNode,
 		type SerializedAudioElements,
 		CustomValueNode,
-
 		CustomSpectrumNode
-
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import Plug from './Plug.svelte';
@@ -165,13 +163,7 @@
 	{/if}
 	{#if node.type === 'spectrum' && instantiatedNode instanceof CustomSpectrumNode}
 		<div class="special">
-			<SpectrumNode
-				{id}
-				serializedNode={node}
-				oscilloscopeNode={instantiatedNode}
-				{running}
-				on:nodeParameterChange
-			/>
+			<SpectrumNode oscilloscopeNode={instantiatedNode} {running} on:nodeParameterChange />
 		</div>
 	{/if}
 	{#if node.type === 'value' && instantiatedNode instanceof CustomValueNode}
