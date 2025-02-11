@@ -59,7 +59,11 @@ export class KillableAudioWorkletNode extends AudioWorkletNode {
 	}
 }
 
-const createWasmWorklet = (workletName: string, wasmUrl: string, options?: AudioWorkletNodeOptions) => {
+const createWasmWorklet = (
+	workletName: string,
+	wasmUrl: string,
+	options?: AudioWorkletNodeOptions
+) => {
 	const wasmWorklet = new KillableAudioWorkletNode(globalContext, workletName, options);
 
 	fetch(wasmUrl).then(async (response) => {
@@ -85,5 +89,7 @@ export const createSquareOscillatorWorklet = () =>
 export const createSawOscillatorWorklet = () =>
 	createWasmWorklet('custom-oscillator', sawOscillatorWasmUrl);
 export const createMinMaxWorklet = () => createWasmWorklet('min-max', minMaxWasmUrl);
-export const createGreaterThanWorklet = () => createWasmWorklet('wasm-dual', greaterThanWasmUrl, { numberOfInputs: 2 });
-export const createTimesWorklet = () => createWasmWorklet('wasm-dual', timesWasmUrl, { numberOfInputs: 2 });
+export const createGreaterThanWorklet = () =>
+	createWasmWorklet('wasm-dual', greaterThanWasmUrl, { numberOfInputs: 2 });
+export const createTimesWorklet = () =>
+	createWasmWorklet('wasm-dual', timesWasmUrl, { numberOfInputs: 2 });

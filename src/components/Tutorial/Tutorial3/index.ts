@@ -218,6 +218,6 @@ export const tutorial3: Tutorial = {
 		{
 			copy: copy36,
 			check: check36
-		},
+		}
 	]
 };

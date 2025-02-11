@@ -13,7 +13,7 @@
 	const tutorials: Record<string, Tutorial> = {
 		tutorial1: tutorial1,
 		tutorial2: tutorial2,
-		tutorial3: tutorial3,
+		tutorial3: tutorial3
 	};
 
 	$: tutorialId = node.tutorialId;

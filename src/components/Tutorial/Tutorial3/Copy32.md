@@ -6,4 +6,4 @@ We used the <Clr nodeType="times">×</Clr> and <Clr nodeType="number">Number</Cl
 
 This task is so common in `AudioCanvas`, that there is a faster, easier way to do that.
 
-Delete the <Clr nodeType="times">×</Clr> and <Clr nodeType="number">Number</Clr> nodes.  
+Delete the <Clr nodeType="times">×</Clr> and <Clr nodeType="number">Number</Clr> nodes.

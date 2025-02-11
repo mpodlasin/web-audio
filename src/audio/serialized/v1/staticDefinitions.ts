@@ -456,7 +456,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		outputs: [numberInputOutputDefinition],
 		parameters: {}
 	},
-	'times': {
+	times: {
 		inputs: [
 			{
 				...numberInputOutputDefinition,
@@ -519,7 +519,7 @@ export const readableNames: { [P in NodeType]: string } = {
 	tutorial: 'Tutorial',
 	value: 'Value',
 	'greater-than': '>',
-	'times': '×',
+	times: '×',
 	number: 'Number',
 	comment: 'Comment'
 };
