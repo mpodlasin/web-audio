@@ -13,5 +13,5 @@ export default function (audioGraph: SerializedAudioElements) {
 		adEnvelope?.inputs?.some((input) => input.id === sawLFOId && input.input === 'trigger') ??
 		false;
 
-	return sawLFO && adEnvelope && sawLFOIsConnectedToADEnvelope;
+	return (sawLFO && adEnvelope && sawLFOIsConnectedToADEnvelope) ?? false;
 }

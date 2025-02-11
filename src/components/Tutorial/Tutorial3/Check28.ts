@@ -29,11 +29,12 @@ export default function (audioGraph: SerializedAudioElements) {
 	);
 
 	return (
-		adEnvelope &&
-		timesNode &&
-		triangleOscillator &&
-		adEnvelopeIsConnectedToTimes &&
-		timesNodeIsConnectedToTriangle &&
-		adEnvelopeIsNotDirectlyConnectedToTriangle
+		(adEnvelope &&
+			timesNode &&
+			triangleOscillator &&
+			adEnvelopeIsConnectedToTimes &&
+			timesNodeIsConnectedToTriangle &&
+			adEnvelopeIsNotDirectlyConnectedToTriangle) ??
+		false
 	);
 }

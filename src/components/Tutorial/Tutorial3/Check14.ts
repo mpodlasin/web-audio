@@ -16,5 +16,5 @@ export default function (audioGraph: SerializedAudioElements) {
 	// Check if the gain knob is set to 0
 	const isGainKnobZero = gainNode?.parameters?.gain?.base === 0;
 
-	return sawLFO && gainNode && sawLFOIsConnectedToGain && isGainKnobZero;
+	return (sawLFO && gainNode && sawLFOIsConnectedToGain && isGainKnobZero) ?? false;
 }

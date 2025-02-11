@@ -12,5 +12,5 @@ export default function (audioGraph: SerializedAudioElements) {
 	const sawLFOIsConnectedToOscilloscope =
 		oscilloscopeNode?.inputs?.some((input) => input.id === sawLFOId) ?? false;
 
-	return sawLFO && oscilloscopeNode && sawLFOIsConnectedToOscilloscope;
+	return (sawLFO && oscilloscopeNode && sawLFOIsConnectedToOscilloscope) ?? false;
 }

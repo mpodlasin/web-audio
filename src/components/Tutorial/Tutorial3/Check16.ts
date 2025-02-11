@@ -7,5 +7,5 @@ export default function (audioGraph: SerializedAudioElements) {
 	// Allow for a small tolerance around 2 Hz
 	const isFrequencySetTo2Hz = Math.abs((sawLFO?.parameters?.frequency?.base ?? 0) - 2) < 0.005;
 
-	return sawLFO && isFrequencySetTo2Hz;
+	return (sawLFO && isFrequencySetTo2Hz) ?? false;
 }

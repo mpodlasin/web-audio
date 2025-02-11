@@ -6,5 +6,5 @@ export default function (audioGraph: SerializedAudioElements) {
 
 	const isNumberValue250 = numberNode?.parameters?.value?.base === 250;
 
-	return numberNode && isNumberValue250;
+	return (numberNode && isNumberValue250) ?? false;
 }

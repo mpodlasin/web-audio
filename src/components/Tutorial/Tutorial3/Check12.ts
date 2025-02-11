@@ -6,5 +6,5 @@ export default function (audioGraph: SerializedAudioElements) {
 
 	const isUnipolarEnabled = sawLFO?.parameters?.unipolar?.base === 1;
 
-	return sawLFO && isUnipolarEnabled;
+	return (sawLFO && isUnipolarEnabled) ?? false;
 }

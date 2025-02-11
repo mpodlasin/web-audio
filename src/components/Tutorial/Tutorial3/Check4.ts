@@ -12,5 +12,5 @@ export default function (audioGraph: SerializedAudioElements) {
 	const triangleIsConnectedToOscilloscope =
 		oscilloscopeNode?.inputs?.some((input) => input.id === triangleOscillatorId) ?? false;
 
-	return triangleOscillator && oscilloscopeNode && !triangleIsConnectedToOscilloscope;
+	return (triangleOscillator && oscilloscopeNode && !triangleIsConnectedToOscilloscope) ?? false;
 }

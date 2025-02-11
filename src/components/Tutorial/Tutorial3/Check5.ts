@@ -8,5 +8,5 @@ export default function (audioGraph: SerializedAudioElements) {
 
 	const triangleFrequency = triangleOscillator?.parameters?.frequency?.base ?? 0;
 
-	return triangleOscillator && Math.abs(triangleFrequency - 55) < 0.01;
+	return (triangleOscillator && Math.abs(triangleFrequency - 55) < 0.01) ?? false;
 }

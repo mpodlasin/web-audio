@@ -26,11 +26,12 @@ export default function (audioGraph: SerializedAudioElements) {
 		outputNode?.inputs?.some((input) => input.id === triangleOscillatorId) ?? false;
 
 	return (
-		triangleOscillator &&
-		gainNode &&
-		outputNode &&
-		gainIsConnectedToOutput &&
-		triangleIsConnectedToGain &&
-		!triangleIsConnectedToOutput
+		(triangleOscillator &&
+			gainNode &&
+			outputNode &&
+			gainIsConnectedToOutput &&
+			triangleIsConnectedToGain &&
+			!triangleIsConnectedToOutput) ??
+		false
 	);
 }

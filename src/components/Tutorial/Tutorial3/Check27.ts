@@ -12,5 +12,5 @@ export default function (audioGraph: SerializedAudioElements) {
 	const numberNodeIsConnectedToTimes =
 		timesNode?.inputs?.some((input) => input.id === numberNodeId) ?? false;
 
-	return numberNode && timesNode && numberNodeIsConnectedToTimes;
+	return (numberNode && timesNode && numberNodeIsConnectedToTimes) ?? false;
 }

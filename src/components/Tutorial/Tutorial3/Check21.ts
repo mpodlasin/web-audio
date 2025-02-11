@@ -21,9 +21,10 @@ export default function (audioGraph: SerializedAudioElements) {
 	);
 
 	return (
-		adEnvelope &&
-		oscilloscope &&
-		adEnvelopeIsConnectedToOscilloscope &&
-		sawLFOIsDisconnectedFromOscilloscope
+		(adEnvelope &&
+			oscilloscope &&
+			adEnvelopeIsConnectedToOscilloscope &&
+			sawLFOIsDisconnectedFromOscilloscope) ??
+		false
 	);
 }

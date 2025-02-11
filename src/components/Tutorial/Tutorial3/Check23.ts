@@ -13,5 +13,5 @@ export default function (audioGraph: SerializedAudioElements) {
 		triangleOscillator?.parameters?.frequency?.inputs?.some((input) => input.id === adEnvelopeId) ??
 		false;
 
-	return adEnvelope && triangleOscillator && adEnvelopeIsConnectedToFrequency;
+	return (adEnvelope && triangleOscillator && adEnvelopeIsConnectedToFrequency) ?? false;
 }
