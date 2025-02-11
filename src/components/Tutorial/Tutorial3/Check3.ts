@@ -19,5 +19,5 @@ export default function (audioGraph: SerializedAudioElements) {
         oscilloscopeNode &&
         triangleIsConnectedToOscilloscope &&
         triangleFrequency < 1
-    );
+    ) ?? false;
 }
