@@ -8,7 +8,7 @@
 
 ### Building Blocks of Modular Synthesis
 
-4. _[Oscillators - Frequency and Amplitude](/learn/oscillators-frequency-amplitude) (coming soon)_
+4. [Oscillators - Frequency and Amplitude](/learn/oscillators-frequency-and-amplitude)
 5. _[Filters - Shaping Sound](/learn/filters-shaping-sound) (coming soon)_
 6. _[Envelopes - Controlling Sound](/learn/envelopes-controlling-sound) (coming soon)_
 7. _[LFOs - Adding Movement](/learn/lfos-adding-movement) (coming soon)_

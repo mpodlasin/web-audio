@@ -12,6 +12,10 @@ const routes: Record<string, { title: string; tutorialId: string }> = {
 	'synthesizing-techno-kick': {
 		title: '3. Synthesizing Techno Kick',
 		tutorialId: 'tutorial3'
+	},
+	'oscillators-frequency-and-amplitude': {
+		title: '4. Oscillators - Frequency and Amplitude',
+		tutorialId: 'tutorial4'
 	}
 };
 
