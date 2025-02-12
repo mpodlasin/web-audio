@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { CustomSpectrumNode } from '../audio/initialized';
-	import type { SerializedSpectrumNode } from '../audio/serialized';
 
 	export let oscilloscopeNode: CustomSpectrumNode;
 	export let running: boolean;
@@ -58,7 +57,6 @@
 			x += sliceWidth;
 		}
 
-		canvasCtx.lineTo(canvas.width, canvas.height / 2);
 		canvasCtx.stroke();
 	}
 
