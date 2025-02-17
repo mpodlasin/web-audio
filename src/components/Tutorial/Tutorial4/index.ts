@@ -4,18 +4,6 @@ import copy2 from './Copy2.md';
 import check2 from './Check2';
 import copy3 from './Copy3.md';
 import check3 from './Check3';
-import copy4 from './Copy4.md';
-import check4 from './Check4';
-import copy5 from './Copy5.md';
-import check5 from './Check5';
-import copy6 from './Copy6.md';
-import check6 from './Check6';
-import copy7 from './Copy7.md';
-import check7 from './Check7';
-import copy8 from './Copy8.md';
-import check8 from './Check8';
-import copy9 from './Copy9.md';
-import check9 from './Check9';
 
 import type { Tutorial } from '../types';
 
@@ -32,30 +20,6 @@ export const tutorial4: Tutorial = {
 		{
 			copy: copy3,
 			check: check3
-		},
-		{
-			copy: copy4,
-			check: check4
-		},
-		{
-			copy: copy5,
-			check: check5
-		},
-		{
-			copy: copy6,
-			check: check6
-		},
-		{
-			copy: copy7,
-			check: check7
-		},
-		{
-			copy: copy8,
-			check: check8
-		},
-		{
-			copy: copy9,
-			check: check9
 		},
 	]
 };
