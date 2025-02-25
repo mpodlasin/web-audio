@@ -18,5 +18,5 @@ export default function (audioGraph: SerializedAudioElements) {
     // Check if the Gain node is connected to the Oscilloscope
     const gainConnectedToOscilloscope = oscilloscopeNode?.inputs?.some((input) => input.id === gainNodeId) ?? false;
 
-    return sineNode && gainNode && oscilloscopeNode && sineConnectedToGain && gainConnectedToOscilloscope;
+    return (sineNode && gainNode && oscilloscopeNode && sineConnectedToGain && gainConnectedToOscilloscope) ?? false;
 }
