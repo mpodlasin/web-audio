@@ -67,11 +67,11 @@ export const tutorial4: Tutorial = {
 		},
 		{
 			copy: copy10,
-			check: check10,
+			check: check10
 		},
 		{
 			copy: copy11,
-			check: check11,
+			check: check11
 		},
 		{
 			copy: copy12,
@@ -80,6 +80,6 @@ export const tutorial4: Tutorial = {
 		{
 			copy: copy13,
 			check: check13
-		},
+		}
 	]
 };

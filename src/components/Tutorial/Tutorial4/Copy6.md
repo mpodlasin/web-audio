@@ -2,7 +2,7 @@
     import Clr from '../Clr.svelte';
 </script>
 
-When the numbers in the signal go up, the cone pushes forward. 
+When the numbers in the signal go up, the cone pushes forward.
 
 When they go down, it pulls backward.
 
