@@ -32,44 +32,6 @@ import copy16 from './Copy16.md';
 import check16 from './Check16';
 import copy17 from './Copy17.md';
 import check17 from './Check17';
-import copy18 from './Copy18.md';
-import check18 from './Check18';
-import copy19 from './Copy19.md';
-import check19 from './Check19';
-import copy20 from './Copy20.md';
-import check20 from './Check20';
-import copy21 from './Copy21.md';
-import check21 from './Check21';
-import copy22 from './Copy22.md';
-import check22 from './Check22';
-import copy23 from './Copy23.md';
-import check23 from './Check23';
-import copy24 from './Copy24.md';
-import check24 from './Check24';
-import copy25 from './Copy25.md';
-import check25 from './Check25';
-import copy26 from './Copy26.md';
-import check26 from './Check26';
-import copy27 from './Copy27.md';
-import check27 from './Check27';
-import copy28 from './Copy28.md';
-import check28 from './Check28';
-import copy29 from './Copy29.md';
-import check29 from './Check29';
-import copy30 from './Copy30.md';
-import check30 from './Check30';
-import copy31 from './Copy31.md';
-import check31 from './Check31';
-import copy32 from './Copy32.md';
-import check32 from './Check32';
-import copy33 from './Copy33.md';
-import check33 from './Check33';
-import copy34 from './Copy34.md';
-import check34 from './Check34';
-import copy35 from './Copy35.md';
-import check35 from './Check35';
-import copy36 from './Copy36.md';
-import check36 from './Check36';
 
 import type { Tutorial } from '../types';
 
@@ -143,81 +105,5 @@ export const tutorial4: Tutorial = {
 			copy: copy17,
 			check: check17
 		},
-		{
-			copy: copy18,
-			check: check18
-		},
-		{
-			copy: copy19,
-			check: check19
-		},
-		{
-			copy: copy20,
-			check: check20
-		},
-		{
-			copy: copy21,
-			check: check21
-		},
-		{
-			copy: copy22,
-			check: check22
-		},
-		{
-			copy: copy23,
-			check: check23
-		},
-		{
-			copy: copy24,
-			check: check24
-		},
-		{
-			copy: copy25,
-			check: check25
-		},
-		{
-			copy: copy26,
-			check: check26
-		},
-		{
-			copy: copy27,
-			check: check27
-		},
-		{
-			copy: copy28,
-			check: check28
-		},
-		{
-			copy: copy29,
-			check: check29
-		},
-		{
-			copy: copy30,
-			check: check30
-		},
-		{
-			copy: copy31,
-			check: check31
-		},
-		{
-			copy: copy32,
-			check: check32
-		},
-		{
-			copy: copy33,
-			check: check33
-		},
-		{
-			copy: copy34,
-			check: check34,
-		},
-		{
-			copy: copy35,
-			check: check35,
-		},
-		{
-			copy: copy36,
-			check: check36,
-		}
 	]
 };
