@@ -2,8 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Now, let's check out the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr>.  
+The <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> sounds similar to the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>, but it is slightly richer.  
 
-We’ve already seen its waveshape in <Clr nodeType="saw-lfo">LFO</Clr> form, but now we’ll actually hear it.  
-
-Delete the <Clr nodeType="triangle-oscillator">Triangle</Clr> node and create a <Clr nodeType="saw-oscillator">Saw</Clr> node.  
+In future tutorials, we will explore where this "richness" comes from.  
