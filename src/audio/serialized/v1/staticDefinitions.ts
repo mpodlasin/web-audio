@@ -487,6 +487,42 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		outputs: [numberInputOutputDefinition],
 		parameters: {}
 	},
+	switch: {
+		inputs: [
+			{
+				...audioInputOutputDefinition,
+				id: 'audio-a',
+				name: 'Audio a'
+			},
+			{
+				...audioInputOutputDefinition,
+				id: 'audio-b',
+				name: 'Audio b'
+			},
+			{
+				...audioInputOutputDefinition,
+				id: 'audio-c',
+				name: 'Audio c'
+			},
+			{
+				...audioInputOutputDefinition,
+				id: 'audio-d',
+				name: 'Audio d'
+			},
+		],
+		outputs: [audioInputOutputDefinition],
+		parameters: {
+			input: 	{ 
+				minValue: 0,
+				maxValue: 4,
+				defaultValue: 0,
+				polarity: 'uni' as const,
+				binary: false,
+				discrete: true,
+				linear: true,
+			}
+		}
+	},
 	tutorial: {
 		inputs: [],
 		outputs: [],
@@ -537,7 +573,8 @@ export const readableNames: { [P in NodeType]: string } = {
 	times: '×',
 	number: 'Number',
 	comment: 'Comment',
-	spectrum: 'Spectrum'
+	spectrum: 'Spectrum',
+	switch: 'Switch'
 };
 
 export const categorizedNodeTypes = {
@@ -550,7 +587,7 @@ export const categorizedNodeTypes = {
 	lfo: ['sine-lfo', 'saw-lfo', 'square-lfo', 'triangle-lfo'],
 	envelope: ['ad-envelope'] as NodeType[],
 	filter: ['lowpass-filter', 'bandpass-filter', 'highpass-filter'] as NodeType[],
-	effects: ['convolution', 'delay'] as NodeType[],
+	effects: ['convolution', 'delay', 'switch'] as NodeType[],
 	gain: ['gain', 'pan'] as NodeType[],
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
 	math: ['number', 'times', 'greater-than', 'bipolar-to-unipolar'] as NodeType[],

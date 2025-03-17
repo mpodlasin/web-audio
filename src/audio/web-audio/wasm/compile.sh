@@ -11,3 +11,4 @@ emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/saw-oscillator/saw-oscillator.c -o
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/min-max/min-max.c -o ./src/audio/web-audio/wasm/min-max/min-max.wasm --no-entry
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/greater-than/greater-than.c -o ./src/audio/web-audio/wasm/greater-than/greater-than.wasm --no-entry
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/times/times.c -o ./src/audio/web-audio/wasm/times/times.wasm --no-entry
+emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/switch/switch.c -o ./src/audio/web-audio/wasm/switch/switch.wasm --no-entry

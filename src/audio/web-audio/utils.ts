@@ -10,6 +10,7 @@ import scalerNodeWorkletUrl from './wasm/scaler/scaler-worklet.js?worker&url';
 import adEnvelopeNodeWorkletUrl from './wasm/ad-envelope/ad-envelope-worklet.js?worker&url';
 import oscillatorNodeWorkletUrl from './wasm/oscillator-worklet.js?worker&url';
 import minMaxNodeWorkletUrl from './wasm/min-max/min-max-worklet.js?worker&url';
+import switchNodeWorkletUrl from './wasm/switch/switch-worklet.js?worker&url';
 
 import measureGateWasmUrl from './wasm/measure-gate/measure-gate.wasm?url';
 import clockCounterWasmUrl from './wasm/clock-counter/clock-counter.wasm?url';
@@ -24,6 +25,8 @@ import sawOscillatorWasmUrl from './wasm/saw-oscillator/saw-oscillator.wasm?url'
 import minMaxWasmUrl from './wasm/min-max/min-max.wasm?url';
 import greaterThanWasmUrl from './wasm/greater-than/greater-than.wasm?url';
 import timesWasmUrl from './wasm/times/times.wasm?url';
+import switchWasmUrl from './wasm/switch/switch.wasm?url';
+
 
 export async function loadCustomNodes() {
 	try {
@@ -38,7 +41,8 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(scalerNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(adEnvelopeNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(oscillatorNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(minMaxNodeWorkletUrl)
+			globalContext.audioWorklet.addModule(minMaxNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(switchNodeWorkletUrl)
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');
@@ -93,3 +97,5 @@ export const createGreaterThanWorklet = () =>
 	createWasmWorklet('wasm-dual', greaterThanWasmUrl, { numberOfInputs: 2 });
 export const createTimesWorklet = () =>
 	createWasmWorklet('wasm-dual', timesWasmUrl, { numberOfInputs: 2 });
+export const createSwitchWorklet = () =>
+	createWasmWorklet('switch', switchWasmUrl, { numberOfInputs: 4});

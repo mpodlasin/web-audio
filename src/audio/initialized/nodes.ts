@@ -14,6 +14,7 @@ import {
 	createScalerWorklet,
 	createSequencerWorklet,
 	createSquareOscillatorWorklet,
+	createSwitchWorklet,
 	createTimesWorklet
 } from '../web-audio/utils';
 import {
@@ -650,6 +651,12 @@ export class SequencerNode extends GenericCustomAudioNodeWithWebApiNodeWithTrigg
 export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight {
 	constructor(id: string) {
 		super(createPatternWorklet(), id, 'pattern');
+	}
+}
+
+export class CustomSwitchNode extends GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight {
+	constructor(id: string) {
+		super(createSwitchWorklet(), id, 'switch');
 	}
 }
 

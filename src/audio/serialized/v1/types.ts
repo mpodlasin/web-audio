@@ -108,6 +108,8 @@ export type SerializedTimesNode = SerializedAudioElement<'times'>;
 
 export type SerializedSpectrumNode = SerializedAudioElement<'spectrum'>;
 
+export type SerializedSwitchNode = SerializedAudioElement<'switch'>;
+
 export type AllowedSerializedAudioElements =
 	| SerializedSineOscillatorNode
 	| SerializedSawOscillatorNode
@@ -142,6 +144,7 @@ export type AllowedSerializedAudioElements =
 	| SerializedCommentNode
 	| SerializedGreaterThanNode
 	| SerializedTimesNode
-	| SerializedSpectrumNode;
+	| SerializedSpectrumNode
+	| SerializedSwitchNode;
 
 export type NodeType = AllowedSerializedAudioElements['type'];
