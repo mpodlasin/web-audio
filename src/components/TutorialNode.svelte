@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { SerializedAudioElements, SerializedTutorialNode } from '../audio/serialized';
 	import type { Tutorial } from './Tutorial/types';
-	import { tutorial1, tutorial2, tutorial3, tutorial4 } from './Tutorial';
+	import { tutorials } from './Tutorial';
 	import Button from './Button.svelte';
 	import { globalContext } from '../audio/GlobalContext';
 
@@ -9,13 +9,6 @@
 	export let node: SerializedTutorialNode;
 
 	const localStorageKey = 'tutorial_steps';
-
-	const tutorials: Record<string, Tutorial> = {
-		tutorial1: tutorial1,
-		tutorial2: tutorial2,
-		tutorial3: tutorial3,
-		tutorial4: tutorial4
-	};
 
 	$: tutorialId = node.tutorialId;
 

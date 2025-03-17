@@ -1,14 +1,18 @@
+<script lang="ts">
+    import ToCItem from './ToCItem.svelte';
+</script>
+
 ## Learn
 
 ### Basics
 
-1. [Your First Sounds](/learn/your-first-sounds)
-2. [Types of Signals](/learn/types-of-signals)
-3. [Synthesizing Techno Kick](/learn/synthesizing-techno-kick)
+1. [<ToCItem id="tutorial1">Your First Sounds</ToCItem>](/learn/your-first-sounds)
+2. [<ToCItem id="tutorial2">Types of Signals</ToCItem>](/learn/types-of-signals)
+3. [<ToCItem id="tutorial3">Synthesizing Techno Kick</ToCItem>](/learn/synthesizing-techno-kick)
 
 ### Oscillators & Filters
 
-4. [Frequency and Amplitude](/learn/oscillators-frequency-and-amplitude)
+4. [<ToCItem id="tutorial4">Frequency and Amplitude</ToCItem>](/learn/oscillators-frequency-and-amplitude)
 5. [The Big 4 of Oscillators](/learn/the-big-4-of-oscillators)
 6. [Spectrum](/learn/spectrum)
 7. [Additive Synthesis](/learn/additive-synthesis)
