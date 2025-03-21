@@ -1,0 +1,216 @@
+# AudioCanvas Project Intelligence
+
+This file captures key insights, patterns, and project-specific knowledge that will help me (Cline) work more effectively with the AudioCanvas project.
+
+## Critical Implementation Paths
+
+### Audio Graph Updates
+
+1. When modifying the audio graph:
+   - Always use the utility functions in `src/audio/serialized/v1/utils.ts`
+   - Never modify the serialized graph directly
+   - Functions like `addNode`, `removeNode`, `addConnection`, etc. maintain graph integrity
+
+2. The update flow follows this pattern:
+   - UI action → Serialized graph change → `updateAudioCanvas` function call → Runtime node updates
+   - The `updateAudioCanvas` function in `src/audio/initialized/update.ts` is the critical path
+
+3. Parameter changes:
+   - Use `changeParameter` for direct value changes
+   - Use `changeParameterMultiply` for modulation amount changes
+   - These maintain the proper update sequence
+
+### Tutorial Implementation
+
+1. Each tutorial step requires two files:
+   - `Copy*.md`: The tutorial text/instructions (MDSvex format)
+   - `Check*.ts`: The validation function that verifies the user's implementation
+
+2. Validation functions follow this pattern:
+   - Accept the current audio graph as input
+   - Return `{ success: boolean, message?: string }`
+   - Check for specific nodes, connections, and parameter values
+
+## Project-Specific Patterns
+
+### Node Type Organization
+
+1. Nodes are categorized by function:
+   - Oscillators: Sound generation (sine, saw, square, triangle)
+   - Filters: Sound shaping (lowpass, highpass, bandpass)
+   - Envelopes: Amplitude shaping (AD)
+   - Modulation: Control signals (LFOs)
+   - Utilities: Signal processing (gain, multiply)
+   - Visualization: Signal display (oscilloscope, spectrum)
+
+2. Each category has consistent:
+   - Color coding (defined in `defaultCategoryNodeColors`)
+   - Parameter ranges and defaults
+   - UI representation
+
+### Signal Types and Ranges
+
+1. Different signal types have standard ranges:
+   - Audio: -1.0 to 1.0
+   - Control: Varies by type (frequency: 0-10000, trigger: 0-1)
+   - Parameters: Defined by min/max in static definitions
+
+2. Signal type compatibility is enforced by:
+   - Static definitions in `allowedSerializedAudioElementStaticDefinitions`
+   - Runtime connection validation
+
+### UI Interaction Patterns
+
+1. Node creation:
+   - Right-click on canvas → Context menu → Select node type
+   - New nodes are placed at the click position
+
+2. Connection creation:
+   - Click and drag from output to input
+   - Compatible connections are determined by signal types
+   - Parameters can be connected to outputs for modulation
+
+3. Parameter adjustment:
+   - Direct: Click and drag knobs
+   - Modulation: Connect an output to a parameter
+
+## Known Challenges and Workarounds
+
+### WebAssembly Integration
+
+1. Safari compatibility issues:
+   - Some WebAssembly features have limited Safari support
+   - Use feature detection and fallbacks where possible
+   - Test thoroughly in Safari when modifying WebAssembly code
+
+2. WebAssembly compilation:
+   - The compile script requires Emscripten to be installed
+   - Follow the exact flags in the compile script for compatibility
+   - Test compiled modules in isolation before integration
+
+### Audio Glitches
+
+1. Parameter changes can cause audio glitches:
+   - Use ramping for parameter changes where possible
+   - Avoid rapid parameter changes in sequence
+   - Consider implementing smoother transitions in critical paths
+
+2. Complex patches may cause performance issues:
+   - Monitor CPU usage during development
+   - Consider optimizing high-CPU nodes with WebAssembly
+   - Test with increasingly complex patches
+
+### Tutorial Validation
+
+1. Validation can be too strict:
+   - Allow for reasonable variations in user implementations
+   - Focus on conceptual understanding rather than exact replication
+   - Provide helpful error messages that guide users
+
+2. Tutorial progression:
+   - Users may get stuck on specific steps
+   - Consider implementing hint systems or progressive assistance
+   - Balance challenge with accessibility
+
+## Evolution of Project Decisions
+
+### Node Implementation Strategy
+
+1. Initial approach:
+   - Most nodes implemented directly with Web Audio API
+   - Simple, direct mapping between serialized and runtime nodes
+
+2. Current approach:
+   - Performance-critical nodes use WebAssembly
+   - Complex nodes use custom JavaScript processing
+   - Standard nodes use Web Audio API directly
+
+3. Future direction:
+   - More WebAssembly for performance
+   - Better abstraction for node implementation
+   - More consistent API across node types
+
+### Tutorial Design Philosophy
+
+1. Initial approach:
+   - Focus on technical aspects of synthesis
+   - Detailed explanations of each component
+
+2. Current approach:
+   - Balance between theory and practical application
+   - Alternating between concept-heavy and music-making tutorials
+   - More focus on audible results
+
+3. Future direction:
+   - More creative applications
+   - Genre-specific tutorials
+   - Advanced synthesis techniques
+
+## User Preferences and Workflow
+
+### Development Workflow
+
+1. Preferred development sequence:
+   - Start with serialized node definition
+   - Implement static definitions
+   - Create runtime node implementation
+   - Add UI components if needed
+   - Test in isolation, then in context
+
+2. Testing approach:
+   - Manual testing through the UI for most features
+   - Unit tests for critical utility functions
+   - Console logging for debugging audio issues
+
+### Code Style and Conventions
+
+1. TypeScript patterns:
+   - Use explicit typing for all functions and variables
+   - Prefer interfaces over types for object definitions
+   - Use discriminated unions for node types
+
+2. File organization:
+   - Keep related functionality in the same directory
+   - Separate UI components from audio processing logic
+   - Use index files for clean exports
+
+3. Naming conventions:
+   - PascalCase for component names and types
+   - camelCase for functions and variables
+   - Use descriptive names that indicate purpose
+
+## Tool Usage Patterns
+
+### Development Tools
+
+1. Vite:
+   - Used for development server and builds
+   - Fast refresh for UI development
+   - Optimized production builds
+
+2. TypeScript:
+   - Strong typing for all code
+   - Interface-based design for audio components
+   - Type guards for runtime type checking
+
+3. Svelte:
+   - Component-based UI development
+   - Reactive updates for audio state changes
+   - Custom actions for specialized DOM interactions
+
+### Audio Debugging
+
+1. Oscilloscope and Spectrum nodes:
+   - Use these nodes to visualize signals during development
+   - Add them temporarily to debug audio issues
+   - Check signal ranges and waveforms
+
+2. Console logging:
+   - Log parameter changes and node creation/deletion
+   - Use performance.now() to measure timing-critical operations
+   - Group related logs for clarity
+
+3. Browser audio tools:
+   - Chrome and Firefox have audio debugging tools
+   - Use them to monitor audio context and node connections
+   - Check for memory leaks and performance issues
