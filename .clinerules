@@ -76,6 +76,20 @@ This file captures key insights, patterns, and project-specific knowledge that w
 
 ## Known Challenges and Workarounds
 
+### Development Environment Limitations
+
+1. **Compilation and Testing Restrictions**:
+   - Do not attempt to compile WebAssembly modules or run the project in the browser
+   - There are development environment issues that prevent direct testing
+   - Make the best educated guesses based on existing code patterns
+   - The user will provide feedback and handle testing
+
+2. **Implementation Approach**:
+   - Study similar implementations for guidance
+   - Follow established patterns in the codebase
+   - Document assumptions and design decisions
+   - Prepare for iterative refinement based on user feedback
+
 ### WebAssembly Integration
 
 1. Safari compatibility issues:

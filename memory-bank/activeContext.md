@@ -13,7 +13,7 @@ We're working on Tutorial 5, which will teach users how to create a voice that c
 3. Introduce more advanced patching techniques
 
 To support this tutorial, we need to:
-- Complete the implementation of the Switch node
+- ✅ Complete the implementation of the Switch node
 - Create a new Count node (not yet implemented)
 - Design the tutorial steps and validation logic
 - Write the tutorial content
@@ -21,15 +21,23 @@ To support this tutorial, we need to:
 ### Node Implementation
 
 1. **Switch Node**
-   - The Switch node is partially implemented but needs refinement
-   - It allows selecting between multiple audio inputs based on a control signal
-   - Current implementation in `src/audio/serialized/v1/staticDefinitions.ts` needs to be matched with runtime implementation
+   - ✅ The Switch node implementation is now complete
+   - ✅ It allows selecting between multiple audio inputs (up to 4) based on a control signal
+   - ✅ The implementation in `src/audio/web-audio/wasm/switch/switch.c` has been completed to match the worklet
+   - ✅ The node can now be used in patches to dynamically route audio signals
 
 2. **Count Node**
    - This node needs to be created from scratch
    - It will count incoming trigger signals and output the current count
    - Can be used to cycle through different options (like oscillator types)
    - Will need both serialized definition and runtime implementation
+
+### Development Environment Note
+
+**Important**: There are currently issues with the development environment that prevent compiling WebAssembly modules or running the project in the browser directly. When implementing new features:
+- Make the best educated guesses based on existing code patterns
+- Do not attempt to compile or run the project
+- The user will provide feedback and handle testing
 
 ## Recent Changes
 

@@ -4,31 +4,75 @@
 
 static float chosenInput;
 
-static float inputBuffer[WEBEAUDIO_FRAME_SIZE];
+static float inputBufferA[WEBEAUDIO_FRAME_SIZE];
+static float inputBufferB[WEBEAUDIO_FRAME_SIZE];
+static float inputBufferC[WEBEAUDIO_FRAME_SIZE];
+static float inputBufferD[WEBEAUDIO_FRAME_SIZE];
 static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
 
-static float lastValueOfPreviousProcess = 0;
-static unsigned int currentStep = -1;
+EMSCRIPTEN_KEEPALIVE
+float* chosenInputPtr() {
+    return &chosenInput;
+}
 
 EMSCRIPTEN_KEEPALIVE
-    float* chosenInputPtr() {
-        return &chosenInput;
-    }
+float* inputBufferPtrA() {
+    return inputBufferA;
+}
+
 EMSCRIPTEN_KEEPALIVE
-    float* inputBufferPtr() {
-        return inputBuffer;
-    }
+float* inputBufferPtrB() {
+    return inputBufferB;
+}
+
 EMSCRIPTEN_KEEPALIVE
-    float* outputBufferPtr() {
-        return outputBuffer;
-    }
+float* inputBufferPtrC() {
+    return inputBufferC;
+}
+
 EMSCRIPTEN_KEEPALIVE
-    void process(int currentFrame, int sampleRate) {
-        for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
-        }
+float* inputBufferPtrD() {
+    return inputBufferD;
+}
+
+EMSCRIPTEN_KEEPALIVE
+float* outputBufferPtr() {
+    return outputBuffer;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void process(int currentFrame, int sampleRate) {
+    // Round the chosen input to the nearest integer and clamp between 0-3
+    int selectedInput = (int)(chosenInput + 0.5);
+    if (selectedInput < 0) selectedInput = 0;
+    if (selectedInput > 3) selectedInput = 3;
+    
+    // Select the appropriate input buffer based on the chosen input
+    float* selectedBuffer;
+    switch (selectedInput) {
+        case 0:
+            selectedBuffer = inputBufferA;
+            break;
+        case 1:
+            selectedBuffer = inputBufferB;
+            break;
+        case 2:
+            selectedBuffer = inputBufferC;
+            break;
+        case 3:
+            selectedBuffer = inputBufferD;
+            break;
+        default:
+            selectedBuffer = inputBufferA; // Default to first input
     }
+    
+    // Copy the selected input buffer to the output buffer
+    for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
+        outputBuffer[i] = selectedBuffer[i];
+    }
+}
 
 // EMSCRIPTEN_KEEPALIVE
-//     float debug() {
-//         return currentStep;
-//     }
+// float debug() {
+//     return chosenInput;
+// }

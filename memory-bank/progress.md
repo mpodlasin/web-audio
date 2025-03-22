@@ -117,7 +117,7 @@
 1. **Switch Node**
    - ✅ Static definitions
    - ✅ UI representation
-   - ❌ Runtime implementation
+   - ✅ Runtime implementation
    - ❌ Testing and validation
 
 2. **Count Node**
