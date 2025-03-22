@@ -47,12 +47,12 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 
 	abstract getAudioParam(parameterName: string): AudioParam;
 
-	abstract getInputNode(): AudioNode | null;
+	abstract getInputNode(name?: string): AudioNode | null;
 
 	abstract cleanup(): void;
 
 	getInput(name?: string): Input | null {
-		const inputNode = this.getInputNode();
+		const inputNode = this.getInputNode(name);
 
 		if (inputNode === null) return null;
 
@@ -410,6 +410,12 @@ export class CustomTimesNode extends GenericCustomAudioNodeWithWebApiNode<AudioW
 	}
 }
 
+export class CustomSwitchNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	constructor(id: string) {
+		super(createSwitchWorklet(), id, 'switch');
+	}
+}
+
 export class CustomGateLengthNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
 		super(createGateLengthWorklet(), id, 'gate-length');
@@ -651,12 +657,6 @@ export class SequencerNode extends GenericCustomAudioNodeWithWebApiNodeWithTrigg
 export class CustomPatternNode extends GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight {
 	constructor(id: string) {
 		super(createPatternWorklet(), id, 'pattern');
-	}
-}
-
-export class CustomSwitchNode extends GenericCustomAudioNodeWithWebApiNodeWithTriggerHighlight {
-	constructor(id: string) {
-		super(createSwitchWorklet(), id, 'switch');
 	}
 }
 
