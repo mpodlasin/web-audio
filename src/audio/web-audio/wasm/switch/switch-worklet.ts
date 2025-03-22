@@ -14,9 +14,9 @@ class SwitchProcessor extends AudioWorkletProcessor {
 	static get parameterDescriptors() {
         return [{
             name: 'input',
-            defaultValue: 0,
-            minValue: 0,
-            maxValue: 3,
+            defaultValue: 1,
+            minValue: 1,
+            maxValue: 4,
         }];
 	}
 

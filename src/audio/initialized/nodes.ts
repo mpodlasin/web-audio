@@ -186,7 +186,7 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 			}
 
 			parameterInput.connect(limiter).connect(audioParam);
-			audioParam.value = 0;
+      audioParam.value = 0;
 		}
 
 		const limiter = this.parameterLimiters[parameterName];

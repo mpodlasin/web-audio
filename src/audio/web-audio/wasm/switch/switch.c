@@ -44,22 +44,22 @@ EMSCRIPTEN_KEEPALIVE
 void process(int currentFrame, int sampleRate) {
     // Round the chosen input to the nearest integer and clamp between 0-3
     int selectedInput = (int)(chosenInput + 0.5);
-    if (selectedInput < 0) selectedInput = 0;
-    if (selectedInput > 3) selectedInput = 3;
+    if (selectedInput < 1) selectedInput = 1;
+    if (selectedInput > 4) selectedInput = 4;
     
     // Select the appropriate input buffer based on the chosen input
     float* selectedBuffer;
     switch (selectedInput) {
-        case 0:
+        case 1:
             selectedBuffer = inputBufferA;
             break;
-        case 1:
+        case 2:
             selectedBuffer = inputBufferB;
             break;
-        case 2:
+        case 3:
             selectedBuffer = inputBufferC;
             break;
-        case 3:
+        case 4:
             selectedBuffer = inputBufferD;
             break;
         default:
@@ -72,7 +72,7 @@ void process(int currentFrame, int sampleRate) {
     }
 }
 
-// EMSCRIPTEN_KEEPALIVE
-// float debug() {
-//     return chosenInput;
-// }
+EMSCRIPTEN_KEEPALIVE
+float debug() {
+    return chosenInput;
+}
