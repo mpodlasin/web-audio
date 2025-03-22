@@ -513,9 +513,9 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		outputs: [audioInputOutputDefinition],
 		parameters: {
 			input: 	{ 
-				minValue: 0,
+				minValue: 1,
 				maxValue: 4,
-				defaultValue: 0,
+				defaultValue: 1,
 				polarity: 'uni' as const,
 				binary: false,
 				discrete: true,
