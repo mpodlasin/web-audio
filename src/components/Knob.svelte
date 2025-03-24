@@ -138,7 +138,7 @@
 		}
 
 		if (isDragging && draggingStartPosition && discrete) {
-			const factor = event.shiftKey ? 0.5 : 0.5;
+			const factor = event.shiftKey ? 2 : 0.5;
 			const { y } = draggingStartPosition;
 			const { clientY } = event;
 			const dy = y - clientY;
