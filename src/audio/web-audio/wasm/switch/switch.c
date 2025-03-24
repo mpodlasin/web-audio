@@ -42,12 +42,10 @@ float* outputBufferPtr() {
 
 EMSCRIPTEN_KEEPALIVE
 void process(int currentFrame, int sampleRate) {
-    // Round the chosen input to the nearest integer and clamp between 0-3
-    int selectedInput = (int)(chosenInput + 0.5);
+    int selectedInput = (int)(chosenInput + 0.5) - 1; // for some reason web audio api gives us number + 1;
     if (selectedInput < 1) selectedInput = 1;
     if (selectedInput > 4) selectedInput = 4;
     
-    // Select the appropriate input buffer based on the chosen input
     float* selectedBuffer;
     switch (selectedInput) {
         case 1:
@@ -66,13 +64,12 @@ void process(int currentFrame, int sampleRate) {
             selectedBuffer = inputBufferA; // Default to first input
     }
     
-    // Copy the selected input buffer to the output buffer
     for (int i = 0; i < WEBEAUDIO_FRAME_SIZE; i++) {
         outputBuffer[i] = selectedBuffer[i];
     }
 }
 
-EMSCRIPTEN_KEEPALIVE
-float debug() {
-    return chosenInput;
-}
+// EMSCRIPTEN_KEEPALIVE
+// float debug() {
+//     return chosenInput;
+// }
