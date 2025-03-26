@@ -92,6 +92,22 @@ Custom audio processors are implemented in C and compiled to WebAssembly, which:
 - Enables specialized functionality not available in the Web Audio API
 - Allows for more efficient CPU usage in audio processing
 
+#### WebAssembly Module Reuse Pattern
+
+The system employs a pattern of reusing WebAssembly modules for similar functionality:
+- Existing modules can be repurposed for new node types with similar behavior
+- For example, the Count node reuses the clock-counter WebAssembly module
+- This approach reduces code duplication and simplifies maintenance
+- It also ensures consistent behavior across related node types
+
+#### AudioWorklet Parameter Handling
+
+AudioWorklet processors follow a specific pattern for parameter handling:
+- Parameters are exposed through the AudioWorkletProcessor's parameterDescriptors
+- WebAssembly memory is used to share parameter values between JavaScript and C
+- Buffer handling requires careful management to prevent "offset out of bounds" errors
+- Single-value parameters should be handled individually rather than using array methods like set()
+
 ### 4. Framework-Agnostic Audio Core
 
 The audio processing core is designed to be framework-agnostic:

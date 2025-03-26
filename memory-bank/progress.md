@@ -112,19 +112,21 @@
 
 ## What's Left to Build
 
-### Node Types in Progress
+### Recently Completed Nodes
 
 1. **Switch Node**
    - ✅ Static definitions
    - ✅ UI representation
    - ✅ Runtime implementation
-   - ❌ Testing and validation
+   - ✅ Initial testing
 
 2. **Count Node**
-   - ❌ Static definitions
-   - ❌ UI representation
-   - ❌ Runtime implementation
-   - ❌ Testing and validation
+   - ✅ Static definitions
+   - ✅ UI representation
+   - ✅ Runtime implementation
+   - ❌ Comprehensive testing and validation
+
+### Node Types in Progress
 
 ### Planned Node Types
 

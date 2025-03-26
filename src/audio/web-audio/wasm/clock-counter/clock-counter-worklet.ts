@@ -67,8 +67,8 @@ class ClockCounterProcessor extends AudioWorkletProcessor {
 
 		const moduloParameter = parameters['modulo'];
 
-		if (moduloParameter) {
-			this.moduloParameterBuffer.set(moduloParameter);
+		if (moduloParameter && moduloParameter.length > 0) {
+			this.moduloParameterBuffer[0] = moduloParameter[0] ?? 1;
 		}
 
 		const input = inputList[0]?.[0];

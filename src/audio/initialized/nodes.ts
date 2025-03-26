@@ -416,6 +416,12 @@ export class CustomSwitchNode extends GenericCustomAudioNodeWithWebApiNode<Audio
 	}
 }
 
+export class CustomCountNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+	constructor(id: string) {
+		super(createClockCounterWorklet(), id, 'count');
+	}
+}
+
 export class CustomGateLengthNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
 	constructor(id: string) {
 		super(createGateLengthWorklet(), id, 'gate-length');

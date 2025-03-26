@@ -138,10 +138,17 @@ Audio processing has strict performance requirements:
 2. **Memory Management**
    - Audio buffers and WebAssembly memory must be managed carefully
    - Garbage collection can cause audio glitches if not handled properly
+   - Buffer operations must be carefully managed to prevent "offset out of bounds" errors
+   - Single-value parameters should be handled directly rather than using array methods like set()
 
 3. **UI Responsiveness**
    - UI updates should not block audio processing
    - Canvas rendering and DOM updates need to be optimized
+
+4. **Parameter Handling**
+   - Parameter changes should be efficient and thread-safe
+   - Linear parameters provide more intuitive control for certain types of values (like counts)
+   - Discrete parameters should be properly quantized to prevent unexpected behavior
 
 ### WebAssembly Limitations
 

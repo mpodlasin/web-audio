@@ -159,6 +159,32 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		};
 	};
 } = {
+	count: {
+		inputs: [
+			{
+				...triggerInputOutputDefinition,
+				contextDescription: 'Trigger signal to be counted.'
+			}
+		],
+		outputs: [
+			{
+				...numberInputOutputDefinition,
+				minValue: 0,
+				maxValue: 15,
+				contextDescription: 'Current count value.'
+			}
+		],
+		parameters: {
+			modulo: {
+				minValue: 1,
+				maxValue: 16,
+				defaultValue: 8,
+				polarity: 'uni',
+				discrete: true,
+				linear: true
+			}
+		}
+	},
 	sequencer: {
 		inputs: [
 			{
@@ -574,7 +600,8 @@ export const readableNames: { [P in NodeType]: string } = {
 	number: 'Number',
 	comment: 'Comment',
 	spectrum: 'Spectrum',
-	switch: 'Switch'
+	switch: 'Switch',
+	count: 'Count'
 };
 
 export const categorizedNodeTypes = {
@@ -591,7 +618,7 @@ export const categorizedNodeTypes = {
 	gain: ['gain', 'pan'] as NodeType[],
 	pitch: ['sequencer', 'pitch-quantizer'] as NodeType[],
 	math: ['number', 'times', 'greater-than', 'bipolar-to-unipolar'] as NodeType[],
-	clock: ['clock', 'gate-length', 'measure-gate', 'pattern'] as NodeType[],
+	clock: ['clock', 'gate-length', 'measure-gate', 'pattern', 'count'] as NodeType[],
 	io: ['destination', 'midi'] as NodeType[],
 	visualization: ['oscilloscope', 'spectrum', 'value', 'comment'] as NodeType[],
 	internal: ['tutorial', 'multiply'] as NodeType[]

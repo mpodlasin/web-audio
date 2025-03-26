@@ -27,10 +27,11 @@ To support this tutorial, we need to:
    - ✅ The node can now be used in patches to dynamically route audio signals
 
 2. **Count Node**
-   - This node needs to be created from scratch
-   - It will count incoming trigger signals and output the current count
-   - Can be used to cycle through different options (like oscillator types)
-   - Will need both serialized definition and runtime implementation
+   - ✅ Successfully implemented by leveraging the existing clock-counter worklet
+   - ✅ Counts incoming trigger signals and outputs the current count modulo a parameter
+   - ✅ Parameter range limited to 1-16 with linear control for intuitive operation
+   - ✅ Can be used to cycle through different options (like oscillator types)
+   - ✅ Fixed a critical "offset is out of bounds" error in the worklet by improving parameter handling
 
 ### Development Environment Note
 
@@ -75,16 +76,16 @@ Several WebAssembly modules have been optimized:
 
 ### Short-term (Next 2-4 Weeks)
 
-1. **Complete Switch Node Implementation**
-   - Finish the runtime audio processing for the Switch node
-   - Test with various audio sources
-   - Ensure smooth switching without clicks or pops
+1. ✅ **Complete Switch Node Implementation**
+   - ✅ Finish the runtime audio processing for the Switch node
+   - ✅ Test with various audio sources
+   - ✅ Ensure smooth switching without clicks or pops
 
-2. **Implement Count Node**
-   - Create serialized definition in `src/audio/serialized/v1/types.ts` and `staticDefinitions.ts`
-   - Implement runtime node in `src/audio/initialized/nodes.ts`
-   - Create WebAssembly module if necessary for performance
-   - Test with trigger signals
+2. ✅ **Implement Count Node**
+   - ✅ Created serialized definition in `src/audio/serialized/v1/types.ts` and `staticDefinitions.ts`
+   - ✅ Implemented runtime node in `src/audio/initialized/nodes.ts` using existing clock-counter worklet
+   - ✅ Fixed buffer handling issue in the worklet to prevent "offset is out of bounds" errors
+   - ✅ Made the modulo parameter linear for better user control
 
 3. **Begin Tutorial 5 Content**
    - Outline the tutorial steps
