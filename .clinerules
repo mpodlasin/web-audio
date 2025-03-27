@@ -31,6 +31,14 @@ This file captures key insights, patterns, and project-specific knowledge that w
    - Return `{ success: boolean, message?: string }`
    - Check for specific nodes, connections, and parameter values
 
+3. Tutorial writing best practices:
+   - Keep introductions concise and focused
+   - Avoid specific node placement instructions (users have different screen sizes)
+   - Refer to node inputs as "the first input," "the second input," etc. (inputs aren't labeled in the UI)
+   - Focus on functional relationships rather than visual organization
+   - Use consistent terminology for node interactions (create, connect, set, adjust, delete)
+   - Follow the style guide in `memory-bank/tutorialStyleGuide.md` for consistent writing style
+
 ## Project-Specific Patterns
 
 ### Node Type Organization

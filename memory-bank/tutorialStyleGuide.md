@@ -159,6 +159,33 @@ This document outlines the writing style, structural patterns, and established c
 - "You should now hear a tone coming from your speakers or headphones. If you don't hear anything, make sure your audio settings are set up correctly."
 - "Look at the <Clr nodeType="oscilloscope">Oscilloscope</Clr> node. You'll notice that the saw waveform has shifted upwards."
 
+## UI and Layout Considerations
+
+### Node Input References
+- Inputs on nodes are not labeled with numbers in the UI
+- Refer to inputs as "the first input," "the second input," etc.
+- Be consistent with this terminology across all tutorials
+
+### Examples:
+- "Connect the <Clr nodeType="sine-oscillator">Sine</Clr> oscillator to the first input of the <Clr nodeType="switch">Switch</Clr> node."
+- "Connect the output of the <Clr nodeType="sequencer">Sequencer</Clr> to the input of the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr>."
+
+### Canvas Organization
+- Avoid prescribing specific node placement instructions
+- Users have different screen sizes and layout preferences
+- Focus on functional relationships rather than visual organization
+- Let users decide how to arrange their workspace
+
+### Examples:
+- Instead of: "Place the Switch node to the right of your oscillators."
+- Use: "Create a <Clr nodeType="switch">Switch</Clr> node."
+
+### Concise Introductions
+- Keep tutorial introductions concise and focused
+- Introduce new nodes clearly but briefly
+- Get to the hands-on steps quickly to maintain engagement
+- Combine conceptual steps when possible to streamline the tutorial
+
 ## Tutorial Progression Conventions
 
 ### Knowledge Building Pattern

@@ -40,11 +40,11 @@ Create a <Clr nodeType="switch">Switch</Clr> node.
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="switch">Switch</Clr> node has four inputs labeled 1, 2, 3, and 4, and one output.
+The <Clr nodeType="switch">Switch</Clr> node has four inputs and one output.
 
 It works like a selector: based on the value of its input parameter, it chooses which of its inputs to route to its output.
 
-For example, if the input parameter is set to 1, the signal from input 1 will be sent to the output. If it's set to 2, the signal from input 2 will be sent, and so on.
+For example, if the input parameter is set to 1, the signal from the first input will be sent to the output. If it's set to 2, the signal from the second input will be sent, and so on.
 
 # Step 5
 
@@ -54,10 +54,10 @@ For example, if the input parameter is set to 1, the signal from input 1 will be
 
 Let's connect our oscillators to the <Clr nodeType="switch">Switch</Clr> node:
 
-1. Connect the <Clr nodeType="sine-oscillator">Sine</Clr> oscillator to input 1 of the <Clr nodeType="switch">Switch</Clr> node.
-2. Connect the <Clr nodeType="triangle-oscillator">Triangle</Clr> oscillator to input 2.
-3. Connect the <Clr nodeType="square-oscillator">Square</Clr> oscillator to input 3.
-4. Connect the <Clr nodeType="saw-oscillator">Saw</Clr> oscillator to input 4.
+1. Connect the <Clr nodeType="sine-oscillator">Sine</Clr> oscillator to the first input of the <Clr nodeType="switch">Switch</Clr> node.
+2. Connect the <Clr nodeType="triangle-oscillator">Triangle</Clr> oscillator to the second input.
+3. Connect the <Clr nodeType="square-oscillator">Square</Clr> oscillator to the third input.
+4. Connect the <Clr nodeType="saw-oscillator">Saw</Clr> oscillator to the fourth input.
 
 # Step 6
 
@@ -297,10 +297,10 @@ Find settings that complement your melody and oscillator sequence.
 One more creative variation we can try is to change the order of the oscillators.
 
 Disconnect the oscillators from the <Clr nodeType="switch">Switch</Clr> node and reconnect them in a different order. For example:
-1. <Clr nodeType="saw-oscillator">Saw</Clr> to input 1
-2. <Clr nodeType="sine-oscillator">Sine</Clr> to input 2
-3. <Clr nodeType="triangle-oscillator">Triangle</Clr> to input 3
-4. <Clr nodeType="square-oscillator">Square</Clr> to input 4
+1. <Clr nodeType="saw-oscillator">Saw</Clr> to the first input
+2. <Clr nodeType="sine-oscillator">Sine</Clr> to the second input
+3. <Clr nodeType="triangle-oscillator">Triangle</Clr> to the third input
+4. <Clr nodeType="square-oscillator">Square</Clr> to the fourth input
 
 Listen to how this changes the pattern of timbres in your melody.
 
