@@ -214,6 +214,27 @@ This document outlines the writing style, structural patterns, and established c
 - "In future tutorials, we will explain where this 'richness' comes from."
 - "In later tutorials, we will learn that the sine wave is a building block of all sounds."
 
+## Technical Accuracy Verification
+
+### Source of Truth for Node Information
+- Always consult the static definitions and types files before writing or editing tutorial content
+- Verify node categories, parameters, inputs/outputs, and default values against the code
+- Key files to check:
+  - `src/audio/serialized/v1/staticDefinitions.ts`: Contains node definitions, categories, parameters, and UI information
+  - `src/audio/serialized/v1/types.ts`: Contains type definitions for all nodes
+
+### Common Verification Points
+- Node categorization (which menu section contains the node)
+- Parameter ranges and default values
+- Input/output types and counts
+- Node capabilities and limitations
+- UI representation and naming conventions
+
+### Examples:
+- Verify the Switch node is in the "Effect" category, not "Utility"
+- Confirm the Count node's modulo parameter range is 1-16 with a default of 8
+- Check that parameter names in tutorials match those in the code
+
 ## Accessibility Considerations
 
 ### Multiple Learning Modalities

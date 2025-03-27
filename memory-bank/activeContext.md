@@ -200,3 +200,12 @@ We've identified and addressed several browser-specific issues:
 - Used ConstantSourceNode with negative values to map between user-friendly UI ranges (1-4) and standard internal ranges (0-3)
 - This approach follows Web Audio API conventions while maintaining intuitive UI values
 - Following standard parameter range conventions helps avoid browser-specific quirks
+
+### 7. Tutorial Content Accuracy
+
+We've established an important practice for tutorial development:
+- Before writing or editing tutorial content, always consult the source code for accurate node information
+- Specifically check `src/audio/serialized/v1/staticDefinitions.ts` and `src/audio/serialized/v1/types.ts`
+- This ensures tutorials correctly reference node categories, parameters, inputs/outputs, and behaviors
+- Recent example: We discovered the Switch node is categorized under "Effect" not "Utility" in the code
+- This verification step prevents user confusion when following tutorial instructions
