@@ -150,11 +150,11 @@
 ### Tutorials in Progress
 
 1. **Tutorial 5: Oscillator Switching**
-   - ❌ Tutorial steps design
+   - ✅ Tutorial steps design (outline completed)
    - ❌ Validation functions
    - ❌ Tutorial content
    - ❌ Testing and refinement
-   - Blocked by: Switch node, Count node implementation
+   - No longer blocked: Switch and Count nodes are now implemented
 
 2. **Tutorial 6: Spectrum Analysis**
    - ❌ Tutorial steps design
@@ -208,8 +208,8 @@ The project is in a functional beta state with:
 - Local storage for project saving
 
 Development is active with focus on:
-1. Implementing the Switch and Count nodes
-2. Developing Tutorial 5
+1. Writing Tutorial 5 content and validation functions
+2. Testing the Switch and Count nodes in practical applications
 3. Refining the user interface
 4. Optimizing performance
 

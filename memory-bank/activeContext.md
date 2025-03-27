@@ -27,9 +27,9 @@ We're working on Tutorial 5, which will teach users how to create a voice that c
 
 To support this tutorial, we need to:
 - ✅ Complete the implementation of the Switch node
-- Create a new Count node (not yet implemented)
-- Design the tutorial steps and validation logic
-- Write the tutorial content
+- ✅ Create a new Count node
+- ✅ Design the tutorial steps and structure
+- Write the tutorial content and validation logic
 
 ### Node Implementation
 
@@ -104,7 +104,7 @@ Several WebAssembly modules have been optimized:
    - ✅ Made the modulo parameter linear for better user control
 
 3. **Begin Tutorial 5 Content**
-   - Outline the tutorial steps
+   - ✅ Outline the tutorial steps (stored in `tutorial5outline.md`)
    - Create validation functions for each step
    - Write the tutorial copy
    - Test the tutorial flow
