@@ -25,6 +25,9 @@ To support this tutorial, we need to:
    - ✅ It allows selecting between multiple audio inputs (up to 4) based on a control signal
    - ✅ The implementation in `src/audio/web-audio/wasm/switch/switch.c` has been completed to match the worklet
    - ✅ The node can now be used in patches to dynamically route audio signals
+   - ✅ Implemented a parameter mapping solution to handle browser-specific behavior with AudioWorklet parameters
+   - ✅ Created a UI-friendly approach that shows values 1-4 while internally using 0-3
+   - ✅ Fixed cross-browser compatibility issues with parameter handling
 
 2. **Count Node**
    - ✅ Successfully implemented by leveraging the existing clock-counter worklet
@@ -172,3 +175,14 @@ Improving the WebAssembly development workflow is under consideration:
 - Looking at integrating WebAssembly compilation into the main build process
 - Exploring better debugging tools for WebAssembly modules
 - Considering documentation improvements for WebAssembly development
+
+### 6. Browser Compatibility Considerations
+
+We've identified and addressed several browser-specific issues:
+- Chrome's AudioWorklet implementation can behave unexpectedly with non-standard parameter ranges
+- When parameter descriptors use ranges that don't start from 0 (e.g., 1-4 instead of 0-3), Chrome may mishandle the values
+- This is not a universal behavior but specific to using non-standard parameter ranges in descriptors
+- Implemented a solution that uses standard ranges (0-3) in the worklet parameter descriptors
+- Used ConstantSourceNode with negative values to map between user-friendly UI ranges (1-4) and standard internal ranges (0-3)
+- This approach follows Web Audio API conventions while maintaining intuitive UI values
+- Following standard parameter range conventions helps avoid browser-specific quirks

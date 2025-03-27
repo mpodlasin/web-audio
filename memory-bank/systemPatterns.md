@@ -107,6 +107,20 @@ AudioWorklet processors follow a specific pattern for parameter handling:
 - WebAssembly memory is used to share parameter values between JavaScript and C
 - Buffer handling requires careful management to prevent "offset out of bounds" errors
 - Single-value parameters should be handled individually rather than using array methods like set()
+- Parameter descriptors should follow standard Web Audio API conventions (typically starting from 0)
+- Non-standard parameter ranges (e.g., 1-4 instead of 0-3) can cause browser-specific quirks in Chrome
+- ConstantSourceNode with negative values can be used to map between UI and processing parameter ranges
+- Parameter ranges in worklet descriptors should align with standard audio processing expectations
+
+#### UI-to-Processing Value Mapping
+
+The system employs a pattern for mapping between user-friendly UI values and internal processing values:
+- UI parameters often use ranges that are intuitive for users (e.g., 1-4 for selection indices)
+- Internal processing may require different ranges (e.g., 0-3 for array indices)
+- Custom node implementations use ConstantSourceNode for parameter mapping
+- The offsetNode pattern subtracts or adds values to transform between UI and processing ranges
+- This approach maintains a clean separation between UI representation and audio processing
+- It also ensures consistent behavior across different browsers
 
 ### 4. Framework-Agnostic Audio Core
 

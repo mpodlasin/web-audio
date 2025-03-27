@@ -410,9 +410,57 @@ export class CustomTimesNode extends GenericCustomAudioNodeWithWebApiNode<AudioW
 	}
 }
 
-export class CustomSwitchNode extends GenericCustomAudioNodeWithWebApiNode<AudioWorkletNode> {
+export class CustomSwitchNode extends GenericCustomAudioNode {
+	private switchWorklet: AudioWorkletNode;
+	private inputMapper: ConstantSourceNode;
+	private offsetNode: ConstantSourceNode;
+
 	constructor(id: string) {
-		super(createSwitchWorklet(), id, 'switch');
+		super(id, 'switch');
+		
+		// Create the switch worklet
+		this.switchWorklet = createSwitchWorklet();
+		
+		// Create parameter mapping for the input parameter
+		this.inputMapper = globalContext.createConstantSource();
+		this.offsetNode = globalContext.createConstantSource();
+		
+		// Set up the mapping to subtract 1:
+		this.offsetNode.offset.value = -1;
+		
+		// Get the input parameter from the worklet
+		const inputParam = this.switchWorklet.parameters.get('input');
+		if (inputParam) {
+			this.inputMapper.connect(inputParam);
+			this.offsetNode.connect(inputParam);  // This will be added to inputMapper's output
+		}
+		
+		this.inputMapper.start();
+		this.offsetNode.start();
+	}
+
+	getInputNode(name?: string): AudioNode {
+		return this.switchWorklet;
+	}
+
+	getOutputNode(): AudioNode {
+		return this.switchWorklet;
+	}
+
+	getAudioParam(parameterName: string): AudioParam {
+		if (parameterName === 'input') {
+			return this.inputMapper.offset;
+		}
+		
+		throw new Error(`Unknown parameter ${parameterName} for Switch node`);
+	}
+
+	cleanup(): void {
+		this.inputMapper.stop();
+		this.offsetNode.stop();
+		this.inputMapper.disconnect();
+		this.offsetNode.disconnect();
+		this.switchWorklet.disconnect();
 	}
 }
 

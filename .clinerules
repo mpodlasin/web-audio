@@ -126,6 +126,57 @@ This file captures key insights, patterns, and project-specific knowledge that w
    - Consider implementing hint systems or progressive assistance
    - Balance challenge with accessibility
 
+### AudioWorklet Parameter Handling
+
+1. Browser-specific parameter behavior:
+   - Chrome's AudioWorklet implementation can behave unexpectedly with non-standard parameter ranges
+   - When parameter descriptors use ranges that don't start from 0 (e.g., 1-4 instead of 0-3), Chrome may mishandle the values
+   - Firefox appears to handle these non-standard ranges correctly
+   - This is not a universal behavior but specific to using non-standard parameter ranges in descriptors
+
+2. Parameter mapping solution:
+   - Use standard parameter ranges (starting from 0) in AudioWorklet parameter descriptors
+   - Use ConstantSourceNode with negative values to map between UI and processing ranges
+   - For example, add an offsetNode with value -1 to transform between UI range (1-4) and processing range (0-3)
+   - This ensures consistent behavior across different browsers by following Web Audio API conventions
+
+3. UI-to-processing value mapping:
+   - Maintain user-friendly parameter ranges in the UI (e.g., 1-4)
+   - Use different ranges internally for processing (e.g., 0-3)
+   - Implement custom node classes that extend GenericCustomAudioNode
+   - Use the offsetNode pattern to transform between UI and processing ranges
+
+4. Implementation pattern:
+   ```typescript
+   // Example from CustomSwitchNode
+   this.inputMapper = globalContext.createConstantSource();
+   this.offsetNode = globalContext.createConstantSource();
+   
+   // Set up the mapping to subtract 1:
+   this.offsetNode.offset.value = -1;
+   
+   // Get the input parameter from the worklet
+   const inputParam = this.switchWorklet.parameters.get('input');
+   if (inputParam) {
+       this.inputMapper.connect(inputParam);
+       this.offsetNode.connect(inputParam);  // This will be added to inputMapper's output
+   }
+   ```
+
+5. Parameter descriptor alignment:
+   - Ensure worklet parameter descriptors match the expected internal processing ranges
+   - For example, if processing expects 0-3, use:
+   ```typescript
+   static get parameterDescriptors() {
+       return [{
+           name: 'input',
+           defaultValue: 0,
+           minValue: 0,
+           maxValue: 3,
+       }];
+   }
+   ```
+
 ## Evolution of Project Decisions
 
 ### Node Implementation Strategy
