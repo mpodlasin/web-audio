@@ -29,7 +29,8 @@ To support this tutorial, we need to:
 - ✅ Complete the implementation of the Switch node
 - ✅ Create a new Count node
 - ✅ Design the tutorial steps and structure
-- Write the tutorial content and validation logic
+- ✅ Write the tutorial content (stored in `tutorial5copy.md`)
+- Write validation logic
 
 ### Node Implementation
 
@@ -105,8 +106,8 @@ Several WebAssembly modules have been optimized:
 
 3. **Begin Tutorial 5 Content**
    - ✅ Outline the tutorial steps (stored in `tutorial5outline.md`)
+   - ✅ Write the tutorial copy (stored in `tutorial5copy.md`)
    - Create validation functions for each step
-   - Write the tutorial copy
    - Test the tutorial flow
 
 ### Medium-term (Next 2-3 Months)

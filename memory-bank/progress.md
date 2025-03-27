@@ -152,7 +152,7 @@
 1. **Tutorial 5: Oscillator Switching**
    - ✅ Tutorial steps design (outline completed)
    - ❌ Validation functions
-   - ❌ Tutorial content
+   - ✅ Tutorial content (completed)
    - ❌ Testing and refinement
    - No longer blocked: Switch and Count nodes are now implemented
 
@@ -208,7 +208,7 @@ The project is in a functional beta state with:
 - Local storage for project saving
 
 Development is active with focus on:
-1. Writing Tutorial 5 content and validation functions
+1. Creating validation functions for Tutorial 5
 2. Testing the Switch and Count nodes in practical applications
 3. Refining the user interface
 4. Optimizing performance
