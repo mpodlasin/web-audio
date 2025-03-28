@@ -5,7 +5,7 @@ class SwitchProcessor extends AudioWorkletProcessor {
 	private inputBufferC: Float32Array = new Float32Array();
 	private inputBufferD: Float32Array = new Float32Array();
 	private outputBuffer: Float32Array = new Float32Array();
-	private chosenInputBuffer: Float32Array = new Float32Array();
+	private chosenChannelBuffer: Float32Array = new Float32Array();
 	private nativeProcess: ((currentFrame: number, sampleRate: number) => void) | undefined =
 		undefined;
 	private debug: (() => number) | undefined = undefined;
@@ -13,7 +13,7 @@ class SwitchProcessor extends AudioWorkletProcessor {
 
 	static get parameterDescriptors() {
         return [{
-            name: 'input',
+            name: 'channel',
             defaultValue: 0,
             minValue: 0,
             maxValue: 3,
@@ -41,9 +41,9 @@ class SwitchProcessor extends AudioWorkletProcessor {
 				const inputBufferPtrC = exports.inputBufferPtrC();
 				const inputBufferPtrD = exports.inputBufferPtrD();
 				const outputBufferPtr = exports.outputBufferPtr();
-				const chosenInputPtr = exports.chosenInputPtr();
+				const chosenChannelPtr = exports.chosenChannelPtr();
 
-				this.chosenInputBuffer = new Float32Array(exports.memory.buffer, chosenInputPtr, 1);
+				this.chosenChannelBuffer = new Float32Array(exports.memory.buffer, chosenChannelPtr, 1);
 				this.inputBufferA = new Float32Array(
 					exports.memory.buffer,
 					inputBufferPtrA,
@@ -84,9 +84,9 @@ class SwitchProcessor extends AudioWorkletProcessor {
 		if (this.kill) return false;
 		if (!this.nativeProcess) return true;
 
-    const chosenInput = parameters['input']?.[0] ?? 0;
+    const chosenChannel = parameters['channel']?.[0] ?? 0;
 
-		this.chosenInputBuffer.set([chosenInput]);
+		this.chosenChannelBuffer.set([chosenChannel]);
 
 		const inputA = inputList[0]?.[0];
 

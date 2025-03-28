@@ -412,7 +412,7 @@ export class CustomTimesNode extends GenericCustomAudioNodeWithWebApiNode<AudioW
 
 export class CustomSwitchNode extends GenericCustomAudioNode {
 	private switchWorklet: AudioWorkletNode;
-	private inputMapper: ConstantSourceNode;
+	private channelMapper: ConstantSourceNode;
 	private offsetNode: ConstantSourceNode;
 
 	constructor(id: string) {
@@ -421,21 +421,21 @@ export class CustomSwitchNode extends GenericCustomAudioNode {
 		// Create the switch worklet
 		this.switchWorklet = createSwitchWorklet();
 		
-		// Create parameter mapping for the input parameter
-		this.inputMapper = globalContext.createConstantSource();
+		// Create parameter mapping for the channel parameter
+		this.channelMapper = globalContext.createConstantSource();
 		this.offsetNode = globalContext.createConstantSource();
 		
 		// Set up the mapping to subtract 1:
 		this.offsetNode.offset.value = -1;
 		
-		// Get the input parameter from the worklet
-		const inputParam = this.switchWorklet.parameters.get('input');
-		if (inputParam) {
-			this.inputMapper.connect(inputParam);
-			this.offsetNode.connect(inputParam);  // This will be added to inputMapper's output
+		// Get the channel parameter from the worklet
+		const channelParam = this.switchWorklet.parameters.get('channel');
+		if (channelParam) {
+			this.channelMapper.connect(channelParam);
+			this.offsetNode.connect(channelParam);  // This will be added to channelMapper's output
 		}
 		
-		this.inputMapper.start();
+		this.channelMapper.start();
 		this.offsetNode.start();
 	}
 
@@ -448,17 +448,17 @@ export class CustomSwitchNode extends GenericCustomAudioNode {
 	}
 
 	getAudioParam(parameterName: string): AudioParam {
-		if (parameterName === 'input') {
-			return this.inputMapper.offset;
+		if (parameterName === 'channel') {
+			return this.channelMapper.offset;
 		}
 		
 		throw new Error(`Unknown parameter ${parameterName} for Switch node`);
 	}
 
 	cleanup(): void {
-		this.inputMapper.stop();
+		this.channelMapper.stop();
 		this.offsetNode.stop();
-		this.inputMapper.disconnect();
+		this.channelMapper.disconnect();
 		this.offsetNode.disconnect();
 		this.switchWorklet.disconnect();
 	}

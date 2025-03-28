@@ -42,9 +42,9 @@ Create a <Clr nodeType="switch">Switch</Clr> node.
 
 The <Clr nodeType="switch">Switch</Clr> node has four inputs and one output.
 
-It works like a selector: based on the value of its input parameter, it chooses which of its inputs to route to its output.
+It works like a selector: based on the value of its channel parameter, it chooses which of its inputs to route to its output.
 
-For example, if the input parameter is set to 1, the signal from the first input will be sent to the output. If it's set to 2, the signal from the second input will be sent, and so on.
+For example, if the channel parameter is set to 1, the signal from the first input will be sent to the output. If it's set to 2, the signal from the second input will be sent, and so on.
 
 # Step 5
 
@@ -74,9 +74,9 @@ Then, create an <Clr nodeType="destination">Output</Clr> node and connect the <C
 
 Press the play button and slowly increase the volume on the <Clr nodeType="destination">Output</Clr> node.
 
-You should hear the sound of the <Clr nodeType="sine-oscillator">Sine</Clr> oscillator, since the input parameter of the <Clr nodeType="switch">Switch</Clr> node is set to 1 by default.
+You should hear the sound of the <Clr nodeType="sine-oscillator">Sine</Clr> oscillator, since the channel parameter of the <Clr nodeType="switch">Switch</Clr> node is set to 1 by default.
 
-Try changing the input parameter on the <Clr nodeType="switch">Switch</Clr> node to 2, 3, and 4 to hear the different oscillator types.
+Try changing the channel parameter on the <Clr nodeType="switch">Switch</Clr> node to 2, 3, and 4 to hear the different oscillator types.
 
 # Step 8
 
@@ -98,9 +98,9 @@ Create a <Clr nodeType="clock">Clock</Clr> node.
 
 Now, create a <Clr nodeType="count">Count</Clr> node. You can find it in the <Clr nodeType="count">Clock</Clr> section.
 
-The <Clr nodeType="count">Count</Clr> node counts incoming triggers and outputs the current count. It has a modulo parameter that determines when the count resets to 0.
+The <Clr nodeType="count">Count</Clr> node counts incoming triggers and outputs the current count. It has a modulo parameter that determines when the count resets.
 
-For example, if the modulo is set to 4, the <Clr nodeType="count">Count</Clr> node will output 0, 1, 2, 3, 0, 1, 2, 3, and so on.
+For example, if the modulo is set to 4, the <Clr nodeType="count">Count</Clr> node will output values that we can use to select different inputs on the Switch node.
 
 # Step 10
 
@@ -118,9 +118,9 @@ Set the modulo parameter of the <Clr nodeType="count">Count</Clr> node to 4, sin
     import Clr from '../Clr.svelte';
 </script>
 
-Now, connect the output of the <Clr nodeType="count">Count</Clr> node to the input parameter of the <Clr nodeType="switch">Switch</Clr> node.
+Now, connect the output of the <Clr nodeType="count">Count</Clr> node to the channel parameter of the <Clr nodeType="switch">Switch</Clr> node.
 
-With this setup, each time the <Clr nodeType="clock">Clock</Clr> node sends a trigger, the <Clr nodeType="count">Count</Clr> node will increment its count and output the new value. The <Clr nodeType="switch">Switch</Clr> node will use this value to select a different oscillator, with 0 selecting the first input, 1 selecting the second input, and so on.
+With this setup, each time the <Clr nodeType="clock">Clock</Clr> node sends a trigger, the <Clr nodeType="count">Count</Clr> node will increment its count and output the new value. The <Clr nodeType="switch">Switch</Clr> node will use this value to select a different oscillator, with 1 selecting the first input, 2 selecting the second input, and so on.
 
 # Step 12
 

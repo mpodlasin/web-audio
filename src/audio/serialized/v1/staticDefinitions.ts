@@ -538,7 +538,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		],
 		outputs: [audioInputOutputDefinition],
 		parameters: {
-			input: 	{ 
+			channel: 	{ 
 				minValue: 1,
 				maxValue: 4,
 				defaultValue: 1,
