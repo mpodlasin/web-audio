@@ -89,6 +89,15 @@ Several WebAssembly modules have been optimized:
 - Reduced memory usage
 - Better browser compatibility
 
+### 5. Switch Node Parameter Renaming
+
+The Switch node's parameter has been renamed from "input" to "channel" for improved clarity:
+- Renamed across all layers of the architecture (UI, serialized representation, runtime implementation, WebAssembly/C code)
+- Eliminates ambiguity between the parameter and the physical inputs of the node
+- Maintains the parameter mapping pattern that uses UI-friendly values (1-4) while using efficient internal processing values (0-3)
+- Tutorial content has been updated to reflect the new parameter name
+- This change reinforces our commitment to intuitive parameter naming and consistent cross-layer implementation
+
 ## Next Steps
 
 ### Short-term (Next 2-4 Weeks)
