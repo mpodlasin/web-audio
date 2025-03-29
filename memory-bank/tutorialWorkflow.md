@@ -24,20 +24,24 @@ This document outlines the standard process for creating new tutorials in the Au
   - [ ] `node tutorial-splitter.js memory-bank/tutorial5copy.md src/components/Tutorial/Tutorial5`
 - [ ] Verify that all Copy*.md files were created correctly
 
-### 4. Validation Implementation
-- [ ] Create Check*.ts files for each step to validate user progress
+### 4. Initial Check Files Setup
+- [ ] Create empty Check*.ts files for each step with `export default true;`
+- [ ] Update the index.ts file to import all Check files
+- [ ] Populate the steps array with objects that include both Copy and Check
+- [ ] Test that the tutorial can be navigated through completely
+
+### 5. Validation Implementation
+- [ ] Replace the placeholder `export default true;` with actual validation functions
 - [ ] Implement validation functions that check for specific nodes, connections, and parameters
 - [ ] Balance validation strictness (not too strict, not too loose)
 - [ ] Provide helpful error messages to guide users
 
-### 5. Tutorial Integration
-- [ ] Create an index.ts file in the tutorial directory that:
-  - [ ] Imports all Copy*.md files
-  - [ ] Imports all Check*.ts files
-  - [ ] Defines the tutorial object with steps array
+### 6. Tutorial Integration
+- [ ] Ensure the tutorial is properly integrated into the application
 - [ ] Update the main tutorial index.ts to include the new tutorial
+- [ ] Verify that the tutorial appears in the tutorial selection UI
 
-### 6. Testing and Refinement
+### 7. Testing and Refinement
 - [ ] Test the tutorial flow
 - [ ] Verify validation functions work correctly
 - [ ] Polish content and instructions

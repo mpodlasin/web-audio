@@ -151,8 +151,9 @@
 
 1. **Tutorial 5: Oscillator Switching**
    - ✅ Tutorial steps design (outline completed)
-   - ❌ Validation functions
    - ✅ Tutorial content (completed)
+   - ✅ Initial setup with placeholder validation (export default true)
+   - ❌ Actual validation functions
    - ❌ Testing and refinement
    - No longer blocked: Switch and Count nodes are now implemented
 

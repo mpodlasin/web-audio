@@ -31,7 +31,9 @@ To support this tutorial, we need to:
 - ✅ Create a new Count node
 - ✅ Design the tutorial steps and structure
 - ✅ Write the tutorial content (stored in `tutorial5copy.md`)
-- Write validation logic
+- ✅ Create placeholder Check files with `export default true;`
+- ✅ Set up the tutorial structure in index.ts
+- Write actual validation logic
 
 ### Node Implementation
 
