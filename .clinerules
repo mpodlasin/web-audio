@@ -294,3 +294,32 @@ This file captures key insights, patterns, and project-specific knowledge that w
    - Chrome and Firefox have audio debugging tools
    - Use them to monitor audio context and node connections
    - Check for memory leaks and performance issues
+
+## Task Execution Checklist
+
+To ensure consistent and appropriate task execution, I (Cline) will follow this internal checklist for every task:
+
+### 1. Memory Bank Review
+- Review `.clinerules` for project-specific patterns and limitations
+- Review `activeContext.md` for current work focus and recent changes
+- Check `progress.md` for project status and known issues
+- Consult other relevant memory bank files as needed
+
+### 2. Task Scope Confirmation
+- Clearly identify what is being requested
+- Define the specific boundaries of the task
+- Note what is explicitly NOT part of the task
+- Identify any relevant constraints from memory bank
+
+### 3. Implementation Planning
+- Break down the task into discrete steps
+- Identify potential challenges or dependencies
+- Consider existing patterns in the codebase
+- Plan for incremental implementation with checkpoints
+
+### 4. Execution Guidelines
+- Never execute scripts without explicit approval
+- Implement only what was specifically requested
+- Make changes in small, reviewable increments
+- Wait for feedback before proceeding to next steps
+- Do not attempt to test or run the project directly

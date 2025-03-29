@@ -13,8 +13,9 @@ Complete tutorial content for the first four tutorials is now available in the m
 - `tutorial4copy.md`: Frequency and Amplitude - Exploring oscillator properties and waveforms
 - `tutorialSummary.md`: Comprehensive summary of all tutorial content
 - `tutorialStyleGuide.md`: Writing style, structural patterns, and established conventions
+- `tutorialWorkflow.md`: Standard process and checklist for creating new tutorials
 
-This organization provides easier access to the full tutorial content for reference when developing new tutorials. The style guide ensures consistency in writing approach, terminology, and instructional techniques across all tutorials.
+This organization provides easier access to the full tutorial content for reference when developing new tutorials. The style guide ensures consistency in writing approach, terminology, and instructional techniques across all tutorials. The workflow document standardizes the tutorial creation process, leveraging the new tutorial-splitter script to streamline development.
 
 
 ### Tutorial 5 Development
@@ -97,6 +98,20 @@ The Switch node's parameter has been renamed from "input" to "channel" for impro
 - Maintains the parameter mapping pattern that uses UI-friendly values (1-4) while using efficient internal processing values (0-3)
 - Tutorial content has been updated to reflect the new parameter name
 - This change reinforces our commitment to intuitive parameter naming and consistent cross-layer implementation
+
+### 6. Tutorial Content Processing Script
+
+We've created a Node.js script to streamline the tutorial development workflow:
+- The `tutorial-splitter.js` script automates the process of splitting tutorial markdown files from memory-bank into separate Copy*.md files
+- It takes a source markdown file and target directory as parameters
+- The script automatically:
+  - Splits content by "# Step X" headers
+  - Creates properly formatted Copy*.md files with Svelte script imports
+  - Preserves step numbers in the filenames
+- Usage: `node tutorial-splitter.js <source-file> <target-directory>`
+- Example: `node tutorial-splitter.js memory-bank/tutorial5copy.md src/components/Tutorial/Tutorial5`
+- This significantly reduces the manual effort required to prepare tutorial content for the application
+- The script handles the formatting requirements automatically, ensuring consistency across all tutorial steps
 
 ## Next Steps
 
