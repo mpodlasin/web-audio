@@ -210,6 +210,15 @@ We've identified and addressed several browser-specific issues:
 - This approach follows Web Audio API conventions while maintaining intuitive UI values
 - Following standard parameter range conventions helps avoid browser-specific quirks
 
+In Tutorial 5, we've implemented a practical example of this parameter mapping:
+- The Count node counts from 0 to 3 (with modulo 4)
+- The Switch node's UI expects values from 1 to 4 for its channel parameter
+- We instruct users to set the Switch node's input parameter to 1
+- This creates the mapping: Count outputs (0-3) + input value 1 = effective values (1-4)
+- This ensures all four oscillator inputs are properly selected in sequence
+- We've added explicit explanations in the tutorial to help users understand this mapping
+- This pattern will be applied consistently in future tutorials involving similar parameter mapping requirements
+
 ### 7. Tutorial Content Accuracy
 
 We've established an important practice for tutorial development:

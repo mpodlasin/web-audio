@@ -185,6 +185,13 @@ This file captures key insights, patterns, and project-specific knowledge that w
    }
    ```
 
+6. Practical application in tutorials:
+   - When nodes like Switch expect UI values (1-4) but receive values from nodes like Count (0-3), explicitly instruct users to set base parameters
+   - For example, in Tutorial 5, the Switch node's input parameter must be set to 1 when connected to a Count node
+   - This ensures proper mapping: Count outputs 0-3 + Switch input value 1 = effective values 1-4
+   - Always explain this mapping to users to help them understand the relationship between different node value ranges
+   - This pattern applies to other nodes with similar parameter mapping requirements
+
 ## Evolution of Project Decisions
 
 ### Node Implementation Strategy
