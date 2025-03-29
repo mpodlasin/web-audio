@@ -63,6 +63,37 @@ This layer manages the tutorial experience:
 Key files:
 - `src/components/Tutorial/`: Tutorial components and content
 - `src/components/TutorialNode.svelte`: Special node for tutorial instructions
+- `src/routes/learn/`: Learn section routing and presentation
+
+#### Learn Section Structure
+
+The learn section of the application follows a specific structure:
+
+1. **Table of Contents**:
+   - Defined in `src/routes/learn/(toc)/+page.md`
+   - Uses Markdown with embedded Svelte components
+   - The `ToCItem` component links entries to tutorial content via tutorial IDs
+   - Organized into sections (Basics, Oscillators & Filters, etc.)
+
+2. **Tutorial Routes**:
+   - Configured in `src/routes/learn/[id]/+page.ts`
+   - Maps URL slugs to tutorial IDs and titles
+   - Each route entry includes:
+     - URL slug (e.g., 'cycling-through-oscillators')
+     - Display title (e.g., '5. Cycling Through Oscillators')
+     - Tutorial ID (e.g., 'tutorial5')
+
+3. **Tutorial Content**:
+   - Each tutorial has its own directory in `src/components/Tutorial/`
+   - Copy files (Copy*.md) contain the tutorial text
+   - Check files (Check*.ts) contain validation logic
+   - An index.ts file connects Copy and Check files into tutorial steps
+
+4. **Integration Workflow**:
+   - Create tutorial content (Copy and Check files)
+   - Update main tutorial index.ts to include the new tutorial
+   - Add entry to table of contents with proper ToCItem component
+   - Configure route in the [id]/+page.ts file
 
 ## Key Technical Decisions
 

@@ -13,7 +13,7 @@
 ### Oscillators & Filters
 
 4. [<ToCItem id="tutorial4">Frequency and Amplitude</ToCItem>](/learn/oscillators-frequency-and-amplitude)
-5. [The Big 4 of Oscillators](/learn/the-big-4-of-oscillators)
+5. [<ToCItem id="tutorial5">Cycling Through Oscillators</ToCItem>](/learn/cycling-through-oscillators)
 6. [Spectrum](/learn/spectrum)
 7. [Additive Synthesis](/learn/additive-synthesis)
 8. [Filters - Shaping Sound](/learn/filters-shaping-sound)

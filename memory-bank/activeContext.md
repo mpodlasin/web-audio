@@ -20,20 +20,24 @@ This organization provides easier access to the full tutorial content for refere
 
 ### Tutorial 5 Development
 
-We're working on Tutorial 5, which will teach users how to create a voice that changes oscillator types on each note press. This tutorial will:
+We've completed the initial implementation of Tutorial 5, titled "Cycling Through Oscillators", which teaches users how to create a voice that changes oscillator types with each note press. This tutorial:
 
-1. Demonstrate the differences between the "big 4" oscillator types (sine, square, saw, triangle)
-2. Teach users about signal routing and switching between audio sources
-3. Introduce more advanced patching techniques
+1. Demonstrates the differences between the "big 4" oscillator types (sine, square, saw, triangle)
+2. Teaches users about signal routing and switching between audio sources
+3. Introduces more advanced patching techniques
 
-To support this tutorial, we need to:
+Completed tasks:
 - ✅ Complete the implementation of the Switch node
 - ✅ Create a new Count node
 - ✅ Design the tutorial steps and structure
 - ✅ Write the tutorial content (stored in `tutorial5copy.md`)
 - ✅ Create placeholder Check files with `export default true;`
 - ✅ Set up the tutorial structure in index.ts
-- Write actual validation logic
+- ✅ Integrate the tutorial into the learn section with proper routing
+- ✅ Update the table of contents with the new title "Cycling Through Oscillators"
+
+Remaining tasks:
+- Write actual validation logic for each step
 
 ### Node Implementation
 

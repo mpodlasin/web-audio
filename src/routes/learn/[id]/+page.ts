@@ -16,10 +16,14 @@ const routes: Record<string, { title: string; tutorialId: string }> = {
 	'oscillators-frequency-and-amplitude': {
 		title: '4. Oscillators - Frequency and Amplitude',
 		tutorialId: 'tutorial4'
+	},
+	'cycling-through-oscillators': {
+		title: '5. Cycling Through Oscillators',
+		tutorialId: 'tutorial5'
 	}
 };
 
-export const load = ({ params }) => {
+export const load = ({ params }: { params: { id: string } }) => {
 	const { id } = params;
 
 	if (id in routes) {
