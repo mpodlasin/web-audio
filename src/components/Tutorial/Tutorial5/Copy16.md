@@ -2,8 +2,10 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Now we have a patch that cycles through different oscillator types with each note, but all the notes have the same pitch.
+Connect the <Clr nodeType="clock">Clock</Clr> node to the trigger input of the <Clr nodeType="ad-envelope">AD Envelope</Clr> node.
 
-Let's add a <Clr nodeType="sequencer">Sequencer</Clr> node to create a melody. You can find it in the <Clr nodeType="sequencer">Pitch</Clr> section.
+Then, connect the output of the <Clr nodeType="ad-envelope">AD Envelope</Clr> node to the gain parameter of the <Clr nodeType="gain">Gain</Clr> node.
 
-Create a <Clr nodeType="sequencer">Sequencer</Clr> node.
+Set the gain parameter itself to 0, as we want the envelope to fully control the amplitude.
+
+Adjust the tempo parameter on the <Clr nodeType="clock">Clock</Clr> node to a setting you like. A tempo of around 50 BPM works well for this patch, but feel free to experiment with different values.

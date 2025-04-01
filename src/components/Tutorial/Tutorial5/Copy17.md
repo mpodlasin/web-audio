@@ -2,6 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Connect the <Clr nodeType="clock">Clock</Clr> node to the input of the <Clr nodeType="sequencer">Sequencer</Clr> node.
+Now we have a patch that cycles through different oscillator types with each note, but all the notes have the same pitch.
 
-This will make the <Clr nodeType="sequencer">Sequencer</Clr> advance to the next step with each tick of the <Clr nodeType="clock">Clock</Clr>.
+Let's add a <Clr nodeType="sequencer">Sequencer</Clr> node to create a melody. You can find it in the <Clr nodeType="sequencer">Pitch</Clr> section.
+
+Create a <Clr nodeType="sequencer">Sequencer</Clr> node.

@@ -2,8 +2,10 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Let's also experiment with different tempo settings.
+Now let's experiment with different modulo values on the <Clr nodeType="count">Count</Clr> node.
 
-Adjust the tempo parameter on the <Clr nodeType="clock">Clock</Clr> node to find a setting that works well with your melody.
+Try setting it to 2, which will make the patch alternate between just two oscillator types.
 
-A slower tempo will give each note more time to be heard, while a faster tempo will create a more rapid, arpeggio-like effect.
+Then try 3, which will cycle through three oscillator types.
+
+Notice how these changes affect the overall character of the melody.

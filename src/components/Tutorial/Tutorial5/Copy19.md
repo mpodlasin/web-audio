@@ -2,6 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Connect the output of the <Clr nodeType="sequencer">Sequencer</Clr> to the input of the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr>.
+Let's add a <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> to ensure our melody uses musical notes. You can find it in the <Clr nodeType="pitch-quantizer">Pitch</Clr> section.
 
-Then, connect the output of the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> to the frequency parameter of each oscillator: <Clr nodeType="sine-oscillator">Sine</Clr>, <Clr nodeType="triangle-oscillator">Triangle</Clr>, <Clr nodeType="square-oscillator">Square</Clr>, and <Clr nodeType="saw-oscillator">Saw</Clr>.
+Create a <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> node.

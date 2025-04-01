@@ -2,6 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Currently, the sound plays continuously. Let's add an <Clr nodeType="ad-envelope">AD Envelope</Clr> to shape the amplitude of each note, just like we did in previous tutorials.
+Press the play button if it's not already on.
 
-Create an <Clr nodeType="ad-envelope">AD Envelope</Clr> node.
+You should now hear the oscillator type changing automatically with each tick of the <Clr nodeType="clock">Clock</Clr> node.
+
+Try adjusting the tempo parameter of the <Clr nodeType="clock">Clock</Clr> node to change how quickly the oscillator types cycle.

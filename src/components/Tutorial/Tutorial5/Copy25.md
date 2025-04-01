@@ -2,11 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="ad-envelope">AD Envelope</Clr> parameters can dramatically change the character of each note.
+Let's also experiment with different tempo settings.
 
-Try different attack and decay settings:
-- Short attack and decay for a plucky, percussive sound
-- Longer attack for a softer, pad-like sound
-- Longer decay to let notes overlap more
+Adjust the tempo parameter on the <Clr nodeType="clock">Clock</Clr> node to find a setting that works well with your melody.
 
-Find settings that complement your melody and oscillator sequence.
+A slower tempo will give each note more time to be heard, while a faster tempo will create a more rapid, arpeggio-like effect.

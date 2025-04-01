@@ -2,6 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Let's add a <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> to ensure our melody uses musical notes. You can find it in the <Clr nodeType="pitch-quantizer">Pitch</Clr> section.
+Connect the <Clr nodeType="clock">Clock</Clr> node to the input of the <Clr nodeType="sequencer">Sequencer</Clr> node.
 
-Create a <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> node.
+This will make the <Clr nodeType="sequencer">Sequencer</Clr> advance to the next step with each tick of the <Clr nodeType="clock">Clock</Clr>.

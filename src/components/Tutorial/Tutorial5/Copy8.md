@@ -6,4 +6,4 @@ Manually changing the <Clr nodeType="switch">Switch</Clr> parameter works, but i
 
 To achieve this, we'll use a <Clr nodeType="clock">Clock</Clr> node to generate regular triggers and a <Clr nodeType="count">Count</Clr> node to cycle through our oscillator options.
 
-Create a <Clr nodeType="clock">Clock</Clr> node.
+Create a <Clr nodeType="clock">Clock</Clr> node and a <Clr nodeType="count">Count</Clr> node. You can find the Count node in the <Clr nodeType="count">Clock</Clr> section.

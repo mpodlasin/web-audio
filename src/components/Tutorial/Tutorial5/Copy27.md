@@ -2,8 +2,12 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Congratulations! You've created a dynamic patch that cycles through different oscillator types with each note.
+One more creative variation we can try is to change the order of the oscillators.
 
-This technique of using a <Clr nodeType="count">Count</Clr> node to control a <Clr nodeType="switch">Switch</Clr> node can be applied to many other aspects of sound design, not just oscillator selection.
+Disconnect the oscillators from the <Clr nodeType="switch">Switch</Clr> node and reconnect them in a different order. For example:
+1. <Clr nodeType="saw-oscillator">Saw</Clr> to the first input
+2. <Clr nodeType="sine-oscillator">Sine</Clr> to the second input
+3. <Clr nodeType="triangle-oscillator">Triangle</Clr> to the third input
+4. <Clr nodeType="square-oscillator">Square</Clr> to the fourth input
 
-For example, you could use it to cycle through different filter types, envelope shapes, or effect settings.
+Listen to how this changes the pattern of timbres in your melody.

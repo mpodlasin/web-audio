@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Let's add some reverb to make our sound more polished.
+On the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr>, select a few notes to create a scale. For example, you might choose C, E, G, and A for a C major pentatonic feel.
 
-Create a <Clr nodeType="convolution">Convolution</Clr> node from the <Clr nodeType="convolution">Effect</Clr> section.
+Also, adjust the frequency knobs on the <Clr nodeType="sequencer">Sequencer</Clr> to create an interesting melody.
 
-Insert it between the <Clr nodeType="gain">Gain</Clr> node and the <Clr nodeType="destination">Output</Clr> node.
+You should now hear a melody that changes oscillator type with each note!

@@ -2,12 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-In this tutorial, we've learned:
-- How to use the <Clr nodeType="switch">Switch</Clr> node to select between different audio sources
-- How to use the <Clr nodeType="count">Count</Clr> node to create cycling patterns
-- How the Count node's values (0-3) map to the Switch node's inputs (1-4)
-- How to combine these techniques with sequencing to create a melody that changes timbre with each note
+Congratulations! You've created a dynamic patch that cycles through different oscillator types with each note.
 
-Feel free to continue experimenting with this patch. Try adding more oscillators, using different scales in the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr>, or creating more complex melodies with the <Clr nodeType="sequencer">Sequencer</Clr>.
+This technique of using a <Clr nodeType="count">Count</Clr> node to control a <Clr nodeType="switch">Switch</Clr> node can be applied to many other aspects of sound design, not just oscillator selection.
 
-The possibilities for creative sound design are endless!
+For example, you could use it to cycle through different filter types, envelope shapes, or effect settings.

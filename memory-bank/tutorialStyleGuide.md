@@ -71,10 +71,15 @@ This document outlines the writing style, structural patterns, and established c
 - Prompt users to observe and deduce patterns
 - Ask questions that lead users to insights
 - Encourage experimentation within controlled parameters
+- Use visualization nodes (Value, Oscilloscope, Spectrum) to help users discover functionality before explaining it
+- Have users observe and interact with node outputs before providing theoretical explanations
+- Create "aha!" moments by letting users discover patterns themselves
 
 ### Examples:
 - "Convince yourself that it the last sentence is true by setting value on Number node to 0."
 - "Now, slowly decrease the decay parameter on the AD Envelope node and listen to how it affects the sound."
+- "Let's first visualize what the <Clr nodeType="count">Count</Clr> node is outputting. Create a <Clr nodeType="value">Value</Clr> node and connect the output of the <Clr nodeType="count">Count</Clr> node to it."
+- "Connect the <Clr nodeType="sine-oscillator">Sine</Clr> oscillator to an <Clr nodeType="oscilloscope">Oscilloscope</Clr> node to see its waveform before we discuss its properties."
 
 ## Visual Elements
 
@@ -179,6 +184,16 @@ This document outlines the writing style, structural patterns, and established c
 ### Examples:
 - Instead of: "Place the Switch node to the right of your oscillators."
 - Use: "Create a <Clr nodeType="switch">Switch</Clr> node."
+
+### Menu-Order Node Listing
+- When instructing users to create multiple nodes of the same category, list them in the exact order they appear in the menu
+- This reduces cognitive load as users can work through the menu sequentially
+- Always verify the menu order in `src/audio/serialized/v1/staticDefinitions.ts` (categorizedNodeTypes object)
+- For oscillators, the menu order is: Sine, Saw, Square, Triangle
+
+### Examples:
+- "Create a <Clr nodeType="sine-oscillator">Sine</Clr> oscillator, a <Clr nodeType="saw-oscillator">Saw</Clr> oscillator, a <Clr nodeType="square-oscillator">Square</Clr> oscillator, and a <Clr nodeType="triangle-oscillator">Triangle</Clr> oscillator."
+- "Add the three filter nodes in menu order: <Clr nodeType="lowpass-filter">Lowpass</Clr>, <Clr nodeType="bandpass-filter">Bandpass</Clr>, and <Clr nodeType="highpass-filter">Highpass</Clr>."
 
 ### Concise Introductions
 - Keep tutorial introductions concise and focused
