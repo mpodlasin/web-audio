@@ -16,7 +16,7 @@ To achieve that, we'll use two new nodes:
 
 The <Clr nodeType="switch">Switch</Clr> node, which allows us to select between different audio signals.
 
-The <Clr nodeType="count">Count</Clr> node, which will help us to automatically choose appropriate parameter value on the <Clr nodeType="switch">Switch</Clr> node.
+The <Clr nodeType="count">Count</Clr> node, which will help us to automatically choose the appropriate parameter value for the <Clr nodeType="switch">Switch</Clr> node.
 
 # Step 3
 
@@ -92,7 +92,7 @@ Try changing the channel parameter on the <Clr nodeType="switch">Switch</Clr> no
     import Clr from '../Clr.svelte';
 </script>
 
-Manually changing the <Clr nodeType="switch">Switch</Clr> parameter works or testing purposes, but we want the parametr to change automatically on each note.
+Manually changing the <Clr nodeType="switch">Switch</Clr> parameter works for testing purposes, but we want the parameter to change automatically on each note.
 
 To achieve this, we will use the already mentioned <Clr nodeType="count">Count</Clr> node to cycle through the values of the channel parameter.
 
@@ -104,7 +104,7 @@ Create the <Clr nodeType="count">Count</Clr> node. You will find it in the <Clr 
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="count">Count</Clr> node requires trigger signal as its input, so we will also use the good old <Clr nodeType="clock">Clock</Clr> node.
+The <Clr nodeType="count">Count</Clr> node requires a trigger signal as its input, so we will also use the good old <Clr nodeType="clock">Clock</Clr> node.
 
 Create a <Clr nodeType="clock">Clock</Clr> node and connect its output to the input of the <Clr nodeType="count">Count</Clr> node.
 
@@ -160,7 +160,7 @@ Now the count starts at 0 but ends at 3.
 
 Now direct your attention towards the <Clr nodeType="switch">Switch</Clr> node.
 
-Note that the channel parameter there has values in range from 1 to 4.
+Note that the channel parameter there has values in the range from 1 to 4.
 
 This means, that if we set it to 1 and then connect the output of the <Clr nodeType="count">Count</Clr> node to it (going from 0 to 3), we will cycle through all 4 possible values this parameter has.
 
@@ -186,7 +186,7 @@ Also increase the volume on the <Clr nodeType="destination">Output</Clr> node ag
     import Clr from '../Clr.svelte';
 </script>
 
-You can now hear the tembre coming out of your speakrs change in a rythmic manner.
+You can now hear the timbre coming out of your speakers change in a rhythmic manner.
 
 The tempo of that change is controlled by the <Clr nodeType="clock">Clock</Clr> node. 
 
@@ -238,9 +238,9 @@ Also, in order to avoid hearing characteristic clicks, let's make attack _a bit_
     import Clr from '../Clr.svelte';
 </script>
 
-This sounds better, but is still a bit static. That's because are playing the same note on each trigger from the <Clr nodeType="clock">Clock</Clr> node.
+This sounds better, but is still a bit static. That's because we are playing the same note on each trigger from the <Clr nodeType="clock">Clock</Clr> node.
 
-Let's add a <Clr nodeType="sequencer">Sequencer</Clr> and a <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> node is order to create a melody.
+Let's add a <Clr nodeType="sequencer">Sequencer</Clr> and a <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> node in order to create a melody.
 
 # Step 23
 

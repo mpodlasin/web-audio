@@ -151,12 +151,17 @@
 
 1. **Tutorial 5: Cycling Through Oscillators**
    - ✅ Tutorial steps design (outline completed)
-   - ✅ Tutorial content (completed)
+   - ✅ Tutorial content (completed in `tutorial5copy.md`)
+   - ✅ Alternative version of tutorial content (in `tutorial5copyMyVersion.md`)
+   - ✅ Fixed step numbering in alternative version
+   - ✅ Added missing Clr component imports
+   - ✅ Corrected grammar issues
    - ✅ Initial setup with placeholder validation (export default true)
    - ✅ Integration into learn section with proper routing
    - ✅ Table of contents entry with new title
    - ❌ Actual validation functions
    - ❌ Testing and refinement
+   - ❌ Finalizing tutorial copy
    - No longer blocked: Switch and Count nodes are now implemented
 
 2. **Tutorial 6: Spectrum Analysis**
