@@ -86,7 +86,7 @@ You should hear the sound of the <Clr nodeType="sine-oscillator">Sine</Clr> osci
 
 Try changing the channel parameter on the <Clr nodeType="switch">Switch</Clr> node to 2, 3, and 4 to hear the different oscillator types.
 
-# Step 8
+# Step 9
 
 <script>
     import Clr from '../Clr.svelte';
@@ -98,7 +98,7 @@ To achieve this, we will use the already mentioned <Clr nodeType="count">Count</
 
 Create the <Clr nodeType="count">Count</Clr> node. You will find it in the <Clr nodeType="count">Clock</Clr> section of the node creation menu.
 
-# Step 8
+# Step 10
 
 <script>
     import Clr from '../Clr.svelte';
@@ -108,7 +108,7 @@ The <Clr nodeType="count">Count</Clr> node requires trigger signal as its input,
 
 Create a <Clr nodeType="clock">Clock</Clr> node and connect its output to the input of the <Clr nodeType="count">Count</Clr> node.
 
-# Step 8
+# Step 11
 
 <script>
     import Clr from '../Clr.svelte';
@@ -120,13 +120,21 @@ Create a <Clr nodeType="value">Value</Clr> node and connect the output of the <C
 
 Also feel free to reduce the volume on the <Clr nodeType="destination">Output</Clr> node to 0.
 
-# Step 9
+# Step 12
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
 
 You should be seeing the numbers displayed in the <Clr nodeType="value">Value</Clr> node cycling (assuming your playback is on).
 
 Set the tempo on the <Clr nodeType="clock">Clock</Clr> node to be below `30` BPM in order to better see what is happening.
 
-# Step 9
+# Step 13
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
 
 You probably noticed that when you slowed the tempo down, the numbers displayed in the <Clr nodeType="value">Value</Clr> node also started cycling slower.
 
@@ -136,11 +144,19 @@ The count starts at 0 and ends at 7, because we have set the modulo parameter to
 
 Set the modulo parameter to 4 and see what happens.
 
-# Step 9
+# Step 14
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
 
 Now the count starts at 0 but ends at 3.
 
-# Step 9
+# Step 15
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
 
 Now direct your attention towards the <Clr nodeType="switch">Switch</Clr> node.
 
@@ -150,7 +166,11 @@ This means, that if we set it to 1 and then connect the output of the <Clr nodeT
 
 This way, on each trigger coming from the <Clr nodeType="clock">Clock</Clr> node, we will hear a different oscillator, just as we wanted.
 
-# Step 9
+# Step 16
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
 
 Let's do it then!
 
@@ -160,7 +180,11 @@ Then connect the output of the <Clr nodeType="count">Count</Clr> node to it.
 
 Also increase the volume on the <Clr nodeType="destination">Output</Clr> node again.
 
-# Step 9
+# Step 17
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
 
 You can now hear the tembre coming out of your speakrs change in a rythmic manner.
 
@@ -168,11 +192,15 @@ The tempo of that change is controlled by the <Clr nodeType="clock">Clock</Clr> 
 
 Play around with its tempo parameter to see how it will affect the sound.
 
-# Step 9
+# Step 18
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
 
 Now set the tempo to be somewhere between 30 and 40 BPM.
 
-# Step 15
+# Step 19
 
 <script>
     import Clr from '../Clr.svelte';
@@ -182,7 +210,7 @@ Let's add an <Clr nodeType="ad-envelope">AD Envelope</Clr> to change that consta
 
 Create an <Clr nodeType="ad-envelope">AD Envelope</Clr> node.
 
-# Step 16
+# Step 20
 
 <script>
     import Clr from '../Clr.svelte';
@@ -194,13 +222,17 @@ Then, connect the output of the <Clr nodeType="ad-envelope">AD Envelope</Clr> no
 
 As always, set the gain parameter to 0, as we want the envelope to fully control the amplitude.
 
-# Step 16
+# Step 21
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
 
 Let's make the decay a bit longer - set the decay parameter on the <Clr nodeType="ad-envelope">AD Envelope</Clr> to be above 500 ms.
 
 Also, in order to avoid hearing characteristic clicks, let's make attack _a bit_ longer - somewhere between 5 and 10 ms.
 
-# Step 17
+# Step 22
 
 <script>
     import Clr from '../Clr.svelte';
@@ -210,7 +242,7 @@ This sounds better, but is still a bit static. That's because are playing the sa
 
 Let's add a <Clr nodeType="sequencer">Sequencer</Clr> and a <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> node is order to create a melody.
 
-# Step 18
+# Step 23
 
 <script>
     import Clr from '../Clr.svelte';
@@ -220,7 +252,7 @@ Connect the <Clr nodeType="clock">Clock</Clr> node to the input of the <Clr node
 
 Then connect the output of the <Clr nodeType="sequencer">Sequencer</Clr> node to the input of the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> node.
 
-# Step 20
+# Step 24
 
 <script>
     import Clr from '../Clr.svelte';
@@ -228,7 +260,7 @@ Then connect the output of the <Clr nodeType="sequencer">Sequencer</Clr> node to
 
 Now, connect the output of the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> to the frequency parameter of each oscillator: <Clr nodeType="sine-oscillator">Sine</Clr>, <Clr nodeType="triangle-oscillator">Triangle</Clr>, <Clr nodeType="square-oscillator">Square</Clr>, and <Clr nodeType="saw-oscillator">Saw</Clr>.
 
-# Step 21
+# Step 25
 
 <script>
     import Clr from '../Clr.svelte';
@@ -238,7 +270,7 @@ Set the frequency parameter of each oscillator to 0.
 
 After all, we want the <Clr nodeType="sequencer">Sequencer</Clr> and <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> to fully control the pitches of the oscillators.
 
-# Step 22
+# Step 26
 
 <script>
     import Clr from '../Clr.svelte';
@@ -250,7 +282,7 @@ Also, adjust the frequency knobs on the <Clr nodeType="sequencer">Sequencer</Clr
 
 You should now hear a melody that changes oscillator type with each note!
 
-# Step 23
+# Step 27
 
 <script>
     import Clr from '../Clr.svelte';
@@ -262,7 +294,7 @@ Create a <Clr nodeType="convolution">Convolution</Clr> node.
 
 Insert it between the <Clr nodeType="gain">Gain</Clr> node and the <Clr nodeType="destination">Output</Clr> node.
 
-# Step 24
+# Step 28
 
 <script>
     import Clr from '../Clr.svelte';
@@ -276,7 +308,7 @@ Then try 3, which will cycle through three oscillator types.
 
 Notice how these changes affect the overall character of the melody.
 
-# Step 27
+# Step 29
 
 <script>
     import Clr from '../Clr.svelte';
@@ -288,7 +320,7 @@ Disconnect the oscillators from the <Clr nodeType="switch">Switch</Clr> node and
 
 Listen to how this changes the pattern of timbres in your melody.
 
-# Step 28
+# Step 30
 
 <script>
     import Clr from '../Clr.svelte';
@@ -301,4 +333,3 @@ In this tutorial, we've learned:
 - How to use the <Clr nodeType="count">Count</Clr> node to create cycling patterns
 - How the Count node's values (0-3) map to the Switch node's inputs (1-4)
 - How to combine these techniques with sequencing to create a melody that changes timbre with each note
-
