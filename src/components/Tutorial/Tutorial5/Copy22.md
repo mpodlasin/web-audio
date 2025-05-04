@@ -2,8 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-On the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr>, select a few notes to create a scale. For example, you might choose C, E, G, and A for a C major pentatonic feel.
+This sounds better, but is still a bit static. That's because we are playing the same note on each trigger from the <Clr nodeType="clock">Clock</Clr> node.
 
-Also, adjust the frequency knobs on the <Clr nodeType="sequencer">Sequencer</Clr> to create an interesting melody.
-
-You should now hear a melody that changes oscillator type with each note!
+Let's add a <Clr nodeType="sequencer">Sequencer</Clr> and a <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> node in order to create a melody.

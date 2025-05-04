@@ -2,6 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="count">Count</Clr> node counts incoming triggers and outputs the current count. It has a modulo parameter that determines when the count resets.
+Manually changing the <Clr nodeType="switch">Switch</Clr> parameter works for testing purposes, but we want the parameter to change automatically on each note.
 
-For example, if the modulo is set to 4, the <Clr nodeType="count">Count</Clr> node will output values 0, 1, 2, 3 in sequence, then start over. These values can be used to select different inputs on the Switch node.
+To achieve this, we will use the already mentioned <Clr nodeType="count">Count</Clr> node to cycle through the values of the channel parameter.
+
+Create the <Clr nodeType="count">Count</Clr> node. You will find it in the <Clr nodeType="count">Clock</Clr> section of the node creation menu.

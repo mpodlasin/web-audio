@@ -2,10 +2,10 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Connect the <Clr nodeType="clock">Clock</Clr> node to the trigger input of the <Clr nodeType="ad-envelope">AD Envelope</Clr> node.
+Let's do it then!
 
-Then, connect the output of the <Clr nodeType="ad-envelope">AD Envelope</Clr> node to the gain parameter of the <Clr nodeType="gain">Gain</Clr> node.
+Set the channel parameter on the <Clr nodeType="switch">Switch</Clr> node to 1.
 
-Set the gain parameter itself to 0, as we want the envelope to fully control the amplitude.
+Then connect the output of the <Clr nodeType="count">Count</Clr> node to it.
 
-Adjust the tempo parameter on the <Clr nodeType="clock">Clock</Clr> node to a setting you like. A tempo of around 50 BPM works well for this patch, but feel free to experiment with different values.
+Also increase the volume on the <Clr nodeType="destination">Output</Clr> node again.

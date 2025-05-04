@@ -2,6 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Connect the <Clr nodeType="clock">Clock</Clr> node to the input of the <Clr nodeType="count">Count</Clr> node.
+The <Clr nodeType="count">Count</Clr> node requires a trigger signal as its input, so we will also use the good old <Clr nodeType="clock">Clock</Clr> node.
 
-Set the modulo parameter of the <Clr nodeType="count">Count</Clr> node to 4, since we have four oscillator types.
+Create a <Clr nodeType="clock">Clock</Clr> node and connect its output to the input of the <Clr nodeType="count">Count</Clr> node.

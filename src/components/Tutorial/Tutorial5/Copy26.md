@@ -2,11 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="ad-envelope">AD Envelope</Clr> parameters can dramatically change the character of each note.
+On the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr>, select a few notes to create a scale. For example, you might choose C, E, G, and A for a C major pentatonic feel.
 
-Try different attack and decay settings:
-- Short attack and decay for a plucky, percussive sound
-- Longer attack for a softer, pad-like sound
-- Longer decay to let notes overlap more
+Also, adjust the frequency knobs on the <Clr nodeType="sequencer">Sequencer</Clr> to create an interesting melody.
 
-Find settings that complement your melody and oscillator sequence.
+You should now hear a melody that changes oscillator type with each note!

@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Now we have a patch that cycles through different oscillator types with each note, but all the notes have the same pitch.
+You can now hear the timbre coming out of your speakers change in a rhythmic manner.
 
-Let's add a <Clr nodeType="sequencer">Sequencer</Clr> node to create a melody. You can find it in the <Clr nodeType="sequencer">Pitch</Clr> section.
+The tempo of that change is controlled by the <Clr nodeType="clock">Clock</Clr> node. 
 
-Create a <Clr nodeType="sequencer">Sequencer</Clr> node.
+Play around with its tempo parameter to see how it will affect the sound.

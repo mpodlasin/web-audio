@@ -2,6 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Let's start by creating our four oscillators.
+To achieve that, we'll use two new nodes: 
 
-Create a <Clr nodeType="sine-oscillator">Sine</Clr> oscillator, a <Clr nodeType="triangle-oscillator">Triangle</Clr> oscillator, a <Clr nodeType="square-oscillator">Square</Clr> oscillator, and a <Clr nodeType="saw-oscillator">Saw</Clr> oscillator.
+The <Clr nodeType="switch">Switch</Clr> node, which allows us to select between different audio signals.
+
+The <Clr nodeType="count">Count</Clr> node, which will help us to automatically choose the appropriate parameter value for the <Clr nodeType="switch">Switch</Clr> node.

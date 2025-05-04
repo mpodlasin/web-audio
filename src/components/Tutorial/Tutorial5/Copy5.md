@@ -2,6 +2,10 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Let's connect our oscillators to the <Clr nodeType="switch">Switch</Clr> node. 
+The <Clr nodeType="switch">Switch</Clr> node has four inputs and one output.
 
-Connect each of the oscillators to a separate input of the <Clr nodeType="switch">Switch</Clr> node.
+It works like a selector: based on the value of its channel parameter, it chooses which of its inputs to route to the output.
+
+For example, if the channel parameter is set to 1, the signal from the first input will be sent to the output. 
+
+If it's set to 2, the signal from the second input will be sent, and so on.

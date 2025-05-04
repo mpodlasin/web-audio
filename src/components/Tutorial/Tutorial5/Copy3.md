@@ -2,8 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Now we need a way to select between these four oscillators.
+Let's start by creating our four oscillators.
 
-This is where the <Clr nodeType="switch">Switch</Clr> node comes in. You can find it in the <Clr nodeType="switch">Effect</Clr> section of the node creation menu.
-
-Create a <Clr nodeType="switch">Switch</Clr> node.
+Create a <Clr nodeType="sine-oscillator">Sine</Clr> oscillator, a <Clr nodeType="saw-oscillator">Saw</Clr> oscillator, a <Clr nodeType="square-oscillator">Square</Clr> oscillator, and a <Clr nodeType="triangle-oscillator">Triangle</Clr> oscillator.

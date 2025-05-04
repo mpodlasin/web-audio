@@ -2,8 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Let's also experiment with different tempo settings.
+Set the frequency parameter of each oscillator to 0.
 
-Adjust the tempo parameter on the <Clr nodeType="clock">Clock</Clr> node to find a setting that works well with your melody.
-
-A slower tempo will give each note more time to be heard, while a faster tempo will create a more rapid, arpeggio-like effect.
+After all, we want the <Clr nodeType="sequencer">Sequencer</Clr> and <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> to fully control the pitches of the oscillators.

@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Manually changing the <Clr nodeType="switch">Switch</Clr> parameter works, but it would be more interesting if the oscillator type changed automatically with each note.
+Press the play button and slowly increase the volume on the <Clr nodeType="destination">Output</Clr> node.
 
-To achieve this, we'll use a <Clr nodeType="clock">Clock</Clr> node to generate regular triggers and a <Clr nodeType="count">Count</Clr> node to cycle through our oscillator options.
+You should hear the sound of the <Clr nodeType="sine-oscillator">Sine</Clr> oscillator, since the channel parameter of the <Clr nodeType="switch">Switch</Clr> node is set to 1 by default.
 
-Create a <Clr nodeType="clock">Clock</Clr> node and a <Clr nodeType="count">Count</Clr> node. You can find the Count node in the <Clr nodeType="count">Clock</Clr> section.
+Try changing the channel parameter on the <Clr nodeType="switch">Switch</Clr> node to 2, 3, and 4 to hear the different oscillator types.

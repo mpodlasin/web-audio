@@ -2,8 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Let's add some reverb to make our sound more polished.
+Connect the <Clr nodeType="clock">Clock</Clr> node to the input of the <Clr nodeType="sequencer">Sequencer</Clr> node.
 
-Create a <Clr nodeType="convolution">Convolution</Clr> node from the <Clr nodeType="convolution">Effect</Clr> section.
-
-Insert it between the <Clr nodeType="gain">Gain</Clr> node and the <Clr nodeType="destination">Output</Clr> node.
+Then connect the output of the <Clr nodeType="sequencer">Sequencer</Clr> node to the input of the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> node.

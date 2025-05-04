@@ -2,6 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Let's add a <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> to ensure our melody uses musical notes. You can find it in the <Clr nodeType="pitch-quantizer">Pitch</Clr> section.
+Let's add an <Clr nodeType="ad-envelope">AD Envelope</Clr> to change that constant sound of oscillators into something more musical.
 
-Create a <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> node.
+Create an <Clr nodeType="ad-envelope">AD Envelope</Clr> node.

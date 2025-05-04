@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="switch">Switch</Clr> node has four inputs and one output.
+Now we need a way to select between these four oscillators.
 
-It works like a selector: based on the value of its channel parameter, it chooses which of its inputs to route to its output.
+This is where the <Clr nodeType="switch">Switch</Clr> node comes in. You can find it in the <Clr nodeType="switch">Effect</Clr> section of the node creation menu.
 
-For example, if the channel parameter is set to 1, the signal from the first input will be sent to the output. If it's set to 2, the signal from the second input will be sent, and so on.
+Create a <Clr nodeType="switch">Switch</Clr> node.
