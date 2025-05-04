@@ -8,7 +8,7 @@ Welcome to the fifth chapter of the `AudioCanvas` tutorial!
 
 In Tutorial 4, we explored the four standard oscillator types: <Clr nodeType="sine-oscillator">Sine</Clr>, <Clr nodeType="triangle-oscillator">Triangle</Clr>, <Clr nodeType="square-oscillator">Square</Clr>, and <Clr nodeType="saw-oscillator">Saw</Clr>, each with its own distinct sound character.
 
-In the future you should be able to distinguish between them easily, so in this tutorial we will build a voice that will change the oscillator type on each note, allowing you to more easily compare their tones.
+You should be able to distinguish between them easily, so in this tutorial we will build a voice that will change the oscillator type on each note, allowing you to more easily compare their tones.
 
 # Step 2
 
@@ -48,9 +48,11 @@ Create a <Clr nodeType="switch">Switch</Clr> node.
 
 The <Clr nodeType="switch">Switch</Clr> node has four inputs and one output.
 
-It works like a selector: based on the value of its channel parameter, it chooses which of its inputs to route to its output.
+It works like a selector: based on the value of its channel parameter, it chooses which of its inputs to route to the output.
 
-For example, if the channel parameter is set to 1, the signal from the first input will be sent to the output. If it's set to 2, the signal from the second input will be sent, and so on.
+For example, if the channel parameter is set to 1, the signal from the first input will be sent to the output. 
+
+If it's set to 2, the signal from the second input will be sent, and so on.
 
 # Step 6
 
@@ -90,13 +92,21 @@ Try changing the channel parameter on the <Clr nodeType="switch">Switch</Clr> no
     import Clr from '../Clr.svelte';
 </script>
 
-Manually changing the <Clr nodeType="switch">Switch</Clr> parameter works, but it would be more interesting if the oscillator type changed automatically with each note.
+Manually changing the <Clr nodeType="switch">Switch</Clr> parameter works or testing purposes, but we want the parametr to change automatically on each note.
 
-To achieve, this we will use the aforementioned <Clr nodeType="count">Count</Clr> node to cycle through the values of the channel parameter automatically.
+To achieve this, we will use the already mentioned <Clr nodeType="count">Count</Clr> node to cycle through the values of the channel parameter.
+
+Create the <Clr nodeType="count">Count</Clr> node. You will find it in the <Clr nodeType="count">Clock</Clr> section of the node creation menu.
+
+# Step 8
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
 
 The <Clr nodeType="count">Count</Clr> node requires trigger signal as its input, so we will also use the good old <Clr nodeType="clock">Clock</Clr> node.
 
-Create a <Clr nodeType="clock">Clock</Clr> node and a <Clr nodeType="count">Count</Clr> node. You will find both of them in the <Clr nodeType="count">Clock</Clr> section.
+Create a <Clr nodeType="clock">Clock</Clr> node and connect its output to the input of the <Clr nodeType="count">Count</Clr> node.
 
 # Step 8
 
@@ -106,19 +116,21 @@ Create a <Clr nodeType="clock">Clock</Clr> node and a <Clr nodeType="count">Coun
 
 Before we connect the <Clr nodeType="count">Count</Clr> node to the <Clr nodeType="switch">Switch</Clr> node, let's first investigate how it works on its own.
 
-Connect the <Clr nodeType="clock">Clock</Clr> node to the <Clr nodeType="count">Count</Clr> node.
+Create a <Clr nodeType="value">Value</Clr> node and connect the output of the <Clr nodeType="count">Count</Clr> node to it.
 
-Then, create a <Clr nodeType="value">Value</Clr> node and connect the <Clr nodeType="count">Count</Clr> node to it.
+Also feel free to reduce the volume on the <Clr nodeType="destination">Output</Clr> node to 0.
 
 # Step 9
 
-You can see the numbers displayed by the <Clr nodeType="value">Value</Clr> node cycling.
+You should be seeing the numbers displayed in the <Clr nodeType="value">Value</Clr> node cycling (assuming your playback is on).
 
 Set the tempo on the <Clr nodeType="clock">Clock</Clr> node to be below `30` BPM in order to better see what is happening.
 
 # Step 9
 
-Now you can clearly see that when the <Clr nodeType="count">Count</Clr> node receives a trigger via its input, it increases emitted number by one.
+You probably noticed that when you slowed the tempo down, the numbers displayed in the <Clr nodeType="value">Value</Clr> node also started cycling slower.
+
+When the <Clr nodeType="count">Count</Clr> node receives a trigger via its input, it increases a number emitted on its output by one.
 
 The count starts at 0 and ends at 7, because we have set the modulo parameter to 8.
 
@@ -126,14 +138,17 @@ Set the modulo parameter to 4 and see what happens.
 
 # Step 9
 
-Now the count starts at 0 but ends at 3. 
+Now the count starts at 0 but ends at 3.
 
-Note that the channel parameter on the <Clr nodeType="switch">Switch</Clr> node has a range from 1 to 4. 
+# Step 9
 
-This means, that if we set it to 1 and then connect the output of the <Clr nodeType="count">Count</Clr> node to it (going from 0 to 3), we will cycle through all 4 possible options.
+Now direct your attention towards the <Clr nodeType="switch">Switch</Clr> node.
 
-This way, on each trigger coming from the <Clr nodeType="clock">Clock</Clr> node, we will hear a different oscillator and each of them will be heard at some point.
+Note that the channel parameter there has values in range from 1 to 4.
 
+This means, that if we set it to 1 and then connect the output of the <Clr nodeType="count">Count</Clr> node to it (going from 0 to 3), we will cycle through all 4 possible values this parameter has.
+
+This way, on each trigger coming from the <Clr nodeType="clock">Clock</Clr> node, we will hear a different oscillator, just as we wanted.
 
 # Step 9
 
@@ -143,7 +158,15 @@ Set the channel parameter on the <Clr nodeType="switch">Switch</Clr> node to 1.
 
 Then connect the output of the <Clr nodeType="count">Count</Clr> node to it.
 
-You should hear the tembre coming out of your speakrs change in a rythmic manner.
+Also increase the volume on the <Clr nodeType="destination">Output</Clr> node again.
+
+# Step 9
+
+You can now hear the tembre coming out of your speakrs change in a rythmic manner.
+
+The tempo of that change is controlled by the <Clr nodeType="clock">Clock</Clr> node. 
+
+Play around with its tempo parameter to see how it will affect the sound.
 
 # Step 15
 
