@@ -35,8 +35,6 @@ Completed tasks:
 - ✅ Set up the tutorial structure in index.ts
 - ✅ Integrate the tutorial into the learn section with proper routing
 - ✅ Update the table of contents with the new title "Cycling Through Oscillators"
-- ✅ Created an alternative version of the tutorial content (`tutorial5copyMyVersion.md`)
-- ✅ Fixed step numbering in the alternative version to ensure logical progression
 - ✅ Added missing Clr component imports to ensure proper node highlighting
 - ✅ Corrected grammar issues in the alternative version
 
@@ -140,7 +138,7 @@ We've created a Node.js script to streamline the tutorial development workflow:
    - ✅ Made the modulo parameter linear for better user control
 
 3. **Begin Tutorial 5 Content**
-   - ✅ Outline the tutorial steps (stored in `tutorial5outline.md`)
+   - ✅ Outline the tutorial steps (stored in `tutorial5outline.md`, which refers to the original AI-generated version, not the current main tutorial)
    - ✅ Write the tutorial copy (stored in `tutorial5copy.md`)
    - Create validation functions for each step
    - Test the tutorial flow

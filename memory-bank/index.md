@@ -33,8 +33,7 @@ These files form the foundation of project knowledge and should be read in the f
 
 ### Tutorial Planning
 
-- [tutorial5outline.md](./tutorial5outline.md) - Outline for Tutorial 5 structure and content
-- [tutorial5copyMyVersion.md](./tutorial5copyMyVersion.md) - Alternative version of Tutorial 5 content
+- [tutorial5outline.md](./tutorial5outline.md) - Outline for Tutorial 5 structure and content (refers to the original AI-generated version, not the current main tutorial)
 
 ## Memory Bank Usage
 

@@ -280,3 +280,19 @@ The application is usable for learning and experimentation, but some advanced fe
 3. **No Export Options**
    - Cannot export projects to files or share them
    - Need export/import functionality
+
+---
+
+## Tutorial 5 Versioning and File History
+
+- **File Renaming:**  
+  The AI-generated version of Tutorial 5 has been renamed from `tutorial5copy.md` to `tutorial5copyOldVersion.md`.  
+  The user-edited version is now the main `tutorial5copy.md` and should be considered the authoritative version for all future development and reference.
+
+- **Outline Reference:**  
+  The file `tutorial5outline.md` was created based on the old (AI-generated) version of the tutorial. It does **not** reflect the current main version (`tutorial5copy.md`).  
+  If using the outline for future edits or expansions, verify against the current main tutorial file to ensure consistency.
+
+- **Historical Context:**  
+  This change was made to preserve the original AI-generated content for reference and comparison, while promoting the user-edited version as the canonical tutorial.  
+  All documentation, validation, and future tutorial steps should reference `tutorial5copy.md` as the source of truth.
