@@ -168,13 +168,17 @@ The tempo of that change is controlled by the <Clr nodeType="clock">Clock</Clr> 
 
 Play around with its tempo parameter to see how it will affect the sound.
 
+# Step 9
+
+Now set the tempo to be somewhere between 30 and 40 BPM.
+
 # Step 15
 
 <script>
     import Clr from '../Clr.svelte';
 </script>
 
-Now, let's add an <Clr nodeType="ad-envelope">AD Envelope</Clr> to change the constant sound into something more musical.
+Let's add an <Clr nodeType="ad-envelope">AD Envelope</Clr> to change that constant sound of oscillators into something more musical.
 
 Create an <Clr nodeType="ad-envelope">AD Envelope</Clr> node.
 
@@ -202,7 +206,7 @@ Also, in order to avoid hearing characteristic clicks, let's make attack _a bit_
     import Clr from '../Clr.svelte';
 </script>
 
-This sounds better, but is still a bit static. That's because we are even though we are switching oscillators, we are hitting the same note on each trigger from the <Clr nodeType="clock">Clock</Clr> node.
+This sounds better, but is still a bit static. That's because are playing the same note on each trigger from the <Clr nodeType="clock">Clock</Clr> node.
 
 Let's add a <Clr nodeType="sequencer">Sequencer</Clr> and a <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> node is order to create a melody.
 
@@ -222,9 +226,7 @@ Then connect the output of the <Clr nodeType="sequencer">Sequencer</Clr> node to
     import Clr from '../Clr.svelte';
 </script>
 
-Connect the output of the <Clr nodeType="sequencer">Sequencer</Clr> to the input of the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr>.
-
-Then, connect the output of the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> to the frequency parameter of each oscillator: <Clr nodeType="sine-oscillator">Sine</Clr>, <Clr nodeType="triangle-oscillator">Triangle</Clr>, <Clr nodeType="square-oscillator">Square</Clr>, and <Clr nodeType="saw-oscillator">Saw</Clr>.
+Now, connect the output of the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> to the frequency parameter of each oscillator: <Clr nodeType="sine-oscillator">Sine</Clr>, <Clr nodeType="triangle-oscillator">Triangle</Clr>, <Clr nodeType="square-oscillator">Square</Clr>, and <Clr nodeType="saw-oscillator">Saw</Clr>.
 
 # Step 21
 
@@ -232,7 +234,9 @@ Then, connect the output of the <Clr nodeType="pitch-quantizer">Pitch Quantizer<
     import Clr from '../Clr.svelte';
 </script>
 
-Set the frequency parameter of each oscillator to 0, since we want the <Clr nodeType="sequencer">Sequencer</Clr> to fully control the pitch through the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr>.
+Set the frequency parameter of each oscillator to 0.
+
+After all, we want the <Clr nodeType="sequencer">Sequencer</Clr> and <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr> to fully control the pitches of the oscillators.
 
 # Step 22
 
@@ -252,9 +256,9 @@ You should now hear a melody that changes oscillator type with each note!
     import Clr from '../Clr.svelte';
 </script>
 
-Let's add some reverb to make our sound more polished.
+Let's add some reverb to make the sound even more appealing.
 
-Create a <Clr nodeType="convolution">Convolution</Clr> node from the <Clr nodeType="convolution">Effect</Clr> section.
+Create a <Clr nodeType="convolution">Convolution</Clr> node.
 
 Insert it between the <Clr nodeType="gain">Gain</Clr> node and the <Clr nodeType="destination">Output</Clr> node.
 
@@ -272,33 +276,6 @@ Then try 3, which will cycle through three oscillator types.
 
 Notice how these changes affect the overall character of the melody.
 
-# Step 25
-
-<script>
-    import Clr from '../Clr.svelte';
-</script>
-
-Let's also experiment with different tempo settings.
-
-Adjust the tempo parameter on the <Clr nodeType="clock">Clock</Clr> node to find a setting that works well with your melody.
-
-A slower tempo will give each note more time to be heard, while a faster tempo will create a more rapid, arpeggio-like effect.
-
-# Step 26
-
-<script>
-    import Clr from '../Clr.svelte';
-</script>
-
-The <Clr nodeType="ad-envelope">AD Envelope</Clr> parameters can dramatically change the character of each note.
-
-Try different attack and decay settings:
-- Short attack and decay for a plucky, percussive sound
-- Longer attack for a softer, pad-like sound
-- Longer decay to let notes overlap more
-
-Find settings that complement your melody and oscillator sequence.
-
 # Step 27
 
 <script>
@@ -307,11 +284,7 @@ Find settings that complement your melody and oscillator sequence.
 
 One more creative variation we can try is to change the order of the oscillators.
 
-Disconnect the oscillators from the <Clr nodeType="switch">Switch</Clr> node and reconnect them in a different order. For example:
-1. <Clr nodeType="saw-oscillator">Saw</Clr> to the first input
-2. <Clr nodeType="sine-oscillator">Sine</Clr> to the second input
-3. <Clr nodeType="triangle-oscillator">Triangle</Clr> to the third input
-4. <Clr nodeType="square-oscillator">Square</Clr> to the fourth input
+Disconnect the oscillators from the <Clr nodeType="switch">Switch</Clr> node and reconnect them in a different order.
 
 Listen to how this changes the pattern of timbres in your melody.
 
@@ -323,22 +296,9 @@ Listen to how this changes the pattern of timbres in your melody.
 
 Congratulations! You've created a dynamic patch that cycles through different oscillator types with each note.
 
-This technique of using a <Clr nodeType="count">Count</Clr> node to control a <Clr nodeType="switch">Switch</Clr> node can be applied to many other aspects of sound design, not just oscillator selection.
-
-For example, you could use it to cycle through different filter types, envelope shapes, or effect settings.
-
-# Step 29
-
-<script>
-    import Clr from '../Clr.svelte';
-</script>
-
 In this tutorial, we've learned:
 - How to use the <Clr nodeType="switch">Switch</Clr> node to select between different audio sources
 - How to use the <Clr nodeType="count">Count</Clr> node to create cycling patterns
 - How the Count node's values (0-3) map to the Switch node's inputs (1-4)
 - How to combine these techniques with sequencing to create a melody that changes timbre with each note
 
-Feel free to continue experimenting with this patch. Try adding more oscillators, using different scales in the <Clr nodeType="pitch-quantizer">Pitch Quantizer</Clr>, or creating more complex melodies with the <Clr nodeType="sequencer">Sequencer</Clr>.
-
-T
