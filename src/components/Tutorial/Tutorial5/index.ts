@@ -28,6 +28,8 @@ import Copy25 from './Copy25.md';
 import Copy26 from './Copy26.md';
 import Copy27 from './Copy27.md';
 import Copy28 from './Copy28.md';
+import Copy29 from './Copy29.md';
+import Copy30 from './Copy30.md';
 
 // Import check functions
 import Check1 from './Check1';
@@ -58,6 +60,8 @@ import Check25 from './Check25';
 import Check26 from './Check26';
 import Check27 from './Check27';
 import Check28 from './Check28';
+import Check29 from './Check29';
+import Check30 from './Check30';
 
 export const tutorial5: Tutorial = {
     steps: [
@@ -172,6 +176,14 @@ export const tutorial5: Tutorial = {
         {
             copy: Copy28,
             check: Check28
+        },
+        {
+            copy: Copy29,
+            check: Check29
+        },
+        {
+            copy: Copy30,
+            check: Check30
         }
     ]
 };
