@@ -13,6 +13,7 @@ These files form the foundation of project knowledge and should be read in the f
 5. [systemPatterns.md](./systemPatterns.md) - System architecture and key technical decisions
 6. [techContext.md](./techContext.md) - Technologies used and development setup
 7. [progress.md](./progress.md) - Current status, what works, and what's left to build
+8. [project-directory.md](./project-directory.md) - Comprehensive list of project structure and key dependencies
 
 ## Tutorial Content
 
