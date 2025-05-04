@@ -22,6 +22,7 @@ These files form the foundation of project knowledge and should be read in the f
 - [tutorialStyleGuide.md](./tutorialStyleGuide.md) - Writing style, structural patterns, and established conventions
 - [tutorialWorkflow.md](./tutorialWorkflow.md) - Standard process and checklist for creating new tutorials
 - [tutorialSummary.md](./tutorialSummary.md) - Comprehensive summary of all tutorial content
+- [checkStyleGuide.md](./checkStyleGuide.md) - Comprehensive guide for creating validation functions for tutorial steps
 
 ### Complete Tutorial Content
 
