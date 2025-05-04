@@ -267,3 +267,178 @@ This document outlines the writing style, structural patterns, and established c
 ### Examples:
 - "It turns out that these two concepts are equivalent—shortening the waveform of an oscillator makes us perceive its pitch to be higher."
 - "To stay with our guitar analogy, <Clr nodeType="ad-envelope">AD Envelope</Clr> needs to know when to pluck the string of a guitar."
+
+---
+
+# Case Study: Human vs. AI Authorship in Tutorial 5 – A Detailed Comparison
+
+This section provides a comprehensive, example-rich analysis of the differences between the AI-generated and user-edited versions of Tutorial 5 ("Cycling Through Oscillators"). It demonstrates how the application of the style guide’s principles leads to a more effective, engaging, and pedagogically sound tutorial.
+
+## 1. Introduction and Motivation
+
+**AI Version Example:**
+> "Today, we'll build on that knowledge to create something more dynamic: a voice that changes its oscillator type with each note, automatically cycling through the different timbres."
+
+**User Version Example:**
+> "You should be able to distinguish between them easily, so in this tutorial we will build a voice that will change the oscillator type on each note, allowing you to more easily compare their tones."
+
+**Analysis:**  
+The user version directly references the learner’s prior experience and frames the tutorial as a tool for deeper understanding. This approach is more motivating and connects new material to what the user has already learned, as recommended in the style guide.
+
+---
+
+## 2. Step Structure and Pacing
+
+**AI Version Example:**  
+Some steps combine multiple actions and explanations:
+> "Now we need a way to select between these four oscillators. This is where the Switch node comes in. You can find it in the Effect section of the node creation menu. Create a Switch node."
+
+**User Version Example:**  
+Steps are more granular and focused:
+> "Now we need a way to select between these four oscillators.  
+This is where the Switch node comes in. You can find it in the Effect section of the node creation menu.  
+Create a Switch node."
+
+**Analysis:**  
+The user version breaks down instructions into smaller, digestible steps, making it easier for users to follow along and reducing cognitive load. This aligns with the style guide’s “step-by-step progression” and “consistent step structure.”
+
+---
+
+## 3. Guided Discovery and Experimentation
+
+**AI Version Example:**  
+> "Let's first visualize what the Count node is outputting. Create a Value node and connect the output of the Count node to it. Press the play button if it's not already on. You should see the Value node displaying numbers changing from 0 to 3 as the Clock sends triggers to the Count node."
+
+**User Version Example:**  
+> "Before we connect the Count node to the Switch node, let's first investigate how it works on its own.  
+Create a Value node and connect the output of the Count node to it.  
+Also feel free to reduce the volume on the Output node to 0."
+
+**Analysis:**  
+The user version encourages the learner to experiment and observe before proceeding, fostering a sense of discovery. It also adds practical advice (e.g., reducing volume), which supports a more user-friendly experience.
+
+---
+
+## 4. Technical Accuracy and Clarity
+
+**AI Version Example:**  
+> "The Count node counts incoming triggers and outputs the current count. It has a modulo parameter that determines when the count resets. For example, if the modulo is set to 4, the Count node will output values 0, 1, 2, 3 in sequence, then start over."
+
+**User Version Example:**  
+> "When the Count node receives a trigger via its input, it increases a number emitted on its output by one.  
+The count starts at 0 and ends at 7, because we have set the modulo parameter to 8.  
+Set the modulo parameter to 4 and see what happens."
+
+**Analysis:**  
+The user version is more explicit about parameter values and their effects, and it prompts the user to observe the result of changing parameters. This reinforces the importance of technical accuracy and hands-on learning.
+
+---
+
+## 5. Encouragement and Support
+
+**AI Version Example:**  
+> "Try changing the channel parameter on the Switch node to 2, 3, and 4 to hear the different oscillator types."
+
+**User Version Example:**  
+> "Play around with its tempo parameter to see how it will affect the sound."
+
+**Analysis:**  
+The user version more frequently encourages experimentation and reassures the learner, which is in line with the style guide’s emphasis on an encouraging and supportive tone.
+
+---
+
+## 6. Concrete Before Abstract
+
+**AI Version Example:**  
+> "The Count node outputs values 0-3, but we need values 1-4 to select our oscillator inputs. With this setup, each time the Clock node sends a trigger, the Count node will increment its count and output the new value. The Switch node will use this value (plus the input parameter value of 1) to select a different oscillator..."
+
+**User Version Example:**  
+> "Note that the channel parameter there has values in the range from 1 to 4.  
+This means, that if we set it to 1 and then connect the output of the Count node to it (going from 0 to 3), we will cycle through all 4 possible values this parameter has.  
+This way, on each trigger coming from the Clock node, we will hear a different oscillator, just as we wanted."
+
+**Analysis:**  
+The user version has the learner perform the action and observe the result before explaining the underlying theory, which is more effective for learning.
+
+---
+
+## 7. Conciseness and Focus
+
+**AI Version Example:**  
+Some steps are verbose or combine multiple ideas.
+
+**User Version Example:**  
+Steps are concise, focused, and avoid unnecessary detail. For example, the user version omits redundant explanations and gets to the hands-on steps more quickly.
+
+**Analysis:**  
+This reflects the style guide’s advice to keep steps focused and introductions concise.
+
+---
+
+## 8. Parameter and Node Naming Consistency
+
+**AI Version Example:**  
+Generally consistent, but sometimes less explicit about parameter names and ranges.
+
+**User Version Example:**  
+Always uses the Clr component for node names, refers to parameters by their exact names, and is explicit about value ranges and their significance.
+
+**Analysis:**  
+This is in line with the style guide’s “terminology conventions” and “consistent parameter terminology.”
+
+---
+
+## 9. User Experience and Troubleshooting
+
+**AI Version Example:**  
+Minimal troubleshooting advice.
+
+**User Version Example:**  
+Offers suggestions like reducing the output volume when experimenting, and encourages users to observe and adjust as needed.
+
+**Analysis:**  
+This supports the style guide’s recommendations for validation, feedback, and inclusive language.
+
+---
+
+## 10. Summary Table: Key Differences
+
+| Aspect                | AI Version                         | User Version (Preferred)                |
+|-----------------------|------------------------------------|-----------------------------------------|
+| Introduction          | Informative, generic               | Learner-focused, connects to prior      |
+| Step Structure        | Sometimes dense, multi-action      | Granular, single-action, clear pacing   |
+| Guided Discovery      | Less frequent                      | Frequent, encourages experimentation    |
+| Technical Accuracy    | Good, sometimes glossed over       | Explicit, careful, parameter-focused    |
+| Encouragement         | Some, procedural                   | Frequent, supportive, motivating        |
+| Concrete/Abstract     | Theory before action               | Action before theory                    |
+| Conciseness           | Sometimes verbose                  | Concise, focused, streamlined           |
+| Naming Consistency    | Good, sometimes less explicit      | Always explicit, Clr component used     |
+| Troubleshooting       | Minimal                            | Present, user-focused                   |
+
+---
+
+## Why the User’s Version is Preferred
+
+- **Better aligns with the AudioCanvas tutorial style guide**
+- More effective at building understanding through hands-on discovery
+- Provides a more supportive and engaging learning experience
+- Ensures technical accuracy and clarity
+- Encourages experimentation and observation
+- Maintains consistent terminology and formatting
+
+---
+
+## Best Practices Illustrated
+
+- **Connect new material to prior knowledge**: Reference previous tutorials and explain why the new concept matters.
+- **Break down instructions**: Use granular steps, each with a single focus.
+- **Encourage observation and experimentation**: Prompt users to try things and observe results before explaining theory.
+- **Be explicit about parameters and values**: Always state parameter ranges, defaults, and effects.
+- **Support and reassure**: Use language that encourages and motivates.
+- **Maintain consistency**: Use the Clr component and exact parameter names throughout.
+- **Provide troubleshooting tips**: Anticipate where users might get stuck and offer solutions.
+
+---
+
+**Conclusion:**  
+This case study demonstrates how careful editing and adherence to the style guide transform a technically correct but generic tutorial into a highly effective, learner-centered experience. Future tutorial authors should use this comparison as a model for best practices in AudioCanvas tutorial writing.
