@@ -3,6 +3,7 @@ import type { SerializedAudioElements } from '../../../audio/serialized';
 // Checks that:
 // 1. A Convolution node exists
 // 2. It is connected between the Gain node and the Output node
+// 3. The direct connection between Gain and Output has been removed
 export default function (audioGraph: SerializedAudioElements) {
     const nodes = Object.values(audioGraph);
     const entries = Object.entries(audioGraph);
@@ -25,5 +26,8 @@ export default function (audioGraph: SerializedAudioElements) {
     const gainConnectedToConvolution = convolutionNode.inputs.some(input => input.id === gainId);
     const convolutionConnectedToOutput = outputNode.inputs.some(input => input.id === convolutionId);
     
-    return gainConnectedToConvolution && convolutionConnectedToOutput;
+    // Check that there is no direct connection from Gain to Output
+    const gainDirectlyConnectedToOutput = outputNode.inputs.some(input => input.id === gainId);
+    
+    return gainConnectedToConvolution && convolutionConnectedToOutput && !gainDirectlyConnectedToOutput;
 }

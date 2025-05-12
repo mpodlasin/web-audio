@@ -1,6 +1,6 @@
 import type { SerializedAudioElements } from '../../../audio/serialized';
 
-// Checks that all four oscillators are connected to the Switch node
+// Checks that all four oscillators are connected to the Switch node and to different inputs
 export default function (audioGraph: SerializedAudioElements) {
     const nodes = Object.values(audioGraph);
     const entries = Object.entries(audioGraph);
@@ -29,6 +29,16 @@ export default function (audioGraph: SerializedAudioElements) {
     const squareConnected = switchNode.inputs.some(input => input.id === squareId);
     const triangleConnected = switchNode.inputs.some(input => input.id === triangleId);
     
-    // All oscillators must be connected to the Switch node
-    return sineConnected && sawConnected && squareConnected && triangleConnected;
+    // Check if all oscillators are connected to different inputs
+    const oscillatorIds = [sineId, sawId, squareId, triangleId];
+    const uniqueInputsUsed = new Set();
+    
+    switchNode.inputs.forEach(input => {
+        if (oscillatorIds.includes(input.id)) {
+            uniqueInputsUsed.add(input.input); // Add the input name to the set
+        }
+    });
+    
+    // All oscillators must be connected to the Switch node AND to different inputs
+    return sineConnected && sawConnected && squareConnected && triangleConnected && uniqueInputsUsed.size === 4;
 }
