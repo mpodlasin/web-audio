@@ -110,6 +110,19 @@
    - Using the Oscilloscope for visualization
    - All steps implemented and validated
 
+5. ✅ **Tutorial 5: Cycling Through Oscillators**
+   - Creating a voice that changes oscillator types with each note
+   - Using the Switch node to select between different oscillators
+   - Using the Count node to cycle through options automatically
+   - All steps implemented with validation
+
+6. ✅ **Tutorial 6: Spectrum and Harmonics**
+   - Introducing the Spectrum node as a visualization tool
+   - Explaining the concept of harmonics in complex waveforms
+   - Analyzing the harmonic content of different oscillator types
+   - Connecting harmonic content to timbral "richness"
+   - Basic implementation with placeholder validation
+
 ## What's Left to Build
 
 ### Recently Completed Nodes
@@ -165,12 +178,16 @@
    - ❌ Finalizing tutorial copy
    - No longer blocked: Switch and Count nodes are now implemented
 
-2. **Tutorial 6: Spectrum Analysis**
-   - ❌ Tutorial steps design
-   - ❌ Validation functions
-   - ❌ Tutorial content
+2. **Tutorial 6: Spectrum and Harmonics**
+   - ✅ Tutorial steps design (outline completed in `tutorial6outline.md`)
+   - ✅ Tutorial content (completed in `tutorial6copy.md`)
+   - ✅ Initial setup with placeholder validation (export default true)
+   - ✅ Integration into learn section with proper routing
+   - ✅ Table of contents entry with title "Spectrum and Harmonics"
+   - ✅ Process tutorial content with tutorial-splitter.js script
+   - ❌ Create comprehensive validation functions
    - ❌ Testing and refinement
-   - Partial content available from previous Tutorial 4 draft
+   - ❌ Finalizing tutorial copy based on user feedback
 
 ### Planned Tutorials
 
@@ -212,7 +229,7 @@ The project is in a functional beta state with:
 
 - Core audio processing system working reliably
 - User interface complete and usable
-- 4 complete tutorials available
+- 6 complete tutorials available
 - 30+ node types implemented
 - Local storage for project saving
 

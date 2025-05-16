@@ -6,11 +6,11 @@
 
 Welcome to the sixth chapter of the `AudioCanvas` tutorial!
 
-In previous tutorials, we explored the four standard oscillator types: <Clr nodeType="sine-oscillator">Sine</Clr>, <Clr nodeType="triangle-oscillator">Triangle</Clr>, <Clr nodeType="square-oscillator">Square</Clr>, and <Clr nodeType="saw-oscillator">Saw</Clr>.
+You might remember that in previous tutorials we described some oscillators as "richer" than others. 
 
-You might remember that we described some oscillators as "richer" than others. For example, we mentioned that the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> sounds richer than the <Clr nodeType="square-oscillator">Square Oscillator</Clr>, which in turn sounds richer than the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
+For example, we mentioned that the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> sounds richer than the <Clr nodeType="square-oscillator">Square Oscillator</Clr>, which in turn sounds richer than the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
 
-In this tutorial, we'll understand exactly where this difference between waveforms comes from.
+In this tutorial, we'll understand exactly where this difference in tone between waveforms comes from.
 
 # Step 2
 
@@ -46,7 +46,7 @@ Press the play button to start audio processing.
 
 Look at the <Clr nodeType="spectrum">Spectrum</Clr> node. You should see a single peak appear somewhere on the display.
 
-This peak represents the frequency of our <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>.
+This peak represents the frequency of our <Clr nodeType="sine-oscillator">Sine Oscillator</Clr> - by default set to 440Hz, when you create an oscillator.
 
 # Step 5
 
@@ -54,11 +54,11 @@ This peak represents the frequency of our <Clr nodeType="sine-oscillator">Sine O
     import Clr from '../Clr.svelte';
 </script>
 
-Now, try changing the frequency of the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>.
+Now, try changing the frequency.
 
 Start from a low value like 100 Hz and gradually increase it while watching the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-You'll notice that the peak moves from left to right as you increase the frequency.
+At the end, increase the frequency up to the maximum possible value - 10000 Hz.
 
 # Step 6
 
@@ -66,11 +66,11 @@ You'll notice that the peak moves from left to right as you increase the frequen
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="spectrum">Spectrum</Clr> node displays frequencies from low to high, left to right.
-
-Lower frequencies appear on the left side of the display, while higher frequencies appear on the right side.
+You saw the peak on the <Clr nodeType="spectrum">Spectrum</Clr> node travel from left to right as you increased the frequency.
 
 The <Clr nodeType="spectrum">Spectrum</Clr> node is essentially a frequency detector that shows us what frequencies are present in a signal.
+
+Lower frequencies appear on the left side of the display, while higher frequencies appear on the right side.
 
 # Step 7
 
@@ -78,7 +78,19 @@ The <Clr nodeType="spectrum">Spectrum</Clr> node is essentially a frequency dete
     import Clr from '../Clr.svelte';
 </script>
 
-Let's see what happens when we have more than one frequency present at the same time.
+On top of that, when you've set the frequency of the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr> to the maximum - 10000Hz, you probably noted that the peak on the <Clr nodeType="spectrum">Spectrum</Clr> node was not even in the middle of the display.
+
+This shows that the  <Clr nodeType="spectrum">Spectrum</Clr> node can detect *extremely* high frequencies.
+
+Why this is important will be obvious very, very soon.
+
+# Step 7
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
+Now let's see what happens when we have more than one frequency present at the same time.
 
 Create a second <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>.
 
