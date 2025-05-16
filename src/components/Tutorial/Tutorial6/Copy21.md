@@ -2,8 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-You can think of the <Clr nodeType="spectrum">Spectrum</Clr> node as a frequency detector.
+Look at the <Clr nodeType="spectrum">Spectrum</Clr> node again. The <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> produces even more peaks than either the <Clr nodeType="triangle-oscillator">Triangle</Clr> or <Clr nodeType="square-oscillator">Square</Clr> oscillators!
 
-Low frequencies are displayed on the left, and high frequencies are on the right.
-
-That's why when you were increasing the parameter, the peak of the graph was moving to the right.
+Notice how the peaks appear at all integer multiples of the fundamental frequency, not just at odd multiples like we saw with the <Clr nodeType="triangle-oscillator">Triangle</Clr> and <Clr nodeType="square-oscillator">Square</Clr> oscillators.

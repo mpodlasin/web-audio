@@ -20,6 +20,10 @@ const routes: Record<string, { title: string; tutorialId: string }> = {
 	'cycling-through-oscillators': {
 		title: '5. Cycling Through Oscillators',
 		tutorialId: 'tutorial5'
+	},
+	'spectrum-and-harmonics': {
+		title: '6. Spectrum and Harmonics',
+		tutorialId: 'tutorial6'
 	}
 };
 

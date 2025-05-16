@@ -2,8 +2,10 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Now, do a full sweep of the frequency parameter on the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>.
+Finally, let's examine the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr>.
 
-Start at `0` and gradually increase the parameter until you reach the highest value - `10,000` Hz.
+Remove the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
 
-Observe what happens on the <Clr nodeType="spectrum">Spectrum</Clr> node.
+Create a <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
+
+Again, set its frequency to match what we used before (around 100 Hz).

@@ -14,7 +14,7 @@
 
 4. [<ToCItem id="tutorial4">Frequency and Amplitude</ToCItem>](/learn/oscillators-frequency-and-amplitude)
 5. [<ToCItem id="tutorial5">Cycling Through Oscillators</ToCItem>](/learn/cycling-through-oscillators)
-6. [Spectrum](/learn/spectrum)
+6. [<ToCItem id="tutorial6">Spectrum and Harmonics</ToCItem>](/learn/spectrum-and-harmonics)
 7. [Additive Synthesis](/learn/additive-synthesis)
 8. [Filters - Shaping Sound](/learn/filters-shaping-sound)
 9. [Substractive Synthesis](/learn/substractive-synthesis)

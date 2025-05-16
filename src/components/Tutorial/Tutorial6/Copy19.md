@@ -2,6 +2,9 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Disconnect the <Clr nodeType="gain">Gain</Clr> node from the <Clr nodeType="oscilloscope">Oscilloscope</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node instead.
+The <Clr nodeType="square-oscillator">Square Oscillator</Clr> has the following harmonic pattern:
 
-Set the gain to `1` for now.
+1. Like the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, it contains only odd harmonics (3rd, 5th, 7th, etc.)
+2. Unlike the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, its harmonics decrease more slowly - at a rate of 1/n (rather than 1/n²)
+
+This slower decrease in amplitude means that higher harmonics remain more prominent, which is why the <Clr nodeType="square-oscillator">Square Oscillator</Clr> sounds "brighter" or "harsher" than the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, despite both having only odd harmonics.
