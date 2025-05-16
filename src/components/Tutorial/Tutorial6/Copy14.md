@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Look at the <Clr nodeType="spectrum">Spectrum</Clr> node. Unlike the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>, which produced just one peak, the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> creates multiple peaks!
+Let's start with the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
 
-These additional peaks are called _harmonics_. They are additional frequencies that give the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> its characteristic sound.
+Create a <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> and connect it directly to the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-This is like combining several <Clr nodeType="sine-oscillator">Sine Oscillators</Clr> at different frequencies. In fact, this relates to what we mentioned in Tutorial 1 - sine waves are the building blocks of all sounds.
+Set its frequency to a low value, around 100 Hz, so we can clearly see what's happening in the spectrum.

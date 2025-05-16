@@ -2,8 +2,10 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Observe the spectrum again. Just like the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, the <Clr nodeType="square-oscillator">Square Oscillator</Clr> also produces multiple peaks.
+Now, let's examine the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
 
-You should notice that there are still multiple harmonics, but they look different from the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>'s harmonics.
+Remove the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
 
-In particular, the higher harmonics of the <Clr nodeType="square-oscillator">Square Oscillator</Clr> seem more prominent compared to those of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
+Create a <Clr nodeType="square-oscillator">Square Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
+
+Set its frequency to the same value you used for the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> (around 100 Hz).

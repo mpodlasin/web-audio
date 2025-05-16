@@ -23,6 +23,7 @@ import Copy20 from './Copy20.md';
 import Copy21 from './Copy21.md';
 import Copy22 from './Copy22.md';
 import Copy23 from './Copy23.md';
+import Copy24 from './Copy24.md';
 
 // Import check functions
 import Check1 from './Check1';
@@ -48,6 +49,7 @@ import Check20 from './Check20';
 import Check21 from './Check21';
 import Check22 from './Check22';
 import Check23 from './Check23';
+import Check24 from './Check24';
 
 export const tutorial6: Tutorial = {
     steps: [
@@ -142,6 +144,10 @@ export const tutorial6: Tutorial = {
         {
             copy: Copy23,
             check: Check23
+        },
+        {
+            copy: Copy24,
+            check: Check24
         }
     ]
 };

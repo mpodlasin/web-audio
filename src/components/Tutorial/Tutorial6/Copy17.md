@@ -2,10 +2,15 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Now, let's examine the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
+For the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, the harmonics follow a specific pattern:
 
-Remove the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
+1. They are evenly spaced
+2. They occur only at odd multiples of the fundamental frequency
+3. Their amplitudes decrease at a rate of 1/n², where n is the harmonic number
 
-Create a <Clr nodeType="square-oscillator">Square Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
+For example, with a fundamental frequency of 100 Hz, the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> has harmonics at approximately:
+- 300 Hz (3rd harmonic)
+- 500 Hz (5th harmonic)
+- 700 Hz (7th harmonic)
 
-Set its frequency to the same value you used for the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> (around 100 Hz).
+The amplitudes get progressively smaller, which is why some higher harmonics might be difficult to see.

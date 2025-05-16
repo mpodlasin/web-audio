@@ -2,6 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Now that we understand how the <Clr nodeType="spectrum">Spectrum</Clr> node works, let's use it to examine our oscillator waveforms.
+You should have noticed that when you lowered the gain, the height of the first peak decreased.
 
-Remove both <Clr nodeType="sine-oscillator">Sine Oscillators</Clr> and the <Clr nodeType="gain">Gain</Clr> node from your patch.
+This illustrates another important aspect of the <Clr nodeType="spectrum">Spectrum</Clr> display: the height of a peak represents the amplitude (or strength) of that frequency.
+
+Taller peaks indicate stronger presence of a frequency, while shorter peaks indicate weaker presence.

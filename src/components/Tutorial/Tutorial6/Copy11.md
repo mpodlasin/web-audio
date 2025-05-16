@@ -2,8 +2,10 @@
     import Clr from '../Clr.svelte';
 </script>
 
-You should have noticed that when you lowered the gain, the height of the first peak decreased.
+Let's explore another aspect of the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-This illustrates another important aspect of the <Clr nodeType="spectrum">Spectrum</Clr> display: the height of a peak represents the amplitude (or strength) of that frequency.
+Adjust the gain parameter on the <Clr nodeType="gain">Gain</Clr> node that's connected to the first <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>.
 
-Taller peaks indicate stronger presence of a frequency, while shorter peaks indicate weaker presence.
+You will have to lower it significanly - somwhere below 0.1 - to see a clear effect.
+
+Watch what happens to one of the peaks in the <Clr nodeType="spectrum">Spectrum</Clr> node.
