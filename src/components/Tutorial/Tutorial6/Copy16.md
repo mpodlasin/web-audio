@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Let's understand the peaks we're seeing.
+This is strange - it looks almost as if the triangle wave is composed of series of sine waves...
 
-The leftmost and usually tallest peak is called the _fundamental frequency_. This corresponds to the frequency value set on the oscillator (around 100 Hz in our case).
+Well, it looks that way because this is *exactly* what is happening!
 
-The additional peaks to the right are the _harmonics_. Each harmonic is a multiple of the fundamental frequency, which gives the oscillator its distinct tonal character.
+Perhaps you remember that in the very first tutorial we mentioned that the sine wave is a building block of all other sounds - this is exactly what we meant!

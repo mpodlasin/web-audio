@@ -2,10 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Now, let's examine the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
+You saw peaks move, but not randomly. 
 
-Remove the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
-
-Create a <Clr nodeType="square-oscillator">Square Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
-
-Set its frequency to the same value you used for the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> (around 100 Hz).
+Perhaps you noticed that distances between the peaks - while changing - maintain certain order.

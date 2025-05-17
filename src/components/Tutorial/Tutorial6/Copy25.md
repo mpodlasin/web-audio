@@ -2,6 +2,10 @@
     import Clr from '../Clr.svelte';
 </script>
 
-We can now see that the height of a peak indicates the strength of a specific frequency.  
+Finally, let's examine the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr>.
 
-The <Clr nodeType="spectrum">Spectrum</Clr> node detects individual frequencies and displays their strength relative to each other.
+Remove the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
+
+Create a <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
+
+Again, set its frequency to match what we used before (around 100 Hz).

@@ -2,10 +2,14 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Finally, let's examine the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr>.
+Different oscillators will have different harmonic patterns.
 
-Remove the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
+For the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, the harmonics occur only at odd multiples of the fundamental frequency.
 
-Create a <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
+For example, with a fundamental frequency of 100 Hz, the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> has harmonics at approximately:
+- 300 Hz (3rd harmonic)
+- 500 Hz (5th harmonic)
+- 700 Hz (7th harmonic)
+- and so on...
 
-Again, set its frequency to match what we used before (around 100 Hz).
+The amplitudes of harmonics get progressively smaller, which you can see on the graph - peaks further to the right get smaller and smaller.

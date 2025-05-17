@@ -170,27 +170,17 @@ Woah! Something very interesting is happening.
 
 Unlike the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>, which produced just one peak, the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> creates multiple peaks!
 
-# Step 15
-
-<script>
-    import Clr from '../Clr.svelte';
-</script>
-
-These additional peaks are called _harmonics_. They are additional frequencies that give the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> its characteristic sound.
-
-This is like combining several <Clr nodeType="sine-oscillator">Sine Oscillators</Clr> at different frequencies. In fact, this relates to what we mentioned in Tutorial 1 - sine waves are the building blocks of all sounds.
-
 # Step 16
 
 <script>
     import Clr from '../Clr.svelte';
 </script>
 
-Let's understand the peaks we're seeing.
+This is strange - it looks almost as if the triangle wave is composed of series of sine waves...
 
-The leftmost and usually tallest peak is called the _fundamental frequency_. This corresponds to the frequency value set on the oscillator (around 100 Hz in our case).
+Well, it looks that way because this is *exactly* what is happening!
 
-The additional peaks to the right are the _harmonics_. Each harmonic is a multiple of the fundamental frequency, which gives the oscillator its distinct tonal character.
+Perhaps you remember that in the very first tutorial we mentioned that the sine wave is a building block of all other sounds - this is exactly what we meant!
 
 # Step 17
 
@@ -198,20 +188,69 @@ The additional peaks to the right are the _harmonics_. Each harmonic is a multip
     import Clr from '../Clr.svelte';
 </script>
 
-For the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, the harmonics follow a specific pattern:
+If this is something that is difficult for you to wrap your head around, don't worry. 
 
-1. They are evenly spaced
-2. They occur only at odd multiples of the fundamental frequency
-3. Their amplitudes decrease at a rate of 1/n², where n is the harmonic number
+At some point it will click, for now simply continue following the tutorials. 
+
+Play around with the frequency parameter of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> and watch what happens with the graph on the <Clr nodeType="spectrum">Spectrum</Clr> node.
+
+# Step 18
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
+You saw peaks move, but not randomly. 
+
+Perhaps you noticed that distances between the peaks - while changing - maintain certain order.
+
+# Step 19
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
+Before we discuss that further, let's get some naming conventions out of the way.
+
+The leftmost and usually tallest peak is called the _fundamental frequency_. 
+
+It corresponds to the frequency value set on the oscillator - literally whatever value you have set on the oscillator node right now.
+
+# Step 20
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
+The additional peaks to the right are the _harmonics_. 
+
+Each harmonic is a multiple of the fundamental frequency.
+
+You saw that, when you were playing with the frequency knob. 
+
+If the fundamental frequency gets higher, distances between harmonics also get higher.
+
+_(Check again to make sure you see that!)_
+
+# Step 21
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
+Different oscillators will have different harmonic patterns.
+
+For the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, the harmonics occur only at odd multiples of the fundamental frequency.
 
 For example, with a fundamental frequency of 100 Hz, the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> has harmonics at approximately:
 - 300 Hz (3rd harmonic)
 - 500 Hz (5th harmonic)
 - 700 Hz (7th harmonic)
+- and so on...
 
-The amplitudes get progressively smaller, which is why some higher harmonics might be difficult to see.
+The amplitudes of harmonics get progressively smaller, which you can see on the graph - peaks further to the right get smaller and smaller.
 
-# Step 18
+# Step 22
 
 <script>
     import Clr from '../Clr.svelte';
@@ -223,9 +262,7 @@ Remove the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
 
 Create a <Clr nodeType="square-oscillator">Square Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-Set its frequency to the same value you used for the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> (around 100 Hz).
-
-# Step 19
+# Step 23
 
 <script>
     import Clr from '../Clr.svelte';
@@ -237,7 +274,7 @@ You should notice that there are still multiple harmonics, but they look differe
 
 In particular, the higher harmonics of the <Clr nodeType="square-oscillator">Square Oscillator</Clr> seem more prominent compared to those of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
 
-# Step 20
+# Step 24
 
 <script>
     import Clr from '../Clr.svelte';
@@ -246,11 +283,11 @@ In particular, the higher harmonics of the <Clr nodeType="square-oscillator">Squ
 The <Clr nodeType="square-oscillator">Square Oscillator</Clr> has the following harmonic pattern:
 
 1. Like the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, it contains only odd harmonics (3rd, 5th, 7th, etc.)
-2. Unlike the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, its harmonics decrease more slowly - at a rate of 1/n (rather than 1/n²)
+2. However unlike the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, its harmonics decrease more slowly.
 
 This slower decrease in amplitude means that higher harmonics remain more prominent, which is why the <Clr nodeType="square-oscillator">Square Oscillator</Clr> sounds "brighter" or "harsher" than the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, despite both having only odd harmonics.
 
-# Step 21
+# Step 25
 
 <script>
     import Clr from '../Clr.svelte';
@@ -264,7 +301,7 @@ Create a <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> and connect it to t
 
 Again, set its frequency to match what we used before (around 100 Hz).
 
-# Step 22
+# Step 26
 
 <script>
     import Clr from '../Clr.svelte';
@@ -274,7 +311,7 @@ Look at the <Clr nodeType="spectrum">Spectrum</Clr> node again. The <Clr nodeTyp
 
 Notice how the peaks appear at all integer multiples of the fundamental frequency, not just at odd multiples like we saw with the <Clr nodeType="triangle-oscillator">Triangle</Clr> and <Clr nodeType="square-oscillator">Square</Clr> oscillators.
 
-# Step 23
+# Step 27
 
 <script>
     import Clr from '../Clr.svelte';
@@ -294,7 +331,7 @@ With a fundamental frequency of 100 Hz, the <Clr nodeType="saw-oscillator">Saw O
 
 This rich harmonic content is why the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> sounds the "richest" or most "aggressive" of all the standard waveforms.
 
-# Step 24
+# Step 28
 
 <script>
     import Clr from '../Clr.svelte';

@@ -2,9 +2,12 @@
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="square-oscillator">Square Oscillator</Clr> has the following harmonic pattern:
+The additional peaks to the right are the _harmonics_. 
 
-1. Like the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, it contains only odd harmonics (3rd, 5th, 7th, etc.)
-2. Unlike the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, its harmonics decrease more slowly - at a rate of 1/n (rather than 1/n²)
+Each harmonic is a multiple of the fundamental frequency.
 
-This slower decrease in amplitude means that higher harmonics remain more prominent, which is why the <Clr nodeType="square-oscillator">Square Oscillator</Clr> sounds "brighter" or "harsher" than the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, despite both having only odd harmonics.
+You saw that, when you were playing with the frequency knob. 
+
+If the fundamental frequency gets higher, distances between harmonics also get higher.
+
+_(Check again to make sure you see that!)_
