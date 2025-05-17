@@ -122,6 +122,7 @@
    - Analyzing the harmonic content of different oscillator types
    - Connecting harmonic content to timbral "richness"
    - Basic implementation with placeholder validation
+   - Simplified technical explanations for better learning accessibility
 
 ## What's Left to Build
 
@@ -185,6 +186,8 @@
    - ✅ Integration into learn section with proper routing
    - ✅ Table of contents entry with title "Spectrum and Harmonics"
    - ✅ Process tutorial content with tutorial-splitter.js script
+   - ✅ Index.ts updated to include all 36 steps
+   - ✅ Simplified technical explanations by removing mathematical notation (e.g., "1/n²")
    - ❌ Create comprehensive validation functions
    - ❌ Testing and refinement
    - ❌ Finalizing tutorial copy based on user feedback
@@ -223,6 +226,16 @@
    - ❌ URL-based sharing
    - ❌ Embedding options
 
+## Recent Tool Developments
+
+1. **Tutorial Processing Tools**
+   - ✅ Developed tutorial-splitter.js for splitting tutorial markdown files into individual Copy*.md files
+   - ✅ Developed step-renumber.js for sequentially renumbering steps in tutorial files
+   - ✅ Created integrated tutorial-splitter-v2.js that combines both functionalities with additional options:
+     - One-step process for renumbering and splitting
+     - Flags for skipping renumbering or only performing renumbering
+     - Simplified syntax for processing tutorial files by number
+
 ## Current Status
 
 The project is in a functional beta state with:
@@ -232,6 +245,7 @@ The project is in a functional beta state with:
 - 6 complete tutorials available
 - 30+ node types implemented
 - Local storage for project saving
+- Streamlined tutorial development workflow
 
 Development is active with focus on:
 1. Testing Tutorial 5 with the newly created validation functions

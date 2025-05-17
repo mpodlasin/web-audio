@@ -58,11 +58,13 @@ We've completed the implementation of Tutorial 6, titled "Spectrum and Harmonics
 Completed tasks:
 - ✅ Design the tutorial steps and structure (stored in `tutorial6outline.md`)
 - ✅ Write the tutorial content (stored in `tutorial6copy.md`)
-- ✅ Create placeholder Check files with `export default true;` for all 23 steps
+- ✅ Create placeholder Check files with `export default true;` for all 36 steps
 - ✅ Set up the tutorial structure in index.ts
 - ✅ Integrate the tutorial into the learn section with proper routing
 - ✅ Update the table of contents with the title "Spectrum and Harmonics"
 - ✅ Process the tutorial content using the tutorial-splitter.js script
+- ✅ Simplified technical explanations to make them more beginner-friendly
+- ✅ Removed mathematical notation (like "1/n²" and "1/n") in favor of descriptive language
 
 Remaining tasks:
 - Develop proper validation functions for each step
@@ -135,19 +137,32 @@ The Switch node's parameter has been renamed from "input" to "channel" for impro
 - Tutorial content has been updated to reflect the new parameter name
 - This change reinforces our commitment to intuitive parameter naming and consistent cross-layer implementation
 
-### 6. Tutorial Content Processing Script
+### 6. Tutorial Content Processing Scripts
 
-We've created a Node.js script to streamline the tutorial development workflow:
-- The `tutorial-splitter.js` script automates the process of splitting tutorial markdown files from memory-bank into separate Copy*.md files
-- It takes a source markdown file and target directory as parameters
-- The script automatically:
+We've created Node.js scripts to streamline the tutorial development workflow:
+
+#### tutorial-splitter.js
+- Automates the process of splitting tutorial markdown files from memory-bank into separate Copy*.md files
+- Takes a source markdown file and target directory as parameters
+- Automatically:
   - Splits content by "# Step X" headers
   - Creates properly formatted Copy*.md files with Svelte script imports
   - Preserves step numbers in the filenames
 - Usage: `node tutorial-splitter.js <source-file> <target-directory>`
 - Example: `node tutorial-splitter.js memory-bank/tutorial5copy.md src/components/Tutorial/Tutorial5`
-- This significantly reduces the manual effort required to prepare tutorial content for the application
-- The script handles the formatting requirements automatically, ensuring consistency across all tutorial steps
+
+#### tutorial-splitter-v2.js (New)
+- Enhanced version that combines the functionality of both `step-renumber.js` and `tutorial-splitter.js`
+- Provides a streamlined workflow by:
+  1. First renumbering steps to be sequential
+  2. Then splitting the content into individual Copy*.md files
+- Offers flexible command-line options:
+  - `--skip-renumbering`: Skip the renumbering step and only split
+  - `--renumber-only`: Only renumber steps without splitting
+- Usage: `node tutorial-splitter-v2.js <tutorial-number>` or `node tutorial-splitter-v2.js <source-file> <target-directory>`
+- This integrated approach ensures steps are properly numbered before they're split into individual files
+
+These scripts significantly reduce the manual effort required to prepare tutorial content for the application and help maintain consistency across all tutorial steps.
 
 ## Next Steps
 
