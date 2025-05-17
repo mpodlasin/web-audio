@@ -24,6 +24,10 @@ import Copy21 from './Copy21.md';
 import Copy22 from './Copy22.md';
 import Copy23 from './Copy23.md';
 import Copy24 from './Copy24.md';
+import Copy25 from './Copy25.md';
+import Copy26 from './Copy26.md';
+import Copy27 from './Copy27.md';
+import Copy28 from './Copy28.md';
 
 // Import check functions
 import Check1 from './Check1';
@@ -50,6 +54,10 @@ import Check21 from './Check21';
 import Check22 from './Check22';
 import Check23 from './Check23';
 import Check24 from './Check24';
+import Check25 from './Check25';
+import Check26 from './Check26';
+import Check27 from './Check27';
+import Check28 from './Check28';
 
 export const tutorial6: Tutorial = {
     steps: [
@@ -148,6 +156,22 @@ export const tutorial6: Tutorial = {
         {
             copy: Copy24,
             check: Check24
-        }
+        },
+        {
+            copy: Copy25,
+            check: Check25
+        },
+        {
+            copy: Copy26,
+            check: Check26
+        },
+        {
+            copy: Copy27,
+            check: Check27
+        },
+        {
+            copy: Copy28,
+            check: Check28
+        },
     ]
 };

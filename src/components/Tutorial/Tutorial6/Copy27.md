@@ -2,10 +2,7 @@
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> has the following harmonic pattern:
-
-1. It contains ALL harmonics (both odd and even)
-2. Its harmonics decrease in amplitude at a rate of 1/n
+The <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> contains *all* harmonics (both odd and even).
 
 With a fundamental frequency of 100 Hz, the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> has harmonics at:
 - 200 Hz (2nd harmonic)

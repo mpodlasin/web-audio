@@ -7,5 +7,3 @@ Finally, let's examine the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr>.
 Remove the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
 
 Create a <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
-
-Again, set its frequency to match what we used before (around 100 Hz).

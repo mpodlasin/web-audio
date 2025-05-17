@@ -299,17 +299,15 @@ Remove the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
 
 Create a <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-Again, set its frequency to match what we used before (around 100 Hz).
-
 # Step 26
 
 <script>
     import Clr from '../Clr.svelte';
 </script>
 
-Look at the <Clr nodeType="spectrum">Spectrum</Clr> node again. The <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> produces even more peaks than either the <Clr nodeType="triangle-oscillator">Triangle</Clr> or <Clr nodeType="square-oscillator">Square</Clr> oscillators!
+Look at the <Clr nodeType="spectrum">Spectrum</Clr> node again. 
 
-Notice how the peaks appear at all integer multiples of the fundamental frequency, not just at odd multiples like we saw with the <Clr nodeType="triangle-oscillator">Triangle</Clr> and <Clr nodeType="square-oscillator">Square</Clr> oscillators.
+The <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> produces even more peaks than either the <Clr nodeType="triangle-oscillator">Triangle</Clr> or <Clr nodeType="square-oscillator">Square</Clr> oscillators!
 
 # Step 27
 
@@ -317,10 +315,7 @@ Notice how the peaks appear at all integer multiples of the fundamental frequenc
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> has the following harmonic pattern:
-
-1. It contains ALL harmonics (both odd and even)
-2. Its harmonics decrease in amplitude at a rate of 1/n
+The <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> contains *all* harmonics (both odd and even).
 
 With a fundamental frequency of 100 Hz, the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> has harmonics at:
 - 200 Hz (2nd harmonic)
