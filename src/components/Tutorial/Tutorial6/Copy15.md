@@ -2,6 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Woah! Something very interesting is happening.
+Now that we understand how the <Clr nodeType="spectrum">Spectrum</Clr> node works, let's use it to examine our oscillator waveforms.
 
-Unlike the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>, which produced just one peak, the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> creates multiple peaks!
+Remove both <Clr nodeType="sine-oscillator">Sine Oscillators</Clr> and the <Clr nodeType="gain">Gain</Clr> node from your patch, but keep the <Clr nodeType="spectrum">Spectrum</Clr> node and the <Clr nodeType="destination">Output</Clr> node.

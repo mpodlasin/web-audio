@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-When you lowered the gain, the height of the peak decreased.
+Now you should see two distinct peaks on the <Clr nodeType="spectrum">Spectrum</Clr> node - one for each <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>.
 
-This illustrates another important aspect of the <Clr nodeType="spectrum">Spectrum</Clr> display: the height of a peak represents the amplitude (or strength) of that frequency.
+Try changing the frequency of the second oscillator and observe how its peak moves independently of the first peak.
 
-Taller peaks indicate stronger presence of a frequency, while shorter peaks indicate weaker presence.
+This demonstrates an important capability of the <Clr nodeType="spectrum">Spectrum</Clr> node: it can display multiple frequencies simultaneously, which is essential for analyzing complex sounds.

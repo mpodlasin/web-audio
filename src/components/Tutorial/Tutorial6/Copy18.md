@@ -2,6 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-You saw peaks move, but not randomly. 
+This is strange - it looks almost as if the triangle wave is composed of series of sine waves...
 
-Perhaps you noticed that distances between the peaks - while changing - maintain certain order.
+Well, it looks that way because this is *exactly* what is happening!
+
+Perhaps you remember that in the very first tutorial we mentioned that the sine wave is a building block of all other sounds - this is exactly what we meant!

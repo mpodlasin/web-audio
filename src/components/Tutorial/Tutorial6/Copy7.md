@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-On top of that, when you've set the frequency of the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr> to the maximum - 10000Hz, you probably noted that the peak on the <Clr nodeType="spectrum">Spectrum</Clr> node was not even in the middle of the display.
+Now, try changing the frequency.
 
-This shows that the  <Clr nodeType="spectrum">Spectrum</Clr> node can detect *extremely* high frequencies.
+Start from a value of 0 Hz and gradually increase it while watching the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-Why this is important will be obvious very, very soon.
+At the end, increase the frequency up to the maximum possible value - 10000 Hz.

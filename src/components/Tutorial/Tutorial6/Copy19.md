@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Before we discuss that further, let's get some naming conventions out of the way.
+If this is something that is difficult for you to wrap your head around, don't worry. 
 
-The leftmost and usually tallest peak is called the _fundamental frequency_. 
+At some point it will click, for now simply continue following the tutorials. 
 
-It corresponds to the frequency value set on the oscillator - literally whatever value you have set on the oscillator node right now.
+Play around with the frequency parameter of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> and watch what happens with the graph on the <Clr nodeType="spectrum">Spectrum</Clr> node.

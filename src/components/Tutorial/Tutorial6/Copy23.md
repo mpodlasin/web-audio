@@ -2,8 +2,14 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Observe the spectrum again. Just like the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, the <Clr nodeType="square-oscillator">Square Oscillator</Clr> also produces multiple peaks.
+Different oscillators will have different harmonic patterns.
 
-You should notice that there are still multiple harmonics, but they look different from the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>'s harmonics.
+For the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, the harmonics occur only at odd multiples of the fundamental frequency.
 
-In particular, the higher harmonics of the <Clr nodeType="square-oscillator">Square Oscillator</Clr> seem more prominent compared to those of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
+For example, with a fundamental frequency of 100 Hz, the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> has harmonics at approximately:
+- 300 Hz (3rd harmonic)
+- 500 Hz (5th harmonic)
+- 700 Hz (7th harmonic)
+- and so on...
+
+The amplitudes of harmonics get progressively smaller, which you can see on the graph - peaks further to the right get smaller and smaller.

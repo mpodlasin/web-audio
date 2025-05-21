@@ -30,13 +30,31 @@ Create a <Clr nodeType="spectrum">Spectrum</Clr> node.
     import Clr from '../Clr.svelte';
 </script>
 
+Now, create a <Clr nodeType="destination">Output</Clr> node and connect the output of the <Clr nodeType="spectrum">Spectrum</Clr> node to it.
+
+The <Clr nodeType="spectrum">Spectrum</Clr> node has a passthrough output that allows you to both visualize and hear the signal.
+
+Throughout this tutorial, you can adjust the volume on the <Clr nodeType="destination">Output</Clr> node whenever you want to hear the sounds being analyzed. When you want to focus only on the visual analysis, you can set the volume to 0.
+
+# Step 4
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
 Let's set up a basic patch to see how the <Clr nodeType="spectrum">Spectrum</Clr> node works.
 
 Create a <Clr nodeType="sine-oscillator">Sine Oscillator</Clr> and a <Clr nodeType="gain">Gain</Clr> node.
 
+# Step 5
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
 Connect the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr> to the <Clr nodeType="gain">Gain</Clr> node, and then connect the <Clr nodeType="gain">Gain</Clr> node to the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-# Step 4
+# Step 6
 
 <script>
     import Clr from '../Clr.svelte';
@@ -48,7 +66,7 @@ Look at the <Clr nodeType="spectrum">Spectrum</Clr> node. You should see a singl
 
 This peak represents the frequency of our <Clr nodeType="sine-oscillator">Sine Oscillator</Clr> - by default set to 440Hz, when you create an oscillator.
 
-# Step 5
+# Step 7
 
 <script>
     import Clr from '../Clr.svelte';
@@ -56,11 +74,11 @@ This peak represents the frequency of our <Clr nodeType="sine-oscillator">Sine O
 
 Now, try changing the frequency.
 
-Start from a low value like 100 Hz and gradually increase it while watching the <Clr nodeType="spectrum">Spectrum</Clr> node.
+Start from a value of 0 Hz and gradually increase it while watching the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
 At the end, increase the frequency up to the maximum possible value - 10000 Hz.
 
-# Step 6
+# Step 8
 
 <script>
     import Clr from '../Clr.svelte';
@@ -72,7 +90,7 @@ The <Clr nodeType="spectrum">Spectrum</Clr> node is essentially a frequency dete
 
 Lower frequencies appear on the left side of the display, while higher frequencies appear on the right side.
 
-# Step 7
+# Step 9
 
 <script>
     import Clr from '../Clr.svelte';
@@ -82,9 +100,9 @@ On top of that, when you've set the frequency of the <Clr nodeType="sine-oscilla
 
 This shows that the  <Clr nodeType="spectrum">Spectrum</Clr> node can detect *extremely* high frequencies.
 
-Why this is important will be obvious very, very soon.
+In fact, if you increase the volume on the <Clr nodeType="destination">Output</Clr>, depending on your audio setup, you may not even be able to hear anything, as the human ear is not sensitive enough to hear sounds from upper frequency ranges.
 
-# Step 8
+# Step 10
 
 <script>
     import Clr from '../Clr.svelte';
@@ -94,7 +112,7 @@ Now let's see what happens when we have more than one frequency present at the s
 
 Create a second <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>.
 
-# Step 9
+# Step 11
 
 <script>
     import Clr from '../Clr.svelte';
@@ -102,7 +120,7 @@ Create a second <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>.
 
 Connect this second <Clr nodeType="sine-oscillator">Sine Oscillator</Clr> directly to the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-# Step 10
+# Step 12
 
 <script>
     import Clr from '../Clr.svelte';
@@ -114,7 +132,7 @@ Try changing the frequency of the second oscillator and observe how its peak mov
 
 This demonstrates an important capability of the <Clr nodeType="spectrum">Spectrum</Clr> node: it can display multiple frequencies simultaneously, which is essential for analyzing complex sounds.
 
-# Step 11
+# Step 13
 
 <script>
     import Clr from '../Clr.svelte';
@@ -124,11 +142,11 @@ Let's explore another aspect of the <Clr nodeType="spectrum">Spectrum</Clr> node
 
 Adjust the gain parameter on the <Clr nodeType="gain">Gain</Clr> node that's connected to the first <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>.
 
-You will have to lower it significanly - somwhere below 0.1 - to see a clear effect.
+You will have to lower it significantly - somewhere below 0.1 - to see a clear effect.
 
 Watch what happens to one of the peaks in the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-# Step 12
+# Step 14
 
 <script>
     import Clr from '../Clr.svelte';
@@ -140,7 +158,7 @@ This illustrates another important aspect of the <Clr nodeType="spectrum">Spectr
 
 Taller peaks indicate stronger presence of a frequency, while shorter peaks indicate weaker presence.
 
-# Step 13
+# Step 15
 
 <script>
     import Clr from '../Clr.svelte';
@@ -148,9 +166,9 @@ Taller peaks indicate stronger presence of a frequency, while shorter peaks indi
 
 Now that we understand how the <Clr nodeType="spectrum">Spectrum</Clr> node works, let's use it to examine our oscillator waveforms.
 
-Remove both <Clr nodeType="sine-oscillator">Sine Oscillators</Clr> and the <Clr nodeType="gain">Gain</Clr> node from your patch.
+Remove both <Clr nodeType="sine-oscillator">Sine Oscillators</Clr> and the <Clr nodeType="gain">Gain</Clr> node from your patch, but keep the <Clr nodeType="spectrum">Spectrum</Clr> node and the <Clr nodeType="destination">Output</Clr> node.
 
-# Step 14
+# Step 16
 
 <script>
     import Clr from '../Clr.svelte';
@@ -160,7 +178,9 @@ Let's start with the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Cl
 
 Create a <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> and connect it directly to the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-# Step 15
+Adjust the volume on the <Clr nodeType="destination">Output</Clr> node to hear the triangle wave.
+
+# Step 17
 
 <script>
     import Clr from '../Clr.svelte';
@@ -170,7 +190,7 @@ Woah! Something very interesting is happening.
 
 Unlike the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>, which produced just one peak, the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> creates multiple peaks!
 
-# Step 16
+# Step 18
 
 <script>
     import Clr from '../Clr.svelte';
@@ -182,7 +202,7 @@ Well, it looks that way because this is *exactly* what is happening!
 
 Perhaps you remember that in the very first tutorial we mentioned that the sine wave is a building block of all other sounds - this is exactly what we meant!
 
-# Step 17
+# Step 19
 
 <script>
     import Clr from '../Clr.svelte';
@@ -194,7 +214,7 @@ At some point it will click, for now simply continue following the tutorials.
 
 Play around with the frequency parameter of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> and watch what happens with the graph on the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-# Step 18
+# Step 20
 
 <script>
     import Clr from '../Clr.svelte';
@@ -204,7 +224,7 @@ You saw peaks move, but not randomly.
 
 Perhaps you noticed that distances between the peaks - while changing - maintain certain order.
 
-# Step 19
+# Step 21
 
 <script>
     import Clr from '../Clr.svelte';
@@ -212,11 +232,11 @@ Perhaps you noticed that distances between the peaks - while changing - maintain
 
 Before we discuss that further, let's get some naming conventions out of the way.
 
-The leftmost and usually tallest peak is called the _fundamental frequency_. 
+The leftmost (and usually tallest) peak is called the _fundamental frequency_. 
 
 It corresponds to the frequency value set on the oscillator - literally whatever value you have set on the oscillator node right now.
 
-# Step 20
+# Step 22
 
 <script>
     import Clr from '../Clr.svelte';
@@ -226,13 +246,13 @@ The additional peaks to the right are the _harmonics_.
 
 Each harmonic is a multiple of the fundamental frequency.
 
-You saw that, when you were playing with the frequency knob. 
+You saw that, when you were playing with the frequency knob: 
 
 If the fundamental frequency gets higher, distances between harmonics also get higher.
 
 _(Check again to make sure you see that!)_
 
-# Step 21
+# Step 23
 
 <script>
     import Clr from '../Clr.svelte';
@@ -250,7 +270,7 @@ For example, with a fundamental frequency of 100 Hz, the <Clr nodeType="triangle
 
 The amplitudes of harmonics get progressively smaller, which you can see on the graph - peaks further to the right get smaller and smaller.
 
-# Step 22
+# Step 24
 
 <script>
     import Clr from '../Clr.svelte';
@@ -262,19 +282,19 @@ Remove the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
 
 Create a <Clr nodeType="square-oscillator">Square Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-# Step 23
+# Step 25
 
 <script>
     import Clr from '../Clr.svelte';
 </script>
 
-Observe the spectrum again. Just like the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, the <Clr nodeType="square-oscillator">Square Oscillator</Clr> also produces multiple peaks.
+Observe the spectrum again.
 
-You should notice that there are still multiple harmonics, but they look different from the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>'s harmonics.
+There are still multiple harmonics, but they look different from the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>'s harmonics.
 
 In particular, the higher harmonics of the <Clr nodeType="square-oscillator">Square Oscillator</Clr> seem more prominent compared to those of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
 
-# Step 24
+# Step 26
 
 <script>
     import Clr from '../Clr.svelte';
@@ -285,9 +305,9 @@ The <Clr nodeType="square-oscillator">Square Oscillator</Clr> has the following 
 1. Like the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, it contains only odd harmonics (3rd, 5th, 7th, etc.)
 2. However unlike the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, its harmonics decrease more slowly.
 
-This slower decrease in amplitude means that higher harmonics remain more prominent, which is why the <Clr nodeType="square-oscillator">Square Oscillator</Clr> sounds "brighter" or "harsher" than the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, despite both having only odd harmonics.
+This slower decrease in amplitude means that higher harmonics remain more prominent, which is why the <Clr nodeType="square-oscillator">Square Oscillator</Clr> sounds "brighter" or "harsher" than the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, despite both having the same harmonics present.
 
-# Step 25
+# Step 27
 
 <script>
     import Clr from '../Clr.svelte';
@@ -299,7 +319,7 @@ Remove the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
 
 Create a <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-# Step 26
+# Step 28
 
 <script>
     import Clr from '../Clr.svelte';
@@ -307,9 +327,9 @@ Create a <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> and connect it to t
 
 Look at the <Clr nodeType="spectrum">Spectrum</Clr> node again. 
 
-The <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> produces even more peaks than either the <Clr nodeType="triangle-oscillator">Triangle</Clr> or <Clr nodeType="square-oscillator">Square</Clr> oscillators!
+The <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> produces more peaks than either the <Clr nodeType="triangle-oscillator">Triangle</Clr> or <Clr nodeType="square-oscillator">Square</Clr> oscillators!
 
-# Step 27
+# Step 29
 
 <script>
     import Clr from '../Clr.svelte';
@@ -326,7 +346,7 @@ With a fundamental frequency of 100 Hz, the <Clr nodeType="saw-oscillator">Saw O
 
 This rich harmonic content is why the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> sounds the "richest" or most "aggressive" of all the standard waveforms.
 
-# Step 28
+# Step 30
 
 <script>
     import Clr from '../Clr.svelte';
@@ -343,3 +363,15 @@ Now we can understand the differences between all our oscillator types based on 
 - <Clr nodeType="saw-oscillator">Saw Oscillator</Clr>: Contains all harmonics (both odd and even) with amplitudes that decrease gradually. This gives it the richest, most complex sound of all the standard oscillators.
 
 This harmonic content is exactly what creates the differences in "richness" that we mentioned in previous tutorials. The more harmonics present (and the stronger they are), the richer and more complex the sound will be!
+
+# Step 31
+
+<script>
+    import Clr from '../Clr.svelte';
+</script>
+
+Congratulations! You've completed Tutorial 6 on Spectrum and Harmonics.
+
+You now understand why different oscillator types sound different from each other - it's all about their harmonic content.
+
+This knowledge of harmonics is fundamental to sound synthesis and will help you make more informed decisions when, for example, using filters, which we will learn about very soon.

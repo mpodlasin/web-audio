@@ -2,8 +2,12 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Now, let's examine the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
+The additional peaks to the right are the _harmonics_. 
 
-Remove the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
+Each harmonic is a multiple of the fundamental frequency.
 
-Create a <Clr nodeType="square-oscillator">Square Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
+You saw that, when you were playing with the frequency knob: 
+
+If the fundamental frequency gets higher, distances between harmonics also get higher.
+
+_(Check again to make sure you see that!)_

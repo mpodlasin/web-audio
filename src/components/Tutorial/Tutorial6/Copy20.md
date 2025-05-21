@@ -2,12 +2,6 @@
     import Clr from '../Clr.svelte';
 </script>
 
-The additional peaks to the right are the _harmonics_. 
+You saw peaks move, but not randomly. 
 
-Each harmonic is a multiple of the fundamental frequency.
-
-You saw that, when you were playing with the frequency knob. 
-
-If the fundamental frequency gets higher, distances between harmonics also get higher.
-
-_(Check again to make sure you see that!)_
+Perhaps you noticed that distances between the peaks - while changing - maintain certain order.

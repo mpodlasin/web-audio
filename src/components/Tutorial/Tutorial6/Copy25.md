@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Finally, let's examine the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr>.
+Observe the spectrum again.
 
-Remove the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
+There are still multiple harmonics, but they look different from the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>'s harmonics.
 
-Create a <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> and connect it to the <Clr nodeType="spectrum">Spectrum</Clr> node.
+In particular, the higher harmonics of the <Clr nodeType="square-oscillator">Square Oscillator</Clr> seem more prominent compared to those of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.

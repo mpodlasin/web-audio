@@ -2,6 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Let's start with the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
+When you lowered the gain, the height of the peak decreased.
 
-Create a <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> and connect it directly to the <Clr nodeType="spectrum">Spectrum</Clr> node.
+This illustrates another important aspect of the <Clr nodeType="spectrum">Spectrum</Clr> display: the height of a peak represents the amplitude (or strength) of that frequency.
+
+Taller peaks indicate stronger presence of a frequency, while shorter peaks indicate weaker presence.

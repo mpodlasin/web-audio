@@ -2,8 +2,8 @@
     import Clr from '../Clr.svelte';
 </script>
 
-You saw the peak on the <Clr nodeType="spectrum">Spectrum</Clr> node travel from left to right as you increased the frequency.
+Press the play button to start audio processing.
 
-The <Clr nodeType="spectrum">Spectrum</Clr> node is essentially a frequency detector that shows us what frequencies are present in a signal.
+Look at the <Clr nodeType="spectrum">Spectrum</Clr> node. You should see a single peak appear somewhere on the display.
 
-Lower frequencies appear on the left side of the display, while higher frequencies appear on the right side.
+This peak represents the frequency of our <Clr nodeType="sine-oscillator">Sine Oscillator</Clr> - by default set to 440Hz, when you create an oscillator.

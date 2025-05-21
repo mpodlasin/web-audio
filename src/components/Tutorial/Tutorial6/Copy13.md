@@ -2,6 +2,10 @@
     import Clr from '../Clr.svelte';
 </script>
 
-Now that we understand how the <Clr nodeType="spectrum">Spectrum</Clr> node works, let's use it to examine our oscillator waveforms.
+Let's explore another aspect of the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-Remove both <Clr nodeType="sine-oscillator">Sine Oscillators</Clr> and the <Clr nodeType="gain">Gain</Clr> node from your patch.
+Adjust the gain parameter on the <Clr nodeType="gain">Gain</Clr> node that's connected to the first <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>.
+
+You will have to lower it significantly - somewhere below 0.1 - to see a clear effect.
+
+Watch what happens to one of the peaks in the <Clr nodeType="spectrum">Spectrum</Clr> node.
