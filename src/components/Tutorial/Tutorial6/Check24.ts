@@ -1,26 +1,26 @@
 import type { SerializedAudioElements } from '../../../audio/serialized';
 
-// Checks that Triangle Oscillator is removed and a Square Oscillator is connected to the Spectrum node
+// Checks that the Triangle Oscillator has been removed and a Square Oscillator has been created and connected to the Spectrum node
 export default function (audioGraph: SerializedAudioElements) {
     const nodes = Object.values(audioGraph);
     const entries = Object.entries(audioGraph);
     
     // Check that triangle oscillator is removed
-    const hasTriangleOscillator = nodes.some(node => node.type === 'triangle-oscillator');
+    const triangleOscillator = nodes.find(node => node.type === 'triangle-oscillator');
     
     // Find required nodes
     const squareOscillator = nodes.find(node => node.type === 'square-oscillator');
     const spectrumNode = nodes.find(node => node.type === 'spectrum');
     
-    // Ensure square oscillator exists and triangle oscillator is removed
-    if (hasTriangleOscillator || !squareOscillator || !spectrumNode) {
+    // Ensure triangle is removed, square and spectrum exist
+    if (triangleOscillator || !squareOscillator || !spectrumNode) {
         return false;
     }
     
-    // Get the square oscillator's ID
+    // Get the Square Oscillator's ID
     const squareOscillatorId = entries.find(entry => entry[1] === squareOscillator)?.[0];
     
-    // Check if square oscillator is connected to spectrum
+    // Check if Square Oscillator is connected to Spectrum
     const isConnected = spectrumNode.inputs.some(input => input.id === squareOscillatorId);
     
     return isConnected;

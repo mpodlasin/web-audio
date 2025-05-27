@@ -1,14 +1,12 @@
 import type { SerializedAudioElements } from '../../../audio/serialized';
 
-// Checks for the existence of a Sine Oscillator and a Gain node
+// Checks that a Sine Oscillator and Gain node have been created
 export default function (audioGraph: SerializedAudioElements) {
     const nodes = Object.values(audioGraph);
     
-    // Check for sine oscillator
-    const hasSineOscillator = nodes.some(node => node.type === 'sine-oscillator');
+    // Find required nodes
+    const sineOscillator = nodes.find(node => node.type === 'sine-oscillator');
+    const gainNode = nodes.find(node => node.type === 'gain');
     
-    // Check for gain node
-    const hasGainNode = nodes.some(node => node.type === 'gain');
-    
-    return hasSineOscillator && hasGainNode;
+    return !!sineOscillator && !!gainNode;
 }

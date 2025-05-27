@@ -178,8 +178,6 @@ Let's start with the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Cl
 
 Create a <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> and connect it directly to the <Clr nodeType="spectrum">Spectrum</Clr> node.
 
-Adjust the volume on the <Clr nodeType="destination">Output</Clr> node to hear the triangle wave.
-
 # Step 17
 
 <script>
@@ -208,9 +206,9 @@ Perhaps you remember that in the very first tutorial we mentioned that the sine 
     import Clr from '../Clr.svelte';
 </script>
 
-If this is something that is difficult for you to wrap your head around, don't worry. 
+If this is something that is difficult for you to wrap your head around, don't worry - in the very next tutorial we will examine that concept in more detail.
 
-At some point it will click, for now simply continue following the tutorials. 
+For now simply continue following the tutorials. 
 
 Play around with the frequency parameter of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> and watch what happens with the graph on the <Clr nodeType="spectrum">Spectrum</Clr> node.
 

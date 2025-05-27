@@ -1,12 +1,11 @@
 import type { SerializedAudioElements } from '../../../audio/serialized';
 
-// Checks for the existence of two Sine Oscillators
+// Checks that a second Sine Oscillator has been created (total of 2 sine oscillators)
 export default function (audioGraph: SerializedAudioElements) {
     const nodes = Object.values(audioGraph);
     
-    // Count sine oscillators
-    const sineOscillatorCount = nodes.filter(node => node.type === 'sine-oscillator').length;
+    // Count Sine Oscillators
+    const sineOscillators = nodes.filter(node => node.type === 'sine-oscillator');
     
-    // Verify there are exactly 2 sine oscillators
-    return sineOscillatorCount === 2;
+    return sineOscillators.length >= 2;
 }

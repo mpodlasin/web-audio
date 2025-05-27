@@ -1,6 +1,6 @@
 import type { SerializedAudioElements } from '../../../audio/serialized';
 
-// Checks for the existence of an Output node and that the Spectrum node is connected to it
+// Checks that a Spectrum node is connected to an Output node
 export default function (audioGraph: SerializedAudioElements) {
     const nodes = Object.values(audioGraph);
     const entries = Object.entries(audioGraph);
@@ -14,10 +14,10 @@ export default function (audioGraph: SerializedAudioElements) {
         return false;
     }
     
-    // Get the spectrum node's ID
+    // Get the Spectrum node's ID
     const spectrumNodeId = entries.find(entry => entry[1] === spectrumNode)?.[0];
     
-    // Check if spectrum node is connected to output
+    // Check if Spectrum is connected to Output
     const isConnected = outputNode.inputs.some(input => input.id === spectrumNodeId);
     
     return isConnected;

@@ -5,5 +5,3 @@
 Let's start with the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>.
 
 Create a <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> and connect it directly to the <Clr nodeType="spectrum">Spectrum</Clr> node.
-
-Adjust the volume on the <Clr nodeType="destination">Output</Clr> node to hear the triangle wave.

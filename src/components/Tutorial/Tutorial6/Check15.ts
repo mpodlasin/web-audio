@@ -1,16 +1,19 @@
 import type { SerializedAudioElements } from '../../../audio/serialized';
 
-// Checks that Sine Oscillators and Gain node are removed, but Spectrum and Output nodes still exist
+// Checks that both Sine Oscillators and the Gain node have been removed, but Spectrum and Output remain
 export default function (audioGraph: SerializedAudioElements) {
     const nodes = Object.values(audioGraph);
     
     // Check that sine oscillators and gain node are removed
-    const hasSineOscillator = nodes.some(node => node.type === 'sine-oscillator');
-    const hasGainNode = nodes.some(node => node.type === 'gain');
+    const sineOscillators = nodes.filter(node => node.type === 'sine-oscillator');
+    const gainNode = nodes.find(node => node.type === 'gain');
     
     // Check that spectrum and output nodes still exist
-    const hasSpectrumNode = nodes.some(node => node.type === 'spectrum');
-    const hasOutputNode = nodes.some(node => node.type === 'destination');
+    const spectrumNode = nodes.find(node => node.type === 'spectrum');
+    const outputNode = nodes.find(node => node.type === 'destination');
     
-    return !hasSineOscillator && !hasGainNode && hasSpectrumNode && hasOutputNode;
+    return sineOscillators.length === 0 && 
+           !gainNode && 
+           !!spectrumNode && 
+           !!outputNode;
 }

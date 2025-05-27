@@ -1,36 +1,30 @@
 import type { SerializedAudioElements } from '../../../audio/serialized';
 
-// Checks that the second Sine Oscillator is connected to the Spectrum node
 export default function (audioGraph: SerializedAudioElements) {
     const nodes = Object.values(audioGraph);
     const entries = Object.entries(audioGraph);
     
-    // Find required nodes
-    const sineOscillators = nodes.filter(node => node.type === 'sine-oscillator');
+    // Find the Spectrum node
     const spectrumNode = nodes.find(node => node.type === 'spectrum');
-    const gainNode = nodes.find(node => node.type === 'gain');
+    if (!spectrumNode) return false;
     
-    // Ensure we have all required nodes
-    if (sineOscillators.length < 2 || !spectrumNode || !gainNode) {
-        return false;
+    // Check that we have at least 2 sine oscillators
+    const sineOscillators = nodes.filter(node => node.type === 'sine-oscillator');
+    if (sineOscillators.length < 2) return false;
+    
+    // Check that at least one sine oscillator is connected directly to the spectrum
+    // (the second one should be connected directly as per step 11 instructions)
+    let directlyConnectedCount = 0;
+    
+    for (const sineOsc of sineOscillators) {
+        const sineId = entries.find(entry => entry[1] === sineOsc)?.[0];
+        const directConnection = spectrumNode.inputs.some(input => input.id === sineId);
+        
+        if (directConnection) {
+            directlyConnectedCount++;
+        }
     }
     
-    // Get node IDs
-    const sineOscillatorIds = sineOscillators.map(osc => 
-        entries.find(entry => entry[1] === osc)?.[0]
-    ).filter(Boolean);
-    
-    const gainNodeId = entries.find(entry => entry[1] === gainNode)?.[0];
-    
-    // Check if one sine oscillator is connected to gain and the other directly to spectrum
-    const sineConnectedToGain = gainNode.inputs.some(input => 
-        sineOscillatorIds.includes(input.id)
-    );
-    
-    // Find the sine oscillator that's not connected to gain
-    const sineConnectedToSpectrum = spectrumNode.inputs.some(input => 
-        sineOscillatorIds.includes(input.id) && input.id !== gainNodeId
-    );
-    
-    return sineConnectedToGain && sineConnectedToSpectrum;
+    // At least one sine oscillator should be connected directly to spectrum
+    return directlyConnectedCount >= 1;
 }

@@ -1,6 +1,6 @@
 import type { SerializedAudioElements } from '../../../audio/serialized';
 
-// Checks for the connection from Sine Oscillator to Gain node and from Gain node to Spectrum node
+// Checks that Sine Oscillator is connected to Gain, and Gain is connected to Spectrum
 export default function (audioGraph: SerializedAudioElements) {
     const nodes = Object.values(audioGraph);
     const entries = Object.entries(audioGraph);

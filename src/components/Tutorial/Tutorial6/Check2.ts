@@ -1,6 +1,11 @@
 import type { SerializedAudioElements } from '../../../audio/serialized';
 
-// Checks for the existence of a Spectrum node
+// Checks that a Spectrum node has been created
 export default function (audioGraph: SerializedAudioElements) {
-    return !!Object.values(audioGraph).find(node => node.type === 'spectrum');
+    const nodes = Object.values(audioGraph);
+    
+    // Find the Spectrum node
+    const spectrumNode = nodes.find(node => node.type === 'spectrum');
+    
+    return !!spectrumNode;
 }
