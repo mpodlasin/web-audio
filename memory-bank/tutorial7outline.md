@@ -8,7 +8,7 @@
    - Introduce the concept: "What if we could build a complex waveform from scratch using only sine waves?"
 
 2. **Set the Goal**
-   - Explain that we will recreate a saw wave using multiple sine oscillators.
+   - Explain that we will (imperfectly) recreate a saw wave using multiple sine oscillators.
    - This technique is called "additive synthesis" - building complex sounds by adding simple components together.
    
 3. **Create Reference Saw Wave**
@@ -24,11 +24,11 @@
    - Connect: Switch → Output.
 
 5. **Connect Saw to Switch**
-   - Connect the Saw Oscillator to the first input of the Switch node.
+   - Connect the output of the spectrum to the first input of the Switch node.
 
 6. **Observe Reference Spectrum**
    - Press play and observe the harmonic pattern of the reference saw wave.
-   - Note all the harmonics present (every integer multiple of the fundamental).
+   - Note the harmonics present (every integer multiple of the fundamental).
    - Make sure you can hear the saw wave as well.
 
 7. **Prepare for Building**
@@ -38,11 +38,7 @@
 
 8. **Create the Fundamental**
    - Create the first Sine Oscillator for the fundamental frequency.
-
-9. **Add Gain Control for Fundamental**
-   - We want to have control over the fundamental's amplitude.
-   - Create a Gain node for the fundamental.
-   - Connect: Sine Oscillator → Gain → second Spectrum.
+    - Connect: Sine Oscillator → second Spectrum.
 
 10. **Observe Single Harmonic**
     - Observe the single peak on the spectrum (fundamental only).
@@ -59,6 +55,7 @@
 13. **Add Gain Control for Second Harmonic**
     - We previously said that harmonics decrease in amplitude, but we didn't say how fast exactly.
     - Introduce the 1/n rule.
+    - Add gain node
     - Set the gain to 0.5.
 
 14. **Connect Second Harmonic**
@@ -119,7 +116,7 @@
 
 26. **Connect Fundamental Frequency Number to Saw**
     - Explain that in order to accurately compare our oscillators to the saw, we will also control the saw.
-    - Connect the Number to the saw frequency parameter.
+    - Connect the Number with fundamental value to the saw frequency parameter.
     - Set the frequency knob on the saw oscillator to 0.
 
 27. **Make a Sweep with Saw**
@@ -131,8 +128,8 @@
     - Do a frequency sweep using the sine oscillators.
 
 29. **Comments**
-    - While our oscillators do not emulate the saw wave perfectly, we saw that even a very small amount of oscillators (6) can recreate the character of the saw wave.
+    - While our oscillators do not emulate the saw wave perfectly, we saw that even a very small amount of oscillators (6) can already recreate the character of the saw wave.
 
 30. **Final Words**
     - Adding more sine oscillators by hand is tedious, but can be done easily by computer software.
-    - Thanks to that, additive synthesis is a technique that is very much present in professional synthesizers, so it's very important to know it and understand it.
+    - Thanks to that, additive synthesis is a technique that is very much present in professional synthesizers, so it's important to know it and understand it.
