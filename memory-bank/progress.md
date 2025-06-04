@@ -125,6 +125,15 @@
    - Simplified technical explanations for better learning accessibility
    - **COMPLETE** - All validation functions tested and working
 
+7. ✅ **Tutorial 7: Additive Synthesis**
+   - Building a saw wave from multiple sine oscillators
+   - Teaching the 1/n harmonic amplitude rule
+   - Using Switch node for A/B comparison between reference and synthesized versions
+   - Implementing frequency control with Number and Times nodes
+   - All 35 steps implemented with placeholder validation functions
+   - Fully integrated into table of contents and routing system
+   - **COMPLETE** - Ready for validation function implementation
+
 ## What's Left to Build
 
 ### Recently Completed Nodes
@@ -231,19 +240,20 @@ The project is in a functional beta state with:
 
 - Core audio processing system working reliably
 - User interface complete and usable
-- **6 complete tutorials available** (all with comprehensive validation functions)
+- **7 complete tutorials available** (6 with comprehensive validation functions, 1 ready for validation implementation)
 - 30+ node types implemented
 - Local storage for project saving
 - Streamlined tutorial development workflow
 
-**Major Milestone Achieved**: Tutorial 6 "Spectrum and Harmonics" is now complete with all 36 validation functions implemented, tested, and working. This completes the current tutorial sequence covering fundamental synthesis concepts from basic nodes through harmonic analysis.
+**Major Milestone Achieved**: Tutorial 7 "Additive Synthesis" is now complete with all 35 steps implemented and fully integrated into the application. This extends the tutorial sequence to cover fundamental synthesis concepts from basic nodes through harmonic analysis and additive synthesis techniques.
 
 Development focus areas:
-1. Planning and developing Tutorial 7 and beyond
-2. Testing Tutorial 5 with the newly created validation functions
-3. Testing the Switch and Count nodes in practical applications
-4. Refining the user interface
-5. Optimizing performance
+1. Implementing validation functions for Tutorial 7
+2. Planning and developing Tutorial 8 and beyond
+3. Testing Tutorial 5 with the newly created validation functions
+4. Testing the Switch and Count nodes in practical applications
+5. Refining the user interface
+6. Optimizing performance
 
 The application is usable for learning and experimentation, but some advanced features are still in development.
 

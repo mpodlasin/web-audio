@@ -6,6 +6,7 @@ import { tutorial3 } from './Tutorial3';
 import { tutorial4 } from './Tutorial4';
 import { tutorial5 } from './Tutorial5';
 import { tutorial6 } from './Tutorial6';
+import { tutorial7 } from './Tutorial7';
 
 export const tutorials: Record<string, Tutorial> = {
     tutorial1: tutorial1,
@@ -13,5 +14,6 @@ export const tutorials: Record<string, Tutorial> = {
     tutorial3: tutorial3,
     tutorial4: tutorial4,
     tutorial5: tutorial5,
-    tutorial6: tutorial6
+    tutorial6: tutorial6,
+    tutorial7: tutorial7
 };

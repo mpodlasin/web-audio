@@ -24,6 +24,10 @@ const routes: Record<string, { title: string; tutorialId: string }> = {
 	'spectrum-and-harmonics': {
 		title: '6. Spectrum and Harmonics',
 		tutorialId: 'tutorial6'
+	},
+	'additive-synthesis': {
+		title: '7. Additive Synthesis',
+		tutorialId: 'tutorial7'
 	}
 };
 
