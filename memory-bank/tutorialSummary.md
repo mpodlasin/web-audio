@@ -7,6 +7,7 @@ This document provides a comprehensive summary of the tutorial content written f
 This introductory tutorial teaches the basics of AudioCanvas by guiding users to create a simple melody-playing synthesizer.
 
 ### Key Concepts Covered:
+
 - Creating and connecting nodes
 - Understanding inputs, outputs, and parameters
 - Using Sine Oscillator for sound generation
@@ -17,6 +18,7 @@ This introductory tutorial teaches the basics of AudioCanvas by guiding users to
 - Controlling tempo with the Clock node
 
 ### Learning Progression:
+
 1. Creating basic nodes (Sine Oscillator, Output)
 2. Connecting nodes to create signal flow
 3. Adjusting parameters to change sound
@@ -33,6 +35,7 @@ The tutorial builds progressively from a simple sine wave to a complete musical 
 This tutorial focuses on the fundamental concept that all signals in AudioCanvas are streams of numbers.
 
 ### Key Concepts Covered:
+
 - Using Number and Value nodes to visualize signals
 - Understanding the Oscilloscope for signal visualization
 - Exploring different signal types (numbers, audio, triggers, gates, envelopes)
@@ -41,12 +44,13 @@ This tutorial focuses on the fundamental concept that all signals in AudioCanvas
 - Categorizing signals by their numerical ranges and behaviors
 
 ### Signal Types Explored:
-| Signal type   | Nodes                                | Numbers           |
-| ------------- | ------------------------------------ | ----------------- |
-| number        | Number                               | arbitrary numbers |
-| audio         | Sine                                 | in range -1 to 1  |
-| gate, trigger | Clock, Gate Length                   | either 0 or 1     |
-| envelope      | AD Envelope                          | in range 0 to 1   |
+
+| Signal type   | Nodes              | Numbers           |
+| ------------- | ------------------ | ----------------- |
+| number        | Number             | arbitrary numbers |
+| audio         | Sine               | in range -1 to 1  |
+| gate, trigger | Clock, Gate Length | either 0 or 1     |
+| envelope      | AD Envelope        | in range 0 to 1   |
 
 This tutorial provides crucial theoretical understanding of how signals work in the system.
 
@@ -55,6 +59,7 @@ This tutorial provides crucial theoretical understanding of how signals work in 
 This practical tutorial applies the concepts from previous tutorials to create a techno kick drum sound.
 
 ### Key Concepts Covered:
+
 - Using Triangle Oscillator as a sound source
 - Implementing Saw LFO for rhythmic volume control
 - Using AD Envelope for pitch modulation
@@ -63,6 +68,7 @@ This practical tutorial applies the concepts from previous tutorials to create a
 - Practical sound design principles
 
 ### Creative Techniques Demonstrated:
+
 1. Using Saw LFO to control Gain node (instead of AD Envelope)
 2. Using AD Envelope to control oscillator frequency
 3. Triggering AD Envelope with Saw LFO (instead of Clock)
@@ -75,6 +81,7 @@ This tutorial demonstrates how theoretical concepts can be applied to create pra
 This tutorial explores oscillator properties in more detail, focusing on fundamental concepts of sound synthesis.
 
 ### Key Concepts Covered:
+
 - Understanding frequency (Hz) and how it relates to cycles per second
 - Visualizing waveforms at different frequencies
 - Controlling amplitude with Gain nodes
@@ -83,6 +90,7 @@ This tutorial explores oscillator properties in more detail, focusing on fundame
 - Understanding how oscillator signals relate to speaker movement
 
 ### Oscillator Comparison:
+
 - **Sine**: Pure tone, simplest waveform
 - **Triangle**: Slightly richer than sine, still relatively smooth
 - **Square**: Richer sound, reminiscent of old video game music
@@ -93,6 +101,7 @@ This tutorial provides deeper insight into the fundamental building blocks of sy
 ## Overall Tutorial Structure
 
 The tutorials follow a well-structured progression:
+
 1. **Basic concepts and operations** (Tutorial 1)
 2. **Theoretical understanding of signals** (Tutorial 2)
 3. **Practical application** (Tutorial 3)

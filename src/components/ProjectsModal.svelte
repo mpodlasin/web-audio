@@ -4,8 +4,12 @@
 	import Button from './Button.svelte';
 	import More from '../icons/More_Vertical.svg?component';
 	import Modal from './Modal.svelte';
-	export let projects: string[];
-	export let open: boolean;
+	interface Props {
+		projects: string[];
+		open: boolean;
+	}
+
+	let { projects, open }: Props = $props();
 
 	const disaptcher = createEventDispatcher();
 
@@ -19,7 +23,7 @@
 		disaptcher('projectChange', projectName);
 	};
 
-	let showMoreMenuForProject = '';
+	let showMoreMenuForProject = $state('');
 
 	const handleMoreClick = (projectName: string) => (event: MouseEvent) => {
 		event.stopPropagation();
@@ -39,8 +43,8 @@
 		showMoreMenuForProject = '';
 	};
 
-	let renameModeForProject = '';
-	let renamedProject = '';
+	let renameModeForProject = $state('');
+	let renamedProject = $state('');
 
 	const handleRenameProject = (projectName: string) => (event: MouseEvent) => {
 		event.stopPropagation();
@@ -81,14 +85,14 @@
 	Projects
 	<div class="projects">
 		{#each projects as project (project)}
-			<div class="project" on:click={handleChangeProject(project)} on:keydown={() => {}}>
+			<div class="project" onclick={handleChangeProject(project)} onkeydown={() => {}}>
 				{#if renameModeForProject === project}
-					<!-- svelte-ignore a11y-autofocus -->
-					<input type="text" bind:value={renamedProject} autofocus on:keydown={handleEnter} />
+					<!-- svelte-ignore a11y_autofocus -->
+					<input type="text" bind:value={renamedProject} autofocus onkeydown={handleEnter} />
 				{:else}
 					{project}
 				{/if}
-				<div class="more" on:click={handleMoreClick(project)} on:keydown={() => {}}><More /></div>
+				<div class="more" onclick={handleMoreClick(project)} onkeydown={() => {}}><More /></div>
 				{#if showMoreMenuForProject === project}
 					<div class="more-menu">
 						<Menu>
@@ -99,7 +103,7 @@
 				{/if}
 			</div>
 		{/each}
-		<div class="add" on:click={handleNewProject} on:keydown={() => {}}>
+		<div class="add" onclick={handleNewProject} onkeydown={() => {}}>
 			<div class="plus">+</div>
 		</div>
 	</div>

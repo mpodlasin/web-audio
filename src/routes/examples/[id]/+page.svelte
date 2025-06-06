@@ -3,7 +3,7 @@
 	import { example1 } from '../../../examples/example1';
 	import { type Projects } from '../../../ui/project';
 
-	export let data;
+	let { data } = $props();
 
 	const title = data.title;
 

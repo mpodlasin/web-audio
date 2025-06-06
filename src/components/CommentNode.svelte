@@ -4,13 +4,17 @@
 
 	const dispatcher = createEventDispatcher();
 
-	export let id: string;
-	export let node: SerializedCommentNode;
-	$: comment = node.comment;
+	interface Props {
+		id: string;
+		node: SerializedCommentNode;
+	}
 
-	let editMode = false;
+	let { id, node }: Props = $props();
+	let comment = $derived(node.comment);
 
-	let editedComment = '';
+	let editMode = $state(false);
+
+	let editedComment = $state('');
 
 	const stopEditing = () => {
 		editMode = false;
@@ -23,7 +27,7 @@
 		editedComment = '';
 	};
 
-	let textarea: HTMLTextAreaElement;
+	let textarea: HTMLTextAreaElement = $state();
 
 	const stopPropagation = (e: Event) => e.stopPropagation();
 
@@ -64,21 +68,21 @@
 </script>
 
 {#if editMode}
-	<!-- svelte-ignore a11y-autofocus -->
+	<!-- svelte-ignore a11y_autofocus -->
 	<textarea
 		bind:this={textarea}
 		autofocus
 		rows={5}
-		on:keypress={handleEnter}
+		onkeypress={handleEnter}
 		bind:value={editedComment}
 	/>
 {:else}
 	<div
 		class="comment"
-		on:click={handleCommentClick}
-		on:pointerup={(e) => e.stopPropagation()}
-		on:pointerdown={(e) => e.stopPropagation()}
-		on:keypress={() => {}}
+		onclick={handleCommentClick}
+		onpointerup={(e) => e.stopPropagation()}
+		onpointerdown={(e) => e.stopPropagation()}
+		onkeypress={() => {}}
 	>
 		{comment || 'Empty comment'}
 	</div>

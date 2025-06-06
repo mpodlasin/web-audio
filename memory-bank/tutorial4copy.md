@@ -152,11 +152,11 @@ And that's exactly what we see on the <Clr nodeType="oscilloscope">Oscilloscope<
     import Clr from '../Clr.svelte';
 </script>
 
-So far, we've only controlled the waveform along the horizontal axis.  
+So far, we've only controlled the waveform along the horizontal axis.
 
-But we can also modify it along the vertical axis.  
+But we can also modify it along the vertical axis.
 
-To do that, set the gain parameter on the <Clr nodeType="gain">Gain</Clr> node to `0.5`.  
+To do that, set the gain parameter on the <Clr nodeType="gain">Gain</Clr> node to `0.5`.
 
 # Step 15
 
@@ -164,13 +164,13 @@ To do that, set the gain parameter on the <Clr nodeType="gain">Gain</Clr> node t
     import Clr from '../Clr.svelte';
 </script>
 
-As you can see, the waveform has lost some of its "height."  
+As you can see, the waveform has lost some of its "height."
 
-More technically, we say that its _amplitude_ has been halved.  
+More technically, we say that its _amplitude_ has been halved.
 
 Previously, the waveform had an amplitude of `1`.
 
-Now it has an amplitude of `0.5`.  
+Now it has an amplitude of `0.5`.
 
 # Step 16
 
@@ -178,13 +178,13 @@ Now it has an amplitude of `0.5`.
     import Clr from '../Clr.svelte';
 </script>
 
-We can now see that the <Clr nodeType="gain">Gain</Clr> node performs nothing more than a multiplication by the factor set on the gain knob.  
+We can now see that the <Clr nodeType="gain">Gain</Clr> node performs nothing more than a multiplication by the factor set on the gain knob.
 
-This also explains why it results in a quieter sound.  
+This also explains why it results in a quieter sound.
 
-As we mentioned earlier, the numbers on the `Oscilloscope` represent the movement of the speaker cones.  
+As we mentioned earlier, the numbers on the `Oscilloscope` represent the movement of the speaker cones.
 
-Intuitively, smaller movements lead to quieter sounds.  
+Intuitively, smaller movements lead to quieter sounds.
 
 # Step 17
 
@@ -192,11 +192,11 @@ Intuitively, smaller movements lead to quieter sounds.
     import Clr from '../Clr.svelte';
 </script>
 
-Controlling the frequency and amplitude of an oscillator is one of the fundamentals of electronic music.  
+Controlling the frequency and amplitude of an oscillator is one of the fundamentals of electronic music.
 
-Make sure you understand these concepts well.  
+Make sure you understand these concepts well.
 
-Feel free to experiment with the frequency and gain parameters if you need more examples of how things work.  
+Feel free to experiment with the frequency and gain parameters if you need more examples of how things work.
 
 Instead of setting specific values, try changing the parameters slowly and observe what happens on the <Clr nodeType="oscilloscope">Oscilloscope</Clr>.
 
@@ -206,9 +206,9 @@ Instead of setting specific values, try changing the parameters slowly and obser
     import Clr from '../Clr.svelte';
 </script>
 
-For the rest of this tutorial, we will explore three more oscillators: <Clr nodeType="triangle-oscillator">Triangle</Clr>, <Clr nodeType="saw-oscillator">Saw</Clr>, and <Clr nodeType="square-oscillator">Square</Clr>. We'll examine their waveforms and how they differ.  
+For the rest of this tutorial, we will explore three more oscillators: <Clr nodeType="triangle-oscillator">Triangle</Clr>, <Clr nodeType="saw-oscillator">Saw</Clr>, and <Clr nodeType="square-oscillator">Square</Clr>. We'll examine their waveforms and how they differ.
 
-First, delete the <Clr nodeType="sine-oscillator">Sine</Clr> node and the <Clr nodeType="gain">Gain</Clr> node.  
+First, delete the <Clr nodeType="sine-oscillator">Sine</Clr> node and the <Clr nodeType="gain">Gain</Clr> node.
 
 # Step 19
 
@@ -216,7 +216,7 @@ First, delete the <Clr nodeType="sine-oscillator">Sine</Clr> node and the <Clr n
     import Clr from '../Clr.svelte';
 </script>
 
-Now, create a <Clr nodeType="triangle-oscillator">Triangle</Clr> node, set its frequency to `1` Hz, and connect it to the <Clr nodeType="oscilloscope">Oscilloscope</Clr>.  
+Now, create a <Clr nodeType="triangle-oscillator">Triangle</Clr> node, set its frequency to `1` Hz, and connect it to the <Clr nodeType="oscilloscope">Oscilloscope</Clr>.
 
 # Step 20
 
@@ -234,9 +234,9 @@ The waveform of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr
     import Clr from '../Clr.svelte';
 </script>
 
-We’ve already used the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> in the techno kick tutorial, but let’s listen to it once again.  
+We’ve already used the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> in the techno kick tutorial, but let’s listen to it once again.
 
-Create an <Clr nodeType="destination">Output</Clr> node and connect the <Clr nodeType="triangle-oscillator">Triangle</Clr> node to it.  
+Create an <Clr nodeType="destination">Output</Clr> node and connect the <Clr nodeType="triangle-oscillator">Triangle</Clr> node to it.
 
 # Step 22
 
@@ -246,9 +246,9 @@ Create an <Clr nodeType="destination">Output</Clr> node and connect the <Clr nod
 
 Set the frequency of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> to the default `440` Hz _(double-click on the knob)_.
 
-Then, slowly raise the volume on the <Clr nodeType="destination">Output</Clr> node.  
+Then, slowly raise the volume on the <Clr nodeType="destination">Output</Clr> node.
 
-Experiment with the frequency parameter of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> to hear how it sounds at different frequencies.  
+Experiment with the frequency parameter of the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> to hear how it sounds at different frequencies.
 
 # Step 23
 
@@ -256,9 +256,9 @@ Experiment with the frequency parameter of the <Clr nodeType="triangle-oscillato
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> sounds similar to the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>, but it is slightly richer.  
+The <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> sounds similar to the <Clr nodeType="sine-oscillator">Sine Oscillator</Clr>, but it is slightly richer.
 
-In future tutorials, we will explore where this "richness" comes from.  
+In future tutorials, we will explore where this "richness" comes from.
 
 # Step 24
 
@@ -268,7 +268,7 @@ In future tutorials, we will explore where this "richness" comes from.
 
 Now, let's check out the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
 
-Delete the <Clr nodeType="triangle-oscillator">Triangle</Clr> node and create a <Clr nodeType="square-oscillator">Square</Clr> node.  
+Delete the <Clr nodeType="triangle-oscillator">Triangle</Clr> node and create a <Clr nodeType="square-oscillator">Square</Clr> node.
 
 # Step 25
 
@@ -276,7 +276,7 @@ Delete the <Clr nodeType="triangle-oscillator">Triangle</Clr> node and create a 
     import Clr from '../Clr.svelte';
 </script>
 
-Connect the <Clr nodeType="square-oscillator">Square</Clr> node to the <Clr nodeType="oscilloscope">Oscilloscope</Clr> node.  
+Connect the <Clr nodeType="square-oscillator">Square</Clr> node to the <Clr nodeType="oscilloscope">Oscilloscope</Clr> node.
 
 Set the frequency of the <Clr nodeType="square-oscillator">Square</Clr> oscillator to `1` Hz.
 
@@ -286,11 +286,11 @@ Set the frequency of the <Clr nodeType="square-oscillator">Square</Clr> oscillat
     import Clr from '../Clr.svelte';
 </script>
 
-The result on the <Clr nodeType="oscilloscope">Oscilloscope</Clr> shouldn't be too surprising - we see a square-like waveform on the graph.  
+The result on the <Clr nodeType="oscilloscope">Oscilloscope</Clr> shouldn't be too surprising - we see a square-like waveform on the graph.
 
-Connect the <Clr nodeType="square-oscillator">Square Oscillator</Clr> to the <Clr nodeType="destination">Output</Clr> node.  
+Connect the <Clr nodeType="square-oscillator">Square Oscillator</Clr> to the <Clr nodeType="destination">Output</Clr> node.
 
-Then, experiment with the frequency knob to hear how this oscillator sounds.  
+Then, experiment with the frequency knob to hear how this oscillator sounds.
 
 # Step 27
 
@@ -298,9 +298,9 @@ Then, experiment with the frequency knob to hear how this oscillator sounds.
     import Clr from '../Clr.svelte';
 </script>
 
-The sound of the <Clr nodeType="square-oscillator">Square Oscillator</Clr> is even richer.  
+The sound of the <Clr nodeType="square-oscillator">Square Oscillator</Clr> is even richer.
 
-It resembles the music from old games because square waves were commonly used for sound synthesis on early hardware.  
+It resembles the music from old games because square waves were commonly used for sound synthesis on early hardware.
 
 # Step 28
 
@@ -308,11 +308,11 @@ It resembles the music from old games because square waves were commonly used fo
     import Clr from '../Clr.svelte';
 </script>
 
-Now, let's check out the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr>.  
+Now, let's check out the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr>.
 
-We've already encountered this oscillator in its <Clr nodeType="saw-lfo">LFO</Clr> form, but let's take another look at its waveshape and finally hear how it sounds.  
+We've already encountered this oscillator in its <Clr nodeType="saw-lfo">LFO</Clr> form, but let's take another look at its waveshape and finally hear how it sounds.
 
-Delete the <Clr nodeType="square-oscillator">Square</Clr> node and create a <Clr nodeType="saw-oscillator">Saw</Clr> node.  
+Delete the <Clr nodeType="square-oscillator">Square</Clr> node and create a <Clr nodeType="saw-oscillator">Saw</Clr> node.
 
 # Step 29
 
@@ -320,7 +320,7 @@ Delete the <Clr nodeType="square-oscillator">Square</Clr> node and create a <Clr
     import Clr from '../Clr.svelte';
 </script>
 
-Connect the <Clr nodeType="saw-oscillator">Saw</Clr> node to the <Clr nodeType="oscilloscope">Oscilloscope</Clr> node.  
+Connect the <Clr nodeType="saw-oscillator">Saw</Clr> node to the <Clr nodeType="oscilloscope">Oscilloscope</Clr> node.
 
 Set the frequency of the <Clr nodeType="saw-oscillator">Saw</Clr> oscillator to `1` Hz.
 
@@ -330,13 +330,13 @@ Set the frequency of the <Clr nodeType="saw-oscillator">Saw</Clr> oscillator to 
     import Clr from '../Clr.svelte';
 </script>
 
-Once again, we see the characteristic "sawtooth" waveshape.  
+Once again, we see the characteristic "sawtooth" waveshape.
 
-Now, let's finally hear how it sounds.  
+Now, let's finally hear how it sounds.
 
-Connect the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> to the <Clr nodeType="destination">Output</Clr> node.  
+Connect the <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> to the <Clr nodeType="destination">Output</Clr> node.
 
-Don't touch the frequency parameter just yet! Simply connect the oscillator and listen to what comes out of your speakers.  
+Don't touch the frequency parameter just yet! Simply connect the oscillator and listen to what comes out of your speakers.
 
 # Step 31
 
@@ -344,11 +344,11 @@ Don't touch the frequency parameter just yet! Simply connect the oscillator and 
     import Clr from '../Clr.svelte';
 </script>
 
-You should hear a popping sound coming from your speakers.  
+You should hear a popping sound coming from your speakers.
 
-Look at the <Clr nodeType="oscilloscope">Oscilloscope</Clr> and notice that these pops occur when the waveform suddenly drops from a positive to a negative value.  
+Look at the <Clr nodeType="oscilloscope">Oscilloscope</Clr> and notice that these pops occur when the waveform suddenly drops from a positive to a negative value.
 
-It makes sense that such a sudden movement of the speaker cone would generate a pop.  
+It makes sense that such a sudden movement of the speaker cone would generate a pop.
 
 # Step 32
 
@@ -356,9 +356,9 @@ It makes sense that such a sudden movement of the speaker cone would generate a 
     import Clr from '../Clr.svelte';
 </script>
 
-Now, start increasing the frequency and listen as the popping sound gradually transforms into a steady tone.  
+Now, start increasing the frequency and listen as the popping sound gradually transforms into a steady tone.
 
-Try listening to the oscillator at different frequencies to familiarize yourself with its sound.  
+Try listening to the oscillator at different frequencies to familiarize yourself with its sound.
 
 # Step 33
 
@@ -366,9 +366,8 @@ Try listening to the oscillator at different frequencies to familiarize yourself
     import Clr from '../Clr.svelte';
 </script>
 
-The <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> is the richest of all the oscillators we've tested - almost to the point of being aggressive.  
+The <Clr nodeType="saw-oscillator">Saw Oscillator</Clr> is the richest of all the oscillators we've tested - almost to the point of being aggressive.
 
-In future tutorials, we will explore where this character comes from and how we can "shave off" some of its aggression by using filters.  
+In future tutorials, we will explore where this character comes from and how we can "shave off" some of its aggression by using filters.
 
 But for now, that's it!
-

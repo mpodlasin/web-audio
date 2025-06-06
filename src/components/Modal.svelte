@@ -1,12 +1,19 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { createEventDispatcher } from 'svelte';
 	import Close from '../icons/Close_MD.svg?component';
-	export let open: boolean;
-	let dialog: HTMLDialogElement;
+	interface Props {
+		open: boolean;
+		children?: import('svelte').Snippet;
+	}
+
+	let { open, children }: Props = $props();
+	let dialog: HTMLDialogElement = $state();
 
 	const disaptcher = createEventDispatcher();
 
-	$: {
+	run(() => {
 		if (dialog) {
 			if (open) {
 				dialog.showModal();
@@ -14,7 +21,7 @@
 				dialog.close();
 			}
 		}
-	}
+	});
 
 	const stopPropagation = (event: Event) => {
 		event.stopPropagation();
@@ -25,11 +32,11 @@
 	};
 </script>
 
-<dialog bind:this={dialog} on:pointerdown={stopPropagation} on:pointerup={stopPropagation}>
-	<div class="close" on:click={handleClose} on:keypress={() => {}}>
+<dialog bind:this={dialog} onpointerdown={stopPropagation} onpointerup={stopPropagation}>
+	<div class="close" onclick={handleClose} onkeypress={() => {}}>
 		<Close />
 	</div>
-	<slot />
+	{@render children?.()}
 </dialog>
 
 <style>

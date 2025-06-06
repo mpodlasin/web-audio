@@ -439,4 +439,3 @@ Let's list all of signal types we learnt so far, with examples of related nodes 
 | audio         | <Clr nodeType="sine-oscillator">Sine</Clr>                                       | in range -1 to 1  |
 | gate, trigger | <Clr nodeType="clock">Clock</Clr>, <Clr nodeType="gate-length">Gate Length</Clr> | either 0 or 1     |
 | envelope      | <Clr nodeType="ad-envelope">AD Envelope</Clr>                                    | in range 0 to 1   |
-

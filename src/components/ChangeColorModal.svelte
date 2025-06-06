@@ -2,8 +2,13 @@
 	import { createEventDispatcher } from 'svelte';
 	import Modal from './Modal.svelte';
 	import Button from './Button.svelte';
-	export let open: boolean;
-	export let value: string = '#45c7ff';
+	interface Props {
+		open: boolean;
+		value?: string;
+		node?: import('svelte').Snippet;
+	}
+
+	let { open, value = '#45c7ff', node }: Props = $props();
 
 	const dispatcher = createEventDispatcher();
 
@@ -23,8 +28,8 @@
 <Modal {open} on:close>
 	<div>Change color</div>
 	<div class="content">
-		<slot name="node" />
-		<input type="color" on:input={handleColorChange} {value} />
+		{@render node?.()}
+		<input type="color" oninput={handleColorChange} {value} />
 	</div>
 	<div class="actions">
 		<Button title="Change" on:click={handleConfirmChange} />

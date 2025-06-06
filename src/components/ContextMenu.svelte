@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { createEventDispatcher } from 'svelte';
 	import {
 		categorizedNodeTypes,
@@ -11,15 +13,19 @@
 	import MenuButton from './MenuButton.svelte';
 	import PositionedMenu from './PositionedMenu.svelte';
 
-	export let position: Position;
+	interface Props {
+		position: Position;
+	}
+
+	let { position }: Props = $props();
 
 	const menuHeight = 363;
 	const menuWidth = 160;
 
-	let displaySubmenusOnTheLeft = false;
-	let displayedPosition: Position;
+	let displaySubmenusOnTheLeft = $state(false);
+	let displayedPosition: Position = $state();
 
-	$: {
+	run(() => {
 		const y = position.y;
 		const x = position.x;
 
@@ -35,13 +41,13 @@
 		if (x + menuWidth > window.innerWidth) {
 			displaySubmenusOnTheLeft = true;
 		}
-	}
+	});
 
 	const readableNames = _readableNames as Record<string, string>;
 
 	const dispatcher = createEventDispatcher();
 
-	let hoveredOverNodeType = '';
+	let hoveredOverNodeType = $state('');
 	let setTimeoutId: NodeJS.Timeout | null = null;
 
 	const handleMouseEnter = (nodeType: string) => () => {
@@ -82,9 +88,9 @@
 				<MenuButton>
 					<div
 						class="menu-section"
-						on:mouseenter={handleMouseEnter(nodeType)}
-						on:touchstart={handleMouseEnter(nodeType)}
-						on:mouseleave={handleMouseLeave}
+						onmouseenter={handleMouseEnter(nodeType)}
+						ontouchstart={handleMouseEnter(nodeType)}
+						onmouseleave={handleMouseLeave}
 					>
 						<div>{readableCategoryNames[nodeType]}</div>
 						<div class="icon"><ChevronRight /></div>

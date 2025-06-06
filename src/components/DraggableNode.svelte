@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { createBubbler } from 'svelte/legacy';
+
+	const bubble = createBubbler();
 	import { createEventDispatcher } from 'svelte';
 	import type {
 		AllowedSerializedAudioElements,
@@ -10,18 +13,32 @@
 
 	const dispatcher = createEventDispatcher();
 
-	export let id: string;
-	export let node: AllowedSerializedAudioElements;
-	export let instantiatedNode: unknown;
-	export let color: string;
-	export let position: {
-		x: number;
-		y: number;
-	};
-	export let running: boolean;
-	export let draggingLine: boolean;
-	export let selected: boolean;
-	export let audioGraph: SerializedAudioElements;
+	interface Props {
+		id: string;
+		node: AllowedSerializedAudioElements;
+		instantiatedNode: unknown;
+		color: string;
+		position: {
+			x: number;
+			y: number;
+		};
+		running: boolean;
+		draggingLine: boolean;
+		selected: boolean;
+		audioGraph: SerializedAudioElements;
+	}
+
+	let {
+		id,
+		node,
+		instantiatedNode,
+		color,
+		position,
+		running,
+		draggingLine,
+		selected,
+		audioGraph
+	}: Props = $props();
 
 	let internalClickPosition = {
 		x: 0,
@@ -98,11 +115,11 @@
 </script>
 
 <div
-	on:pointerdown={handlePointerDown}
-	on:pointerup={handlePointerUp}
-	on:contextmenu={(e) => e.preventDefault()}
-	on:click
-	on:keydown={() => {}}
+	onpointerdown={handlePointerDown}
+	onpointerup={handlePointerUp}
+	oncontextmenu={(e) => e.preventDefault()}
+	onclick={bubble('click')}
+	onkeydown={() => {}}
 	class="wrapper"
 	class:selected
 	style="position: absolute; left: {position.x}px; top: {position.y}px;"

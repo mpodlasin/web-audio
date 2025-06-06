@@ -1,5 +1,13 @@
 <script lang="ts">
-	export let variant: 'default' | 'danger' = 'default';
+	import { createBubbler } from 'svelte/legacy';
+
+	const bubble = createBubbler();
+	interface Props {
+		variant?: 'default' | 'danger';
+		children?: import('svelte').Snippet;
+	}
+
+	let { variant = 'default', children }: Props = $props();
 
 	const stopPropagation = (event: Event) => {
 		event.stopPropagation();
@@ -7,14 +15,14 @@
 </script>
 
 <button
-	on:click
-	on:touchstart
-	on:keypress
+	onclick={bubble('click')}
+	ontouchstart={bubble('touchstart')}
+	onkeypress={bubble('keypress')}
 	class:danger={variant === 'danger'}
-	on:pointerdown={stopPropagation}
-	on:pointerup={stopPropagation}
+	onpointerdown={stopPropagation}
+	onpointerup={stopPropagation}
 >
-	<slot />
+	{@render children?.()}
 </button>
 
 <style>

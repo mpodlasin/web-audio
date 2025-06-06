@@ -3,7 +3,12 @@
 	import type { Position } from '../audio/serialized';
 	import Menu from './Menu.svelte';
 
-	export let position: Position;
+	interface Props {
+		position: Position;
+		children?: import('svelte').Snippet;
+	}
+
+	let { position, children }: Props = $props();
 
 	const dispatcher = createEventDispatcher();
 
@@ -16,15 +21,15 @@
 	};
 </script>
 
-<div class="background" on:mousedown={handleBackgroundClick} on:keypress={() => {}}>
+<div class="background" onmousedown={handleBackgroundClick} onkeypress={() => {}}>
 	<div
 		class="menu"
 		style="left: {position.x}px; top: {position.y}px;"
-		on:mousedown={handleMenuClick}
-		on:keypress={() => {}}
+		onmousedown={handleMenuClick}
+		onkeypress={() => {}}
 	>
 		<Menu>
-			<slot />
+			{@render children?.()}
 		</Menu>
 	</div>
 </div>

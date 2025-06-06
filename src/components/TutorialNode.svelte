@@ -1,33 +1,39 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { SerializedAudioElements, SerializedTutorialNode } from '../audio/serialized';
 	import type { Tutorial } from './Tutorial/types';
 	import { tutorials } from './Tutorial';
 	import Button from './Button.svelte';
 	import { globalContext } from '../audio/GlobalContext';
 
-	export let audioGraph: SerializedAudioElements;
-	export let node: SerializedTutorialNode;
+	interface Props {
+		audioGraph: SerializedAudioElements;
+		node: SerializedTutorialNode;
+	}
+
+	let { audioGraph, node }: Props = $props();
 
 	const localStorageKey = 'tutorial_steps';
 
-	$: tutorialId = node.tutorialId;
+	let tutorialId = $derived(node.tutorialId);
 
-	let currentStep = 0;
+	let currentStep = $state(0);
 
-	$: {
+	run(() => {
 		const tutorialSteps = JSON.parse(window.localStorage.getItem(localStorageKey) ?? '{}');
 		currentStep = tutorialSteps[tutorialId] ?? 0;
-	}
+	});
 
-	$: tutorial = tutorials[tutorialId];
+	let tutorial = $derived(tutorials[tutorialId]);
 
-	$: Copy = tutorial?.steps[currentStep]?.copy;
-	$: check = tutorial?.steps[currentStep]?.check ?? true;
+	let Copy = $derived(tutorial?.steps[currentStep]?.copy);
+	let check = $derived(tutorial?.steps[currentStep]?.check ?? true);
 
-	$: numberOfSteps = tutorial?.steps.length ?? 0;
+	let numberOfSteps = $derived(tutorial?.steps.length ?? 0);
 
-	$: noCheckNeeded = typeof check === 'boolean';
-	$: checkResult = typeof check === 'boolean' ? check : check(audioGraph);
+	let noCheckNeeded = $derived(typeof check === 'boolean');
+	let checkResult = $derived(typeof check === 'boolean' ? check : check(audioGraph));
 
 	globalContext.addEventListener('statechange', () => {
 		checkResult = typeof check === 'boolean' ? check : check(audioGraph);
@@ -47,7 +53,7 @@
 	</div>
 	<div class="copy">
 		{#if Copy}
-			<svelte:component this={Copy} />
+			<Copy />
 		{/if}
 	</div>
 	<div class="result">

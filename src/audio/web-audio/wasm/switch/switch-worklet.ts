@@ -12,12 +12,14 @@ class SwitchProcessor extends AudioWorkletProcessor {
 	private kill = false;
 
 	static get parameterDescriptors() {
-        return [{
-            name: 'channel',
-            defaultValue: 0,
-            minValue: 0,
-            maxValue: 3,
-        }];
+		return [
+			{
+				name: 'channel',
+				defaultValue: 0,
+				minValue: 0,
+				maxValue: 3
+			}
+		];
 	}
 
 	constructor(
@@ -84,7 +86,7 @@ class SwitchProcessor extends AudioWorkletProcessor {
 		if (this.kill) return false;
 		if (!this.nativeProcess) return true;
 
-    const chosenChannel = parameters['channel']?.[0] ?? 0;
+		const chosenChannel = parameters['channel']?.[0] ?? 0;
 
 		this.chosenChannelBuffer.set([chosenChannel]);
 

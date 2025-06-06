@@ -2,7 +2,7 @@
     import Clr from '../Clr.svelte';
 </script>
 
-To achieve that, we'll use two new nodes: 
+To achieve that, we'll use two new nodes:
 
 The <Clr nodeType="switch">Switch</Clr> node, which allows us to select between different audio signals.
 

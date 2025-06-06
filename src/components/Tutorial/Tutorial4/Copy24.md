@@ -4,4 +4,4 @@
 
 Now, let's check out the <Clr nodeType="square-oscillator">Square Oscillator</Clr>.
 
-Delete the <Clr nodeType="triangle-oscillator">Triangle</Clr> node and create a <Clr nodeType="square-oscillator">Square</Clr> node.  
+Delete the <Clr nodeType="triangle-oscillator">Triangle</Clr> node and create a <Clr nodeType="square-oscillator">Square</Clr> node.

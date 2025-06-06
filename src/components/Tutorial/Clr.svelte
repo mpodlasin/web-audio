@@ -1,13 +1,18 @@
 <script lang="ts">
 	import { getDefaultColorForNode, type NodeType } from '../../audio/serialized';
 
-	export let nodeType: NodeType;
+	interface Props {
+		nodeType: NodeType;
+		children?: import('svelte').Snippet;
+	}
 
-	$: color = getDefaultColorForNode(nodeType);
+	let { nodeType, children }: Props = $props();
+
+	let color = $derived(getDefaultColorForNode(nodeType));
 </script>
 
 <span style={`color: ${color}`}>
-	<pre><slot /></pre>
+	<pre>{@render children?.()}</pre>
 </span>
 
 <style>

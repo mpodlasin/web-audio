@@ -7,6 +7,7 @@ Different oscillators will have different harmonic patterns.
 For the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr>, the harmonics occur only at odd multiples of the fundamental frequency.
 
 For example, with a fundamental frequency of 100 Hz, the <Clr nodeType="triangle-oscillator">Triangle Oscillator</Clr> has harmonics at approximately:
+
 - 300 Hz (3rd harmonic)
 - 500 Hz (5th harmonic)
 - 700 Hz (7th harmonic)

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run, handlers } from 'svelte/legacy';
+
 	import {
 		type AudioNodeDatabase,
 		type SerializedAudioElements,
@@ -37,20 +39,29 @@
 	import { goto } from '$app/navigation';
 	import { DISTANCE_THAT_IS_CONSIDERED_DRAG } from '../constants';
 
-	export let chosenProjectName: string;
-	export let projectNames: string[];
-	export let project: Project;
-	export let tutorialMode = false;
+	interface Props {
+		chosenProjectName: string;
+		projectNames: string[];
+		project: Project;
+		tutorialMode?: boolean;
+	}
+
+	let {
+		chosenProjectName,
+		projectNames,
+		project,
+		tutorialMode = false
+	}: Props = $props();
 
 	const dispatcher = createEventDispatcher();
 
-	let container: HTMLDivElement;
+	let container: HTMLDivElement = $state();
 
-	let audioNodeDatabase: AudioNodeDatabase = {};
+	let audioNodeDatabase: AudioNodeDatabase = $state({});
 
-	let audioGraphHistory: SerializedAudioElements[] = [{}];
-	let temporaryGraphHistory: SerializedAudioElements[] = [];
-	$: audioGraph = temporaryGraphHistory.at(-1) ?? audioGraphHistory.at(-1) ?? {};
+	let audioGraphHistory: SerializedAudioElements[] = $state([{}]);
+	let temporaryGraphHistory: SerializedAudioElements[] = $state([]);
+	let audioGraph = $derived(temporaryGraphHistory.at(-1) ?? audioGraphHistory.at(-1) ?? {});
 
 	const updateAudioGraphHistory = (
 		map: (a: SerializedAudioElements) => SerializedAudioElements
@@ -105,11 +116,11 @@
 		temporaryGraphHistory = [];
 	};
 
-	$: {
+	run(() => {
 		if (temporaryGraphHistory.length === 0) {
 			dispatcher('change', audioGraph);
 		}
-	}
+	});
 
 	updateAudioGraphHistory(() => project.audioCanvas);
 
@@ -126,7 +137,7 @@
 	// }
 
 	/* DRAGGING CANVAS ----------------------------------------- */
-	let canvasRelativePosition: Position = project.canvasRelativePosition;
+	let canvasRelativePosition: Position = $state(project.canvasRelativePosition);
 	let lastDragPosition: Position | null = null;
 	let draggedDistance = 0;
 
@@ -195,9 +206,9 @@
 	};
 
 	/* SELECTING NODES ----------------------------------------- */
-	let selectedNodeIds: string[] = [];
-	let selectNodesStartPosition: Position | null = null;
-	let selectNodesEndPosition: Position | null = null;
+	let selectedNodeIds: string[] = $state([]);
+	let selectNodesStartPosition: Position | null = $state(null);
+	let selectNodesEndPosition: Position | null = $state(null);
 
 	const handleStartSelectingNodes = (event: PointerEvent) => {
 		event.preventDefault();
@@ -248,7 +259,7 @@
 		selectNodesEndPosition = null;
 	};
 
-	$: {
+	run(() => {
 		if (selectNodesStartPosition && selectNodesEndPosition) {
 			const filteredIds = Object.entries(audioGraph)
 				.filter(([_, node]) => {
@@ -275,7 +286,7 @@
 
 			selectedNodeIds = [...selectedNodeIds, ...filteredIds];
 		}
-	}
+	});
 
 	/* DRAGGING NODES ----------------------------------------- */
 	const handleDragStart = () => {
@@ -403,7 +414,7 @@
 		return plugPositions;
 	};
 
-	let plugPositions: PlugPositions = {};
+	let plugPositions: PlugPositions = $state({});
 
 	onMount(() => {
 		updatePlugPositions();
@@ -415,7 +426,7 @@
 		});
 	};
 
-	$: linesToDisplay = getLinesToDisplay(audioGraph, plugPositions);
+	let linesToDisplay = $derived(getLinesToDisplay(audioGraph, plugPositions));
 
 	/* NODE PARAMETER CHANGE ----------------------------------------- */
 	const handleNodeParameterChangeStart = () => {
@@ -447,10 +458,10 @@
 	};
 
 	/* LINE DRAGGING ----------------------------------------- */
-	let draggingLine = false;
+	let draggingLine = $state(false);
 	let startingPlug: { id: string; type: 'input' | 'output'; nodeId: string } | null = null;
-	let positionOfStartingPlug: { x: number; y: number } = { x: 0, y: 0 };
-	let positionOfEndPlug: { x: number; y: number } | null = null;
+	let positionOfStartingPlug: { x: number; y: number } = $state({ x: 0, y: 0 });
+	let positionOfEndPlug: { x: number; y: number } | null = $state(null);
 
 	const handlePlugDown = (
 		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
@@ -613,29 +624,29 @@
 	};
 
 	/* PLAYING ----------------------------------------- */
-	let playing = false;
+	let playing = $state(false);
 
 	const handlePlayChange = (event: CustomEvent<{ playing: boolean }>) => {
 		playing = event.detail.playing;
 	};
 
-	$: {
+	run(() => {
 		if (playing) {
 			globalContext.resume();
 		} else {
 			globalContext.suspend();
 		}
-	}
+	});
 
 	/* ---------------------------------------------- */
 	/* CONTEXT MENU */
 
-	let menuPosition = { x: 0, y: 0 };
-	let showMenu = false;
-	let menuKind: 'canvas' | 'node' | 'line' | 'line-multiply' = 'canvas';
-	let chosenLine: LineToDisplay | null = null;
-	let menuNodeId: string = '';
-	$: chosenLineMultiply = chosenLine?.multiply;
+	let menuPosition = $state({ x: 0, y: 0 });
+	let showMenu = $state(false);
+	let menuKind: 'canvas' | 'node' | 'line' | 'line-multiply' = $state('canvas');
+	let chosenLine: LineToDisplay | null = $state(null);
+	let menuNodeId: string = $state('');
+	let chosenLineMultiply = $derived(chosenLine?.multiply);
 
 	const handleOpenContextMenu = (event: PointerEvent) => {
 		const wasNotDragging = draggedDistance < DISTANCE_THAT_IS_CONSIDERED_DRAG;
@@ -744,7 +755,7 @@
 	};
 
 	/* PROJECTS ----------------------------------------- */
-	let showProjectsModal = false;
+	let showProjectsModal = $state(false);
 
 	const handleProjectNameClick = () => {
 		if (tutorialMode) {
@@ -770,10 +781,10 @@
 	};
 
 	/* CHANGE COLOR ----------------------------------------- */
-	let changeColorModalIsOpen = false;
-	let changedColorNodeId = '';
-	$: changedColorNode = audioGraph[changedColorNodeId];
-	let changedNodeColor: string;
+	let changeColorModalIsOpen = $state(false);
+	let changedColorNodeId = $state('');
+	let changedColorNode = $derived(audioGraph[changedColorNodeId]);
+	let changedNodeColor: string = $state();
 
 	const openChangeColorModal = (nodeId: string) => () => {
 		changeColorModalIsOpen = true;
@@ -819,7 +830,7 @@
 	window.addEventListener('keydown', handleCanvasKeypress);
 
 	/* RESIZE ----------------------------------------- */
-	let size = project.size;
+	let size = $state(project.size);
 
 	const makeStuffSmaller = () => {
 		size = size - 0.1;
@@ -846,14 +857,12 @@
 
 <div
 	class="canvas"
-	on:pointerdown={handleStartSelectingNodes}
-	on:pointermove={handleSelectNodesDrag}
-	on:mouseup={handleSelectNodesEnd}
-	on:pointerdown={handleDragCanvasStart}
-	on:pointermove={handleDragCanvas}
-	on:pointerup={handleDragCanvasEnd}
-	on:click={handleCanvasDoubleClick}
-	on:keydown={() => {}}
+	onpointerdown={handlers(handleStartSelectingNodes, handleDragCanvasStart)}
+	onpointermove={handlers(handleSelectNodesDrag, handleDragCanvas)}
+	onmouseup={handleSelectNodesEnd}
+	onpointerup={handleDragCanvasEnd}
+	onclick={handleCanvasDoubleClick}
+	onkeydown={() => {}}
 	bind:this={container}
 >
 	<ProjectHeader
@@ -894,9 +903,9 @@
 	</svg>
 	<div
 		class="audio-canvas"
-		on:pointerup={handleOpenContextMenu}
-		on:contextmenu={(e) => e.preventDefault()}
-		on:pointermove={handleLineDrag}
+		onpointerup={handleOpenContextMenu}
+		oncontextmenu={(e) => e.preventDefault()}
+		onpointermove={handleLineDrag}
 	>
 		<div
 			class="nodes"
@@ -943,7 +952,7 @@
 				)}px; width: {Math.abs(
 					selectNodesEndPosition.x - selectNodesStartPosition.x
 				)}px; height: {Math.abs(selectNodesEndPosition.y - selectNodesStartPosition.y)}px;"
-			/>
+			></div>
 		{/if}
 		{#if showMenu && menuKind === 'line'}
 			<PositionedMenu position={menuPosition} on:close={closeMenu}>
@@ -1007,19 +1016,21 @@
 				on:confirm={handleConfirmChange}
 				on:close={closeChangeColorModal}
 			>
-				<div slot="node">
-					{#if changedColorNode}
-						<Node
-							color={changedNodeColor}
-							node={changedColorNode}
-							id={changedColorNodeId}
-							instantiatedNode={null}
-							draggingLine={false}
-							running={playing}
-							{audioGraph}
-						/>
-					{/if}
-				</div>
+				{#snippet node()}
+								<div >
+						{#if changedColorNode}
+							<Node
+								color={changedNodeColor}
+								node={changedColorNode}
+								id={changedColorNodeId}
+								instantiatedNode={null}
+								draggingLine={false}
+								running={playing}
+								{audioGraph}
+							/>
+						{/if}
+					</div>
+							{/snippet}
 			</ChangeColorModal>
 		{/if}
 		<div class="beta-info">

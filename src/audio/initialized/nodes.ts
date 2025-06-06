@@ -186,7 +186,7 @@ abstract class GenericCustomAudioNode implements CustomAudioNode {
 			}
 
 			parameterInput.connect(limiter).connect(audioParam);
-      audioParam.value = 0;
+			audioParam.value = 0;
 		}
 
 		const limiter = this.parameterLimiters[parameterName];
@@ -417,24 +417,24 @@ export class CustomSwitchNode extends GenericCustomAudioNode {
 
 	constructor(id: string) {
 		super(id, 'switch');
-		
+
 		// Create the switch worklet
 		this.switchWorklet = createSwitchWorklet();
-		
+
 		// Create parameter mapping for the channel parameter
 		this.channelMapper = globalContext.createConstantSource();
 		this.offsetNode = globalContext.createConstantSource();
-		
+
 		// Set up the mapping to subtract 1:
 		this.offsetNode.offset.value = -1;
-		
+
 		// Get the channel parameter from the worklet
 		const channelParam = this.switchWorklet.parameters.get('channel');
 		if (channelParam) {
 			this.channelMapper.connect(channelParam);
-			this.offsetNode.connect(channelParam);  // This will be added to channelMapper's output
+			this.offsetNode.connect(channelParam); // This will be added to channelMapper's output
 		}
-		
+
 		this.channelMapper.start();
 		this.offsetNode.start();
 	}
@@ -451,7 +451,7 @@ export class CustomSwitchNode extends GenericCustomAudioNode {
 		if (parameterName === 'channel') {
 			return this.channelMapper.offset;
 		}
-		
+
 		throw new Error(`Unknown parameter ${parameterName} for Switch node`);
 	}
 

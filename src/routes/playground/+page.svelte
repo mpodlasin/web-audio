@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Position, SerializedAudioElements } from '../../audio/serialized';
 	import { loadCustomNodes } from '../../audio/web-audio/utils';
 	import AudioCanvas from '../../components/AudioCanvas.svelte';
@@ -10,31 +12,34 @@
 
 	const projectsString = localStorage.getItem(audioGraphLocalStorageKey);
 
-	let projects: Projects =
+	let projects: Projects = $state(
 		projectsString !== null
 			? JSON.parse(projectsString)
 			: {
 					'Project 1': createProject('Project 1')
-			  };
+			  }
+	);
 
-	$: projectNames = Object.values(projects)
-		.slice()
-		.sort((a, b) => new Date(b.lastChanged).valueOf() - new Date(a.lastChanged).valueOf())
-		.map((project) => project.name);
+	let projectNames = $derived(
+		Object.values(projects)
+			.slice()
+			.sort((a, b) => new Date(b.lastChanged).valueOf() - new Date(a.lastChanged).valueOf())
+			.map((project) => project.name)
+	);
 
-	let chosenProjectName = '';
+	let chosenProjectName = $state('');
 
-	$: {
+	run(() => {
 		if (!chosenProjectName) {
 			chosenProjectName = projectNames[0] ?? 'Project 1';
 		}
-	}
+	});
 
-	$: chosenProject = projects[chosenProjectName];
+	let chosenProject = $derived(projects[chosenProjectName]);
 
-	$: {
+	run(() => {
 		localStorage.setItem(audioGraphLocalStorageKey, JSON.stringify(projects));
-	}
+	});
 
 	const handleChange = (event: CustomEvent<SerializedAudioElements>) => {
 		if (!chosenProject) return;

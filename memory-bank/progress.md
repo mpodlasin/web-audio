@@ -5,6 +5,7 @@
 ### Core Functionality
 
 1. **Audio Graph System**
+
    - ✅ Serialized audio graph representation
    - ✅ Runtime node initialization
    - ✅ Node connection management
@@ -12,6 +13,7 @@
    - ✅ Undo/redo functionality
 
 2. **User Interface**
+
    - ✅ Node creation and placement
    - ✅ Connection creation via drag-and-drop
    - ✅ Parameter adjustment via knobs
@@ -22,6 +24,7 @@
    - ✅ Project saving and loading
 
 3. **Audio Processing**
+
    - ✅ Standard Web Audio API nodes
    - ✅ Custom WebAssembly audio processors
    - ✅ Real-time audio processing
@@ -37,26 +40,31 @@
 ### Implemented Node Types
 
 #### Oscillators
+
 - ✅ Sine Oscillator
 - ✅ Square Oscillator
 - ✅ Saw Oscillator
 - ✅ Triangle Oscillator
 
 #### Filters
+
 - ✅ Lowpass Filter
 - ✅ Highpass Filter
 - ✅ Bandpass Filter
 
 #### Envelopes
+
 - ✅ AD Envelope (Attack-Decay)
 
 #### Modulation
+
 - ✅ Sine LFO
 - ✅ Square LFO
 - ✅ Saw LFO
 - ✅ Triangle LFO
 
 #### Sequencing
+
 - ✅ Clock
 - ✅ Sequencer
 - ✅ Pattern
@@ -64,6 +72,7 @@
 - ✅ Measure Gate
 
 #### Utilities
+
 - ✅ Gain
 - ✅ Multiply
 - ✅ Pan
@@ -75,48 +84,56 @@
 - ✅ Times
 
 #### Visualization
+
 - ✅ Oscilloscope
 - ✅ Spectrum
 - ✅ Value
 - ✅ Comment
 
 #### I/O
+
 - ✅ Destination (Output)
 - ✅ MIDI Input
 
 ### Completed Tutorials
 
 1. ✅ **Tutorial 1: Your First Sounds**
+
    - Introduction to nodes and connections
    - Creating a simple melody with Sine Oscillator
    - Using Sequencer, Pitch Quantizer, and Convolution
    - All steps implemented and validated
 
 2. ✅ **Tutorial 2: Types of Signals**
+
    - Theory on signal flow and visualization
    - Using Oscilloscope and Value nodes
    - Understanding different signal types
    - All steps implemented and validated
 
 3. ✅ **Tutorial 3: Synthesizing Techno Kick**
+
    - Practical application of synthesis concepts
    - Creating a techno kick drum
    - Using envelopes and oscillators
    - All steps implemented and validated
 
 4. ✅ **Tutorial 4: Frequency and Amplitude**
+
    - Exploring oscillator properties
    - Comparing different waveforms
    - Using the Oscilloscope for visualization
    - All steps implemented and validated
 
 5. ✅ **Tutorial 5: Cycling Through Oscillators**
+
    - Creating a voice that changes oscillator types with each note
    - Using the Switch node to select between different oscillators
    - Using the Count node to cycle through options automatically
    - All steps implemented with validation
 
 6. ✅ **Tutorial 6: Spectrum and Harmonics**
+
    - Introducing the Spectrum node as a visualization tool
    - Explaining the concept of harmonics in complex waveforms
    - Analyzing the harmonic content of different oscillator types
@@ -139,6 +156,7 @@
 ### Recently Completed Nodes
 
 1. **Switch Node**
+
    - ✅ Static definitions
    - ✅ UI representation
    - ✅ Runtime implementation
@@ -155,14 +173,17 @@
 ### Planned Node Types
 
 1. **ADSR Envelope**
+
    - More complex envelope with Attack, Decay, Sustain, Release stages
    - Needed for more advanced synthesis techniques
 
 2. **Sample Player**
+
    - For loading and playing audio samples
    - Will enable sample-based tutorials
 
 3. **Noise Generator**
+
    - White, pink, and brown noise sources
    - Important for percussion synthesis and effects
 
@@ -189,15 +210,16 @@
    - ❌ Finalizing tutorial copy
    - No longer blocked: Switch and Count nodes are now implemented
 
-
 ### Planned Tutorials
 
 1. **Filter Design and Resonance**
+
    - Exploring different filter types
    - Understanding resonance and cutoff
    - Creating filter sweeps and effects
 
 2. **Envelopes and Dynamics**
+
    - More advanced envelope techniques
    - Controlling dynamics in a patch
    - Creating expressive sounds
@@ -210,11 +232,13 @@
 ### Technical Improvements
 
 1. **Mobile Support**
+
    - ❌ Touch-friendly interface
    - ❌ Responsive design for small screens
    - ❌ Performance optimizations for mobile devices
 
 2. **Performance Optimizations**
+
    - ❌ Reduce CPU usage for complex patches
    - ❌ Optimize WebAssembly modules
    - ❌ Improve rendering performance
@@ -227,7 +251,7 @@
 ## Recent Tool Developments
 
 1. **Tutorial Processing Tools**
-   - ✅ Developed tutorial-splitter.js for splitting tutorial markdown files into individual Copy*.md files
+   - ✅ Developed tutorial-splitter.js for splitting tutorial markdown files into individual Copy\*.md files
    - ✅ Developed step-renumber.js for sequentially renumbering steps in tutorial files
    - ✅ Created integrated tutorial-splitter-v2.js that combines both functionalities with additional options:
      - One-step process for renumbering and splitting
@@ -248,6 +272,7 @@ The project is in a functional beta state with:
 **Major Milestone Achieved**: Tutorial 7 "Additive Synthesis" is now complete with all 35 steps implemented and fully integrated into the application. This extends the tutorial sequence to cover fundamental synthesis concepts from basic nodes through harmonic analysis and additive synthesis techniques.
 
 Development focus areas:
+
 1. Implementing validation functions for Tutorial 7
 2. Planning and developing Tutorial 8 and beyond
 3. Testing Tutorial 5 with the newly created validation functions
@@ -262,10 +287,12 @@ The application is usable for learning and experimentation, but some advanced fe
 ### Audio Processing
 
 1. **WebAssembly Compatibility**
+
    - Some WebAssembly modules have compatibility issues in Safari
    - Workarounds are in place but not optimal
 
 2. **Audio Glitches**
+
    - Occasional audio glitches during complex parameter changes
    - Needs optimization in the audio update process
 
@@ -276,10 +303,12 @@ The application is usable for learning and experimentation, but some advanced fe
 ### User Interface
 
 1. **Connection Handling**
+
    - Connecting nodes can be difficult on trackpads
    - Need improved precision for connection points
 
 2. **Parameter Control**
+
    - Some parameter knobs lack fine control
    - Need keyboard modifiers for precise adjustments
 
@@ -290,11 +319,13 @@ The application is usable for learning and experimentation, but some advanced fe
 ### Tutorial System
 
 1. **Validation Strictness**
+
    - Some tutorial steps have overly strict validation
    - Users can get stuck if their solution differs slightly from expected
    - Created a comprehensive Check StyleGuide document to establish best practices for balanced validation
 
 2. **Error Messages**
+
    - Validation error messages could be more helpful
    - Need better guidance when users make mistakes
 
@@ -305,10 +336,12 @@ The application is usable for learning and experimentation, but some advanced fe
 ### Project Management
 
 1. **Storage Limitations**
+
    - Local storage has size limitations
    - Complex projects may hit browser storage limits
 
 2. **No Project Organization**
+
    - Projects are listed without categories or tags
    - Need better project management features
 

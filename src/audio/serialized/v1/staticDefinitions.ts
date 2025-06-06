@@ -534,18 +534,18 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				...audioInputOutputDefinition,
 				id: 'audio-d',
 				name: 'Audio d'
-			},
+			}
 		],
 		outputs: [audioInputOutputDefinition],
 		parameters: {
-			channel: 	{ 
+			channel: {
 				minValue: 1,
 				maxValue: 4,
 				defaultValue: 1,
 				polarity: 'uni' as const,
 				binary: false,
 				discrete: true,
-				linear: true,
+				linear: true
 			}
 		}
 	},

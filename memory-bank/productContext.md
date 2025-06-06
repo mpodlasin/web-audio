@@ -33,6 +33,7 @@ AudioCanvas operates as a visual programming environment where users connect nod
 4. **Audition**: Users hear the results in real-time
 
 In tutorial mode, this workflow is guided by step-by-step instructions. Each tutorial step:
+
 1. Presents information about a concept
 2. Asks the user to implement that concept by adding/connecting specific nodes
 3. Validates the user's implementation

@@ -2,8 +2,12 @@
 	import { createEventDispatcher } from 'svelte';
 	import { rewriteStringWithNumber } from '../utils/rewriteStringWithNumber';
 
-	export let label: string;
-	export let active: boolean;
+	interface Props {
+		label: string;
+		active: boolean;
+	}
+
+	let { label, active }: Props = $props();
 
 	const dispatcher = createEventDispatcher();
 
@@ -26,9 +30,9 @@
 <div class="wrapper">
 	<button
 		class:active
-		on:click={handleClick}
-		on:pointerup={ignorePointerEvent}
-		on:pointerdown={ignorePointerEvent}
+		onclick={handleClick}
+		onpointerup={ignorePointerEvent}
+		onpointerdown={ignorePointerEvent}
 	/>
 	<div class="label">{rewriteStringWithNumber(label)}</div>
 </div>

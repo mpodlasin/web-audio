@@ -482,4 +482,3 @@ In the meantime let's recap the most important things we've learned so far:
 - Nodes have `inputs` (on the bottom lefft) and `outputs` (on the bottom right) that look like little circles.
 - Nodes have also `parameters` in the form of `knobs`, which values can be changed with the mouse.
 - Not only we can control parameters manually, but we can also control them with other nodes by connecting a node and a knob with a line.
-

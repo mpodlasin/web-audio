@@ -3,11 +3,13 @@
 ## Tutorial Structure
 
 ### Introduction (Steps 1-2)
+
 - Welcome to Tutorial 5
 - Brief mention of what we'll build: a patch that cycles through different oscillator types with each note
 - Reference to the four oscillator types we learned about in Tutorial 4
 
 ### Building the Oscillator Bank (Steps 3-8)
+
 - Create all four oscillator types (Sine, Triangle, Square, Saw)
 - Create a Switch node
 - Connect each oscillator to a different input on the Switch
@@ -16,6 +18,7 @@
 - Test each oscillator by manually changing the Switch input parameter
 
 ### Setting Up Automatic Oscillator Switching (Steps 9-15)
+
 - Create a Clock node for timing
 - Introduce the Count node and explain its basic function
 - Create a Count node and connect it to the Clock
@@ -26,6 +29,7 @@
 - Connect the Clock to the AD Envelope trigger and the AD Envelope to the Gain
 
 ### Adding Melodic Control (Steps 16-22)
+
 - Create a Sequencer node for melody
 - Add a Pitch Quantizer for musical scales
 - Set up a simple melody sequence
@@ -35,6 +39,7 @@
 - Adjust parameters for the best musical result
 
 ### Refinement and Creative Variations (Steps 23-27)
+
 - Experiment with different Count node modulo values to create different patterns
 - Try different tempo settings
 - Adjust the AD Envelope for different note articulations
@@ -42,6 +47,7 @@
 - Discuss how this technique can be used in musical contexts
 
 ### Summary (Steps 28-29)
+
 - Recap what we've built: a melody generator that cycles through different oscillator types
 - Encourage experimentation with the patch
 
@@ -55,6 +61,7 @@
 ## Technical Focus
 
 The tutorial will focus on:
+
 - Getting sound quickly by building the oscillator bank first
 - Adding automation with the Count node
 - Creating melodic variation with the Sequencer

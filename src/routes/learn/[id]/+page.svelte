@@ -1,10 +1,12 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Position, SerializedAudioElements } from '../../../audio/serialized';
 	import { loadCustomNodes } from '../../../audio/web-audio/utils';
 	import AudioCanvas from '../../../components/AudioCanvas.svelte';
 	import { createTutorialProject, type Projects } from '../../../ui/project';
 
-	export let data;
+	let { data } = $props();
 
 	const id = data.id!;
 	const route = data.route!;
@@ -17,11 +19,11 @@
 
 	const tutorialsString = localStorage.getItem(localStorageKey);
 
-	let tutorials: Projects = tutorialsString !== null ? JSON.parse(tutorialsString) : {};
+	let tutorials: Projects = $state(tutorialsString !== null ? JSON.parse(tutorialsString) : {});
 
-	let chosenTutorial = tutorials[id];
+	let chosenTutorial = $state(tutorials[id]);
 
-	$: {
+	run(() => {
 		if (!chosenTutorial) {
 			tutorials = {
 				...tutorials,
@@ -30,11 +32,11 @@
 		}
 
 		chosenTutorial = tutorials[id];
-	}
+	});
 
-	$: {
+	run(() => {
 		localStorage.setItem(localStorageKey, JSON.stringify(tutorials));
-	}
+	});
 
 	const handleChange = (event: CustomEvent<SerializedAudioElements>) => {
 		if (!chosenTutorial) return;

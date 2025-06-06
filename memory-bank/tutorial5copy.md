@@ -12,7 +12,7 @@ You should be able to distinguish between them easily, so in this tutorial we wi
 
 # Step 2
 
-To achieve that, we'll use two new nodes: 
+To achieve that, we'll use two new nodes:
 
 The <Clr nodeType="switch">Switch</Clr> node, which allows us to select between different audio signals.
 
@@ -50,7 +50,7 @@ The <Clr nodeType="switch">Switch</Clr> node has four inputs and one output.
 
 It works like a selector: based on the value of its channel parameter, it chooses which of its inputs to route to the output.
 
-For example, if the channel parameter is set to 1, the signal from the first input will be sent to the output. 
+For example, if the channel parameter is set to 1, the signal from the first input will be sent to the output.
 
 If it's set to 2, the signal from the second input will be sent, and so on.
 
@@ -60,7 +60,7 @@ If it's set to 2, the signal from the second input will be sent, and so on.
     import Clr from '../Clr.svelte';
 </script>
 
-Let's connect our oscillators to the <Clr nodeType="switch">Switch</Clr> node. 
+Let's connect our oscillators to the <Clr nodeType="switch">Switch</Clr> node.
 
 Connect each of the oscillators to a separate input of the <Clr nodeType="switch">Switch</Clr> node.
 
@@ -188,7 +188,7 @@ Also increase the volume on the <Clr nodeType="destination">Output</Clr> node ag
 
 You can now hear the timbre coming out of your speakers change in a rhythmic manner.
 
-The tempo of that change is controlled by the <Clr nodeType="clock">Clock</Clr> node. 
+The tempo of that change is controlled by the <Clr nodeType="clock">Clock</Clr> node.
 
 Play around with its tempo parameter to see how it will affect the sound.
 
@@ -329,6 +329,7 @@ Listen to how this changes the pattern of timbres in your melody.
 Congratulations! You've created a dynamic patch that cycles through different oscillator types with each note.
 
 In this tutorial, we've learned:
+
 - How to use the <Clr nodeType="switch">Switch</Clr> node to select between different audio sources
 - How to use the <Clr nodeType="count">Count</Clr> node to create cycling patterns
 - How the Count node's values (0-3) map to the Switch node's inputs (1-4)

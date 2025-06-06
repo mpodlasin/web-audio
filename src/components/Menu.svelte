@@ -1,18 +1,26 @@
 <script lang="ts">
+	import { createBubbler } from 'svelte/legacy';
+
+	const bubble = createBubbler();
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 	const stopPropagation = (event: Event) => {
 		event.stopPropagation();
 	};
 </script>
 
 <div
-	on:click
-	on:keydown
-	on:mouseup
+	onclick={bubble('click')}
+	onkeydown={bubble('keydown')}
+	onmouseup={bubble('mouseup')}
 	class="wrapper"
-	on:pointerdown={stopPropagation}
-	on:pointerup={stopPropagation}
+	onpointerdown={stopPropagation}
+	onpointerup={stopPropagation}
 >
-	<slot />
+	{@render children?.()}
 </div>
 
 <style>

@@ -27,16 +27,19 @@ The first batch of tutorials will be completely free for all users, making synth
 AudioCanvas consists of several key components:
 
 1. **Audio Engine**: A framework-agnostic core that handles audio processing using Web Audio API and WebAssembly
+
    - Serialized node definitions (`audio/serialized/v1/types.ts`)
    - Static node definitions (`audio/serialized/v1/staticDefinitions.ts`)
    - Runtime node implementations (`audio/initialized/nodes.ts`)
    - Custom WebAssembly audio processors (`audio/web-audio/wasm/`)
 
 2. **User Interface**: A Svelte/SvelteKit application that provides the visual programming environment
+
    - Main canvas component (`src/components/AudioCanvas.svelte`)
    - Node components and UI elements
 
 3. **Tutorial System**: Step-by-step interactive lessons
+
    - Tutorial content in Markdown/MDSvex (`src/components/Tutorial/Tutorial*/Copy*.md`)
    - Validation logic in TypeScript (`src/components/Tutorial/Tutorial*/Check*.ts`)
 
@@ -58,6 +61,7 @@ Currently, there are 4 tutorials implemented:
 Planned future tutorials include:
 
 1. **Tutorial 5**: Creating a voice that changes oscillator types on each note press
+
    - Requires implementing the Switch node and a new Count node
    - Will demonstrate differences between oscillator sounds
 

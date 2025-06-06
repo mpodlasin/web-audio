@@ -1,15 +1,21 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { CustomValueNode } from '../audio/initialized';
 
-	export let valueNode: CustomValueNode;
-	export let running: boolean;
+	interface Props {
+		valueNode: CustomValueNode;
+		running: boolean;
+	}
 
-	$: analyser = valueNode.webApiNode;
-	$: bufferLength = analyser.frequencyBinCount;
-	$: dataArray = new Float32Array(bufferLength);
-	$: value = dataArray[0] ?? 0;
+	let { valueNode, running }: Props = $props();
 
-	let drawing = false;
+	let analyser = $derived(valueNode.webApiNode);
+	let bufferLength = $derived(analyser.frequencyBinCount);
+	let dataArray = $derived(new Float32Array(bufferLength));
+	let value = $derived(dataArray[0] ?? 0);
+
+	let drawing = $state(false);
 
 	function draw() {
 		if (!running || !analyser) {
@@ -24,12 +30,12 @@
 		value = dataArray[0] ?? 0;
 	}
 
-	$: {
+	run(() => {
 		if (running && !drawing) {
 			draw();
 			drawing = true;
 		}
-	}
+	});
 </script>
 
 <div class="container">

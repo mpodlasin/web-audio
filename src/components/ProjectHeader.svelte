@@ -6,8 +6,12 @@
 	import RemoveMinus from '../icons/Remove_Minus.svg?component';
 	import { createEventDispatcher } from 'svelte';
 
-	export let projectName: string;
-	export let playing: boolean;
+	interface Props {
+		projectName: string;
+		playing: boolean;
+	}
+
+	let { projectName, playing }: Props = $props();
 
 	const dispatcher = createEventDispatcher();
 
@@ -34,12 +38,12 @@
 	<a class="header" href="/">
 		audio<span class="suffix">canvas.io</span>
 	</a>
-	<div class="projectMenu" on:touchstart={(e) => e.stopPropagation()}>
-		<div class="projectName" on:click={handleProjectNameClick} on:keypress={() => {}}>
+	<div class="projectMenu" ontouchstart={(e) => e.stopPropagation()}>
+		<div class="projectName" onclick={handleProjectNameClick} onkeypress={() => {}}>
 			<ChevronRight />
 			<div>{projectName}</div>
 		</div>
-		<div class="playPause" on:click={handlePlayOrPauseClick} on:keypress={() => {}}>
+		<div class="playPause" onclick={handlePlayOrPauseClick} onkeypress={() => {}}>
 			{#if playing}
 				<Pause />
 			{:else}
@@ -47,10 +51,10 @@
 			{/if}
 		</div>
 		<div class="resize">
-			<div class="minus" on:click={handleMakeStuffSmaller} on:keypress={() => {}}>
+			<div class="minus" onclick={handleMakeStuffSmaller} onkeypress={() => {}}>
 				<RemoveMinus />
 			</div>
-			<div class="plus" on:click={handleMakeStuffBigger} on:keypress={() => {}}><AddPlus /></div>
+			<div class="plus" onclick={handleMakeStuffBigger} onkeypress={() => {}}><AddPlus /></div>
 		</div>
 	</div>
 </div>

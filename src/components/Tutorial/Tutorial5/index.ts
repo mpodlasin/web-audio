@@ -64,126 +64,126 @@ import Check29 from './Check29';
 import Check30 from './Check30';
 
 export const tutorial5: Tutorial = {
-    steps: [
-        {
-            copy: Copy1,
-            check: Check1
-        },
-        {
-            copy: Copy2,
-            check: Check2
-        },
-        {
-            copy: Copy3,
-            check: Check3
-        },
-        {
-            copy: Copy4,
-            check: Check4
-        },
-        {
-            copy: Copy5,
-            check: Check5
-        },
-        {
-            copy: Copy6,
-            check: Check6
-        },
-        {
-            copy: Copy7,
-            check: Check7
-        },
-        {
-            copy: Copy8,
-            check: Check8
-        },
-        {
-            copy: Copy9,
-            check: Check9
-        },
-        {
-            copy: Copy10,
-            check: Check10
-        },
-        {
-            copy: Copy11,
-            check: Check11
-        },
-        {
-            copy: Copy12,
-            check: Check12
-        },
-        {
-            copy: Copy13,
-            check: Check13
-        },
-        {
-            copy: Copy14,
-            check: Check14
-        },
-        {
-            copy: Copy15,
-            check: Check15
-        },
-        {
-            copy: Copy16,
-            check: Check16
-        },
-        {
-            copy: Copy17,
-            check: Check17
-        },
-        {
-            copy: Copy18,
-            check: Check18
-        },
-        {
-            copy: Copy19,
-            check: Check19
-        },
-        {
-            copy: Copy20,
-            check: Check20
-        },
-        {
-            copy: Copy21,
-            check: Check21
-        },
-        {
-            copy: Copy22,
-            check: Check22
-        },
-        {
-            copy: Copy23,
-            check: Check23
-        },
-        {
-            copy: Copy24,
-            check: Check24
-        },
-        {
-            copy: Copy25,
-            check: Check25
-        },
-        {
-            copy: Copy26,
-            check: Check26
-        },
-        {
-            copy: Copy27,
-            check: Check27
-        },
-        {
-            copy: Copy28,
-            check: Check28
-        },
-        {
-            copy: Copy29,
-            check: Check29
-        },
-        {
-            copy: Copy30,
-            check: Check30
-        }
-    ]
+	steps: [
+		{
+			copy: Copy1,
+			check: Check1
+		},
+		{
+			copy: Copy2,
+			check: Check2
+		},
+		{
+			copy: Copy3,
+			check: Check3
+		},
+		{
+			copy: Copy4,
+			check: Check4
+		},
+		{
+			copy: Copy5,
+			check: Check5
+		},
+		{
+			copy: Copy6,
+			check: Check6
+		},
+		{
+			copy: Copy7,
+			check: Check7
+		},
+		{
+			copy: Copy8,
+			check: Check8
+		},
+		{
+			copy: Copy9,
+			check: Check9
+		},
+		{
+			copy: Copy10,
+			check: Check10
+		},
+		{
+			copy: Copy11,
+			check: Check11
+		},
+		{
+			copy: Copy12,
+			check: Check12
+		},
+		{
+			copy: Copy13,
+			check: Check13
+		},
+		{
+			copy: Copy14,
+			check: Check14
+		},
+		{
+			copy: Copy15,
+			check: Check15
+		},
+		{
+			copy: Copy16,
+			check: Check16
+		},
+		{
+			copy: Copy17,
+			check: Check17
+		},
+		{
+			copy: Copy18,
+			check: Check18
+		},
+		{
+			copy: Copy19,
+			check: Check19
+		},
+		{
+			copy: Copy20,
+			check: Check20
+		},
+		{
+			copy: Copy21,
+			check: Check21
+		},
+		{
+			copy: Copy22,
+			check: Check22
+		},
+		{
+			copy: Copy23,
+			check: Check23
+		},
+		{
+			copy: Copy24,
+			check: Check24
+		},
+		{
+			copy: Copy25,
+			check: Check25
+		},
+		{
+			copy: Copy26,
+			check: Check26
+		},
+		{
+			copy: Copy27,
+			check: Check27
+		},
+		{
+			copy: Copy28,
+			check: Check28
+		},
+		{
+			copy: Copy29,
+			check: Check29
+		},
+		{
+			copy: Copy30,
+			check: Check30
+		}
+	]
 };

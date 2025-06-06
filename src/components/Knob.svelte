@@ -1,32 +1,46 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Position, SerializedAudioParameter } from '../audio/AudioCanvas';
 	import { createEventDispatcher } from 'svelte';
 	import { rewriteStringWithNumber } from '../utils/rewriteStringWithNumber';
 
 	type Polarity = 'uni' | 'bi';
 
-	export let nodeId: string;
-	export let parameterName: string;
-	export let parameter: SerializedAudioParameter;
-	export let audioParamAnalyser: AnalyserNode | undefined;
-	export let defaultValue: number;
-	export let minValue: number;
-	export let maxValue: number;
-	export let unit: string | null = null;
-	export let polarity: Polarity;
-	export let draggingLine: boolean;
-	export let linear: boolean = false;
-	export let discrete: boolean = false;
+	interface Props {
+		nodeId: string;
+		parameterName: string;
+		parameter: SerializedAudioParameter;
+		audioParamAnalyser: AnalyserNode | undefined;
+		defaultValue: number;
+		minValue: number;
+		maxValue: number;
+		unit?: string | null;
+		polarity: Polarity;
+		draggingLine: boolean;
+		linear?: boolean;
+		discrete?: boolean;
+	}
 
-	let knobWrapper: HTMLDivElement;
-	let knob: HTMLDivElement;
+	let {
+		nodeId,
+		parameterName,
+		parameter,
+		audioParamAnalyser,
+		defaultValue,
+		minValue,
+		maxValue,
+		unit = null,
+		polarity,
+		draggingLine,
+		linear = false,
+		discrete = false
+	}: Props = $props();
 
-	let hoveringOver = false;
+	let knobWrapper: HTMLDivElement = $state();
+	let knob: HTMLDivElement = $state();
 
-	$: hoveringOverWhileDraggingLine = hoveringOver && draggingLine;
-
-	$: numberParameter = parameter.base;
-	$: isControlled = parameter.inputs.length > 0 || hoveringOverWhileDraggingLine;
+	let hoveringOver = $state(false);
 
 	const handleMouseEnter = () => {
 		hoveringOver = true;
@@ -37,10 +51,6 @@
 	};
 
 	const dispatcher = createEventDispatcher();
-
-	$: {
-		dispatcher('knobCreated', knobWrapper);
-	}
 
 	let isDragging = false;
 	let draggingStartPosition: Position | null = null;
@@ -106,11 +116,6 @@
 	const derotateAngle = (angle: number, polarity: Polarity) =>
 		polarity === 'bi' ? angle : angle + angleSpread / 2;
 
-	$: normalizedNumberParameter = normalizeNumberParameter(numberParameter, polarity);
-	$: mappedNumberParameter = mapNumberParameter(normalizedNumberParameter, linear);
-	$: nonRotatedAngle = mapToAngle(mappedNumberParameter, polarity);
-	$: angle = rotateAngle(nonRotatedAngle, polarity);
-
 	let previousAngle = angle ?? 0;
 
 	function handlePointerMove(event: PointerEvent) {
@@ -160,21 +165,12 @@
 		}
 	}
 
-	let animating = false;
-
-	$: {
-		if (isControlled && !animating && audioParamAnalyser) {
-			animating = true;
-			animateAudioParam();
-		} else if (!isControlled && animating) {
-			animating = false;
-		}
-	}
+	let animating = $state(false);
 
 	const bufferLength = audioParamAnalyser?.frequencyBinCount;
 	const dataArray = new Float32Array(bufferLength ?? 0);
 
-	let animatedValue = 0;
+	let animatedValue = $state(0);
 
 	function animateAudioParam() {
 		if (audioParamAnalyser && isControlled && animating) {
@@ -188,31 +184,7 @@
 		}
 	}
 
-	$: sum = animatedValue + numberParameter;
-	$: normalizedSum = normalizeNumberParameter(sum, polarity);
-	$: mappedSum = mapNumberParameter(normalizedSum, linear);
-	$: clippedSum =
-		polarity === 'uni' ? Math.max(0, Math.min(1, mappedSum)) : Math.max(-1, Math.min(1, mappedSum));
-
-	let highlightStyle = '';
-
-	$: {
-		if (polarity === 'uni') {
-			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${
-				-angleSpread / 2
-			}deg, var(--primary-500) ${clippedSum * (angleSpread / 360) * 100}%, var(--neutral-900) 0);`;
-		} else if (polarity === 'bi' && clippedSum >= 0) {
-			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from 0deg, var(--primary-500) ${
-				clippedSum * (angleSpread / 2 / 360) * 100
-			}%, var(--neutral-900) 0);`;
-		} else if (polarity === 'bi' && clippedSum < 0) {
-			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${
-				clippedSum * (angleSpread / 2)
-			}deg, var(--primary-500) ${
-				-clippedSum * (angleSpread / 2 / 360) * 100
-			}%, var(--neutral-900) 0);`;
-		}
-	}
+	let highlightStyle = $state('');
 
 	const handleClick = (event: MouseEvent) => {
 		if (event.detail === 2) {
@@ -220,8 +192,8 @@
 		}
 	};
 
-	let numberParameterInput = false;
-	let editedNumber = numberParameter;
+	let numberParameterInput = $state(false);
+	let editedNumber = $state(numberParameter);
 
 	const handleParameterValueClick = (event: PointerEvent) => {
 		event.stopPropagation();
@@ -237,7 +209,7 @@
 		});
 	};
 
-	let input: HTMLInputElement;
+	let input: HTMLInputElement = $state();
 
 	const closeInput = (event: PointerEvent) => {
 		event.stopPropagation();
@@ -264,6 +236,47 @@
 			});
 		}
 	};
+	let hoveringOverWhileDraggingLine = $derived(hoveringOver && draggingLine);
+	let numberParameter = $derived(parameter.base);
+	let isControlled = $derived(parameter.inputs.length > 0 || hoveringOverWhileDraggingLine);
+	run(() => {
+		dispatcher('knobCreated', knobWrapper);
+	});
+	let normalizedNumberParameter = $derived(normalizeNumberParameter(numberParameter, polarity));
+	let mappedNumberParameter = $derived(mapNumberParameter(normalizedNumberParameter, linear));
+	let nonRotatedAngle = $derived(mapToAngle(mappedNumberParameter, polarity));
+	let angle = $derived(rotateAngle(nonRotatedAngle, polarity));
+	run(() => {
+		if (isControlled && !animating && audioParamAnalyser) {
+			animating = true;
+			animateAudioParam();
+		} else if (!isControlled && animating) {
+			animating = false;
+		}
+	});
+	let sum = $derived(animatedValue + numberParameter);
+	let normalizedSum = $derived(normalizeNumberParameter(sum, polarity));
+	let mappedSum = $derived(mapNumberParameter(normalizedSum, linear));
+	let clippedSum = $derived(
+		polarity === 'uni' ? Math.max(0, Math.min(1, mappedSum)) : Math.max(-1, Math.min(1, mappedSum))
+	);
+	run(() => {
+		if (polarity === 'uni') {
+			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${
+				-angleSpread / 2
+			}deg, var(--primary-500) ${clippedSum * (angleSpread / 360) * 100}%, var(--neutral-900) 0);`;
+		} else if (polarity === 'bi' && clippedSum >= 0) {
+			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from 0deg, var(--primary-500) ${
+				clippedSum * (angleSpread / 2 / 360) * 100
+			}%, var(--neutral-900) 0);`;
+		} else if (polarity === 'bi' && clippedSum < 0) {
+			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${
+				clippedSum * (angleSpread / 2)
+			}deg, var(--primary-500) ${
+				-clippedSum * (angleSpread / 2 / 360) * 100
+			}%, var(--neutral-900) 0);`;
+		}
+	});
 </script>
 
 <div
@@ -277,12 +290,12 @@
 	<div class="knob-wrapper" style={highlightStyle}>
 		<div
 			class="knob"
-			on:pointerdown={handlePointerDown}
-			on:pointerup={handlePointerUp}
-			on:mouseenter={handleMouseEnter}
-			on:mouseleave={handleMouseLeave}
-			on:click={handleClick}
-			on:keypress={() => {}}
+			onpointerdown={handlePointerDown}
+			onpointerup={handlePointerUp}
+			onmouseenter={handleMouseEnter}
+			onmouseleave={handleMouseLeave}
+			onclick={handleClick}
+			onkeypress={() => {}}
 			bind:this={knob}
 			style="transform: rotate({angle}deg)"
 		>
@@ -291,20 +304,20 @@
 		</div>
 	</div>
 	{#if numberParameterInput}
-		<!-- svelte-ignore a11y-autofocus -->
+		<!-- svelte-ignore a11y_autofocus -->
 		<input
 			bind:this={input}
 			autofocus
 			type="number"
 			bind:value={editedNumber}
-			on:keydown={handleInputEnter}
+			onkeydown={handleInputEnter}
 		/>
 	{:else if numberParameter !== null}
 		<div
 			class="value"
-			on:pointerdown={(e) => e.stopPropagation()}
-			on:pointerup={handleParameterValueClick}
-			on:keypress={() => {}}
+			onpointerdown={(e) => e.stopPropagation()}
+			onpointerup={handleParameterValueClick}
+			onkeypress={() => {}}
 		>
 			{#if !discrete}
 				{numberParameter.toFixed(2)}

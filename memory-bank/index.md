@@ -43,6 +43,7 @@ The Memory Bank is Cline's only link to previous work after memory resets. It mu
 ### When to Update
 
 Memory Bank updates should occur when:
+
 1. Discovering new project patterns
 2. After implementing significant changes
 3. When user requests with **update memory bank**
@@ -51,6 +52,7 @@ Memory Bank updates should occur when:
 ### Update Process
 
 When updating the Memory Bank:
+
 1. Review ALL files
 2. Document current state
 3. Clarify next steps
@@ -59,6 +61,7 @@ When updating the Memory Bank:
 ### Project Intelligence
 
 The .clinerules file captures important patterns, preferences, and project intelligence that help work more effectively. It should be updated with:
+
 - Critical implementation paths
 - User preferences and workflow
 - Project-specific patterns

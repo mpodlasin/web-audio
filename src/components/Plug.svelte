@@ -1,23 +1,33 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { createEventDispatcher } from 'svelte';
 	import Menu from './Menu.svelte';
 	import type { StaticInputOutputDefinition } from '../audio/AudioCanvas';
 
-	let plug: HTMLDivElement;
+	let plug: HTMLDivElement = $state();
 
-	export let nodeId: string;
-	export let id: string;
-	export let type: 'input' | 'output';
-	export let staticDefinition: StaticInputOutputDefinition;
+	interface Props {
+		nodeId: string;
+		id: string;
+		type: 'input' | 'output';
+		staticDefinition: StaticInputOutputDefinition;
+	}
+
+	let { nodeId, id, type, staticDefinition }: Props = $props();
 
 	const dispatcher = createEventDispatcher();
 
-	$: {
+	run(() => {
 		dispatcher('plugCreated', plug);
-	}
+	});
 
-	$: minValue = staticDefinition.minValue === -Infinity ? '-infinity' : staticDefinition.minValue;
-	$: maxValue = staticDefinition.maxValue === Infinity ? 'infinity' : staticDefinition.maxValue;
+	let minValue = $derived(
+		staticDefinition.minValue === -Infinity ? '-infinity' : staticDefinition.minValue
+	);
+	let maxValue = $derived(
+		staticDefinition.maxValue === Infinity ? 'infinity' : staticDefinition.maxValue
+	);
 
 	const handlePlugDown = (event: PointerEvent) => {
 		event.stopPropagation();
@@ -38,9 +48,9 @@
 	<div
 		class="plug"
 		data-plug={type}
-		on:pointerup={handlePlugUp}
-		on:pointerdown={handlePlugDown}
-		on:keydown={() => {}}
+		onpointerup={handlePlugUp}
+		onpointerdown={handlePlugDown}
+		onkeydown={() => {}}
 		data-id={id}
 		data-node-id={nodeId}
 		data-type={type}

@@ -31,5 +31,4 @@
 14. [Sequencing](/learn/sequencing)
 15. [Building an Arpeggiator](/learn/building-an-arpeggiator)
 
-
 _...and more in preperation!_

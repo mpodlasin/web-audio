@@ -1,17 +1,22 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 
-    export let id: string;
+    interface Props {
+        id: string;
+        children?: import('svelte').Snippet;
+    }
 
-    let tutorialStepsString = '{}';
-    $: tutorialSteps = JSON.parse(tutorialStepsString);
-    $: steps = tutorialSteps[id] ?? 0;
+    let { id, children }: Props = $props();
 
-    let tutorialLength = 0;
+    let tutorialStepsString = $state('{}');
+    let tutorialSteps = $derived(JSON.parse(tutorialStepsString));
+    let steps = $derived(tutorialSteps[id] ?? 0);
 
-    $: green = tutorialLength === steps + 1;
+    let tutorialLength = $state(0);
 
-    $: displayedSteps = steps === 0 ? 0 : steps + 1;
+    let green = $derived(tutorialLength === steps + 1);
+
+    let displayedSteps = $derived(steps === 0 ? 0 : steps + 1);
 
     onMount(async () => {
         tutorialStepsString = window.localStorage.getItem('tutorial_steps') ?? '{}';
@@ -22,10 +27,10 @@
     })
 </script>
 {#if tutorialLength === 0}
-    <slot />
+    {@render children?.()}
 {:else}
     <div>
-        <slot />
+        {@render children?.()}
         <span class:green>({displayedSteps} / {tutorialLength})</span>
     </div>
 {/if}

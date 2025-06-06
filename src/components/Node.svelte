@@ -22,30 +22,39 @@
 	import CommentNode from './CommentNode.svelte';
 	import SpectrumNode from './SpectrumNode.svelte';
 
-	export let id: string;
-	export let node: AllowedSerializedAudioElements;
-	export let instantiatedNode: unknown;
-	export let running: boolean;
-	export let draggingLine: boolean;
-	export let color: string;
-	export let audioGraph: SerializedAudioElements;
+	interface Props {
+		id: string;
+		node: AllowedSerializedAudioElements;
+		instantiatedNode: unknown;
+		running: boolean;
+		draggingLine: boolean;
+		color: string;
+		audioGraph: SerializedAudioElements;
+	}
 
-	$: staticDefinition = allowedSerializedAudioElementStaticDefinitions[node.type];
-	$: showCategory = staticDefinition.showCategory ?? false;
-	$: parameters = Object.entries(node.parameters ?? {}) as [string, SerializedAudioParameter][];
-	$: audioParams = parameters.flatMap(([name]) => {
-		if (isCustomAudioNode(instantiatedNode)) {
-			return [[name, instantiatedNode.getParameter(name).analyser] as const];
-		} else {
-			return [];
-		}
-	});
+	let { id, node, instantiatedNode, running, draggingLine, color, audioGraph }: Props = $props();
 
-	$: isSpecialNode =
+	let staticDefinition = $derived(allowedSerializedAudioElementStaticDefinitions[node.type]);
+	let showCategory = $derived(staticDefinition.showCategory ?? false);
+	let parameters = $derived(
+		Object.entries(node.parameters ?? {}) as [string, SerializedAudioParameter][]
+	);
+	let audioParams = $derived(
+		parameters.flatMap(([name]) => {
+			if (isCustomAudioNode(instantiatedNode)) {
+				return [[name, instantiatedNode.getParameter(name).analyser] as const];
+			} else {
+				return [];
+			}
+		})
+	);
+
+	let isSpecialNode = $derived(
 		(node.type === 'oscilloscope' && instantiatedNode instanceof CustomOscilloscopeNode) ||
-		(node.type === 'tutorial' && instantiatedNode instanceof EmptyCustomAudioNode);
+			(node.type === 'tutorial' && instantiatedNode instanceof EmptyCustomAudioNode)
+	);
 
-	let highlightedParameter = '';
+	let highlightedParameter = $state('');
 
 	if (isCustomAudioNode(instantiatedNode)) {
 		instantiatedNode.onHighlightParameter((parameterName) => {
@@ -55,7 +64,7 @@
 
 	const dispatcher = createEventDispatcher();
 
-	$: categoryName = showCategory ? getCategoryReadableName(node.type) ?? '' : '';
+	let categoryName = $derived(showCategory ? getCategoryReadableName(node.type) ?? '' : '');
 
 	const handleParameterChangeStart = () => {
 		dispatcher('nodeParameterChangeStart');
@@ -87,7 +96,7 @@
 		dispatcher('nodePlugUp', { id: plugId, type, nodeId: id, event: underlyingEvent });
 	};
 
-	let element: HTMLDivElement;
+	let element: HTMLDivElement = $state();
 
 	const handleKnobMouseUp = (
 		event: CustomEvent<{ parameterName: string; event: PointerEvent }>

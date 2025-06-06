@@ -1,17 +1,21 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { createEventDispatcher } from 'svelte';
 	import type { CustomOscilloscopeNode } from '../audio/initialized';
 	import type { SerializedOscilloscopeNode } from '../audio/serialized';
 	import OnOffButton from './OnOffButton.svelte';
 
-	export let id: string;
-	export let serializedNode: SerializedOscilloscopeNode;
-	export let oscilloscopeNode: CustomOscilloscopeNode;
-	export let running: boolean;
+	interface Props {
+		id: string;
+		serializedNode: SerializedOscilloscopeNode;
+		oscilloscopeNode: CustomOscilloscopeNode;
+		running: boolean;
+	}
+
+	let { id, serializedNode, oscilloscopeNode, running }: Props = $props();
 
 	const dispatcher = createEventDispatcher();
-
-	$: slowParameter = serializedNode.parameters?.slow;
 
 	const handleSlowModeChange = (event: CustomEvent<{ parameterName: string; value: number }>) => {
 		dispatcher('nodeParameterChange', {
@@ -21,28 +25,14 @@
 		});
 	};
 
-	$: mode = 'slow';
+	let primaryColor = $state('#45C7FF');
+	let neutralColor = $state('#FFFFFF');
 
-	let primaryColor = '#45C7FF';
-	let neutralColor = '#FFFFFF';
-
-	$: {
-		if (canvas) {
-			primaryColor = window.getComputedStyle(canvas).getPropertyValue('--primary-500');
-			neutralColor = window.getComputedStyle(canvas).getPropertyValue('--neutral-900');
-		}
-	}
-
-	$: analyser = oscilloscopeNode.webApiNode;
-	$: bufferLength = analyser.frequencyBinCount;
-	$: dataArray = new Uint8Array(bufferLength);
-
-	let canvas: HTMLCanvasElement;
-	$: canvasCtx = canvas?.getContext('2d') ?? null;
+	let canvas: HTMLCanvasElement = $state();
 
 	let lastPosition = 0;
 
-	let drawing = false;
+	let drawing = $state(false);
 
 	function drawSlowMode() {
 		if (!running || canvasCtx === null || !canvas || !analyser || mode !== 'slow') {
@@ -114,7 +104,19 @@
 		canvasCtx.stroke();
 	}
 
-	$: {
+	let slowParameter = $derived(serializedNode.parameters?.slow);
+
+	run(() => {
+		if (canvas) {
+			primaryColor = window.getComputedStyle(canvas).getPropertyValue('--primary-500');
+			neutralColor = window.getComputedStyle(canvas).getPropertyValue('--neutral-900');
+		}
+	});
+	let analyser = $derived(oscilloscopeNode.webApiNode);
+	let bufferLength = $derived(analyser.frequencyBinCount);
+	let dataArray = $derived(new Uint8Array(bufferLength));
+	let canvasCtx = $derived(canvas?.getContext('2d') ?? null);
+	run(() => {
 		if (running && canvasCtx && !drawing) {
 			if (mode === 'fast') {
 				drawFastMode();
@@ -123,7 +125,7 @@
 			}
 			drawing = true;
 		}
-	}
+	});
 </script>
 
 <div class="container">

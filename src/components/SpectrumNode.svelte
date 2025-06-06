@@ -1,27 +1,21 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { CustomSpectrumNode } from '../audio/initialized';
 
-	export let oscilloscopeNode: CustomSpectrumNode;
-	export let running: boolean;
-
-	let primaryColor = '#45C7FF';
-	let neutralColor = '#FFFFFF';
-
-	$: {
-		if (canvas) {
-			primaryColor = window.getComputedStyle(canvas).getPropertyValue('--primary-500');
-			neutralColor = window.getComputedStyle(canvas).getPropertyValue('--neutral-900');
-		}
+	interface Props {
+		oscilloscopeNode: CustomSpectrumNode;
+		running: boolean;
 	}
 
-	$: analyser = oscilloscopeNode.webApiNode;
-	$: bufferLength = analyser.frequencyBinCount;
-	$: dataArray = new Uint8Array(bufferLength);
+	let { oscilloscopeNode, running }: Props = $props();
 
-	let canvas: HTMLCanvasElement;
-	$: canvasCtx = canvas?.getContext('2d') ?? null;
+	let primaryColor = $state('#45C7FF');
+	let neutralColor = $state('#FFFFFF');
 
-	let drawing = false;
+	let canvas: HTMLCanvasElement = $state();
+
+	let drawing = $state(false);
 
 	function drawSpectrum() {
 		if (!running || canvasCtx === null || !canvas || !analyser) {
@@ -60,12 +54,22 @@
 		canvasCtx.stroke();
 	}
 
-	$: {
+	run(() => {
+		if (canvas) {
+			primaryColor = window.getComputedStyle(canvas).getPropertyValue('--primary-500');
+			neutralColor = window.getComputedStyle(canvas).getPropertyValue('--neutral-900');
+		}
+	});
+	let analyser = $derived(oscilloscopeNode.webApiNode);
+	let bufferLength = $derived(analyser.frequencyBinCount);
+	let dataArray = $derived(new Uint8Array(bufferLength));
+	let canvasCtx = $derived(canvas?.getContext('2d') ?? null);
+	run(() => {
 		if (running && canvasCtx && !drawing) {
 			drawSpectrum();
 			drawing = true;
 		}
-	}
+	});
 </script>
 
 <div class="container">

@@ -27,7 +27,6 @@ import greaterThanWasmUrl from './wasm/greater-than/greater-than.wasm?url';
 import timesWasmUrl from './wasm/times/times.wasm?url';
 import switchWasmUrl from './wasm/switch/switch.wasm?url';
 
-
 export async function loadCustomNodes() {
 	try {
 		await Promise.all([
@@ -98,4 +97,4 @@ export const createGreaterThanWorklet = () =>
 export const createTimesWorklet = () =>
 	createWasmWorklet('wasm-dual', timesWasmUrl, { numberOfInputs: 2 });
 export const createSwitchWorklet = () =>
-	createWasmWorklet('switch', switchWasmUrl, { numberOfInputs: 4});
+	createWasmWorklet('switch', switchWasmUrl, { numberOfInputs: 4 });

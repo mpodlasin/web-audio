@@ -52,7 +52,7 @@ For example, if the channel parameter is set to 1, the signal from the first inp
     import Clr from '../Clr.svelte';
 </script>
 
-Let's connect our oscillators to the <Clr nodeType="switch">Switch</Clr> node. 
+Let's connect our oscillators to the <Clr nodeType="switch">Switch</Clr> node.
 
 Connect each of the oscillators to a separate input of the <Clr nodeType="switch">Switch</Clr> node.
 
@@ -298,6 +298,7 @@ A slower tempo will give each note more time to be heard, while a faster tempo w
 The <Clr nodeType="ad-envelope">AD Envelope</Clr> parameters can dramatically change the character of each note.
 
 Try different attack and decay settings:
+
 - Short attack and decay for a plucky, percussive sound
 - Longer attack for a softer, pad-like sound
 - Longer decay to let notes overlap more
@@ -313,6 +314,7 @@ Find settings that complement your melody and oscillator sequence.
 One more creative variation we can try is to change the order of the oscillators.
 
 Disconnect the oscillators from the <Clr nodeType="switch">Switch</Clr> node and reconnect them in a different order. For example:
+
 1. <Clr nodeType="saw-oscillator">Saw</Clr> to the first input
 2. <Clr nodeType="sine-oscillator">Sine</Clr> to the second input
 3. <Clr nodeType="triangle-oscillator">Triangle</Clr> to the third input
@@ -339,6 +341,7 @@ For example, you could use it to cycle through different filter types, envelope 
 </script>
 
 In this tutorial, we've learned:
+
 - How to use the <Clr nodeType="switch">Switch</Clr> node to select between different audio sources
 - How to use the <Clr nodeType="count">Count</Clr> node to create cycling patterns
 - How the Count node's values (0-3) map to the Switch node's inputs (1-4)

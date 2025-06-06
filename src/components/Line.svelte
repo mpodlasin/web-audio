@@ -1,25 +1,32 @@
 <script lang="ts">
+	import { run, createBubbler } from 'svelte/legacy';
+
+	const bubble = createBubbler();
 	import { plugsEqual } from '../audio/serialized';
 	import { normalizedVector } from '../ui/vectors';
 	import type { LineToDisplay } from '../ui/lines';
-	export let line: LineToDisplay;
-	export let chosenLine: LineToDisplay | null;
+	interface Props {
+		line: LineToDisplay;
+		chosenLine: LineToDisplay | null;
+	}
+
+	let { line, chosenLine }: Props = $props();
 
 	const cutLineOverlayConstant = 9;
 
-	let vector = normalizedVector(line.from, line.to);
+	let vector = $state(normalizedVector(line.from, line.to));
 
-	let x1 = line.from.x + vector.x * cutLineOverlayConstant;
-	let y1 = line.from.y + vector.y * cutLineOverlayConstant;
-	let x2 = line.to.x - vector.x * cutLineOverlayConstant;
-	let y2 = line.to.y - vector.y * cutLineOverlayConstant;
+	let x1 = $state(line.from.x + vector.x * cutLineOverlayConstant);
+	let y1 = $state(line.from.y + vector.y * cutLineOverlayConstant);
+	let x2 = $state(line.to.x - vector.x * cutLineOverlayConstant);
+	let y2 = $state(line.to.y - vector.y * cutLineOverlayConstant);
 
-	let visibleX1 = line.from.x;
-	let visibleY1 = line.from.y;
-	let visibleX2 = line.to.x;
-	let visibleY2 = line.to.y;
+	let visibleX1 = $state(line.from.x);
+	let visibleY1 = $state(line.from.y);
+	let visibleX2 = $state(line.to.x);
+	let visibleY2 = $state(line.to.y);
 
-	$: {
+	run(() => {
 		if (
 			line.from.x !== visibleX1 ||
 			line.from.y !== visibleY1 ||
@@ -38,14 +45,14 @@
 			visibleX2 = line.to.x;
 			visibleY2 = line.to.y;
 		}
-	}
+	});
 </script>
 
 <line x1={visibleX1} y1={visibleY1} x2={visibleX2} y2={visibleY2} class="visible" />
 <line
-	on:click
-	on:keypress={() => {}}
-	on:contextmenu
+	onclick={bubble('click')}
+	onkeypress={() => {}}
+	oncontextmenu={bubble('contextmenu')}
 	{x1}
 	{y1}
 	{x2}
