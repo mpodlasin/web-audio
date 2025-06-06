@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { run, handlers } from 'svelte/legacy';
+	import { handlers } from 'svelte/legacy';
 
 	import {
 		type AudioNodeDatabase,
@@ -55,7 +55,7 @@
 
 	const dispatcher = createEventDispatcher();
 
-	let container: HTMLDivElement = $state();
+	let container: HTMLDivElement | undefined = $state();
 
 	let audioNodeDatabase: AudioNodeDatabase = $state({});
 
@@ -116,25 +116,18 @@
 		temporaryGraphHistory = [];
 	};
 
-	run(() => {
-		if (temporaryGraphHistory.length === 0) {
-			dispatcher('change', audioGraph);
-		}
-	});
-
-	updateAudioGraphHistory(() => project.audioCanvas);
+	// $effect(() => {
+	// 	if (temporaryGraphHistory.length === 0) {
+	// 		dispatcher('change', audioGraph);
+	// 	}
+	// });
 
 	onMount(() => {
+		updateAudioGraphHistory(() => project.audioCanvas);
 		return () => {
 			audioNodeDatabase = updateAudioCanvas({}, audioGraph, audioNodeDatabase);
 		};
 	});
-
-	// $: {
-	// 	console.log('audioGraph', audioGraph);
-	// 	console.log('audioGraphHistory', audioGraphHistory);
-	// 	console.log('temporaryGraphHistory', temporaryGraphHistory);
-	// }
 
 	/* DRAGGING CANVAS ----------------------------------------- */
 	let canvasRelativePosition: Position = $state(project.canvasRelativePosition);
@@ -259,7 +252,7 @@
 		selectNodesEndPosition = null;
 	};
 
-	run(() => {
+	$effect(() => {
 		if (selectNodesStartPosition && selectNodesEndPosition) {
 			const filteredIds = Object.entries(audioGraph)
 				.filter(([_, node]) => {
@@ -630,7 +623,7 @@
 		playing = event.detail.playing;
 	};
 
-	run(() => {
+	$effect(() => {
 		if (playing) {
 			globalContext.resume();
 		} else {
@@ -784,7 +777,7 @@
 	let changeColorModalIsOpen = $state(false);
 	let changedColorNodeId = $state('');
 	let changedColorNode = $derived(audioGraph[changedColorNodeId]);
-	let changedNodeColor: string = $state();
+	let changedNodeColor: string | undefined = $state();
 
 	const openChangeColorModal = (nodeId: string) => () => {
 		changeColorModalIsOpen = true;

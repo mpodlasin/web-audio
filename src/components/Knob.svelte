@@ -37,8 +37,10 @@
 		discrete = false
 	}: Props = $props();
 
-	let knobWrapper: HTMLDivElement = $state();
-	let knob: HTMLDivElement = $state();
+	let knobWrapper: HTMLDivElement | undefined = $state();
+	let knob: HTMLDivElement | undefined = $state();
+
+	let numberParameter = $derived(parameter.base);
 
 	let hoveringOver = $state(false);
 
@@ -116,6 +118,12 @@
 	const derotateAngle = (angle: number, polarity: Polarity) =>
 		polarity === 'bi' ? angle : angle + angleSpread / 2;
 
+	let normalizedNumberParameter = $derived(normalizeNumberParameter(numberParameter, polarity));
+	let mappedNumberParameter = $derived(mapNumberParameter(normalizedNumberParameter, linear));
+	let nonRotatedAngle = $derived(mapToAngle(mappedNumberParameter, polarity));
+	let angle = $derived(rotateAngle(nonRotatedAngle, polarity));
+
+	// svelte-ignore state_referenced_locally
 	let previousAngle = angle ?? 0;
 
 	function handlePointerMove(event: PointerEvent) {
@@ -193,6 +201,7 @@
 	};
 
 	let numberParameterInput = $state(false);
+	// svelte-ignore state_referenced_locally
 	let editedNumber = $state(numberParameter);
 
 	const handleParameterValueClick = (event: PointerEvent) => {
@@ -209,7 +218,7 @@
 		});
 	};
 
-	let input: HTMLInputElement = $state();
+	let input: HTMLInputElement | undefined = $state();
 
 	const closeInput = (event: PointerEvent) => {
 		event.stopPropagation();
@@ -237,16 +246,13 @@
 		}
 	};
 	let hoveringOverWhileDraggingLine = $derived(hoveringOver && draggingLine);
-	let numberParameter = $derived(parameter.base);
 	let isControlled = $derived(parameter.inputs.length > 0 || hoveringOverWhileDraggingLine);
-	run(() => {
+
+	$effect(() => {
 		dispatcher('knobCreated', knobWrapper);
 	});
-	let normalizedNumberParameter = $derived(normalizeNumberParameter(numberParameter, polarity));
-	let mappedNumberParameter = $derived(mapNumberParameter(normalizedNumberParameter, linear));
-	let nonRotatedAngle = $derived(mapToAngle(mappedNumberParameter, polarity));
-	let angle = $derived(rotateAngle(nonRotatedAngle, polarity));
-	run(() => {
+
+	$effect(() => {
 		if (isControlled && !animating && audioParamAnalyser) {
 			animating = true;
 			animateAudioParam();
@@ -254,13 +260,15 @@
 			animating = false;
 		}
 	});
+
 	let sum = $derived(animatedValue + numberParameter);
 	let normalizedSum = $derived(normalizeNumberParameter(sum, polarity));
 	let mappedSum = $derived(mapNumberParameter(normalizedSum, linear));
 	let clippedSum = $derived(
 		polarity === 'uni' ? Math.max(0, Math.min(1, mappedSum)) : Math.max(-1, Math.min(1, mappedSum))
 	);
-	run(() => {
+
+	$effect(() => {
 		if (polarity === 'uni') {
 			highlightStyle = `background: radial-gradient(closest-side, var(--neutral-900) 90%, transparent 80% 100%), conic-gradient(from ${
 				-angleSpread / 2
@@ -295,12 +303,14 @@
 			onmouseenter={handleMouseEnter}
 			onmouseleave={handleMouseLeave}
 			onclick={handleClick}
+			tabindex={0}
+			role="spinbutton"
 			onkeypress={() => {}}
 			bind:this={knob}
 			style="transform: rotate({angle}deg)"
 		>
-			<div class="knob-pointer" />
-			<div class:visible={isControlled} class="controlled-knob-circle" />
+			<div class="knob-pointer"></div>
+			<div class:visible={isControlled} class="controlled-knob-circle"></div>
 		</div>
 	</div>
 	{#if numberParameterInput}
@@ -317,7 +327,6 @@
 			class="value"
 			onpointerdown={(e) => e.stopPropagation()}
 			onpointerup={handleParameterValueClick}
-			onkeypress={() => {}}
 		>
 			{#if !discrete}
 				{numberParameter.toFixed(2)}
