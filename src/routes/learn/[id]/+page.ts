@@ -41,5 +41,5 @@ export const load = ({ params }: { params: { id: string } }) => {
 		};
 	}
 
-	throw redirect(300, '/learn');
+	redirect(300, '/learn');
 };

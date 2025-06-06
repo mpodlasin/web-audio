@@ -19,5 +19,5 @@ export const load = ({ params }) => {
 		}
 	}
 
-	throw redirect(300, '/');
+	redirect(300, '/');
 };
