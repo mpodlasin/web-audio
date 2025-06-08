@@ -145,6 +145,12 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		background: none;
+		color: inherit;
+		padding: 0;
+		font: inherit;
+		cursor: pointer;
+		outline: inherit;
 	}
 
 	.project {
@@ -166,6 +172,13 @@
 		position: absolute;
 		top: 8px;
 		right: 8px;
+		background: none;
+		color: inherit;
+		border: none;
+		padding: 0;
+		font: inherit;
+		cursor: pointer;
+		outline: inherit;
 	}
 
 	.more-menu {

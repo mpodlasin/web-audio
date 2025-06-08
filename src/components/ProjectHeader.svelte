@@ -111,12 +111,26 @@
 		gap: 4px;
 		align-items: center;
 		cursor: pointer;
+		background: none;
+		color: inherit;
+		border: none;
+		padding: 0;
+		font: inherit;
+		cursor: pointer;
+		outline: inherit;
 	}
 
 	.playPause {
 		display: flex;
 		align-items: center;
 		cursor: pointer;
+		background: none;
+		color: inherit;
+		border: none;
+		padding: 0;
+		font: inherit;
+		cursor: pointer;
+		outline: inherit;
 	}
 
 	.resize {
@@ -128,5 +142,12 @@
 	.minus,
 	.plus {
 		cursor: pointer;
+		background: none;
+		color: inherit;
+		border: none;
+		padding: 0;
+		font: inherit;
+		cursor: pointer;
+		outline: inherit;
 	}
 </style>

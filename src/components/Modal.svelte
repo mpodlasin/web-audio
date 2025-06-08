@@ -58,5 +58,12 @@
 		top: 32px;
 		right: 32px;
 		cursor: pointer;
+		background: none;
+		color: inherit;
+		border: none;
+		padding: 0;
+		font: inherit;
+		cursor: pointer;
+		outline: inherit;
 	}
 </style>

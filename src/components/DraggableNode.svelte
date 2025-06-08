@@ -142,7 +142,7 @@
 	};
 </script>
 
-<button
+<div
 	onpointerdown={handlePointerDown}
 	onpointerup={handlePointerUp}
 	oncontextmenu={(e) => e.preventDefault()}
@@ -151,6 +151,8 @@
 	class="wrapper"
 	class:selected
 	style="position: absolute; left: {position.x}px; top: {position.y}px;"
+	role="cell"
+	tabindex={0}
 >
 	<Node
 		{id}
@@ -170,7 +172,7 @@
 		{onNodePlugMouseUp}
 		{onPlugCreated}
 	/>
-</button>
+</div>
 
 <style>
 	.wrapper {
