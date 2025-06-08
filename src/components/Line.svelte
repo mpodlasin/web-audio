@@ -1,24 +1,27 @@
 <script lang="ts">
-	import { run, createBubbler } from 'svelte/legacy';
-
-	const bubble = createBubbler();
 	import { plugsEqual } from '../audio/serialized';
 	import { normalizedVector } from '../ui/vectors';
 	import type { LineToDisplay } from '../ui/lines';
 	interface Props {
 		line: LineToDisplay;
 		chosenLine: LineToDisplay | null;
+		onClick(event: MouseEvent): void;
+		onContextMenu(event: MouseEvent): void;
 	}
 
-	let { line, chosenLine }: Props = $props();
+	let { line, chosenLine, onClick, onContextMenu }: Props = $props();
 
 	const cutLineOverlayConstant = 9;
 
 	let vector = $state(normalizedVector(line.from, line.to));
 
+	// svelte-ignore state_referenced_locally
 	let x1 = $state(line.from.x + vector.x * cutLineOverlayConstant);
+	// svelte-ignore state_referenced_locally
 	let y1 = $state(line.from.y + vector.y * cutLineOverlayConstant);
+	// svelte-ignore state_referenced_locally
 	let x2 = $state(line.to.x - vector.x * cutLineOverlayConstant);
+	// svelte-ignore state_referenced_locally
 	let y2 = $state(line.to.y - vector.y * cutLineOverlayConstant);
 
 	let visibleX1 = $state(line.from.x);
@@ -26,7 +29,7 @@
 	let visibleX2 = $state(line.to.x);
 	let visibleY2 = $state(line.to.y);
 
-	run(() => {
+	$effect(() => {
 		if (
 			line.from.x !== visibleX1 ||
 			line.from.y !== visibleY1 ||
@@ -50,9 +53,11 @@
 
 <line x1={visibleX1} y1={visibleY1} x2={visibleX2} y2={visibleY2} class="visible" />
 <line
-	onclick={bubble('click')}
+	onclick={onClick}
 	onkeypress={() => {}}
-	oncontextmenu={bubble('contextmenu')}
+	oncontextmenu={onContextMenu}
+	role="link"
+	tabindex={0}
 	{x1}
 	{y1}
 	{x2}

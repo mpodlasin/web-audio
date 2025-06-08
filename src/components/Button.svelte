@@ -1,13 +1,11 @@
 <script lang="ts">
-	import { createBubbler } from 'svelte/legacy';
-
-	const bubble = createBubbler();
 	interface Props {
 		title: string;
+		onClick?: (event: MouseEvent) => void;
 		variant?: 'default' | 'danger' | 'primary';
 	}
 
-	let { title, variant = 'default' }: Props = $props();
+	let { title, variant = 'default', onClick }: Props = $props();
 
 	const stopPropagation = (event: Event) => {
 		event.stopPropagation();
@@ -15,7 +13,7 @@
 </script>
 
 <button
-	onclick={bubble('click')}
+	onclick={onClick}
 	class:danger={variant === 'danger'}
 	class:primary={variant === 'primary'}
 	onpointerdown={stopPropagation}

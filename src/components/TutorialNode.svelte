@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { SerializedAudioElements, SerializedTutorialNode } from '../audio/serialized';
 	import type { Tutorial } from './Tutorial/types';
 	import { tutorials } from './Tutorial';
@@ -20,7 +18,7 @@
 
 	let currentStep = $state(0);
 
-	run(() => {
+	$effect(() => {
 		const tutorialSteps = JSON.parse(window.localStorage.getItem(localStorageKey) ?? '{}');
 		currentStep = tutorialSteps[tutorialId] ?? 0;
 	});
@@ -62,7 +60,7 @@
 				{#if !noCheckNeeded}
 					<p class="success">Great! You've completed this step of the tutorial.</p>
 				{/if}
-				<Button variant="primary" on:click={handleContinueClick} title="Next" />
+				<Button variant="primary" onClick={handleContinueClick} title="Next" />
 			</div>
 		{:else if typeof check === 'function'}
 			<p>Perform the action described above to continue.</p>

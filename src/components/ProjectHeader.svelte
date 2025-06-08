@@ -39,22 +39,23 @@
 		audio<span class="suffix">canvas.io</span>
 	</a>
 	<div class="projectMenu" ontouchstart={(e) => e.stopPropagation()}>
-		<div class="projectName" onclick={handleProjectNameClick} onkeypress={() => {}}>
+		<button class="projectName" onclick={handleProjectNameClick} onkeypress={() => {}}>
 			<ChevronRight />
 			<div>{projectName}</div>
-		</div>
-		<div class="playPause" onclick={handlePlayOrPauseClick} onkeypress={() => {}}>
+		</button>
+		<button class="playPause" onclick={handlePlayOrPauseClick} onkeypress={() => {}}>
 			{#if playing}
 				<Pause />
 			{:else}
 				<Play />
 			{/if}
-		</div>
+		</button>
 		<div class="resize">
-			<div class="minus" onclick={handleMakeStuffSmaller} onkeypress={() => {}}>
+			<button class="minus" onclick={handleMakeStuffSmaller} onkeypress={() => {}}>
 				<RemoveMinus />
-			</div>
-			<div class="plus" onclick={handleMakeStuffBigger} onkeypress={() => {}}><AddPlus /></div>
+			</button>
+			<button class="plus" onclick={handleMakeStuffBigger} onkeypress={() => {}}><AddPlus /></button
+			>
 		</div>
 	</div>
 </div>

@@ -1,7 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-	import { createEventDispatcher } from 'svelte';
 	import {
 		categorizedNodeTypes,
 		readableCategoryNames,
@@ -15,17 +12,20 @@
 
 	interface Props {
 		position: Position;
+		onCreate(nodeType: string): void;
+		onPaste(): void;
+		onClose(): void;
 	}
 
-	let { position }: Props = $props();
+	let { position, onPaste, onCreate, onClose }: Props = $props();
 
 	const menuHeight = 363;
 	const menuWidth = 160;
 
 	let displaySubmenusOnTheLeft = $state(false);
-	let displayedPosition: Position = $state();
+	let displayedPosition: Position | undefined = $state();
 
-	run(() => {
+	$effect(() => {
 		const y = position.y;
 		const x = position.x;
 
@@ -44,8 +44,6 @@
 	});
 
 	const readableNames = _readableNames as Record<string, string>;
-
-	const dispatcher = createEventDispatcher();
 
 	let hoveredOverNodeType = $state('');
 	let setTimeoutId: NodeJS.Timeout | null = null;
@@ -68,11 +66,11 @@
 	};
 
 	const handleNodeClick = (nodeType: string) => () => {
-		dispatcher('create', nodeType);
+		onCreate(nodeType);
 	};
 
 	const handlePasteClick = () => {
-		dispatcher('paste');
+		onPaste();
 	};
 
 	const categorizedNodeTypesToDisplay = {
@@ -81,7 +79,7 @@
 	};
 </script>
 
-<PositionedMenu position={displayedPosition} on:close>
+<PositionedMenu position={displayedPosition || { x: 0, y: 0 }} {onClose}>
 	<div class="create-section">
 		{#each Object.entries(categorizedNodeTypesToDisplay) as [nodeType, nodeTypes] (nodeType)}
 			{#if nodeTypes.length > 0}
@@ -90,6 +88,8 @@
 						class="menu-section"
 						onmouseenter={handleMouseEnter(nodeType)}
 						ontouchstart={handleMouseEnter(nodeType)}
+						role="menu"
+						tabindex={0}
 						onmouseleave={handleMouseLeave}
 					>
 						<div>{readableCategoryNames[nodeType]}</div>
@@ -102,9 +102,8 @@
 							<Menu>
 								{#each nodeTypes as innerNodeType (innerNodeType)}
 									<MenuButton
-										on:click={handleNodeClick(innerNodeType)}
-										on:touchend={handleNodeClick(innerNodeType)}
-										on:keydown={() => {}}
+										onClick={handleNodeClick(innerNodeType)}
+										onTouchStart={handleNodeClick(innerNodeType)}
 									>
 										{readableNames[innerNodeType]}
 									</MenuButton>
@@ -116,9 +115,7 @@
 			{/if}
 		{/each}
 	</div>
-	<MenuButton on:click={handlePasteClick} on:touchstart={handlePasteClick} on:keypress={() => {}}
-		>Paste</MenuButton
-	>
+	<MenuButton onClick={handlePasteClick} onTouchStart={handlePasteClick}>Paste</MenuButton>
 </PositionedMenu>
 
 <style>

@@ -1,17 +1,12 @@
 <script lang="ts">
-	import { createBubbler } from 'svelte/legacy';
-
-	const bubble = createBubbler();
-	import { createEventDispatcher } from 'svelte';
 	import type {
 		AllowedSerializedAudioElements,
+		NodeType,
 		Position,
 		SerializedAudioElements
 	} from '../audio/AudioCanvas';
 	import Node from './Node.svelte';
 	import { DISTANCE_THAT_IS_CONSIDERED_DRAG } from '../constants';
-
-	const dispatcher = createEventDispatcher();
 
 	interface Props {
 		id: string;
@@ -26,6 +21,25 @@
 		draggingLine: boolean;
 		selected: boolean;
 		audioGraph: SerializedAudioElements;
+		onClick(event: MouseEvent): void;
+		onDragStart(): void;
+		onDrag(event: { id: string; x: number; y: number }): void;
+		onContextMenu(event: { id: string; position: Position; nodeType: NodeType }): void;
+		onDragEnd(): void;
+		onNodeParameterChangeStart(): void;
+		onNodeParamterChange(event: { id: string; parameterName: string; value: number }): void;
+		onNodeParameterChangeEnd(): void;
+		onNodePlugMouseDown(event: { plugId: string; nodeId: string; type: 'input' | 'output' }): void;
+		onNodePlugMouseUp(event: {
+			plugId: string;
+			nodeId: string;
+			type: 'input' | 'output';
+			event: MouseEvent;
+		}): void;
+		onNodeKnobMouseUp(event: { nodeId: string; parameterName: string; event: MouseEvent }): void;
+		onKnobCreated(knob: HTMLElement): void;
+		onCommentChanged(event: { nodeId: string; comment: string }): void;
+		onPlugCreated(plug: HTMLElement): void;
 	}
 
 	let {
@@ -37,7 +51,21 @@
 		running,
 		draggingLine,
 		selected,
-		audioGraph
+		audioGraph,
+		onDragStart,
+		onDrag,
+		onDragEnd,
+		onContextMenu,
+		onClick,
+		onCommentChanged,
+		onKnobCreated,
+		onNodeKnobMouseUp,
+		onNodeParameterChangeEnd,
+		onNodeParameterChangeStart,
+		onNodeParamterChange,
+		onNodePlugMouseDown,
+		onNodePlugMouseUp,
+		onPlugCreated
 	}: Props = $props();
 
 	let internalClickPosition = {
@@ -59,7 +87,7 @@
 				y: event.clientY - rect.top
 			};
 
-			dispatcher('dragstart');
+			onDragStart();
 
 			window.addEventListener('pointermove', handlePointerMove);
 		}
@@ -84,7 +112,7 @@
 			y: event.clientY
 		};
 
-		dispatcher('drag', {
+		onDrag({
 			id,
 			x: event.clientX - internalClickPosition.x,
 			y: event.clientY - internalClickPosition.y
@@ -103,22 +131,22 @@
 		lastDragPosition = null;
 
 		if (notDragged) {
-			dispatcher('contextmenu', {
+			onContextMenu({
 				id,
 				position: { x: event.clientX, y: event.clientY },
 				nodeType: node.type
 			});
 		}
 
-		dispatcher('dragend');
+		onDragEnd();
 	};
 </script>
 
-<div
+<button
 	onpointerdown={handlePointerDown}
 	onpointerup={handlePointerUp}
 	oncontextmenu={(e) => e.preventDefault()}
-	onclick={bubble('click')}
+	onclick={onClick}
 	onkeydown={() => {}}
 	class="wrapper"
 	class:selected
@@ -132,19 +160,17 @@
 		{draggingLine}
 		{color}
 		{audioGraph}
-		on:nodeParameterChangeStart
-		on:nodeParameterChange
-		on:nodeParameterChangeEnd
-		on:nodePlugTouchStart
-		on:nodePlugDown
-		on:nodePlugUp
-		on:deleteNode
-		on:knobMouseUp
-		on:plugCreated
-		on:knobCreated
-		on:commentChanged
+		{onCommentChanged}
+		{onKnobCreated}
+		{onNodeKnobMouseUp}
+		{onNodeParameterChangeEnd}
+		{onNodeParameterChangeStart}
+		{onNodeParamterChange}
+		{onNodePlugMouseDown}
+		{onNodePlugMouseUp}
+		{onPlugCreated}
 	/>
-</div>
+</button>
 
 <style>
 	.wrapper {

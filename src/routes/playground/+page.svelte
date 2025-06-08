@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Position, SerializedAudioElements } from '../../audio/serialized';
 	import { loadCustomNodes } from '../../audio/web-audio/utils';
 	import AudioCanvas from '../../components/AudioCanvas.svelte';
@@ -17,7 +15,7 @@
 			? JSON.parse(projectsString)
 			: {
 					'Project 1': createProject('Project 1')
-			  }
+				}
 	);
 
 	let projectNames = $derived(
@@ -29,7 +27,7 @@
 
 	let chosenProjectName = $state('');
 
-	run(() => {
+	$effect(() => {
 		if (!chosenProjectName) {
 			chosenProjectName = projectNames[0] ?? 'Project 1';
 		}
@@ -37,11 +35,11 @@
 
 	let chosenProject = $derived(projects[chosenProjectName]);
 
-	run(() => {
+	$effect(() => {
 		localStorage.setItem(audioGraphLocalStorageKey, JSON.stringify(projects));
 	});
 
-	const handleChange = (event: CustomEvent<SerializedAudioElements>) => {
+	const handleChange = (audioCanvas: SerializedAudioElements) => {
 		if (!chosenProject) return;
 
 		projects = {
@@ -49,7 +47,7 @@
 			[chosenProjectName]: {
 				...chosenProject,
 				lastChanged: new Date(Date.now()).toISOString(),
-				audioCanvas: event.detail
+				audioCanvas
 			}
 		};
 	};
@@ -63,23 +61,23 @@
 		};
 	};
 
-	const handleProjectChange = (event: CustomEvent<string>) => {
-		chosenProjectName = event.detail;
+	const handleProjectChange = (projectName: string) => {
+		chosenProjectName = projectName;
 	};
 
-	const handleProjectDelete = (event: CustomEvent<string>) => {
+	const handleProjectDelete = (projectName: string) => {
 		const projectsCopy = {
 			...projects
 		};
 
-		delete projectsCopy[event.detail];
+		delete projectsCopy[projectName];
 
 		if (Object.entries(projectsCopy).length === 0) {
 			projects = {
 				'Project 1': createProject('Project 1')
 			};
 
-			if (event.detail === 'Project 1') {
+			if (projectName === 'Project 1') {
 				window.location.reload();
 			}
 		} else {
@@ -88,13 +86,13 @@
 
 		const newProjectNames = Object.values(projects).map((project) => project.name);
 
-		if (chosenProjectName === event.detail) {
+		if (chosenProjectName === projectName) {
 			chosenProjectName = newProjectNames[0]!;
 		}
 	};
 
-	const handleProjectNameChange = (event: CustomEvent<{ oldName: string; newName: string }>) => {
-		const { newName, oldName } = event.detail;
+	const handleProjectNameChange = (event: { oldName: string; newName: string }) => {
+		const { newName, oldName } = event;
 
 		const project = projects[oldName];
 
@@ -117,9 +115,7 @@
 		}
 	};
 
-	const handleSizeChange = (event: CustomEvent<number>) => {
-		const size = event.detail;
-
+	const handleSizeChange = (size: number) => {
 		const project = projects[chosenProjectName];
 
 		if (!project) return;
@@ -133,8 +129,8 @@
 		};
 	};
 
-	const handleCanvasRelativePositionChange = (event: CustomEvent<Position>) => {
-		const { x, y } = event.detail;
+	const handleCanvasRelativePositionChange = (position: Position) => {
+		const { x, y } = position;
 
 		const project = projects[chosenProjectName];
 
@@ -159,13 +155,13 @@
 				{projectNames}
 				{chosenProjectName}
 				project={chosenProject}
-				on:change={handleChange}
-				on:newProject={handleNewProject}
-				on:projectChange={handleProjectChange}
-				on:projectDelete={handleProjectDelete}
-				on:projectNameChange={handleProjectNameChange}
-				on:sizeChange={handleSizeChange}
-				on:canvasRelativePositionChange={handleCanvasRelativePositionChange}
+				onChange={handleChange}
+				onNewProject={handleNewProject}
+				onProjectChange={handleProjectChange}
+				onProjectDelete={handleProjectDelete}
+				onProjectNameChange={handleProjectNameChange}
+				onSizeChange={handleSizeChange}
+				onCanvasRelativePositionChange={handleCanvasRelativePositionChange}
 			/>
 		{/key}
 	{/if}

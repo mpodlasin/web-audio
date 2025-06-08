@@ -32,7 +32,10 @@ import { accessParameter } from './update';
 import { midiNoteToFrequency } from './utils';
 
 abstract class GenericCustomAudioNode implements CustomAudioNode {
-	constructor(private id: string, protected type: NodeType) {}
+	constructor(
+		private id: string,
+		protected type: NodeType
+	) {}
 
 	private parameterInputs: { [parameterName: string]: ConstantSourceNode } = {};
 	private parameterAnalysers: { [parameterName: string]: AnalyserNode } = {};
@@ -1005,7 +1008,11 @@ export class CustomLFONode extends GenericCustomAudioNode {
 	private negate: GainNode;
 	private timesMinusTwo: GainNode;
 
-	constructor(id: string, nodeType: NodeType, private oscillator: AudioNode) {
+	constructor(
+		id: string,
+		nodeType: NodeType,
+		private oscillator: AudioNode
+	) {
 		super(id, nodeType);
 
 		const mult = globalContext.createGain();

@@ -1,21 +1,19 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { rewriteStringWithNumber } from '../utils/rewriteStringWithNumber';
 
 	interface Props {
 		label: string;
 		active: boolean;
+		onChange(event: { parameterName: string; value: 0 | 1 }): void;
 	}
 
-	let { label, active }: Props = $props();
-
-	const dispatcher = createEventDispatcher();
+	let { label, active, onChange }: Props = $props();
 
 	const handleClick = (event: MouseEvent) => {
 		event.stopPropagation();
 		event.preventDefault();
 
-		dispatcher('change', {
+		onChange({
 			parameterName: label,
 			value: active ? 0 : 1
 		});
@@ -33,7 +31,8 @@
 		onclick={handleClick}
 		onpointerup={ignorePointerEvent}
 		onpointerdown={ignorePointerEvent}
-	/>
+		aria-label="On/Off Button"
+	></button>
 	<div class="label">{rewriteStringWithNumber(label)}</div>
 </div>
 

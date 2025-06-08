@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { CustomValueNode } from '../audio/initialized';
 
 	interface Props {
@@ -30,7 +28,7 @@
 		value = dataArray[0] ?? 0;
 	}
 
-	run(() => {
+	$effect(() => {
 		if (running && !drawing) {
 			draw();
 			drawing = true;

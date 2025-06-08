@@ -60,7 +60,7 @@ export const insertExistingNodes = (
 								}
 							];
 						})
-				  )
+					)
 				: undefined;
 
 		const rewrittenNode = {

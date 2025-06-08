@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Position, SerializedAudioElements } from '../../../audio/serialized';
 	import { loadCustomNodes } from '../../../audio/web-audio/utils';
 	import AudioCanvas from '../../../components/AudioCanvas.svelte';
@@ -21,9 +19,10 @@
 
 	let tutorials: Projects = $state(tutorialsString !== null ? JSON.parse(tutorialsString) : {});
 
+	// svelte-ignore state_referenced_locally
 	let chosenTutorial = $state(tutorials[id]);
 
-	run(() => {
+	$effect(() => {
 		if (!chosenTutorial) {
 			tutorials = {
 				...tutorials,
@@ -34,11 +33,11 @@
 		chosenTutorial = tutorials[id];
 	});
 
-	run(() => {
+	$effect(() => {
 		localStorage.setItem(localStorageKey, JSON.stringify(tutorials));
 	});
 
-	const handleChange = (event: CustomEvent<SerializedAudioElements>) => {
+	const handleChange = (audioCanvas: SerializedAudioElements) => {
 		if (!chosenTutorial) return;
 
 		tutorials = {
@@ -46,14 +45,12 @@
 			[id]: {
 				...chosenTutorial,
 				lastChanged: new Date(Date.now()).toISOString(),
-				audioCanvas: event.detail
+				audioCanvas
 			}
 		};
 	};
 
-	const handleSizeChange = (event: CustomEvent<number>) => {
-		const size = event.detail;
-
+	const handleSizeChange = (size: number) => {
 		if (!chosenTutorial) return;
 
 		tutorials = {
@@ -65,9 +62,7 @@
 		};
 	};
 
-	const handleCanvasRelativePositionChange = (event: CustomEvent<Position>) => {
-		const canvasRelativePosition = event.detail;
-
+	const handleCanvasRelativePositionChange = (canvasRelativePosition: Position) => {
 		if (!chosenTutorial) return;
 
 		tutorials = {
@@ -90,9 +85,9 @@
 				projectNames={[]}
 				project={chosenTutorial}
 				tutorialMode
-				on:change={handleChange}
-				on:sizeChange={handleSizeChange}
-				on:canvasRelativePositionChange={handleCanvasRelativePositionChange}
+				onChange={handleChange}
+				onSizeChange={handleSizeChange}
+				onCanvasRelativePositionChange={handleCanvasRelativePositionChange}
 			/>
 		{/key}
 	{/if}

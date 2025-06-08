@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import Menu from './Menu.svelte';
 	import Button from './Button.svelte';
 	import More from '../icons/More_Vertical.svg?component';
@@ -7,23 +6,34 @@
 	interface Props {
 		projects: string[];
 		open: boolean;
+		onClose(): void;
+		onNewProject(): void;
+		onProjectChange(projectName: string): void;
+		onProjectDelete?(projectName: string): void;
+		onProjectNameChange?(event: { oldName: string; newName: string }): void;
 	}
 
-	let { projects, open }: Props = $props();
+	let {
+		projects,
+		open,
+		onClose,
+		onProjectChange,
+		onProjectDelete,
+		onNewProject,
+		onProjectNameChange
+	}: Props = $props();
 
-	const disaptcher = createEventDispatcher();
+	let showMoreMenuForProject = $state('');
 
 	const handleNewProject = () => {
-		disaptcher('newProject');
+		onNewProject();
 	};
 
 	const handleChangeProject = (projectName: string) => () => {
 		if (showMoreMenuForProject || renameModeForProject) return;
 
-		disaptcher('projectChange', projectName);
+		onProjectChange(projectName);
 	};
-
-	let showMoreMenuForProject = $state('');
 
 	const handleMoreClick = (projectName: string) => (event: MouseEvent) => {
 		event.stopPropagation();
@@ -39,7 +49,7 @@
 
 	const handleDeleteProject = (projectName: string) => (event: MouseEvent) => {
 		event.stopPropagation();
-		disaptcher('projectDelete', projectName);
+		onProjectDelete?.(projectName);
 		showMoreMenuForProject = '';
 	};
 
@@ -63,7 +73,7 @@
 	};
 
 	const confirmNameChange = () => {
-		disaptcher('projectNameChange', {
+		onProjectNameChange?.({
 			oldName: renameModeForProject,
 			newName: renamedProject
 		});
@@ -81,31 +91,39 @@
 	};
 </script>
 
-<Modal on:close {open}>
+<Modal {onClose} {open}>
 	Projects
 	<div class="projects">
 		{#each projects as project (project)}
-			<div class="project" onclick={handleChangeProject(project)} onkeydown={() => {}}>
+			<div
+				class="project"
+				onclick={handleChangeProject(project)}
+				onkeydown={() => {}}
+				role="button"
+				tabindex={0}
+			>
 				{#if renameModeForProject === project}
 					<!-- svelte-ignore a11y_autofocus -->
 					<input type="text" bind:value={renamedProject} autofocus onkeydown={handleEnter} />
 				{:else}
 					{project}
 				{/if}
-				<div class="more" onclick={handleMoreClick(project)} onkeydown={() => {}}><More /></div>
+				<button class="more" onclick={handleMoreClick(project)} onkeydown={() => {}}
+					><More /></button
+				>
 				{#if showMoreMenuForProject === project}
 					<div class="more-menu">
 						<Menu>
-							<Button title="Rename" on:click={handleRenameProject(project)} />
-							<Button title="Delete" variant="danger" on:click={handleDeleteProject(project)} />
+							<Button title="Rename" onClick={handleRenameProject(project)} />
+							<Button title="Delete" variant="danger" onClick={handleDeleteProject(project)} />
 						</Menu>
 					</div>
 				{/if}
 			</div>
 		{/each}
-		<div class="add" onclick={handleNewProject} onkeydown={() => {}}>
+		<button class="add" onclick={handleNewProject} onkeydown={() => {}}>
 			<div class="plus">+</div>
-		</div>
+		</button>
 	</div>
 </Modal>
 

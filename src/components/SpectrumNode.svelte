@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { CustomSpectrumNode } from '../audio/initialized';
 
 	interface Props {
@@ -13,7 +11,7 @@
 	let primaryColor = $state('#45C7FF');
 	let neutralColor = $state('#FFFFFF');
 
-	let canvas: HTMLCanvasElement = $state();
+	let canvas: HTMLCanvasElement | undefined = $state();
 
 	let drawing = $state(false);
 
@@ -54,17 +52,19 @@
 		canvasCtx.stroke();
 	}
 
-	run(() => {
+	$effect(() => {
 		if (canvas) {
 			primaryColor = window.getComputedStyle(canvas).getPropertyValue('--primary-500');
 			neutralColor = window.getComputedStyle(canvas).getPropertyValue('--neutral-900');
 		}
 	});
+
 	let analyser = $derived(oscilloscopeNode.webApiNode);
 	let bufferLength = $derived(analyser.frequencyBinCount);
 	let dataArray = $derived(new Uint8Array(bufferLength));
 	let canvasCtx = $derived(canvas?.getContext('2d') ?? null);
-	run(() => {
+
+	$effect(() => {
 		if (running && canvasCtx && !drawing) {
 			drawSpectrum();
 			drawing = true;
@@ -75,9 +75,9 @@
 <div class="container">
 	<div class="canvas-container">
 		<div class="canvas-background">
-			<div class="middle-line" />
+			<div class="middle-line"></div>
 		</div>
-		<canvas bind:this={canvas} />
+		<canvas bind:this={canvas}></canvas>
 	</div>
 </div>
 

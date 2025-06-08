@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { handlers } from 'svelte/legacy';
-
 	import {
 		type AudioNodeDatabase,
 		type SerializedAudioElements,
@@ -22,7 +20,7 @@
 	import ProjectHeader from './ProjectHeader.svelte';
 	import { getLinesToDisplay, type LineToDisplay } from '../ui/lines';
 	import ProjectsModal from './ProjectsModal.svelte';
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { Project } from '../ui/project';
 	import Line from './Line.svelte';
 	import ContextMenu from './ContextMenu.svelte';
@@ -44,16 +42,27 @@
 		projectNames: string[];
 		project: Project;
 		tutorialMode?: boolean;
+		onCanvasRelativePositionChange(position: Position): void;
+		onNewProject?(): void;
+		onProjectChange?(projectName: string): void;
+		onSizeChange(size: number): void;
+		onProjectDelete?(projectName: string): void;
+		onProjectNameChange?(event: { oldName: string; newName: string }): void;
+		onChange(audioGraph: SerializedAudioElements): void;
 	}
 
 	let {
 		chosenProjectName,
 		projectNames,
 		project,
-		tutorialMode = false
+		tutorialMode = false,
+		onCanvasRelativePositionChange,
+		onNewProject,
+		onProjectChange,
+		onSizeChange,
+		onProjectDelete,
+		onProjectNameChange
 	}: Props = $props();
-
-	const dispatcher = createEventDispatcher();
 
 	let container: HTMLDivElement | undefined = $state();
 
@@ -141,11 +150,11 @@
 		};
 	};
 
-	const translateEventWithPosition = <E extends Position>(event: CustomEvent<E>) => {
-		const translatedPosition = translatePosition(event.detail);
+	const translateEventWithPosition = <E extends Position>(event: E) => {
+		const translatedPosition = translatePosition(event);
 
-		event.detail.x = translatedPosition.x;
-		event.detail.y = translatedPosition.y;
+		event.x = translatedPosition.x;
+		event.y = translatedPosition.y;
 	};
 
 	const handleDragCanvasStart = (event: PointerEvent) => {
@@ -166,7 +175,7 @@
 	const handleDragCanvasEnd = (event: PointerEvent) => {
 		event.preventDefault();
 
-		dispatcher('canvasRelativePositionChange', canvasRelativePosition);
+		onCanvasRelativePositionChange(canvasRelativePosition);
 
 		lastDragPosition = null;
 	};
@@ -286,16 +295,16 @@
 		startTemporaryAction();
 	};
 
-	const handleDragNode = (event: CustomEvent<{ x: number; y: number; id: string }>) => {
+	const handleDragNode = (event: { x: number; y: number; id: string }) => {
 		translateEventWithPosition(event);
 
-		if (selectedNodeIds.some((selectedId) => selectedId === event.detail.id)) {
-			const draggedNode = audioGraph[event.detail.id];
+		if (selectedNodeIds.some((selectedId) => selectedId === event.id)) {
+			const draggedNode = audioGraph[event.id];
 
 			if (!draggedNode) return;
 
-			const diffX = (draggedNode.ui?.position.x ?? 0) - event.detail.x;
-			const diffY = (draggedNode.ui?.position.y ?? 0) - event.detail.y;
+			const diffX = (draggedNode.ui?.position.x ?? 0) - event.x;
+			const diffY = (draggedNode.ui?.position.y ?? 0) - event.y;
 
 			updateAudioGraphHistory((audioGraph) =>
 				selectedNodeIds.reduce((audioGraph, id) => {
@@ -317,9 +326,9 @@
 			updateAudioGraphHistory((audioGraph) =>
 				dragNode(
 					{
-						id: event.detail.id,
-						x: event.detail.x,
-						y: event.detail.y
+						id: event.id,
+						x: event.x,
+						y: event.y
 					},
 					audioGraph
 				)
@@ -335,15 +344,15 @@
 
 	/* PLUG POSITIONS ----------------------------------------- */
 
-	let plugs: HTMLDivElement[] = [];
-	let knobs: HTMLDivElement[] = [];
+	let plugs: HTMLElement[] = [];
+	let knobs: HTMLElement[] = [];
 
-	const handlePlugCreated = (event: CustomEvent<HTMLDivElement>) => {
-		plugs = [...plugs, event.detail];
+	const handlePlugCreated = (event: HTMLElement) => {
+		plugs = [...plugs, event];
 	};
 
-	const handleKnobCreated = (event: CustomEvent<HTMLDivElement>) => {
-		knobs = [...knobs, event.detail];
+	const handleKnobCreated = (event: HTMLElement) => {
+		knobs = [...knobs, event];
 	};
 
 	const getPlugPositions = (): PlugPositions => {
@@ -426,10 +435,12 @@
 		startTemporaryAction();
 	};
 
-	const handleNodeParameterChange = (
-		event: CustomEvent<{ id: string; parameterName: string; value: number }>
-	) => {
-		const { id, parameterName, value } = event.detail;
+	const handleNodeParameterChange = (event: {
+		id: string;
+		parameterName: string;
+		value: number;
+	}) => {
+		const { id, parameterName, value } = event;
 
 		updateAudioGraphHistory((audioGraph) => changeParameter(audioGraph, id, parameterName, value));
 	};
@@ -439,12 +450,10 @@
 	};
 
 	const handleCreateElementClick = (
-		event: CustomEvent<keyof typeof allowedSerializedAudioElementStaticDefinitions>
+		nodeType: keyof typeof allowedSerializedAudioElementStaticDefinitions
 	) => {
-		event.preventDefault();
-
 		updateAudioGraphHistory((audioGraph) =>
-			addNode(audioGraph, event.detail, translatePosition(menuPosition))
+			addNode(audioGraph, nodeType, translatePosition(menuPosition))
 		);
 		updatePlugPositions();
 		closeMenu();
@@ -456,15 +465,15 @@
 	let positionOfStartingPlug: { x: number; y: number } = $state({ x: 0, y: 0 });
 	let positionOfEndPlug: { x: number; y: number } | null = $state(null);
 
-	const handlePlugDown = (
-		event: CustomEvent<{ id: string; type: 'input' | 'output'; nodeId: string }>
-	) => {
-		const { id, type, nodeId } = event.detail;
+	const handlePlugDown = (event: { plugId: string; type: 'input' | 'output'; nodeId: string }) => {
+		const { plugId, type, nodeId } = event;
 
 		draggingLine = true;
-		startingPlug = { id, type, nodeId };
+		startingPlug = { id: plugId, type, nodeId };
 		const rawPositionOfStartingPlug =
-			plugPositions[nodeId]?.[type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'][id]!;
+			plugPositions[nodeId]?.[type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'][
+				plugId
+			]!;
 
 		positionOfStartingPlug = {
 			x: rawPositionOfStartingPlug.x,
@@ -493,36 +502,36 @@
 		};
 	};
 
-	const handlePlugUp = (
-		event: CustomEvent<{
-			id: string;
-			type: 'input' | 'output';
-			nodeId: string;
-			event: PointerEvent;
-		}>
-	) => {
-		const connectedToPlug = handleLineDragStopForPlug(event.detail.event);
+	const handlePlugUp = (event: {
+		plugId: string;
+		type: 'input' | 'output';
+		nodeId: string;
+		event: PointerEvent;
+	}) => {
+		const connectedToPlug = handleLineDragStopForPlug(event.event);
 
 		if (connectedToPlug) return;
 
-		const connectedToKnob = handleLineDragStopForKnob(event.detail.event);
+		const connectedToKnob = handleLineDragStopForKnob(event.event);
 
 		if (connectedToKnob) return;
 
 		stopDragging();
 	};
 
-	const handleKnobMouseUp = (
-		event: CustomEvent<{ nodeId: string; parameterName: string; event: PointerEvent }>
-	) => {
+	const handleKnobMouseUp = (event: {
+		nodeId: string;
+		parameterName: string;
+		event: PointerEvent;
+	}) => {
 		if (!draggingLine) return;
 		if (!startingPlug) return;
 
 		updateAudioGraphHistory((audioGraph) =>
 			addConnectionToParameter(audioGraph, startingPlug!, {
-				nodeId: event.detail.nodeId,
+				nodeId: event.nodeId,
 				type: 'input',
-				id: event.detail.parameterName
+				id: event.parameterName
 			})
 		);
 
@@ -639,7 +648,7 @@
 	let menuKind: 'canvas' | 'node' | 'line' | 'line-multiply' = $state('canvas');
 	let chosenLine: LineToDisplay | null = $state(null);
 	let menuNodeId: string = $state('');
-	let chosenLineMultiply = $derived(chosenLine?.multiply);
+	let chosenLineMultiply = $derived((chosenLine as any)?.multiply);
 
 	const handleOpenContextMenu = (event: PointerEvent) => {
 		const wasNotDragging = draggedDistance < DISTANCE_THAT_IS_CONSIDERED_DRAG;
@@ -675,10 +684,8 @@
 		chosenLine = line;
 	};
 
-	const handleNodeClick = (
-		event: CustomEvent<{ id: string; position: Position; nodeType: NodeType }>
-	) => {
-		if (event.detail.nodeType === 'tutorial') {
+	const handleNodeClick = (event: { id: string; position: Position; nodeType: NodeType }) => {
+		if (event.nodeType === 'tutorial') {
 			return;
 		}
 
@@ -687,11 +694,11 @@
 			return;
 		}
 
-		menuPosition = event.detail.position;
+		menuPosition = event.position;
 		showMenu = true;
 		menuKind = 'node';
 		chosenLine = null;
-		menuNodeId = event.detail.id;
+		menuNodeId = event.id;
 	};
 
 	/* LINE CONTEXT MENU ----------------------------------------- */
@@ -716,10 +723,8 @@
 		startTemporaryAction();
 	};
 
-	const handleMultiplyValueChange = (
-		event: CustomEvent<{ parameterName: string; value: number }>
-	) => {
-		const { value } = event.detail;
+	const handleMultiplyValueChange = (event: { parameterName: string; value: number }) => {
+		const { value } = event;
 
 		if (!chosenLine) return;
 
@@ -765,12 +770,12 @@
 
 	const handleNewProject = () => {
 		showProjectsModal = false;
-		dispatcher('newProject');
+		onNewProject?.();
 	};
 
-	const handleProjectChange = (event: CustomEvent<string>) => {
+	const handleProjectChange = (projectName: string) => {
 		showProjectsModal = false;
-		dispatcher('projectChange', event.detail);
+		onProjectChange?.(projectName);
 	};
 
 	/* CHANGE COLOR ----------------------------------------- */
@@ -790,8 +795,8 @@
 		changeColorModalIsOpen = false;
 	};
 
-	const handleColorChange = (event: CustomEvent<string>) => {
-		changedNodeColor = event.detail;
+	const handleColorChange = (color: string) => {
+		changedNodeColor = color;
 	};
 
 	const handleConfirmChange = () => {
@@ -830,7 +835,7 @@
 
 		updatePlugPositions();
 
-		dispatcher('sizeChange', size);
+		onSizeChange(size);
 	};
 
 	const makeStuffBigger = () => {
@@ -838,24 +843,36 @@
 
 		updatePlugPositions();
 
-		dispatcher('sizeChange', size);
+		onSizeChange(size);
 	};
 
 	// COMMENTS ---------------------------------
-	const handleCommentChanged = (e: CustomEvent<{ comment: string; nodeId: string }>) => {
-		const { nodeId, comment } = e.detail;
+	const handleCommentChanged = (e: { comment: string; nodeId: string }) => {
+		const { nodeId, comment } = e;
 		updateAudioGraphHistory((audioGraph) => changeComment(audioGraph, nodeId, comment));
+	};
+
+	const handleCanvasPointerDown = (event: PointerEvent) => {
+		handleStartSelectingNodes(event);
+		handleDragCanvasStart(event);
+	};
+
+	const handleCanvasPointerMove = (event: PointerEvent) => {
+		handleSelectNodesDrag(event);
+		handleDragCanvas(event);
 	};
 </script>
 
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
 	class="canvas"
-	onpointerdown={handlers(handleStartSelectingNodes, handleDragCanvasStart)}
-	onpointermove={handlers(handleSelectNodesDrag, handleDragCanvas)}
+	onpointerdown={handleCanvasPointerDown}
+	onpointermove={handleCanvasPointerMove}
 	onmouseup={handleSelectNodesEnd}
 	onpointerup={handleDragCanvasEnd}
 	onclick={handleCanvasDoubleClick}
 	onkeydown={() => {}}
+	role="application"
 	bind:this={container}
 >
 	<ProjectHeader
@@ -869,19 +886,19 @@
 	<ProjectsModal
 		open={showProjectsModal}
 		projects={projectNames}
-		on:close={handleCloseProjectsModal}
-		on:newProject={handleNewProject}
-		on:projectChange={handleProjectChange}
-		on:projectDelete
-		on:projectNameChange
+		onClose={handleCloseProjectsModal}
+		onNewProject={handleNewProject}
+		onProjectChange={handleProjectChange}
+		{onProjectDelete}
+		{onProjectNameChange}
 	/>
 	<svg width="100vw" height="100vh">
 		{#each linesToDisplay as line (line.key)}
 			<Line
 				{line}
 				{chosenLine}
-				on:click={handleLineClick(line)}
-				on:contextmenu={handleLineClick(line)}
+				onClick={handleLineClick(line)}
+				onContextMenu={handleLineClick(line)}
 			/>
 		{/each}
 		{#if draggingLine && positionOfEndPlug}
@@ -899,6 +916,7 @@
 		onpointerup={handleOpenContextMenu}
 		oncontextmenu={(e) => e.preventDefault()}
 		onpointermove={handleLineDrag}
+		role="application"
 	>
 		<div
 			class="nodes"
@@ -915,21 +933,20 @@
 					position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
 					color={node.ui.primaryColor}
 					{draggingLine}
-					on:drag={handleDragNode}
-					on:dragstart={handleDragStart}
-					on:dragend={handleNodeDragEnd}
-					on:nodeParameterChangeStart={handleNodeParameterChangeStart}
-					on:nodeParameterChange={handleNodeParameterChange}
-					on:nodeParameterChangeEnd={handleNodeParameterChangeEnd}
-					on:nodePlugDown={handlePlugDown}
-					on:nodePlugUp={handlePlugUp}
-					on:deleteNode={handleDeleteNode}
-					on:knobMouseUp={handleKnobMouseUp}
-					on:contextmenu={handleNodeClick}
-					on:click={handleSelectNodeClick(id)}
-					on:plugCreated={handlePlugCreated}
-					on:knobCreated={handleKnobCreated}
-					on:commentChanged={handleCommentChanged}
+					onDrag={handleDragNode}
+					onDragStart={handleDragStart}
+					onDragEnd={handleNodeDragEnd}
+					onNodeParameterChangeStart={handleNodeParameterChangeStart}
+					onNodeParamterChange={handleNodeParameterChange}
+					onNodeParameterChangeEnd={handleNodeParameterChangeEnd}
+					onNodePlugMouseDown={handlePlugDown}
+					onNodePlugMouseUp={handlePlugUp}
+					onNodeKnobMouseUp={handleKnobMouseUp}
+					onContextMenu={handleNodeClick}
+					onClick={handleSelectNodeClick(id)}
+					onPlugCreated={handlePlugCreated}
+					onKnobCreated={handleKnobCreated}
+					onCommentChanged={handleCommentChanged}
 				/>
 			{/each}
 		</div>
@@ -948,42 +965,38 @@
 			></div>
 		{/if}
 		{#if showMenu && menuKind === 'line'}
-			<PositionedMenu position={menuPosition} on:close={closeMenu}>
+			<PositionedMenu position={menuPosition} onClose={closeMenu}>
 				{#if chosenLineMultiply !== undefined}
-					<MenuButton on:click={openLineMultiplyMenu}
+					<MenuButton onClick={openLineMultiplyMenu}
 						>Mult: {chosenLineMultiply.toFixed(2)}</MenuButton
 					>
 				{/if}
-				<MenuButton on:click={handleDeleteConnection} on:keypress={() => {}} variant="danger"
-					>Delete</MenuButton
-				>
+				<MenuButton onClick={handleDeleteConnection} variant="danger">Delete</MenuButton>
 			</PositionedMenu>
 		{/if}
 
 		{#if showMenu && menuKind === 'node'}
-			<PositionedMenu position={menuPosition} on:close={closeMenu}>
+			<PositionedMenu position={menuPosition} onClose={closeMenu}>
 				{#if selectedNodeIds.some((id) => menuNodeId === id)}
 					<div class="nodes-selected-header">{selectedNodeIds.length} nodes selected:</div>
 				{/if}
-				<MenuButton on:click={openChangeColorModal(menuNodeId)}>Color</MenuButton>
-				<MenuButton on:click={handleCopyNode}>Copy</MenuButton>
-				<MenuButton on:click={handleDeleteNode} on:keypress={() => {}} variant="danger"
-					>Delete</MenuButton
-				>
+				<MenuButton onClick={openChangeColorModal(menuNodeId)}>Color</MenuButton>
+				<MenuButton onClick={handleCopyNode}>Copy</MenuButton>
+				<MenuButton onClick={handleDeleteNode} variant="danger">Delete</MenuButton>
 			</PositionedMenu>
 		{/if}
 
 		{#if showMenu && menuKind === 'canvas'}
 			<ContextMenu
 				position={menuPosition}
-				on:create={handleCreateElementClick}
-				on:paste={handlePasteClick}
-				on:close={closeMenu}
+				onCreate={handleCreateElementClick}
+				onPaste={handlePasteClick}
+				onClose={closeMenu}
 			/>
 		{/if}
 
 		{#if showMenu && menuKind === 'line-multiply'}
-			<PositionedMenu position={menuPosition} on:close={closeMenu}>
+			<PositionedMenu position={menuPosition} onClose={closeMenu}>
 				<Knob
 					parameterName="mult"
 					parameter={{ base: chosenLineMultiply ?? 1, inputs: [] }}
@@ -994,9 +1007,9 @@
 					draggingLine={false}
 					audioParamAnalyser={undefined}
 					nodeId=""
-					on:change={handleMultiplyValueChange}
-					on:mousedown={handleMultiplyValueChangeStart}
-					on:mouseup={handleEndMultiplyValueChange}
+					onChange={handleMultiplyValueChange}
+					onMouseDown={handleMultiplyValueChangeStart}
+					onMouseUp={handleEndMultiplyValueChange}
 				/>
 			</PositionedMenu>
 		{/if}
@@ -1005,15 +1018,15 @@
 			<ChangeColorModal
 				value={changedNodeColor}
 				open
-				on:change={handleColorChange}
-				on:confirm={handleConfirmChange}
-				on:close={closeChangeColorModal}
+				onChange={handleColorChange}
+				onConfirm={handleConfirmChange}
+				onClose={closeChangeColorModal}
 			>
 				{#snippet node()}
-								<div >
-						{#if changedColorNode}
+					<div>
+						{#if changedColorNode !== undefined}
 							<Node
-								color={changedNodeColor}
+								color={changedNodeColor!}
 								node={changedColorNode}
 								id={changedColorNodeId}
 								instantiatedNode={null}
@@ -1023,7 +1036,7 @@
 							/>
 						{/if}
 					</div>
-							{/snippet}
+				{/snippet}
 			</ChangeColorModal>
 		{/if}
 		<div class="beta-info">

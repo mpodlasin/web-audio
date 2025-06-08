@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { type SerializedCommentNode } from '../audio/serialized';
-
-	const dispatcher = createEventDispatcher();
 
 	interface Props {
 		id: string;
 		node: SerializedCommentNode;
+		onCommentChanged?: (event: { comment: string; nodeId: string }) => void;
 	}
 
-	let { id, node }: Props = $props();
+	let { id, node, onCommentChanged }: Props = $props();
 	let comment = $derived(node.comment);
 
 	let editMode = $state(false);
@@ -19,7 +17,7 @@
 	const stopEditing = () => {
 		editMode = false;
 
-		dispatcher('commentChanged', {
+		onCommentChanged?.({
 			comment: editedComment,
 			nodeId: id
 		});
@@ -27,7 +25,7 @@
 		editedComment = '';
 	};
 
-	let textarea: HTMLTextAreaElement = $state();
+	let textarea: HTMLTextAreaElement | undefined = $state();
 
 	const stopPropagation = (e: Event) => e.stopPropagation();
 
@@ -75,17 +73,16 @@
 		rows={5}
 		onkeypress={handleEnter}
 		bind:value={editedComment}
-	/>
+	></textarea>
 {:else}
-	<div
+	<button
 		class="comment"
 		onclick={handleCommentClick}
 		onpointerup={(e) => e.stopPropagation()}
 		onpointerdown={(e) => e.stopPropagation()}
-		onkeypress={() => {}}
 	>
 		{comment || 'Empty comment'}
-	</div>
+	</button>
 {/if}
 
 <style>

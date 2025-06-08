@@ -1,10 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-	import { createEventDispatcher } from 'svelte';
 	import type { CustomOscilloscopeNode } from '../audio/initialized';
 	import type { SerializedOscilloscopeNode } from '../audio/serialized';
-	import OnOffButton from './OnOffButton.svelte';
+	// import OnOffButton from './OnOffButton.svelte';
 
 	interface Props {
 		id: string;
@@ -15,20 +12,20 @@
 
 	let { id, serializedNode, oscilloscopeNode, running }: Props = $props();
 
-	const dispatcher = createEventDispatcher();
-
-	const handleSlowModeChange = (event: CustomEvent<{ parameterName: string; value: number }>) => {
-		dispatcher('nodeParameterChange', {
-			id,
-			parameterName: event.detail.parameterName,
-			value: event.detail.value
-		});
-	};
+	// const handleSlowModeChange = (event: CustomEvent<{ parameterName: string; value: number }>) => {
+	// 	dispatcher('nodeParameterChange', {
+	// 		id,
+	// 		parameterName: event.detail.parameterName,
+	// 		value: event.detail.value
+	// 	});
+	// };
 
 	let primaryColor = $state('#45C7FF');
 	let neutralColor = $state('#FFFFFF');
 
-	let canvas: HTMLCanvasElement = $state();
+	const mode: string = 'slow';
+
+	let canvas: HTMLCanvasElement | undefined = $state();
 
 	let lastPosition = 0;
 
@@ -106,17 +103,19 @@
 
 	let slowParameter = $derived(serializedNode.parameters?.slow);
 
-	run(() => {
+	$effect(() => {
 		if (canvas) {
 			primaryColor = window.getComputedStyle(canvas).getPropertyValue('--primary-500');
 			neutralColor = window.getComputedStyle(canvas).getPropertyValue('--neutral-900');
 		}
 	});
+
 	let analyser = $derived(oscilloscopeNode.webApiNode);
 	let bufferLength = $derived(analyser.frequencyBinCount);
 	let dataArray = $derived(new Uint8Array(bufferLength));
 	let canvasCtx = $derived(canvas?.getContext('2d') ?? null);
-	run(() => {
+
+	$effect(() => {
 		if (running && canvasCtx && !drawing) {
 			if (mode === 'fast') {
 				drawFastMode();
@@ -131,9 +130,9 @@
 <div class="container">
 	<div class="canvas-container">
 		<div class="canvas-background">
-			<div class="middle-line" />
+			<div class="middle-line"></div>
 		</div>
-		<canvas bind:this={canvas} />
+		<canvas bind:this={canvas}></canvas>
 	</div>
 	<div class="labels">
 		<span>1</span>

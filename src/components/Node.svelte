@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import {
 		allowedSerializedAudioElementStaticDefinitions,
 		type AllowedSerializedAudioElements,
@@ -30,9 +29,40 @@
 		draggingLine: boolean;
 		color: string;
 		audioGraph: SerializedAudioElements;
+		onNodeParameterChangeStart?(): void;
+		onNodeParamterChange?(event: { id: string; parameterName: string; value: number }): void;
+		onNodeParameterChangeEnd?(): void;
+		onNodePlugMouseDown?(event: { plugId: string; nodeId: string; type: 'input' | 'output' }): void;
+		onNodePlugMouseUp?(event: {
+			plugId: string;
+			nodeId: string;
+			type: 'input' | 'output';
+			event: MouseEvent;
+		}): void;
+		onNodeKnobMouseUp?(event: { nodeId: string; parameterName: string; event: MouseEvent }): void;
+		onKnobCreated?(knob: HTMLElement): void;
+		onCommentChanged?(event: { nodeId: string; comment: string }): void;
+		onPlugCreated?(plug: HTMLElement): void;
 	}
 
-	let { id, node, instantiatedNode, running, draggingLine, color, audioGraph }: Props = $props();
+	let {
+		id,
+		node,
+		instantiatedNode,
+		running,
+		draggingLine,
+		color,
+		audioGraph,
+		onNodeParameterChangeEnd,
+		onNodeParameterChangeStart,
+		onNodeParamterChange,
+		onNodePlugMouseDown,
+		onNodePlugMouseUp,
+		onNodeKnobMouseUp,
+		onKnobCreated,
+		onCommentChanged,
+		onPlugCreated
+	}: Props = $props();
 
 	let staticDefinition = $derived(allowedSerializedAudioElementStaticDefinitions[node.type]);
 	let showCategory = $derived(staticDefinition.showCategory ?? false);
@@ -62,56 +92,49 @@
 		});
 	}
 
-	const dispatcher = createEventDispatcher();
-
-	let categoryName = $derived(showCategory ? getCategoryReadableName(node.type) ?? '' : '');
+	let categoryName = $derived(showCategory ? (getCategoryReadableName(node.type) ?? '') : '');
 
 	const handleParameterChangeStart = () => {
-		dispatcher('nodeParameterChangeStart');
+		onNodeParameterChangeStart?.();
 	};
 
-	const handleParameterChange = (event: CustomEvent<{ parameterName: string; value: number }>) => {
-		const parameterName = event.detail.parameterName;
-		const value = event.detail.value;
+	const handleParameterChange = (event: { parameterName: string; value: number }) => {
+		const parameterName = event.parameterName;
+		const value = event.value;
 
-		dispatcher('nodeParameterChange', { id, parameterName, value });
+		onNodeParamterChange?.({ id, parameterName, value });
 	};
 
 	const handleParameterChangeEnd = () => {
-		dispatcher('nodeParameterChangeEnd');
+		onNodeParameterChangeEnd?.();
 	};
 
-	const handlePlugDown = (event: CustomEvent<{ id: string; type: string }>) => {
-		const plugId = event.detail.id;
-		const type = event.detail.type;
+	const handlePlugDown = (event: { id: string; type: 'input' | 'output' }) => {
+		const plugId = event.id;
+		const type = event.type;
 
-		dispatcher('nodePlugDown', { id: plugId, type, nodeId: id });
+		onNodePlugMouseDown?.({ plugId, nodeId: id, type });
 	};
 
-	const handlePlugUp = (event: CustomEvent<{ id: string; type: string; event: PointerEvent }>) => {
-		const plugId = event.detail.id;
-		const type = event.detail.type;
-		const underlyingEvent = event.detail.event;
+	const handlePlugUp = (event: { id: string; type: 'input' | 'output'; event: PointerEvent }) => {
+		const plugId = event.id;
+		const type = event.type;
+		const underlyingEvent = event.event;
 
-		dispatcher('nodePlugUp', { id: plugId, type, nodeId: id, event: underlyingEvent });
+		onNodePlugMouseUp?.({ plugId, type, nodeId: id, event: underlyingEvent });
 	};
 
-	let element: HTMLDivElement = $state();
+	let element: HTMLDivElement | undefined = $state();
 
-	const handleKnobMouseUp = (
-		event: CustomEvent<{ parameterName: string; event: PointerEvent }>
-	) => {
-		dispatcher('knobMouseUp', {
+	const handleKnobMouseUp = (event: { parameterName: string; event: PointerEvent }) => {
+		onNodeKnobMouseUp?.({
 			nodeId: id,
-			parameterName: event.detail.parameterName,
-			event: event.detail.event
+			parameterName: event.parameterName,
+			event: event.event
 		});
 		handleParameterChangeEnd();
 	};
-
-	const handleOnOffButtonChange = (
-		event: CustomEvent<{ parameterName: string; value: number }>
-	) => {
+	const handleOnOffButtonChange = (event: { parameterName: string; value: number }) => {
 		handleParameterChangeStart();
 		handleParameterChange(event);
 		handleParameterChangeEnd();
@@ -133,7 +156,7 @@
 						<OnOffButton
 							active={nodeParameter[1].base === 1}
 							label={nodeParameter[0]}
-							on:change={handleOnOffButtonChange}
+							onChange={handleOnOffButtonChange}
 						/>
 					{:else}
 						<Knob
@@ -149,10 +172,10 @@
 							discrete={staticDefinition.parameters[nodeParameter[0]]?.discrete}
 							{draggingLine}
 							nodeId={id}
-							on:change={handleParameterChange}
-							on:mousedown={handleParameterChangeStart}
-							on:mouseup={handleKnobMouseUp}
-							on:knobCreated
+							onChange={handleParameterChange}
+							onMouseDown={handleParameterChangeStart}
+							onMouseUp={handleKnobMouseUp}
+							{onKnobCreated}
 						/>
 					{/if}
 				</div>
@@ -161,18 +184,12 @@
 	{/if}
 	{#if node.type === 'oscilloscope' && instantiatedNode instanceof CustomOscilloscopeNode}
 		<div class="special">
-			<OscilloscopeNode
-				{id}
-				serializedNode={node}
-				oscilloscopeNode={instantiatedNode}
-				{running}
-				on:nodeParameterChange
-			/>
+			<OscilloscopeNode {id} serializedNode={node} oscilloscopeNode={instantiatedNode} {running} />
 		</div>
 	{/if}
 	{#if node.type === 'spectrum' && instantiatedNode instanceof CustomSpectrumNode}
 		<div class="special">
-			<SpectrumNode oscilloscopeNode={instantiatedNode} {running} on:nodeParameterChange />
+			<SpectrumNode oscilloscopeNode={instantiatedNode} {running} />
 		</div>
 	{/if}
 	{#if node.type === 'value' && instantiatedNode instanceof CustomValueNode}
@@ -184,7 +201,7 @@
 		<TutorialNode {node} {audioGraph} />
 	{/if}
 	{#if node.type === 'comment' && instantiatedNode instanceof EmptyCustomAudioNode}
-		<CommentNode {id} {node} on:commentChanged />
+		<CommentNode {id} {node} {onCommentChanged} />
 	{/if}
 	<div class="inputs-and-outputs">
 		<div class="inputs">
@@ -194,9 +211,9 @@
 					id={input.id}
 					nodeId={id}
 					staticDefinition={input}
-					on:down={handlePlugDown}
-					on:up={handlePlugUp}
-					on:plugCreated
+					onPlugMouseDown={handlePlugDown}
+					onPlugMouseUp={handlePlugUp}
+					{onPlugCreated}
 				/>
 			{/each}
 		</div>
@@ -207,9 +224,9 @@
 					id={output.id}
 					nodeId={id}
 					staticDefinition={output}
-					on:down={handlePlugDown}
-					on:up={handlePlugUp}
-					on:plugCreated
+					onPlugMouseDown={handlePlugDown}
+					onPlugMouseUp={handlePlugUp}
+					{onPlugCreated}
 				/>
 			{/each}
 		</div>

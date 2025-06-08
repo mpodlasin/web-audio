@@ -1,25 +1,24 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-	import { createEventDispatcher } from 'svelte';
 	import Menu from './Menu.svelte';
 	import type { StaticInputOutputDefinition } from '../audio/AudioCanvas';
 
-	let plug: HTMLDivElement = $state();
+	let plug: HTMLButtonElement | undefined = $state();
 
 	interface Props {
 		nodeId: string;
 		id: string;
 		type: 'input' | 'output';
 		staticDefinition: StaticInputOutputDefinition;
+		onPlugCreated?(plug: HTMLElement): void;
+		onPlugMouseDown(event: { id: string; type: 'input' | 'output'; event: PointerEvent }): void;
+		onPlugMouseUp(event: { id: string; type: 'input' | 'output'; event: PointerEvent }): void;
 	}
 
-	let { nodeId, id, type, staticDefinition }: Props = $props();
+	let { nodeId, id, type, staticDefinition, onPlugCreated, onPlugMouseDown, onPlugMouseUp }: Props =
+		$props();
 
-	const dispatcher = createEventDispatcher();
-
-	run(() => {
-		dispatcher('plugCreated', plug);
+	$effect(() => {
+		plug && onPlugCreated?.(plug);
 	});
 
 	let minValue = $derived(
@@ -33,19 +32,19 @@
 		event.stopPropagation();
 		event.preventDefault();
 
-		dispatcher('down', { id, type, event });
+		onPlugMouseDown({ id, type, event });
 	};
 
 	const handlePlugUp = (event: PointerEvent) => {
 		event.stopPropagation();
 		event.preventDefault();
 
-		dispatcher('up', { id, type, event });
+		onPlugMouseUp({ id, type, event });
 	};
 </script>
 
 <div class="wrapper">
-	<div
+	<button
 		class="plug"
 		data-plug={type}
 		onpointerup={handlePlugUp}
@@ -54,8 +53,10 @@
 		data-id={id}
 		data-node-id={nodeId}
 		data-type={type}
+		aria-label="Plug"
 		bind:this={plug}
-	/>
+	>
+	</button>
 	<div class="menu">
 		<Menu>
 			<div class="menu-content">

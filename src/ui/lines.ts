@@ -38,7 +38,7 @@ export const getLinesToDisplay = (
 							[id, input.input ?? defaultInput.id ?? ''],
 							undefined
 						] as const;
-				  })
+					})
 				: [];
 
 			const mappedParams = node.parameters
@@ -46,7 +46,7 @@ export const getLinesToDisplay = (
 						return value.inputs.map((input) => {
 							return [[input.id, input.output], [id, key], input.multiply] as const;
 						});
-				  })
+					})
 				: [];
 
 			return [...mapped, ...mappedParams, ...acc];

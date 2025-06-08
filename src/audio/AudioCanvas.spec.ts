@@ -74,7 +74,7 @@ import {
 	MidiNode,
 	CustomDelayNode,
 	ClockNode,
-	SerializedAudioParameter
+	type SerializedAudioParameter
 } from './AudioCanvas';
 import { OscillatorNodeMock } from './mocks';
 

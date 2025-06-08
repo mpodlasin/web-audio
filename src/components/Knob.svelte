@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Position, SerializedAudioParameter } from '../audio/AudioCanvas';
-	import { createEventDispatcher } from 'svelte';
 	import { rewriteStringWithNumber } from '../utils/rewriteStringWithNumber';
 
 	type Polarity = 'uni' | 'bi';
@@ -20,6 +17,10 @@
 		draggingLine: boolean;
 		linear?: boolean;
 		discrete?: boolean;
+		onMouseDown(): void;
+		onMouseUp(event: { parameterName: string; event: MouseEvent }): void;
+		onChange(event: { parameterName: string; value: number }): void;
+		onKnobCreated?(knob: HTMLElement): void;
 	}
 
 	let {
@@ -34,7 +35,11 @@
 		polarity,
 		draggingLine,
 		linear = false,
-		discrete = false
+		discrete = false,
+		onMouseDown,
+		onMouseUp,
+		onChange,
+		onKnobCreated
 	}: Props = $props();
 
 	let knobWrapper: HTMLDivElement | undefined = $state();
@@ -52,8 +57,6 @@
 		hoveringOver = false;
 	};
 
-	const dispatcher = createEventDispatcher();
-
 	let isDragging = false;
 	let draggingStartPosition: Position | null = null;
 
@@ -70,7 +73,7 @@
 		};
 		previousAngle = angle;
 
-		dispatcher('mousedown');
+		onMouseDown();
 
 		window.addEventListener('pointermove', handlePointerMove);
 		window.addEventListener('pointerup', handlePointerUp, { once: true, capture: true });
@@ -86,7 +89,7 @@
 			window.removeEventListener('pointermove', handlePointerMove);
 		}
 
-		dispatcher('mouseup', {
+		onMouseUp({
 			parameterName,
 			event
 		});
@@ -144,7 +147,7 @@
 				polarity
 			);
 
-			dispatcher('change', {
+			onChange({
 				parameterName,
 				value: Math.max(minValue, Math.min(maxValue, newValue))
 			});
@@ -165,7 +168,7 @@
 			);
 
 			if (newValue >= numberParameter + 1 || newValue <= numberParameter - 1) {
-				dispatcher('change', {
+				onChange({
 					parameterName,
 					value: Math.max(minValue, Math.min(maxValue, Math.round(newValue)))
 				});
@@ -196,7 +199,10 @@
 
 	const handleClick = (event: MouseEvent) => {
 		if (event.detail === 2) {
-			dispatcher('change', { parameterName, value: defaultValue });
+			onChange({
+				parameterName,
+				value: defaultValue
+			});
 		}
 	};
 
@@ -239,7 +245,7 @@
 		if (event.key === 'Enter') {
 			numberParameterInput = false;
 
-			dispatcher('change', {
+			onChange({
 				parameterName,
 				value: Math.min(maxValue, Math.max(minValue, editedNumber))
 			});
@@ -249,7 +255,7 @@
 	let isControlled = $derived(parameter.inputs.length > 0 || hoveringOverWhileDraggingLine);
 
 	$effect(() => {
-		dispatcher('knobCreated', knobWrapper);
+		knobWrapper && onKnobCreated && onKnobCreated(knobWrapper);
 	});
 
 	$effect(() => {

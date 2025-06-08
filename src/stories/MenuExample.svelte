@@ -11,7 +11,7 @@
 </script>
 
 <Menu>
-	<Button title="First" on:click={handleClick('First')} />
-	<Button title="Second" on:click={handleClick('Seconds')} />
-	<Button title="Third" on:click={handleClick('Third')} />
+	<Button title="First" onClick={handleClick('First')} />
+	<Button title="Second" onClick={handleClick('Seconds')} />
+	<Button title="Third" onClick={handleClick('Third')} />
 </Menu>
