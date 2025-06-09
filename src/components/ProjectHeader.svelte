@@ -4,33 +4,20 @@
 	import ChevronRight from '../icons/Chevron_Right.svg?component';
 	import AddPlus from '../icons/Add_Plus.svg?component';
 	import RemoveMinus from '../icons/Remove_Minus.svg?component';
-	import { createEventDispatcher } from 'svelte';
 
 	interface Props {
 		projectName: string;
 		playing: boolean;
+		onPlayChange?(event: { playing: boolean }): void;
+		onProjectNameClick?(): void;
+		onMakeStuffSmaller?(): void;
+		onMakeStuffBigger?(): void;
 	}
 
-	let { projectName, playing }: Props = $props();
-
-	const dispatcher = createEventDispatcher();
+	let { projectName, playing, onMakeStuffBigger, onMakeStuffSmaller, onPlayChange, onProjectNameClick }: Props = $props();
 
 	const handlePlayOrPauseClick = () => {
-		dispatcher('playChange', {
-			playing: !playing
-		});
-	};
-
-	const handleProjectNameClick = () => {
-		dispatcher('projectNameClick');
-	};
-
-	const handleMakeStuffSmaller = () => {
-		dispatcher('makeStuffSmaller');
-	};
-
-	const handleMakeStuffBigger = () => {
-		dispatcher('makeStuffBigger');
+		onPlayChange?.({ playing: !playing })
 	};
 </script>
 
@@ -39,7 +26,7 @@
 		audio<span class="suffix">canvas.io</span>
 	</a>
 	<div class="projectMenu" ontouchstart={(e) => e.stopPropagation()}>
-		<button class="projectName" onclick={handleProjectNameClick} onkeypress={() => {}}>
+		<button class="projectName" onclick={onProjectNameClick} onkeypress={() => {}}>
 			<ChevronRight />
 			<div>{projectName}</div>
 		</button>
@@ -51,10 +38,10 @@
 			{/if}
 		</button>
 		<div class="resize">
-			<button class="minus" onclick={handleMakeStuffSmaller} onkeypress={() => {}}>
+			<button class="minus" onclick={onMakeStuffSmaller} onkeypress={() => {}}>
 				<RemoveMinus />
 			</button>
-			<button class="plus" onclick={handleMakeStuffBigger} onkeypress={() => {}}><AddPlus /></button
+			<button class="plus" onclick={onMakeStuffBigger} onkeypress={() => {}}><AddPlus /></button
 			>
 		</div>
 	</div>
