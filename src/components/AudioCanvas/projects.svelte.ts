@@ -1,44 +1,35 @@
 import { goto } from '$app/navigation';
 
-export default function projects({
-	tutorialMode,
-	onNewProject,
-	onProjectChange
-}: {
-	tutorialMode: boolean;
-	onNewProject?(): void;
-	onProjectChange?(projectName: string): void;
-}) {
-	let showProjectsModal = $state(false);
+export class Projects {
+	public showProjectsModal = $state(false);
 
-	const handleProjectNameClick = () => {
-		if (tutorialMode) {
+	constructor(
+		private tutorialMode: boolean,
+		private onNewProject?: () => void,
+		private onProjectChange?: (projectName: string) => void
+	) {}
+
+	handleProjectNameClick = () => {
+		if (this.tutorialMode) {
 			goto('/learn');
 			return;
 		}
 
-		showProjectsModal = true;
+		this.showProjectsModal = true;
+	}
+
+
+	handleCloseProjectsModal = () => {
+		this.showProjectsModal = false;
+	}
+
+	handleNewProject = () => {
+		this.showProjectsModal = false;
+		this.onNewProject?.();
 	};
 
-	const handleCloseProjectsModal = () => {
-		showProjectsModal = false;
-	};
-
-	const handleNewProject = () => {
-		showProjectsModal = false;
-		onNewProject?.();
-	};
-
-	const handleProjectChange = (projectName: string) => {
-		showProjectsModal = false;
-		onProjectChange?.(projectName);
-	};
-
-	return {
-		showProjectsModal,
-		handleProjectNameClick,
-		handleCloseProjectsModal,
-		handleNewProject,
-		handleProjectChange
+	handleProjectChange = (projectName: string) => {
+		this.showProjectsModal = false;
+		this.onProjectChange?.(projectName);
 	};
 }
