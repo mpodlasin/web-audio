@@ -149,7 +149,7 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 				minValue: number;
 				maxValue: number;
 				unit?: string;
-				defaultValue?: number;
+				defaultValue: number;
 				polarity: 'uni' | 'bi';
 				binary?: boolean;
 				linear?: boolean;

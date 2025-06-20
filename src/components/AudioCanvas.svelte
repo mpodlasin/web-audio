@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { Plug, Position, SerializedAudioElements } from '../audio/serialized';
+	import {
+		allowedSerializedAudioElementStaticDefinitions,
+		type Plug,
+		type Position,
+		type SerializedAudioElements
+	} from '../audio/serialized';
 	import type { Project } from '../ui/project';
 	import PlugPositions from './AudioCanvas/plugPositions.svelte';
 	import { Projects } from './AudioCanvas/projects.svelte';
@@ -13,7 +18,6 @@
 	import { AudioGraph } from './AudioCanvas/audioGraph.svelte';
 	import PositionedMenu from './PositionedMenu.svelte';
 	import MenuButton from './MenuButton.svelte';
-	import { ChangeColor } from './AudioCanvas/changeColor.svelte';
 	import ContextMenu from './ContextMenu.svelte';
 	import Knob from './Knob.svelte';
 	import DraggingNodes from './AudioCanvas/draggingNodes.svelte';
@@ -25,6 +29,7 @@
 	import DraggableNode from './DraggableNode.svelte';
 	import DraggingLine from './DraggingLine.svelte';
 	import PlugMask from './PlugMask.svelte';
+	import KnobMask from './KnobMask.svelte';
 
 	interface Props {
 		chosenProjectName: string;
@@ -73,8 +78,6 @@
 
 	const menus = new Menus(draggingCanvas, lineDragging, audioGraph, plugPositions);
 
-	const changeColor = new ChangeColor(audioGraph, menus);
-
 	const draggingNodees = new DraggingNodes(audioGraph, plugPositions, draggingCanvas);
 
 	const nodeParameterChange = new NodeParameterChange(audioGraph);
@@ -100,6 +103,33 @@
 	onMount(() => {
 		plugPositions.updatePlugPositions();
 	});
+
+	const knobMasksWithData = $derived(
+		plugPositions.knobMasks.flatMap((mask) => {
+			const node = audioGraph.audioGraph[mask.nodeId];
+
+			if (!node) return [];
+
+			const parameter = node?.parameters[mask.knobId];
+
+			if (!parameter) return [];
+
+			const staticParameter =
+				allowedSerializedAudioElementStaticDefinitions[node.type].parameters[mask.knobId];
+
+			if (!staticParameter) return [];
+
+			return [
+				{
+					parameterName: mask.knobId,
+					nodeId: mask.nodeId,
+					parameter,
+					...staticParameter,
+					position: mask.position
+				}
+			];
+		})
+	);
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -197,10 +227,6 @@
 
 		{#if menus.showMenu && menus.menuKind === 'node'}
 			<PositionedMenu position={menus.menuPosition} onClose={menus.closeMenu}>
-				<!-- {#if selectedNodeIds.some((id) => menuNodeId === id)}
-					<div class="nodes-selected-header">{selectedNodeIds.length} nodes selected:</div>
-				{/if} -->
-				<MenuButton onClick={changeColor.openChangeColorModal(menus.menuNodeId)}>Color</MenuButton>
 				<MenuButton onClick={menus.handleCopyNode}>Copy</MenuButton>
 				<MenuButton onClick={addRemoveNodes.handleDeleteNode} variant="danger">Delete</MenuButton>
 			</PositionedMenu>
@@ -240,7 +266,7 @@
 			>.
 		</div>
 	</div>
-	<div id="plug-masks">
+	<div class="plug-masks">
 		{#each plugPositions.plugMasks as mask (mask.nodeId + ' - ' + mask.plugId + ' - ' + mask.type)}
 			<PlugMask
 				{...mask}
@@ -249,6 +275,17 @@
 				onPointerUp={lineDragging.handlePlugUp}
 				onHoveringOver={plugPositions.handleHoveringOverPlugMask}
 			></PlugMask>
+		{/each}
+	</div>
+	<div class="knob-masks">
+		{#each knobMasksWithData as mask (mask.nodeId + ' - ' + mask.parameterName)}
+			<KnobMask
+				{...mask}
+				draggingLine={lineDragging.draggingLine}
+				onMouseDown={nodeParameterChange.handleNodeParameterChangeStart}
+				onChange={nodeParameterChange.handleNodeParameterChange}
+				onMouseUp={nodeParameterChange.handleNodeParameterChangeEnd}
+			/>
 		{/each}
 	</div>
 </div>

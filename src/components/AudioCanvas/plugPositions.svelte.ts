@@ -107,7 +107,19 @@ export default class PlugPositions {
 		})
 	);
 
-	plugMasks = $derived([...this.inputPlugMasks, ...this.outputPlugMasks])
+	knobMasks = $derived(
+		Object.entries(this.plugPositions).flatMap(([nodeId, plugPositions]) => {
+			return Object.entries(plugPositions.parameterKnobPositions).flatMap(([knobId, position]) => {
+				return {
+					nodeId,
+					knobId,
+					position
+				};
+			});
+		})
+	);
+
+	plugMasks = $derived([...this.inputPlugMasks, ...this.outputPlugMasks]);
 
 	hoveringOverPlug: Plug | null = $state(null);
 
