@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { onMount, setContext } from 'svelte';
-	import type { Position, SerializedAudioElements } from '../audio/serialized';
+	import { onMount } from 'svelte';
+	import type { Plug, Position, SerializedAudioElements } from '../audio/serialized';
 	import type { Project } from '../ui/project';
 	import PlugPositions from './AudioCanvas/plugPositions.svelte';
 	import { Projects } from './AudioCanvas/projects.svelte';
@@ -24,7 +24,6 @@
 	import Line from './Line.svelte';
 	import DraggableNode from './DraggableNode.svelte';
 	import DraggingLine from './DraggingLine.svelte';
-	import type { Attachment } from 'svelte/attachments';
 	import PlugMask from './PlugMask.svelte';
 
 	interface Props {
@@ -127,6 +126,12 @@
 			});
 		})
 	);
+
+	let hoveringOverPlug: Plug | null = $state(null);
+
+	const handleHoveringOverPlugMask = (plug: Plug | null) => {
+		hoveringOverPlug = plug;
+	};
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -190,6 +195,7 @@
 					running={playing.playing}
 					selected={false}
 					instantiatedNode={audioGraph.audioNodeDatabase[id]}
+					{hoveringOverPlug}
 					position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
 					color={node.ui.primaryColor}
 					draggingLine={lineDragging.draggingLine}
@@ -274,6 +280,7 @@
 				draggingLine={lineDragging.draggingLine}
 				onPointerDown={lineDragging.handlePlugDown}
 				onPointerUp={lineDragging.handlePlugUp}
+				onHoveringOver={handleHoveringOverPlugMask}
 			></PlugMask>
 		{/each}
 		{#each outputPlugMasks as mask (mask.nodeId + ' - ' + mask.plugId)}
@@ -283,6 +290,7 @@
 				draggingLine={lineDragging.draggingLine}
 				onPointerDown={lineDragging.handlePlugDown}
 				onPointerUp={lineDragging.handlePlugUp}
+				onHoveringOver={handleHoveringOverPlugMask}
 			></PlugMask>
 		{/each}
 	</div>

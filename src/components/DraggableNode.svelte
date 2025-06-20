@@ -2,6 +2,7 @@
 	import type {
 		AllowedSerializedAudioElements,
 		NodeType,
+		Plug,
 		Position,
 		SerializedAudioElements
 	} from '../audio/AudioCanvas';
@@ -21,6 +22,7 @@
 		draggingLine: boolean;
 		selected: boolean;
 		audioGraph: SerializedAudioElements;
+		hoveringOverPlug: Plug | null;
 		onClick(event: MouseEvent): void;
 		onDragStart(): void;
 		onDrag(event: { id: string; x: number; y: number }): void;
@@ -52,6 +54,7 @@
 		draggingLine,
 		selected,
 		audioGraph,
+		hoveringOverPlug,
 		onDragStart,
 		onDrag,
 		onDragEnd,
@@ -162,6 +165,7 @@
 		{draggingLine}
 		{color}
 		{audioGraph}
+		{hoveringOverPlug}
 		{onCommentChanged}
 		{onKnobCreated}
 		{onNodeKnobMouseUp}

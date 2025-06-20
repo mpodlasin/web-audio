@@ -10,16 +10,17 @@
 		EmptyCustomAudioNode,
 		type SerializedAudioElements,
 		CustomValueNode,
-		CustomSpectrumNode
+		CustomSpectrumNode,
+		type Plug as PlugObject
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
-	import Plug from './Plug.svelte';
 	import OscilloscopeNode from './OscilloscopeNode.svelte';
 	import OnOffButton from './OnOffButton.svelte';
 	import TutorialNode from './TutorialNode.svelte';
 	import ValueNode from './ValueNode.svelte';
 	import CommentNode from './CommentNode.svelte';
 	import SpectrumNode from './SpectrumNode.svelte';
+	import Plug from './Plug.svelte';
 
 	interface Props {
 		id: string;
@@ -29,6 +30,7 @@
 		draggingLine: boolean;
 		color: string;
 		audioGraph: SerializedAudioElements;
+		hoveringOverPlug: PlugObject | null;
 		onNodeParameterChangeStart?(): void;
 		onNodeParamterChange?(event: { id: string; parameterName: string; value: number }): void;
 		onNodeParameterChangeEnd?(): void;
@@ -53,6 +55,7 @@
 		draggingLine,
 		color,
 		audioGraph,
+		hoveringOverPlug,
 		onNodeParameterChangeEnd,
 		onNodeParameterChangeStart,
 		onNodeParamterChange,
@@ -213,6 +216,9 @@
 					staticDefinition={input}
 					onPlugMouseDown={handlePlugDown}
 					onPlugMouseUp={handlePlugUp}
+					hoveredOver={hoveringOverPlug?.nodeId === id &&
+						hoveringOverPlug.id === input.id &&
+						hoveringOverPlug.type === 'input'}
 					{onPlugCreated}
 				/>
 			{/each}
@@ -226,6 +232,9 @@
 					staticDefinition={output}
 					onPlugMouseDown={handlePlugDown}
 					onPlugMouseUp={handlePlugUp}
+					hoveredOver={hoveringOverPlug?.nodeId === id &&
+						hoveringOverPlug.id === output.id &&
+						hoveringOverPlug.type === 'output'}
 					{onPlugCreated}
 				/>
 			{/each}

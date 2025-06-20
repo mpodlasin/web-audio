@@ -8,13 +8,22 @@
 		id: string;
 		type: 'input' | 'output';
 		staticDefinition: StaticInputOutputDefinition;
+		hoveredOver: boolean;
 		onPlugCreated?(plug: HTMLElement): void;
 		onPlugMouseDown(event: { id: string; type: 'input' | 'output'; event: PointerEvent }): void;
 		onPlugMouseUp(event: { id: string; type: 'input' | 'output'; event: PointerEvent }): void;
 	}
 
-	let { nodeId, id, type, staticDefinition, onPlugCreated, onPlugMouseDown, onPlugMouseUp }: Props =
-		$props();
+	let {
+		nodeId,
+		id,
+		type,
+		staticDefinition,
+		hoveredOver,
+		onPlugCreated,
+		onPlugMouseDown,
+		onPlugMouseUp
+	}: Props = $props();
 
 	$effect(() => {
 		plug && onPlugCreated?.(plug);
@@ -44,6 +53,7 @@
 
 <button
 	class="wrapper"
+	class:hoveredOver
 	data-plug={type}
 	onpointerup={handlePlugUp}
 	onpointerdown={handlePlugDown}
@@ -99,7 +109,8 @@
 		gap: 8px;
 	}
 
-	.wrapper:hover .menu {
+	.wrapper:hover .menu,
+	.hoveredOver .menu {
 		opacity: 1;
 	}
 
@@ -112,7 +123,8 @@
 		transition: transform 0.2s;
 	}
 
-	.wrapper:hover .plug {
+	.wrapper:hover .plug,
+	.hoveredOver .plug {
 		transform: scaleX(120%) scaleY(120%);
 	}
 

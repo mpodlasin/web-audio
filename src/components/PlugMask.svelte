@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Position } from '../audio/serialized';
+	import type { Plug, Position } from '../audio/serialized';
 
 	interface Props {
 		draggingLine: boolean;
@@ -7,6 +7,7 @@
 		plugId: string;
 		type: 'input' | 'output';
 		position: Position;
+		onHoveringOver(plug: Plug | null): void;
 		onPointerDown(event: {
 			nodeId: string;
 			plugId: string;
@@ -21,8 +22,16 @@
 		}): void;
 	}
 
-	let { nodeId, plugId, position, onPointerDown, onPointerUp, type, draggingLine }: Props =
-		$props();
+	let {
+		nodeId,
+		plugId,
+		position,
+		onPointerDown,
+		onPointerUp,
+		type,
+		draggingLine,
+		onHoveringOver
+	}: Props = $props();
 
 	const handlePointerDown = (event: MouseEvent) => {
 		event.stopPropagation();
@@ -37,6 +46,14 @@
 
 		onPointerUp({ nodeId, plugId, type, event });
 	};
+
+	const handlePointerEnter = () => {
+		onHoveringOver({ nodeId, type, id: plugId });
+	};
+
+	const handlePointerLeave = () => {
+		onHoveringOver(null);
+	};
 </script>
 
 <div
@@ -44,6 +61,8 @@
 	data-node-id={nodeId}
 	data-plug-id={plugId}
 	style="top: {position.y}px; left: {position.x}px;"
+	onpointerenter={handlePointerEnter}
+	onpointerleave={handlePointerLeave}
 	onpointerdown={handlePointerDown}
 	onpointerup={handlePointerUp}
 ></div>
