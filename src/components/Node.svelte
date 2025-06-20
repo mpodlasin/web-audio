@@ -139,6 +139,8 @@
 		handleParameterChange(event);
 		handleParameterChangeEnd();
 	};
+
+	console.log(node, instantiatedNode);
 </script>
 
 <div class="node" bind:this={element} style={color ? `--primary-500: ${color};` : ''} data-node>

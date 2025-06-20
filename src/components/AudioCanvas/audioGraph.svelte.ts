@@ -30,6 +30,7 @@ export class AudioGraph {
 	) {
 		this.audioGraphHistory = [initialAudioGraph];
 		this.audioGraph = initialAudioGraph;
+		this.audioNodeDatabase = updateAudioCanvas(this.audioGraph, {}, {});
 	}
 
 	updateAudioGraphHistory = (map: (a: SerializedAudioElements) => SerializedAudioElements) => {

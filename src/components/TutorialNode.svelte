@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { SerializedAudioElements, SerializedTutorialNode } from '../audio/serialized';
-	import type { Tutorial } from './Tutorial/types';
 	import { tutorials } from './Tutorial';
 	import Button from './Button.svelte';
 	import { globalContext } from '../audio/GlobalContext';
@@ -51,7 +50,7 @@
 	</div>
 	<div class="copy">
 		{#if Copy}
-			<Copy />
+			{@render Copy()}
 		{/if}
 	</div>
 	<div class="result">
