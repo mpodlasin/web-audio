@@ -16,12 +16,11 @@ export class Projects {
 		}
 
 		this.showProjectsModal = true;
-	}
-
+	};
 
 	handleCloseProjectsModal = () => {
 		this.showProjectsModal = false;
-	}
+	};
 
 	handleNewProject = () => {
 		this.showProjectsModal = false;

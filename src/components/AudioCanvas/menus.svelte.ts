@@ -1,10 +1,10 @@
-import type { allowedSerializedAudioElementStaticDefinitions, NodeType, Position } from "../../audio/serialized";
-import { DISTANCE_THAT_IS_CONSIDERED_DRAG } from "../../constants";
-import type { LineToDisplay } from "../../ui/lines";
-import type { AudioGraph } from "./audioGraph.svelte";
-import type DraggingCanvas from "./draggingCanvas.svelte";
-import type { LineDragging } from "./lineDragging.svelte";
-import type PlugPositions from "./plugPositions.svelte";
+import type { NodeType, Position } from '../../audio/serialized';
+import { DISTANCE_THAT_IS_CONSIDERED_DRAG } from '../../constants';
+import type { LineToDisplay } from '../../ui/lines';
+import type { AudioGraph } from './audioGraph.svelte';
+import type DraggingCanvas from './draggingCanvas.svelte';
+import type { LineDragging } from './lineDragging.svelte';
+import type PlugPositions from './plugPositions.svelte';
 
 export class Menus {
 	menuPosition = $state({ x: 0, y: 0 });
@@ -14,10 +14,16 @@ export class Menus {
 	menuNodeId: string = $state('');
 	chosenLineMultiply = $derived(this.chosenLine?.multiply);
 
-    constructor(private draggingCanvasStore: DraggingCanvas, private lineDraggingStore: LineDragging, private audioGraphStore: AudioGraph, private plugPositionsStore: PlugPositions) {}
+	constructor(
+		private draggingCanvasStore: DraggingCanvas,
+		private lineDraggingStore: LineDragging,
+		private audioGraphStore: AudioGraph,
+		private plugPositionsStore: PlugPositions
+	) {}
 
 	handleOpenContextMenu = (event: PointerEvent) => {
-		const wasNotDragging = this.draggingCanvasStore.draggedDistance < DISTANCE_THAT_IS_CONSIDERED_DRAG;
+		const wasNotDragging =
+			this.draggingCanvasStore.draggedDistance < DISTANCE_THAT_IS_CONSIDERED_DRAG;
 
 		if (this.lineDraggingStore.draggingLine) return;
 
@@ -46,8 +52,8 @@ export class Menus {
 		event.preventDefault();
 		this.menuPosition = { x: event.clientX, y: event.clientY };
 		this.showMenu = true;
-	    this.menuKind = 'line';
-	    this.chosenLine = line;
+		this.menuKind = 'line';
+		this.chosenLine = line;
 	};
 
 	handleNodeClick = (event: { id: string; position: Position; nodeType: NodeType }) => {
@@ -67,13 +73,13 @@ export class Menus {
 		this.menuNodeId = event.id;
 	};
 
-    handleDeleteConnection = (event: MouseEvent) => {
+	handleDeleteConnection = (event: MouseEvent) => {
 		event.stopPropagation();
 
 		if (!this.chosenLine) return;
 
-        this.audioGraphStore.removeConnection(this.chosenLine.line[0], this.chosenLine.line[1])
-    
+		this.audioGraphStore.removeConnection(this.chosenLine.line[0], this.chosenLine.line[1]);
+
 		this.closeMenu();
 	};
 
@@ -83,7 +89,7 @@ export class Menus {
 		this.menuKind = 'line-multiply';
 	};
 
-    handleMultiplyValueChange = (event: { parameterName: string; value: number }) => {
+	handleMultiplyValueChange = (event: { parameterName: string; value: number }) => {
 		const { value } = event;
 
 		if (!this.chosenLine) return;
@@ -91,7 +97,12 @@ export class Menus {
 		const nodeId = this.chosenLine.line[1].nodeId;
 		const inputId = this.chosenLine.line[0].nodeId;
 
-        this.audioGraphStore.changeParameterMultiply(nodeId, this.chosenLine.line[1].id, inputId, value)
+		this.audioGraphStore.changeParameterMultiply(
+			nodeId,
+			this.chosenLine.line[1].id,
+			inputId,
+			value
+		);
 
 		this.chosenLineMultiply = value;
 	};
@@ -110,31 +121,6 @@ export class Menus {
 		// } else {
 		// 	copiedNodes = [menuNodeId];
 		// }
-	    this.closeMenu();
-	};
-
-    handleCreateElementClick = (
-		nodeType: keyof typeof allowedSerializedAudioElementStaticDefinitions
-	) => {
-        this.audioGraphStore.addNode(nodeType, this.draggingCanvasStore.translatePosition(this.menuPosition));
-
-		this.plugPositionsStore.updatePlugPositions();
 		this.closeMenu();
-	};
-
-	handlePasteClick = () => {
-        this.audioGraphStore.insertExistingNodes([], this.menuPosition)
-
-		this.closeMenu();
-		this.plugPositionsStore.updatePlugPositions();
-	};
-
-	handleDeleteNode = () => {
-		if (selectedNodeIds.some((selectedId) => selectedId === menuNodeId)) {
-			updateAudioGraphHistory((audioGraph) => selectedNodeIds.reduce(removeNode, audioGraph));
-		} else {
-			updateAudioGraphHistory((audioGraph) => removeNode(audioGraph, menuNodeId));
-		}
-		closeMenu();
 	};
 }

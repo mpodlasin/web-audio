@@ -1,16 +1,19 @@
-import type { AllowedSerializedAudioElements } from "../../audio/serialized";
-import type { AudioGraph } from "./audioGraph.svelte";
-import type { Menus } from "./menus.svelte";
+import type { AllowedSerializedAudioElements } from '../../audio/serialized';
+import type { AudioGraph } from './audioGraph.svelte';
+import type { Menus } from './menus.svelte';
 
 export class ChangeColor {
-    changeColorModalIsOpen = $state(false);
+	changeColorModalIsOpen = $state(false);
 	changedColorNodeId = $state('');
 	changedColorNode: AllowedSerializedAudioElements | undefined;
 	changedNodeColor: string | undefined = $state();
 
-    constructor(private audioGraphStore: AudioGraph, private menusStore: Menus) {
-        this.changedColorNode = $derived(this.audioGraphStore.audioGraph[this.changedColorNodeId]);
-    }
+	constructor(
+		private audioGraphStore: AudioGraph,
+		private menusStore: Menus
+	) {
+		this.changedColorNode = $derived(this.audioGraphStore.audioGraph[this.changedColorNodeId]);
+	}
 
 	openChangeColorModal = (nodeId: string) => () => {
 		this.changeColorModalIsOpen = true;
@@ -40,7 +43,7 @@ export class ChangeColor {
 		// 	);
 		// } else {
 
-        this.audioGraphStore.changeNodeColor(this.changedColorNodeId, this.changedNodeColor);
+		this.audioGraphStore.changeNodeColor(this.changedColorNodeId, this.changedNodeColor);
 		// }
 
 		this.closeChangeColorModal();

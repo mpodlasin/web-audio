@@ -14,10 +14,17 @@
 		onMakeStuffBigger?(): void;
 	}
 
-	let { projectName, playing, onMakeStuffBigger, onMakeStuffSmaller, onPlayChange, onProjectNameClick }: Props = $props();
+	let {
+		projectName,
+		playing,
+		onMakeStuffBigger,
+		onMakeStuffSmaller,
+		onPlayChange,
+		onProjectNameClick
+	}: Props = $props();
 
 	const handlePlayOrPauseClick = () => {
-		onPlayChange?.({ playing: !playing })
+		onPlayChange?.({ playing: !playing });
 	};
 </script>
 
@@ -41,8 +48,7 @@
 			<button class="minus" onclick={onMakeStuffSmaller} onkeypress={() => {}}>
 				<RemoveMinus />
 			</button>
-			<button class="plus" onclick={onMakeStuffBigger} onkeypress={() => {}}><AddPlus /></button
-			>
+			<button class="plus" onclick={onMakeStuffBigger} onkeypress={() => {}}><AddPlus /></button>
 		</div>
 	</div>
 </div>

@@ -16,6 +16,13 @@
 	import { ChangeColor } from './AudioCanvas/changeColor.svelte';
 	import ContextMenu from './ContextMenu.svelte';
 	import Knob from './Knob.svelte';
+	import DraggingNodes from './AudioCanvas/draggingNodes.svelte';
+	import { NodeParameterChange } from './AudioCanvas/nodeParameterChange.svelte';
+	import { AddRemoveNodes } from './AudioCanvas/addRemoveNodes.svelte';
+	import { getLinesToDisplay } from '../ui/lines';
+	import { Playing } from './AudioCanvas/playing.svelte';
+	import Line from './Line.svelte';
+	import DraggableNode from './DraggableNode.svelte';
 
 	interface Props {
 		chosenProjectName: string;
@@ -47,13 +54,18 @@
 
 	const projects = new Projects(tutorialMode, onNewProject, onProjectChange);
 
-	const audioGraph = new AudioGraph();
+	const audioGraph = new AudioGraph(project.audioCanvas, onChange);
 
 	const plugPositions = new PlugPositions();
 
 	const resize = new Resize(project.size, plugPositions, onSizeChange);
 
-	const draggingCanvas = new DraggingCanvas(project.canvasRelativePosition, resize, onCanvasRelativePositionChange, plugPositions);
+	const draggingCanvas = new DraggingCanvas(
+		project.canvasRelativePosition,
+		resize,
+		onCanvasRelativePositionChange,
+		plugPositions
+	);
 
 	const lineDragging = new LineDragging(plugPositions, audioGraph);
 
@@ -61,14 +73,50 @@
 
 	const changeColor = new ChangeColor(audioGraph, menus);
 
+	const draggingNodees = new DraggingNodes(audioGraph, plugPositions, draggingCanvas);
+
+	const nodeParameterChange = new NodeParameterChange(audioGraph);
+
+	const addRemoveNodes = new AddRemoveNodes(audioGraph, draggingCanvas, menus, plugPositions);
+
+	let linesToDisplay = $derived(
+		getLinesToDisplay(audioGraph.audioGraph, plugPositions.plugPositions)
+	);
+
+	const playing = new Playing();
+
+	window.addEventListener('keydown', (event) => {
+		if (event.key === 'z' && (event.ctrlKey || event.metaKey)) {
+			audioGraph.undo();
+		}
+	});
+
+	const handleCommentChanged = (event: { comment: string; nodeId: string }) => {
+		audioGraph.changeComment(event.nodeId, event.comment);
+	};
+
 	onMount(() => {
 		plugPositions.updatePlugPositions();
 	});
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<div class="canvas">
-	<ProjectHeader projectName={chosenProjectName} playing={true} onProjectNameClick={projects.handleProjectNameClick} />
+<div
+	class="canvas"
+	onpointerdown={draggingCanvas.handleDragCanvasStart}
+	onpointermove={draggingCanvas.handleDragCanvas}
+	onpointerup={draggingCanvas.handleDragCanvasEnd}
+	onkeydown={() => {}}
+	role="application"
+>
+	<ProjectHeader
+		projectName={chosenProjectName}
+		playing={playing.playing}
+		onProjectNameClick={projects.handleProjectNameClick}
+		onPlayChange={playing.handlePlayChange}
+		onMakeStuffBigger={resize.makeStuffBigger}
+		onMakeStuffSmaller={resize.makeStuffSmaller}
+	/>
 	<ProjectsModal
 		open={projects.showProjectsModal}
 		projects={projectNames}
@@ -78,14 +126,65 @@
 		{onProjectDelete}
 		{onProjectNameChange}
 	/>
-
-		<div
+	<svg width="100vw" height="100vh">
+		{#each linesToDisplay as line (line.key)}
+			<Line
+				{line}
+				chosenLine={menus.chosenLine}
+				onClick={menus.handleLineClick(line)}
+				onContextMenu={menus.handleLineClick(line)}
+			/>
+		{/each}
+		{#if lineDragging.draggingLine && lineDragging.positionOfEndPlug}
+			<line
+				x1={lineDragging.positionOfStartingPlug.x}
+				y1={lineDragging.positionOfStartingPlug.y}
+				x2={lineDragging.positionOfEndPlug.x}
+				y2={lineDragging.positionOfEndPlug.y}
+				class="visible"
+			/>
+		{/if}
+	</svg>
+	<div
 		class="audio-canvas"
 		onpointerup={menus.handleOpenContextMenu}
 		oncontextmenu={(e) => e.preventDefault()}
 		onpointermove={lineDragging.handleLineDrag}
 		role="application"
 	>
+		<div
+			class="nodes"
+			style="transform: translate({draggingCanvas.canvasRelativePosition.x}px, {draggingCanvas
+				.canvasRelativePosition.y}px) scale({resize.size});"
+		>
+			{#each Object.entries(audioGraph.audioGraph) as [id, node] (id)}
+				<DraggableNode
+					{id}
+					{node}
+					audioGraph={audioGraph.audioGraph}
+					running={playing.playing}
+					selected={false}
+					instantiatedNode={audioGraph.audioNodeDatabase[id]}
+					position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
+					color={node.ui.primaryColor}
+					draggingLine={lineDragging.draggingLine}
+					onDrag={draggingNodees.handleDragNode}
+					onDragStart={draggingNodees.handleDragStart}
+					onDragEnd={draggingNodees.handleNodeDragEnd}
+					onNodeParameterChangeStart={nodeParameterChange.handleNodeParameterChangeStart}
+					onNodeParamterChange={nodeParameterChange.handleNodeParameterChange}
+					onNodeParameterChangeEnd={nodeParameterChange.handleNodeParameterChangeEnd}
+					onNodePlugMouseDown={lineDragging.handlePlugDown}
+					onNodePlugMouseUp={lineDragging.handlePlugUp}
+					onNodeKnobMouseUp={lineDragging.handleKnobMouseUp}
+					onContextMenu={menus.handleNodeClick}
+					onClick={() => {}}
+					onPlugCreated={plugPositions.andlePlugCreated}
+					onKnobCreated={plugPositions.handleKnobCreated}
+					onCommentChanged={handleCommentChanged}
+				/>
+			{/each}
+		</div>
 		{#if menus.showMenu && menus.menuKind === 'line'}
 			<PositionedMenu position={menus.menuPosition} onClose={menus.closeMenu}>
 				{#if menus.chosenLineMultiply !== undefined}
@@ -104,15 +203,15 @@
 				{/if} -->
 				<MenuButton onClick={changeColor.openChangeColorModal(menus.menuNodeId)}>Color</MenuButton>
 				<MenuButton onClick={menus.handleCopyNode}>Copy</MenuButton>
-				<MenuButton onClick={menus.handleDeleteNode} variant="danger">Delete</MenuButton>
+				<MenuButton onClick={addRemoveNodes.handleDeleteNode} variant="danger">Delete</MenuButton>
 			</PositionedMenu>
 		{/if}
 
 		{#if menus.showMenu && menus.menuKind === 'canvas'}
 			<ContextMenu
 				position={menus.menuPosition}
-				onCreate={menus.handleCreateElementClick}
-				onPaste={menus.handlePasteClick}
+				onCreate={addRemoveNodes.handleCreateElementClick}
+				onPaste={addRemoveNodes.handlePasteClick}
 				onClose={menus.closeMenu}
 			/>
 		{/if}

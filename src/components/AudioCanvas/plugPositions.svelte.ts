@@ -1,7 +1,7 @@
 import type { PlugPositions as PlugPositionsObject } from '../../ui/plugPositions';
 
 export default class PlugPositions {
-    plugPositions: PlugPositionsObject = $state({});
+	plugPositions: PlugPositionsObject = $state({});
 	plugs: HTMLElement[] = [];
 	knobs: HTMLElement[] = [];
 
@@ -79,5 +79,4 @@ export default class PlugPositions {
 			this.plugPositions = this.getPlugPositions();
 		});
 	};
-
 }

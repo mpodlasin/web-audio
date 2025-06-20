@@ -42,6 +42,8 @@
 	const handleChange = (audioCanvas: SerializedAudioElements) => {
 		if (!chosenProject) return;
 
+		console.log('handleChange!', audioCanvas);
+
 		projects = {
 			...projects,
 			[chosenProjectName]: {

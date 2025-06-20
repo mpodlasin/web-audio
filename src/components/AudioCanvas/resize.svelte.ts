@@ -1,11 +1,15 @@
-import type PlugPositions from "./plugPositions.svelte";
+import type PlugPositions from './plugPositions.svelte';
 
 export class Resize {
-    public size: number;
+	public size: number;
 
-    constructor(size: number, private plugPositionsStore: PlugPositions, private onSizeChange: (size: number) => void) {
-        this.size = $state(size)
-    }
+	constructor(
+		size: number,
+		private plugPositionsStore: PlugPositions,
+		private onSizeChange: (size: number) => void
+	) {
+		this.size = $state(size);
+	}
 
 	makeStuffSmaller = () => {
 		this.size = this.size - 0.1;

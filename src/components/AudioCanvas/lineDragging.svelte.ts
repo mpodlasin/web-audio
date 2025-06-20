@@ -1,5 +1,5 @@
-import type { AudioGraph } from "./audioGraph.svelte";
-import type PlugPositions from "./plugPositions.svelte";
+import type { AudioGraph } from './audioGraph.svelte';
+import type PlugPositions from './plugPositions.svelte';
 
 export class LineDragging {
 	draggingLine = $state(false);
@@ -7,7 +7,10 @@ export class LineDragging {
 	positionOfStartingPlug: { x: number; y: number } = $state({ x: 0, y: 0 });
 	positionOfEndPlug: { x: number; y: number } | null = $state(null);
 
-    constructor(private plugPositionsStore: PlugPositions, private audioGraphStore: AudioGraph) {}
+	constructor(
+		private plugPositionsStore: PlugPositions,
+		private audioGraphStore: AudioGraph
+	) {}
 
 	handlePlugDown = (event: { plugId: string; type: 'input' | 'output'; nodeId: string }) => {
 		const { plugId, type, nodeId } = event;
@@ -15,11 +18,11 @@ export class LineDragging {
 		this.draggingLine = true;
 		this.startingPlug = { id: plugId, type, nodeId };
 		const rawPositionOfStartingPlug =
-			this.plugPositionsStore.plugPositions[nodeId]?.[type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'][
-				plugId
-			];
+			this.plugPositionsStore.plugPositions[nodeId]?.[
+				type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'
+			][plugId];
 
-        if (!rawPositionOfStartingPlug) throw new Error('rawPositionOfStartingPlug is undefined!!!')
+		if (!rawPositionOfStartingPlug) throw new Error('rawPositionOfStartingPlug is undefined!!!');
 
 		this.positionOfStartingPlug = {
 			x: rawPositionOfStartingPlug.x,
@@ -65,19 +68,15 @@ export class LineDragging {
 		this.stopDragging();
 	};
 
-	handleKnobMouseUp = (event: {
-		nodeId: string;
-		parameterName: string;
-		event: PointerEvent;
-	}) => {
+	handleKnobMouseUp = (event: { nodeId: string; parameterName: string; event: PointerEvent }) => {
 		if (!this.draggingLine) return;
 		if (!this.startingPlug) return;
 
-        this.audioGraphStore.addConnectionToParameter(this.startingPlug, {
-            nodeId: event.nodeId,
-            type: 'input',
-            id: event.parameterName
-        })
+		this.audioGraphStore.addConnectionToParameter(this.startingPlug, {
+			nodeId: event.nodeId,
+			type: 'input',
+			id: event.parameterName
+		});
 
 		this.stopDragging();
 	};
@@ -102,11 +101,11 @@ export class LineDragging {
 
 		if (!nodeId) return false;
 
-        this.audioGraphStore.addConnectionToParameter(this.startingPlug, {
-				nodeId,
-				type: 'input',
-				id: parameterName
-			})
+		this.audioGraphStore.addConnectionToParameter(this.startingPlug, {
+			nodeId,
+			type: 'input',
+			id: parameterName
+		});
 
 		this.stopDragging();
 
@@ -138,7 +137,7 @@ export class LineDragging {
 		if (!type) return false;
 
 		try {
-            this.audioGraphStore.addConnection(this.startingPlug, { id, type, nodeId });
+			this.audioGraphStore.addConnection(this.startingPlug, { id, type, nodeId });
 		} catch {
 			return false;
 		}

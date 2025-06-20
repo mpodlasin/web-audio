@@ -1,15 +1,20 @@
-import type { Position } from "../../audio/serialized";
-import type PlugPositions from "./plugPositions.svelte";
-import type { Resize } from "./resize.svelte";
+import type { Position } from '../../audio/serialized';
+import type PlugPositions from './plugPositions.svelte';
+import type { Resize } from './resize.svelte';
 
 export default class DraggingCanvas {
 	public canvasRelativePosition: Position;
 	lastDragPosition: Position | null = null;
 	draggedDistance = 0;
 
-    constructor(canvasRelativePosition: Position, private resizeStore: Resize, private onCanvasRelativePositionChange: (position: Position) => void, private plugPositionsStore: PlugPositions) {
-        this.canvasRelativePosition = $state(canvasRelativePosition);
-    }
+	constructor(
+		canvasRelativePosition: Position,
+		private resizeStore: Resize,
+		private onCanvasRelativePositionChange: (position: Position) => void,
+		private plugPositionsStore: PlugPositions
+	) {
+		this.canvasRelativePosition = $state(canvasRelativePosition);
+	}
 
 	translatePosition = (position: Position) => {
 		return {
