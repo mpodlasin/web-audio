@@ -85,8 +85,7 @@
 		position: absolute;
 		top: 100%;
 		left: 50%;
-		transition: opacity 0.5s;
-		transition-delay: 1s;
+		transition: opacity 0.3s;
 		opacity: 0;
 		pointer-events: none;
 		z-index: 100;
