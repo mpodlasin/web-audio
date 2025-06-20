@@ -11,9 +11,7 @@
 	let { startPosition, endPosition, visible }: Props = $props();
 
 	// Calculate Bézier curve path for the dragging line
-	let draggingPath = $derived(
-		visible ? calculateBezierPath(startPosition, endPosition) : ''
-	);
+	let draggingPath = $derived(visible ? calculateBezierPath(startPosition, endPosition) : '');
 </script>
 
 {#if visible}

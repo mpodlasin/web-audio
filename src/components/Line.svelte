@@ -2,7 +2,7 @@
 	import { plugsEqual } from '../audio/serialized';
 	import { calculateBezierPath } from '../ui/bezierCurves';
 	import type { LineToDisplay } from '../ui/lines';
-	
+
 	interface Props {
 		line: LineToDisplay;
 		chosenLine: LineToDisplay | null;

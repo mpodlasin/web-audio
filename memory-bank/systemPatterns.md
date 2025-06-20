@@ -75,6 +75,7 @@ The connection system uses sophisticated Bézier curves that adapt to connection
 - **Professional appearance**: Matches industry-standard node editors (Blender, Unreal Engine Blueprint)
 
 **Technical Implementation:**
+
 - `calculateBezierPath()`: Main function with direction and verticality awareness
 - `calculateBezierPathWithOffset()`: Custom offset version with same intelligence
 - SVG `<path>` elements instead of straight `<line>` elements
@@ -148,6 +149,7 @@ The system employs a sophisticated modular architecture using Svelte 5's runes s
 - **Separation of concerns**: Clear boundaries between different system responsibilities
 
 **Modular Classes:**
+
 - `AudioGraph`: Manages audio graph state, history, and operations
 - `PlugPositions`: Handles plug position tracking and DOM measurements
 - `Menus`: Manages all menu interactions and context menu state
@@ -158,6 +160,7 @@ The system employs a sophisticated modular architecture using Svelte 5's runes s
 - `Playing`: Audio playback state management
 
 **Benefits:**
+
 - **Maintainability**: Clear separation makes debugging and modifications easier
 - **Testability**: Individual classes can be unit tested in isolation
 - **Reusability**: Modules can be reused across different components

@@ -9,18 +9,21 @@ With the completion of Tutorial 7 "Additive Synthesis", the major UI enhancement
 We've successfully completed a comprehensive architectural upgrade that modernizes the entire codebase:
 
 **Svelte 5 Migration:**
+
 - **Framework upgrade**: Migrated from Svelte 3.x to **Svelte 5.0.0**
 - **SvelteKit update**: Updated to **v2.5.27** with latest features
 - **Runes system**: Implemented Svelte 5's new reactivity system using `$state`, `$derived`, and `$props`
 - **Enhanced type safety**: Improved TypeScript integration with explicit prop interfaces
 
 **AudioCanvas Modular Refactor:**
+
 - **Class-based architecture**: Completely restructured AudioCanvas into modular, reusable classes
 - **Separation of concerns**: Each major functionality is now a dedicated class in its own `.svelte.ts` file
 - **Dependency injection**: Clean constructor-based dependency management between modules
 - **State management**: Leveraging Svelte 5 runes for reactive state across the modular system
 
 **New Modular Classes:**
+
 - `AudioGraph` - Audio graph state and operations management
 - `PlugPositions` - Plug position tracking and updates
 - `Projects` - Project operations and management
@@ -35,6 +38,7 @@ We've successfully completed a comprehensive architectural upgrade that moderniz
 - `Playing` - Audio playback state management
 
 **Architectural Benefits:**
+
 - **Maintainability**: Clear separation makes code easier to understand and modify
 - **Reusability**: Modular classes can be easily tested and reused
 - **Type safety**: Enhanced TypeScript support with better intellisense
@@ -48,18 +52,21 @@ This represents the largest architectural change in AudioCanvas history, establi
 We've successfully implemented a sophisticated Bézier curve system that transforms the connection lines from basic straight lines into professional, adaptive curves:
 
 **Key Features:**
+
 - **Direction-aware curves**: Automatically detects left-to-right vs right-to-left connections and mirrors control points to eliminate squiggly appearance
 - **Verticality-aware curvature**: Reduces curve intensity for more vertical connections, creating smoother visual transitions
 - **Component separation**: Created dedicated `DraggingLine.svelte` component for better code organization
 - **Intelligent adaptation**: Curves adapt based on connection geometry for optimal visual clarity
 
 **Technical Implementation:**
+
 - New `src/ui/bezierCurves.ts` utility module with `calculateBezierPath()` and `calculateBezierPathWithOffset()` functions
 - Enhanced `Line.svelte` component using SVG `<path>` elements instead of straight `<line>` elements
 - Separate `DraggingLine.svelte` component for actively dragged connections
 - Updated `AudioCanvas.svelte` to use the new component architecture
 
 **Visual Impact:**
+
 - Professional appearance matching industry-standard node editors (Blender, Unreal Engine Blueprint)
 - Smooth, natural-looking curves that clearly show signal flow direction
 - Reduced visual noise and improved patch readability

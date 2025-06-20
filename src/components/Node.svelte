@@ -139,8 +139,6 @@
 		handleParameterChange(event);
 		handleParameterChangeEnd();
 	};
-
-	console.log(node, instantiatedNode);
 </script>
 
 <div class="node" bind:this={element} style={color ? `--primary-500: ${color};` : ''} data-node>
@@ -207,7 +205,7 @@
 	{/if}
 	<div class="inputs-and-outputs">
 		<div class="inputs">
-			{#each staticDefinition.inputs as input (input.id)}
+			{#each staticDefinition.inputs as input (input.id + ' - ' + id)}
 				<Plug
 					type="input"
 					id={input.id}
@@ -220,7 +218,7 @@
 			{/each}
 		</div>
 		<div class="outputs">
-			{#each staticDefinition.outputs as output (output.id)}
+			{#each staticDefinition.outputs as output (output.id + ' - ' + id)}
 				<Plug
 					type="output"
 					id={output.id}

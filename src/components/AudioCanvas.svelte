@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, setContext } from 'svelte';
 	import type { Position, SerializedAudioElements } from '../audio/serialized';
 	import type { Project } from '../ui/project';
 	import PlugPositions from './AudioCanvas/plugPositions.svelte';
@@ -24,6 +24,8 @@
 	import Line from './Line.svelte';
 	import DraggableNode from './DraggableNode.svelte';
 	import DraggingLine from './DraggingLine.svelte';
+	import type { Attachment } from 'svelte/attachments';
+	import PlugMask from './PlugMask.svelte';
 
 	interface Props {
 		chosenProjectName: string;
@@ -99,6 +101,32 @@
 	onMount(() => {
 		plugPositions.updatePlugPositions();
 	});
+
+	const inputPlugMasks = $derived(
+		Object.entries(plugPositions.plugPositions).flatMap(([nodeId, plugPositions]) => {
+			return Object.entries(plugPositions.inputPlugPositions).flatMap(([plugId, position]) => {
+				return {
+					nodeId,
+					plugId,
+					position,
+					type: 'input'
+				};
+			});
+		})
+	);
+
+	const outputPlugMasks = $derived(
+		Object.entries(plugPositions.plugPositions).flatMap(([nodeId, plugPositions]) => {
+			return Object.entries(plugPositions.outputPlugPositions).flatMap(([plugId, position]) => {
+				return {
+					nodeId,
+					plugId,
+					position,
+					type: 'output'
+				};
+			});
+		})
+	);
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -238,6 +266,26 @@
 			>.
 		</div>
 	</div>
+	<div id="plug-masks">
+		{#each inputPlugMasks as mask (mask.nodeId + ' - ' + mask.plugId)}
+			<PlugMask
+				{...mask}
+				type="input"
+				draggingLine={lineDragging.draggingLine}
+				onPointerDown={lineDragging.handlePlugDown}
+				onPointerUp={lineDragging.handlePlugUp}
+			></PlugMask>
+		{/each}
+		{#each outputPlugMasks as mask (mask.nodeId + ' - ' + mask.plugId)}
+			<PlugMask
+				{...mask}
+				type="output"
+				draggingLine={lineDragging.draggingLine}
+				onPointerDown={lineDragging.handlePlugDown}
+				onPointerUp={lineDragging.handlePlugUp}
+			></PlugMask>
+		{/each}
+	</div>
 </div>
 
 <style>
@@ -257,22 +305,8 @@
 	svg {
 		pointer-events: none;
 		position: fixed;
-		z-index: 10;
-	}
-
-	line.visible {
-		stroke: var(--neutral-300);
-	}
-
-	.select {
-		border: 1px solid var(--neutral-300);
+		z-index: 1;
 		position: absolute;
-		background-color: var(--neutral-500);
-		opacity: 0.3;
-	}
-
-	.nodes-selected-header {
-		font-size: 14px;
 	}
 
 	.nodes {

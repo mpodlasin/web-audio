@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Menu from './Menu.svelte';
 	import type { StaticInputOutputDefinition } from '../audio/AudioCanvas';
 
 	let plug: HTMLButtonElement | undefined = $state();
