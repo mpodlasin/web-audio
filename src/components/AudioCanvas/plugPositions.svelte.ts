@@ -1,3 +1,4 @@
+import type { Plug } from '../../audio/serialized';
 import type { PlugPositions as PlugPositionsObject } from '../../ui/plugPositions';
 
 export default class PlugPositions {
@@ -78,5 +79,39 @@ export default class PlugPositions {
 		requestAnimationFrame(() => {
 			this.plugPositions = this.getPlugPositions();
 		});
+	};
+
+	private inputPlugMasks = $derived(
+		Object.entries(this.plugPositions).flatMap(([nodeId, plugPositions]) => {
+			return Object.entries(plugPositions.inputPlugPositions).flatMap(([plugId, position]) => {
+				return {
+					nodeId,
+					plugId,
+					position,
+					type: 'input' as const
+				};
+			});
+		})
+	);
+
+	private outputPlugMasks = $derived(
+		Object.entries(this.plugPositions).flatMap(([nodeId, plugPositions]) => {
+			return Object.entries(plugPositions.outputPlugPositions).flatMap(([plugId, position]) => {
+				return {
+					nodeId,
+					plugId,
+					position,
+					type: 'output' as const
+				};
+			});
+		})
+	);
+
+	plugMasks = $derived([...this.inputPlugMasks, ...this.outputPlugMasks])
+
+	hoveringOverPlug: Plug | null = $state(null);
+
+	handleHoveringOverPlugMask = (plug: Plug | null) => {
+		this.hoveringOverPlug = plug;
 	};
 }

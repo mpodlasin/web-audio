@@ -100,38 +100,6 @@
 	onMount(() => {
 		plugPositions.updatePlugPositions();
 	});
-
-	const inputPlugMasks = $derived(
-		Object.entries(plugPositions.plugPositions).flatMap(([nodeId, plugPositions]) => {
-			return Object.entries(plugPositions.inputPlugPositions).flatMap(([plugId, position]) => {
-				return {
-					nodeId,
-					plugId,
-					position,
-					type: 'input'
-				};
-			});
-		})
-	);
-
-	const outputPlugMasks = $derived(
-		Object.entries(plugPositions.plugPositions).flatMap(([nodeId, plugPositions]) => {
-			return Object.entries(plugPositions.outputPlugPositions).flatMap(([plugId, position]) => {
-				return {
-					nodeId,
-					plugId,
-					position,
-					type: 'output'
-				};
-			});
-		})
-	);
-
-	let hoveringOverPlug: Plug | null = $state(null);
-
-	const handleHoveringOverPlugMask = (plug: Plug | null) => {
-		hoveringOverPlug = plug;
-	};
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -195,7 +163,7 @@
 					running={playing.playing}
 					selected={false}
 					instantiatedNode={audioGraph.audioNodeDatabase[id]}
-					{hoveringOverPlug}
+					hoveringOverPlug={plugPositions.hoveringOverPlug}
 					position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
 					color={node.ui.primaryColor}
 					draggingLine={lineDragging.draggingLine}
@@ -273,24 +241,13 @@
 		</div>
 	</div>
 	<div id="plug-masks">
-		{#each inputPlugMasks as mask (mask.nodeId + ' - ' + mask.plugId)}
+		{#each plugPositions.plugMasks as mask (mask.nodeId + ' - ' + mask.plugId + ' - ' + mask.type)}
 			<PlugMask
 				{...mask}
-				type="input"
 				draggingLine={lineDragging.draggingLine}
 				onPointerDown={lineDragging.handlePlugDown}
 				onPointerUp={lineDragging.handlePlugUp}
-				onHoveringOver={handleHoveringOverPlugMask}
-			></PlugMask>
-		{/each}
-		{#each outputPlugMasks as mask (mask.nodeId + ' - ' + mask.plugId)}
-			<PlugMask
-				{...mask}
-				type="output"
-				draggingLine={lineDragging.draggingLine}
-				onPointerDown={lineDragging.handlePlugDown}
-				onPointerUp={lineDragging.handlePlugUp}
-				onHoveringOver={handleHoveringOverPlugMask}
+				onHoveringOver={plugPositions.handleHoveringOverPlugMask}
 			></PlugMask>
 		{/each}
 	</div>
