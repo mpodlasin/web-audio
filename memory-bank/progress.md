@@ -22,6 +22,8 @@
    - ✅ Node color customization
    - ✅ Canvas panning and zooming
    - ✅ Project saving and loading
+   - ✅ **Intelligent Bézier curve connections** - Professional, adaptive curves with direction and verticality awareness
+   - ✅ **Separated DraggingLine component** - Clean component architecture for actively dragged connections
 
 3. **Audio Processing**
 
@@ -271,16 +273,18 @@ The project is in a functional beta state with:
 
 **Major Milestone Achieved**: Tutorial 7 "Additive Synthesis" is now complete with all 35 steps implemented and fully integrated into the application. This extends the tutorial sequence to cover fundamental synthesis concepts from basic nodes through harmonic analysis and additive synthesis techniques.
 
+**Architectural Milestone Achieved**: Successfully completed a comprehensive upgrade to Svelte 5 with a complete modular refactor of the AudioCanvas component. This represents the largest architectural change in AudioCanvas history, establishing modern patterns for future development with enhanced maintainability, type safety, and performance.
+
 Development focus areas:
 
 1. Implementing validation functions for Tutorial 7
 2. Planning and developing Tutorial 8 and beyond
 3. Testing Tutorial 5 with the newly created validation functions
 4. Testing the Switch and Count nodes in practical applications
-5. Refining the user interface
-6. Optimizing performance
+5. Leveraging the new modular architecture for future features
+6. Optimizing performance with Svelte 5's enhanced capabilities
 
-The application is usable for learning and experimentation, but some advanced features are still in development.
+The application is usable for learning and experimentation, with a significantly improved codebase architecture supporting future development.
 
 ## Known Issues
 

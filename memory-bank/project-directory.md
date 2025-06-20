@@ -28,11 +28,15 @@ src/
 │   └── web-audio/     # Web Audio API integration and WebAssembly
 │       └── wasm/      # WebAssembly modules for custom audio processors
 ├── components/        # Svelte UI components
+│   ├── Line.svelte        # Connection line component with Bézier curves
+│   ├── DraggingLine.svelte # Dedicated component for actively dragged connections
 │   └── Tutorial/      # Tutorial-specific components and content
 ├── routes/            # SvelteKit routes
 │   ├── playground/    # Audio canvas playground
 │   └── learn/         # Tutorial section
 ├── ui/                # UI utility functions
+│   ├── bezierCurves.ts    # Intelligent Bézier curve calculation utilities
+│   └── [other files]     # Other UI utility functions
 ├── utils/             # General utility functions
 ├── icons/             # SVG icons
 └── stories/           # Storybook component stories

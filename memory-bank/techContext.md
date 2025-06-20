@@ -11,12 +11,16 @@ AudioCanvas is built using a modern web technology stack that enables high-perfo
    - Provides static typing for improved code quality and developer experience
    - Enables better tooling and IDE support for complex audio processing code
    - Used throughout the codebase for both frontend and audio processing
+   - Enhanced integration with Svelte 5's new type system
 
-2. **Svelte/SvelteKit**
+2. **Svelte 5 / SvelteKit**
 
-   - Svelte for reactive UI components with minimal runtime overhead
-   - SvelteKit for routing and application structure
-   - Chosen for its performance and simplicity compared to larger frameworks
+   - **Svelte 5.0.0**: Latest major version with revolutionary runes system
+   - **SvelteKit 2.5.27**: Modern application framework with enhanced routing
+   - **Runes system**: New reactivity primitives (`$state`, `$derived`, `$props`) replacing stores and reactive statements
+   - **Enhanced performance**: Improved compilation and runtime performance
+   - **Better TypeScript integration**: Superior type inference and component prop typing
+   - **Modular architecture support**: Excellent for class-based component organization
 
 3. **Web Audio API**
 
@@ -56,9 +60,15 @@ AudioCanvas is built using a modern web technology stack that enables high-perfo
    - Ensures stability of core functionality
 
 5. **Storybook**
+
    - UI component development and testing environment
    - Allows isolated development of UI components
    - Provides a visual catalog of available components
+
+6. **SVG Path API**
+   - Used for rendering sophisticated Bézier curve connections
+   - Enables professional-quality visual connections between nodes
+   - Supports complex curve calculations with direction and verticality awareness
 
 ## Development Setup
 

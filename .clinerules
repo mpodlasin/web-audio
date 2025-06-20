@@ -295,6 +295,58 @@ This file captures key insights, patterns, and project-specific knowledge that w
    - Use them to monitor audio context and node connections
    - Check for memory leaks and performance issues
 
+### UI Enhancement Patterns
+
+1. **Iterative Visual Refinement**:
+   - Start with basic functionality (straight lines)
+   - Enhance with professional appearance (Bézier curves)
+   - Add intelligent behavior (direction and verticality awareness)
+   - Separate concerns into dedicated components (DraggingLine.svelte)
+
+2. **SVG Path Optimization**:
+   - Use SVG `<path>` elements for complex curves instead of simple `<line>` elements
+   - Calculate control points based on connection geometry
+   - Implement direction detection to avoid visual artifacts
+   - Apply verticality factors to reduce unnecessary curvature
+
+3. **Component Separation Strategy**:
+   - Extract specialized functionality into dedicated components
+   - Maintain clean interfaces between components
+   - Preserve all existing functionality during refactoring
+   - Use consistent patterns across similar components
+
+### Svelte 5 Migration Patterns
+
+1. **Runes System Implementation**:
+   - Use `$state` for mutable reactive state instead of traditional stores
+   - Use `$derived` for computed values instead of `$:` reactive statements
+   - Use `$props` with TypeScript interfaces for component props
+   - Leverage enhanced type inference and better intellisense
+
+2. **Modular Architecture with Classes**:
+   - Encapsulate related functionality in TypeScript classes
+   - Use Svelte 5 runes within class properties for reactivity
+   - Implement dependency injection through constructor parameters
+   - Create `.svelte.ts` files for complex state management logic
+
+3. **Class-Based State Management**:
+   - Each major functionality becomes a dedicated class (AudioGraph, Menus, LineDragging, etc.)
+   - Classes manage their own state using `$state` and `$derived`
+   - Clean separation of concerns with well-defined interfaces
+   - Enhanced testability through isolated class modules
+
+4. **Component Refactoring Strategy**:
+   - Break down monolithic components into modular classes
+   - Maintain all existing functionality during refactoring
+   - Use dependency injection to connect related modules
+   - Preserve component interfaces to minimize breaking changes
+
+5. **Enhanced Type Safety**:
+   - Explicit TypeScript interfaces for all component props
+   - Better type inference with Svelte 5's improved TypeScript integration
+   - Class-based architecture provides natural type boundaries
+   - Enhanced intellisense and development experience
+
 ## Task Execution Checklist
 
 To ensure consistent and appropriate task execution, I (Cline) will follow this internal checklist for every task:

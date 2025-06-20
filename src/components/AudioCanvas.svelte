@@ -23,6 +23,7 @@
 	import { Playing } from './AudioCanvas/playing.svelte';
 	import Line from './Line.svelte';
 	import DraggableNode from './DraggableNode.svelte';
+	import DraggingLine from './DraggingLine.svelte';
 
 	interface Props {
 		chosenProjectName: string;
@@ -135,15 +136,11 @@
 				onContextMenu={menus.handleLineClick(line)}
 			/>
 		{/each}
-		{#if lineDragging.draggingLine && lineDragging.positionOfEndPlug}
-			<line
-				x1={lineDragging.positionOfStartingPlug.x}
-				y1={lineDragging.positionOfStartingPlug.y}
-				x2={lineDragging.positionOfEndPlug.x}
-				y2={lineDragging.positionOfEndPlug.y}
-				class="visible"
-			/>
-		{/if}
+		<DraggingLine
+			startPosition={lineDragging.positionOfStartingPlug}
+			endPosition={lineDragging.positionOfEndPlug ?? { x: 0, y: 0 }}
+			visible={!!(lineDragging.draggingLine && lineDragging.positionOfEndPlug)}
+		/>
 	</svg>
 	<div
 		class="audio-canvas"

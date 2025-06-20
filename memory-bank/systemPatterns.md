@@ -53,13 +53,33 @@ The UI layer provides the visual representation and interaction capabilities:
 - Renders nodes and connections on the canvas
 - Handles user interactions (dragging, connecting, parameter adjustment)
 - Provides visual feedback for audio state
+- Implements intelligent Bézier curve connections for professional appearance
 
 Key files:
 
 - `src/components/AudioCanvas.svelte`: Main canvas component
 - `src/components/DraggableNode.svelte`: Node component with drag functionality
 - `src/components/Node.svelte`: Base node component
+- `src/components/Line.svelte`: Connection line component with Bézier curves
+- `src/components/DraggingLine.svelte`: Dedicated component for actively dragged connections
+- `src/ui/bezierCurves.ts`: Intelligent Bézier curve calculation utilities
 - `src/ui/`: UI utility functions
+
+#### Intelligent Connection Rendering
+
+The connection system uses sophisticated Bézier curves that adapt to connection geometry:
+
+- **Direction-aware curves**: Automatically detects left-to-right vs right-to-left connections and mirrors control points
+- **Verticality-aware curvature**: Reduces curve intensity for more vertical connections to minimize visual jarring
+- **Component separation**: Dedicated `DraggingLine.svelte` component for actively dragged connections
+- **Professional appearance**: Matches industry-standard node editors (Blender, Unreal Engine Blueprint)
+
+**Technical Implementation:**
+- `calculateBezierPath()`: Main function with direction and verticality awareness
+- `calculateBezierPathWithOffset()`: Custom offset version with same intelligence
+- SVG `<path>` elements instead of straight `<line>` elements
+- Aspect ratio calculation to determine connection verticality
+- Control point mirroring for right-to-left connections
 
 ### 5. Tutorial System Layer
 
@@ -118,19 +138,47 @@ AudioCanvas uses a serialized representation of the audio graph as the source of
 - Simplifies state management and undo/redo functionality
 - Provides a clear contract between the UI and audio processing layers
 
-### 2. React-like Update Pattern
+### 2. Modular Class-Based Architecture (Svelte 5)
 
-The system uses a React-like update pattern where:
+The system employs a sophisticated modular architecture using Svelte 5's runes system:
 
-- The UI layer maintains the serialized state
-- Changes to the state trigger updates to the runtime audio graph
-- The update process efficiently determines what needs to change
+- **Class-based modules**: Each major functionality is encapsulated in TypeScript classes
+- **Dependency injection**: Clean constructor-based dependency management
+- **Svelte 5 runes**: Leveraging `$state`, `$derived`, and `$props` for reactive state management
+- **Separation of concerns**: Clear boundaries between different system responsibilities
+
+**Modular Classes:**
+- `AudioGraph`: Manages audio graph state, history, and operations
+- `PlugPositions`: Handles plug position tracking and DOM measurements
+- `Menus`: Manages all menu interactions and context menu state
+- `LineDragging`: Handles connection creation and line dragging logic
+- `DraggingCanvas`: Canvas panning and zooming functionality
+- `DraggingNodes`: Node positioning and drag operations
+- `Projects`: Project management and persistence
+- `Playing`: Audio playback state management
+
+**Benefits:**
+- **Maintainability**: Clear separation makes debugging and modifications easier
+- **Testability**: Individual classes can be unit tested in isolation
+- **Reusability**: Modules can be reused across different components
+- **Type safety**: Enhanced TypeScript support with better intellisense
+- **Performance**: Svelte 5's optimized reactivity system
+
+### 3. React-like Update Pattern with Enhanced State Management
+
+The system uses an enhanced update pattern leveraging Svelte 5's capabilities:
+
+- **Runes-based reactivity**: Using `$state` for mutable state and `$derived` for computed values
+- **Centralized state management**: AudioGraph class manages all audio-related state
+- **Efficient updates**: The update process efficiently determines what needs to change
+- **Temporal actions**: Support for temporary actions that can be committed or rolled back
 
 This approach:
 
 - Minimizes unnecessary audio processing
 - Prevents audio glitches during updates
 - Maintains a clean separation between UI and audio processing
+- Provides better developer experience with modern reactive patterns
 
 ### 3. WebAssembly for Custom Audio Processors
 

@@ -2,7 +2,70 @@
 
 ## Current Work Focus
 
-With the completion of Tutorial 7 "Additive Synthesis", AudioCanvas now has a comprehensive tutorial sequence covering fundamental synthesis concepts from basic nodes through harmonic analysis and additive synthesis techniques. The current development focus shifts to implementing validation functions for Tutorial 7 and planning future tutorials. Specifically:
+With the completion of Tutorial 7 "Additive Synthesis", the major UI enhancement of intelligent Bézier curves, and the massive architectural upgrade to Svelte 5 with a modular AudioCanvas refactor, AudioCanvas now represents a significant evolution in both functionality and code architecture. The current development focus includes implementing validation functions for Tutorial 7, planning future tutorials, and leveraging the new architectural patterns. Specifically:
+
+### Major Recent Achievement: Svelte 5 Upgrade & AudioCanvas Refactor ✅
+
+We've successfully completed a comprehensive architectural upgrade that modernizes the entire codebase:
+
+**Svelte 5 Migration:**
+- **Framework upgrade**: Migrated from Svelte 3.x to **Svelte 5.0.0**
+- **SvelteKit update**: Updated to **v2.5.27** with latest features
+- **Runes system**: Implemented Svelte 5's new reactivity system using `$state`, `$derived`, and `$props`
+- **Enhanced type safety**: Improved TypeScript integration with explicit prop interfaces
+
+**AudioCanvas Modular Refactor:**
+- **Class-based architecture**: Completely restructured AudioCanvas into modular, reusable classes
+- **Separation of concerns**: Each major functionality is now a dedicated class in its own `.svelte.ts` file
+- **Dependency injection**: Clean constructor-based dependency management between modules
+- **State management**: Leveraging Svelte 5 runes for reactive state across the modular system
+
+**New Modular Classes:**
+- `AudioGraph` - Audio graph state and operations management
+- `PlugPositions` - Plug position tracking and updates
+- `Projects` - Project operations and management
+- `Menus` - Menu interactions and state handling
+- `DraggingCanvas` - Canvas dragging functionality
+- `Resize` - Canvas resizing operations
+- `LineDragging` - Line connection dragging logic
+- `ChangeColor` - Node color modification
+- `DraggingNodes` - Node dragging operations
+- `NodeParameterChange` - Parameter modification handling
+- `AddRemoveNodes` - Node creation and deletion
+- `Playing` - Audio playback state management
+
+**Architectural Benefits:**
+- **Maintainability**: Clear separation makes code easier to understand and modify
+- **Reusability**: Modular classes can be easily tested and reused
+- **Type safety**: Enhanced TypeScript support with better intellisense
+- **Performance**: Svelte 5's improved reactivity system
+- **Scalability**: New architecture supports future feature additions more easily
+
+This represents the largest architectural change in AudioCanvas history, establishing modern patterns for future development.
+
+### Major Recent Achievement: Intelligent Bézier Curve System ✅
+
+We've successfully implemented a sophisticated Bézier curve system that transforms the connection lines from basic straight lines into professional, adaptive curves:
+
+**Key Features:**
+- **Direction-aware curves**: Automatically detects left-to-right vs right-to-left connections and mirrors control points to eliminate squiggly appearance
+- **Verticality-aware curvature**: Reduces curve intensity for more vertical connections, creating smoother visual transitions
+- **Component separation**: Created dedicated `DraggingLine.svelte` component for better code organization
+- **Intelligent adaptation**: Curves adapt based on connection geometry for optimal visual clarity
+
+**Technical Implementation:**
+- New `src/ui/bezierCurves.ts` utility module with `calculateBezierPath()` and `calculateBezierPathWithOffset()` functions
+- Enhanced `Line.svelte` component using SVG `<path>` elements instead of straight `<line>` elements
+- Separate `DraggingLine.svelte` component for actively dragged connections
+- Updated `AudioCanvas.svelte` to use the new component architecture
+
+**Visual Impact:**
+- Professional appearance matching industry-standard node editors (Blender, Unreal Engine Blueprint)
+- Smooth, natural-looking curves that clearly show signal flow direction
+- Reduced visual noise and improved patch readability
+- Consistent curve quality across all connection types and directions
+
+This enhancement significantly elevates the visual quality and professional appearance of AudioCanvas while maintaining all existing functionality.
 
 ### Tutorial Content Access
 
