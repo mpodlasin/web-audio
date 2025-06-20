@@ -43,50 +43,62 @@
 	};
 </script>
 
-<div class="wrapper">
-	<button
-		class="plug"
-		data-plug={type}
-		onpointerup={handlePlugUp}
-		onpointerdown={handlePlugDown}
-		onkeydown={() => {}}
-		data-id={id}
-		data-node-id={nodeId}
-		data-type={type}
-		aria-label="Plug"
-		bind:this={plug}
-	>
-	</button>
+<button
+	class="wrapper"
+	data-plug={type}
+	onpointerup={handlePlugUp}
+	onpointerdown={handlePlugDown}
+	onkeydown={() => {}}
+	data-id={id}
+	data-node-id={nodeId}
+	data-type={type}
+	aria-label="Plug"
+	bind:this={plug}
+>
+	<div class="plug"></div>
 	<div class="menu">
-		<Menu>
-			<div class="menu-content">
-				<h2>{type}:<span class="name">{staticDefinition.name}</span></h2>
-				{#if staticDefinition.description}
-					<p>{staticDefinition.description}</p>
-				{/if}
-				{#if staticDefinition.contextDescription}
-					<p>{staticDefinition.contextDescription}</p>
-				{/if}
-				<p>Range: {minValue} to {maxValue} {staticDefinition.unit ?? ''}</p>
-			</div>
-		</Menu>
+		<h2>{type}:<span class="name">{staticDefinition.name}</span></h2>
+		{#if staticDefinition.description}
+			<p>{staticDefinition.description}</p>
+		{/if}
+		{#if staticDefinition.contextDescription}
+			<p>{staticDefinition.contextDescription}</p>
+		{/if}
+		<p>Range: {minValue} to {maxValue} {staticDefinition.unit ?? ''}</p>
 	</div>
-</div>
+</button>
 
 <style>
 	.wrapper {
 		position: relative;
+		background: none;
+		color: inherit;
+		border: none;
+		padding: 0;
+		font: inherit;
+		cursor: pointer;
+		outline: inherit;
+		padding: 6px;
 	}
 
 	.menu {
 		position: absolute;
-		top: 6px;
-		left: 6px;
+		top: 100%;
+		left: 50%;
 		transition: opacity 0.5s;
 		transition-delay: 1s;
 		opacity: 0;
 		pointer-events: none;
 		z-index: 100;
+		transform: translateX(-50%) translateY(5px);
+		border: 1px solid;
+		border-color: var(--primary-500);
+		background-color: var(--neutral-900);
+		border-radius: 8px;
+		padding: 8px;
+		display: flex;
+		flex-direction: column;
+		gap: 8px;
 	}
 
 	.wrapper:hover .menu {
@@ -94,15 +106,15 @@
 	}
 
 	.plug {
-		width: 12px;
-		height: 12px;
+		width: 15px;
+		height: 15px;
 		border-radius: 50%;
 		background-color: var(---neutral-700);
 		border: 1px solid var(--primary-500);
 		transition: transform 0.2s;
 	}
 
-	.plug:hover {
+	.wrapper:hover .plug {
 		transform: scaleX(120%) scaleY(120%);
 	}
 
@@ -120,12 +132,6 @@
 		text-align: center;
 		white-space: pre;
 		line-height: 1.7;
-	}
-
-	.menu-content {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
 	}
 
 	.name {

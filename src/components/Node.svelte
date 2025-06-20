@@ -237,7 +237,7 @@
 
 <style>
 	.node {
-		padding: 8px;
+		padding: 8px 0 0 0;
 		display: flex;
 		flex-direction: column;
 		gap: 8px;
@@ -263,6 +263,7 @@
 	}
 
 	.parameters {
+		padding: 0 8px;
 		display: flex;
 		flex-direction: row;
 		justify-content: space-around;
@@ -275,7 +276,7 @@
 		flex-direction: row;
 		justify-content: space-between;
 
-		gap: 32px;
+		gap: 16px;
 	}
 
 	.inputs,
@@ -283,7 +284,6 @@
 		display: flex;
 		flex-grow: 0;
 		flex-direction: row;
-		gap: 8px;
 	}
 
 	.categoryName {
