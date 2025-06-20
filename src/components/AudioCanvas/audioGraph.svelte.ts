@@ -28,7 +28,7 @@ export class AudioGraph {
 		initialAudioGraph: SerializedAudioElements,
 		private onChange: (audioGraph: SerializedAudioElements) => void
 	) {
-		this.audioGraphHistory = [{}, initialAudioGraph];
+		this.audioGraphHistory = [initialAudioGraph];
 		this.audioGraph = initialAudioGraph;
 	}
 
@@ -55,14 +55,13 @@ export class AudioGraph {
 			}
 
 			this.audioGraphHistory = newAudioGraphHistory;
+			this.audioGraph = this.audioGraphHistory.at(-1) ?? {};
 
 			this.audioNodeDatabase = updateAudioCanvas(
 				this.audioGraphHistory.at(-1) ?? {},
 				this.audioGraphHistory.at(-2) ?? {},
 				this.audioNodeDatabase
 			);
-
-			this.audioGraph = this.audioGraphHistory.at(-1) ?? {};
 
 			this.onChange(this.audioGraph);
 		}
@@ -91,6 +90,8 @@ export class AudioGraph {
 	};
 
 	endTemporaryAction = () => {
+		if (!this.temporaryAction) return;
+
 		this.temporaryAction = false;
 
 		this.audioGraphHistory = [...this.audioGraphHistory, this.temporaryGraph];
