@@ -11,7 +11,9 @@
 		type SerializedAudioElements,
 		CustomValueNode,
 		CustomSpectrumNode,
+
 		type Plug as PlugObject
+
 	} from '../audio/AudioCanvas';
 	import Knob from './Knob.svelte';
 	import OscilloscopeNode from './OscilloscopeNode.svelte';
@@ -216,9 +218,7 @@
 					staticDefinition={input}
 					onPlugMouseDown={handlePlugDown}
 					onPlugMouseUp={handlePlugUp}
-					hoveredOver={hoveringOverPlug?.nodeId === id &&
-						hoveringOverPlug.id === input.id &&
-						hoveringOverPlug.type === 'input'}
+					hoveredOver={hoveringOverPlug?.nodeId === id && hoveringOverPlug.id === input.id && hoveringOverPlug.type === 'input'}
 					{onPlugCreated}
 				/>
 			{/each}
@@ -232,9 +232,7 @@
 					staticDefinition={output}
 					onPlugMouseDown={handlePlugDown}
 					onPlugMouseUp={handlePlugUp}
-					hoveredOver={hoveringOverPlug?.nodeId === id &&
-						hoveringOverPlug.id === output.id &&
-						hoveringOverPlug.type === 'output'}
+					hoveredOver={hoveringOverPlug?.nodeId === id && hoveringOverPlug.id === output.id && hoveringOverPlug.type === 'output'}
 					{onPlugCreated}
 				/>
 			{/each}

@@ -38,19 +38,7 @@
 		onChange
 	}: Props = $props();
 
-	let knobWrapper: HTMLElement | undefined = $state();
-
 	let numberParameter = $derived(parameter.base);
-
-	let hoveringOver = $state(false);
-
-	const handleMouseEnter = () => {
-		hoveringOver = true;
-	};
-
-	const handleMouseLeave = () => {
-		hoveringOver = false;
-	};
 
 	let isDragging = false;
 	let draggingStartPosition: Position | null = null;
@@ -192,9 +180,6 @@
 	onpointerdown={handlePointerDown}
 	onpointermove={handlePointerMove}
 	onpointerup={handlePointerUp}
-	onpointerenter={handleMouseEnter}
-	onpointerleave={handleMouseLeave}
-	bind:this={knobWrapper}
 	aria-label="knob"
 >
 </button>
@@ -202,7 +187,7 @@
 <style>
 	.wrapper {
 		position: absolute;
-		opacity: 0.2;
+		opacity: 0;
 		width: 55px;
 		height: 55px;
 		background-color: pink;
