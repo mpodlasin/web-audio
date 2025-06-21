@@ -186,7 +186,7 @@
 		top: 14px;
 		right: 14px;
 		transform: translateX(100%);
-		z-index: 10;
+		z-index: 1000;
 	}
 
 	.plus {

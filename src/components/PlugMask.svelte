@@ -73,7 +73,9 @@
 		height: 30px;
 		transform: translateX(-50%) translateY(-50%);
 		position: absolute;
-		z-index: 100;
+		background-color: blue;
+		opacity: 0;
+		z-index: 10;
 	}
 
 	.draggingLine {

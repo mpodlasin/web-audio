@@ -192,7 +192,7 @@
 		height: 55px;
 		background-color: pink;
 		transform: translateY(-50%) translateX(-50%);
-		z-index: 100;
+		z-index: 10;
 		border-radius: 50%;
 	}
 

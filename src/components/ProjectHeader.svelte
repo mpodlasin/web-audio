@@ -64,7 +64,7 @@
 		align-items: stretch;
 		gap: 8px;
 
-		z-index: 100;
+		z-index: 1000;
 	}
 
 	.header {

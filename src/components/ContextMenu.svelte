@@ -133,7 +133,7 @@
 		opacity: 0;
 		transition: opacity 0.2s;
 		pointer-events: none;
-		z-index: 101;
+		z-index: 100;
 	}
 
 	.submenu.left {
