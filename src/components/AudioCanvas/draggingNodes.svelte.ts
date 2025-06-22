@@ -3,6 +3,8 @@ import type DraggingCanvas from './draggingCanvas.svelte';
 import type PlugPositions from './plugPositions.svelte';
 
 export default class DraggingNodes {
+	draggingNodes = $state(false);
+
 	constructor(
 		private audioGraphStore: AudioGraph,
 		private plugPositionsStore: PlugPositions,
@@ -11,6 +13,7 @@ export default class DraggingNodes {
 
 	handleDragStart = () => {
 		this.audioGraphStore.startTemporaryAction();
+		this.draggingNodes = true;
 	};
 
 	handleDragNode = (event: { x: number; y: number; id: string }) => {
@@ -49,5 +52,6 @@ export default class DraggingNodes {
 
 	handleNodeDragEnd = () => {
 		this.audioGraphStore.endTemporaryAction();
+		this.draggingNodes = false;
 	};
 }

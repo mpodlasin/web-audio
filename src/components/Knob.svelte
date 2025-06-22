@@ -6,6 +6,7 @@
 
 	interface Props {
 		nodeId: string;
+		nodeOrder: number;
 		parameterName: string;
 		parameter: SerializedAudioParameter;
 		audioParamAnalyser: AnalyserNode | undefined;
@@ -36,6 +37,7 @@
 		draggingLine,
 		linear = false,
 		discrete = false,
+		nodeOrder,
 		onMouseDown,
 		onMouseUp,
 		onChange,
@@ -43,7 +45,6 @@
 	}: Props = $props();
 
 	let knobWrapper: HTMLDivElement | undefined = $state();
-	let knob: HTMLDivElement | undefined = $state();
 
 	let numberParameter = $derived(parameter.base);
 
@@ -298,6 +299,7 @@
 	data-knob
 	data-node-id={nodeId}
 	data-parameter-name={parameterName}
+	data-node-order={nodeOrder}
 	bind:this={knobWrapper}
 >
 	<div class="title">{rewriteStringWithNumber(parameterName)}</div>
@@ -312,7 +314,6 @@
 			tabindex={0}
 			role="spinbutton"
 			onkeypress={() => {}}
-			bind:this={knob}
 			style="transform: rotate({angle}deg)"
 		>
 			<div class="knob-pointer"></div>
@@ -411,6 +412,7 @@
 	.value {
 		font-size: 10px;
 		border: 2px solid transparent;
+		user-select: none;
 	}
 
 	input {

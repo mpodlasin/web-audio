@@ -63,7 +63,7 @@
 
 	const audioGraph = new AudioGraph(project.audioCanvas, onChange);
 
-	const plugPositions = new PlugPositions();
+	const plugPositions = new PlugPositions(audioGraph);
 
 	const resize = new Resize(project.size, plugPositions, onSizeChange);
 
@@ -78,7 +78,7 @@
 
 	const menus = new Menus(draggingCanvas, lineDragging, audioGraph, plugPositions);
 
-	const draggingNodees = new DraggingNodes(audioGraph, plugPositions, draggingCanvas);
+	const draggingNodes = new DraggingNodes(audioGraph, plugPositions, draggingCanvas);
 
 	const nodeParameterChange = new NodeParameterChange(audioGraph);
 
@@ -103,33 +103,6 @@
 	onMount(() => {
 		plugPositions.updatePlugPositions();
 	});
-
-	const knobMasksWithData = $derived(
-		plugPositions.knobMasks.flatMap((mask) => {
-			const node = audioGraph.audioGraph[mask.nodeId];
-
-			if (!node) return [];
-
-			const parameter = node?.parameters[mask.knobId];
-
-			if (!parameter) return [];
-
-			const staticParameter =
-				allowedSerializedAudioElementStaticDefinitions[node.type].parameters[mask.knobId];
-
-			if (!staticParameter) return [];
-
-			return [
-				{
-					parameterName: mask.knobId,
-					nodeId: mask.nodeId,
-					parameter,
-					...staticParameter,
-					position: mask.position
-				}
-			];
-		})
-	);
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -185,10 +158,11 @@
 			style="transform: translate({draggingCanvas.canvasRelativePosition.x}px, {draggingCanvas
 				.canvasRelativePosition.y}px) scale({resize.size});"
 		>
-			{#each Object.entries(audioGraph.audioGraph) as [id, node] (id)}
+			{#each Object.entries(audioGraph.audioGraph) as [id, node], index (id)}
 				<DraggableNode
 					{id}
 					{node}
+					order={index}
 					audioGraph={audioGraph.audioGraph}
 					running={playing.playing}
 					selected={false}
@@ -197,9 +171,9 @@
 					position={{ x: node.ui?.position.x ?? 0, y: node.ui?.position.y ?? 0 }}
 					color={node.ui.primaryColor}
 					draggingLine={lineDragging.draggingLine}
-					onDrag={draggingNodees.handleDragNode}
-					onDragStart={draggingNodees.handleDragStart}
-					onDragEnd={draggingNodees.handleNodeDragEnd}
+					onDrag={draggingNodes.handleDragNode}
+					onDragStart={draggingNodes.handleDragStart}
+					onDragEnd={draggingNodes.handleNodeDragEnd}
 					onNodeParameterChangeStart={nodeParameterChange.handleNodeParameterChangeStart}
 					onNodeParamterChange={nodeParameterChange.handleNodeParameterChange}
 					onNodeParameterChangeEnd={nodeParameterChange.handleNodeParameterChangeEnd}
@@ -211,6 +185,7 @@
 					onPlugCreated={plugPositions.andlePlugCreated}
 					onKnobCreated={plugPositions.handleKnobCreated}
 					onCommentChanged={handleCommentChanged}
+					onNodeCreated={plugPositions.handleNodeCreated}
 				/>
 			{/each}
 		</div>
@@ -244,6 +219,7 @@
 		{#if menus.showMenu && menus.menuKind === 'line-multiply'}
 			<PositionedMenu position={menus.menuPosition} onClose={menus.closeMenu}>
 				<Knob
+					nodeOrder={0}
 					parameterName="mult"
 					parameter={{ base: menus.chosenLineMultiply ?? 1, inputs: [] }}
 					defaultValue={1}
@@ -270,7 +246,7 @@
 		{#each plugPositions.plugMasks as mask (mask.nodeId + ' - ' + mask.plugId + ' - ' + mask.type)}
 			<PlugMask
 				{...mask}
-				draggingLine={lineDragging.draggingLine}
+				draggingLine={lineDragging.draggingLine || draggingNodes.draggingNodes}
 				onPointerDown={lineDragging.handlePlugDown}
 				onPointerUp={lineDragging.handlePlugUp}
 				onHoveringOver={plugPositions.handleHoveringOverPlugMask}
@@ -278,10 +254,10 @@
 		{/each}
 	</div>
 	<div class="knob-masks">
-		{#each knobMasksWithData as mask (mask.nodeId + ' - ' + mask.parameterName)}
+		{#each plugPositions.knobMasksWithData as mask (mask.nodeId + ' - ' + mask.parameterName)}
 			<KnobMask
 				{...mask}
-				draggingLine={lineDragging.draggingLine}
+				draggingLine={lineDragging.draggingLine || draggingNodes.draggingNodes}
 				onMouseDown={nodeParameterChange.handleNodeParameterChangeStart}
 				onChange={nodeParameterChange.handleNodeParameterChange}
 				onMouseUp={nodeParameterChange.handleNodeParameterChangeEnd}

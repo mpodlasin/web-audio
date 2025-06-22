@@ -11,6 +11,7 @@
 
 	interface Props {
 		id: string;
+		order: number;
 		node: AllowedSerializedAudioElements;
 		instantiatedNode: unknown;
 		color: string;
@@ -42,11 +43,13 @@
 		onKnobCreated(knob: HTMLElement): void;
 		onCommentChanged(event: { nodeId: string; comment: string }): void;
 		onPlugCreated(plug: HTMLElement): void;
+		onNodeCreated(node: HTMLElement): void;
 	}
 
 	let {
 		id,
 		node,
+		order,
 		instantiatedNode,
 		color,
 		position,
@@ -68,8 +71,17 @@
 		onNodeParamterChange,
 		onNodePlugMouseDown,
 		onNodePlugMouseUp,
-		onPlugCreated
+		onPlugCreated,
+		onNodeCreated
 	}: Props = $props();
+
+	let htmlNode: HTMLElement | undefined = $state();
+	let sentNode = $state(false);
+
+	$effect(() => {
+		htmlNode && !sentNode && onNodeCreated(htmlNode);
+		sentNode = true;
+	});
 
 	let internalClickPosition = {
 		x: 0,
@@ -146,6 +158,7 @@
 </script>
 
 <div
+	data-order={order}
 	onpointerdown={handlePointerDown}
 	onpointerup={handlePointerUp}
 	oncontextmenu={(e) => e.preventDefault()}
@@ -156,10 +169,12 @@
 	style="position: absolute; left: {position.x}px; top: {position.y}px;"
 	role="cell"
 	tabindex={0}
+	bind:this={htmlNode}
 >
 	<Node
 		{id}
 		{node}
+		nodeOrder={order}
 		{instantiatedNode}
 		{running}
 		{draggingLine}

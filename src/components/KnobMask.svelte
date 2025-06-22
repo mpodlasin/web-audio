@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Position, SerializedAudioParameter } from '../audio/AudioCanvas';
+	import { dragNode } from '../ui/dragNode';
 
 	type Polarity = 'uni' | 'bi';
 
@@ -37,6 +38,8 @@
 		onMouseUp,
 		onChange
 	}: Props = $props();
+
+	let mask: HTMLElement | undefined = $state();
 
 	let numberParameter = $derived(parameter.base);
 
@@ -181,6 +184,7 @@
 	onpointermove={handlePointerMove}
 	onpointerup={handlePointerUp}
 	aria-label="knob"
+	bind:this={mask}
 >
 </button>
 
@@ -188,8 +192,8 @@
 	.wrapper {
 		position: absolute;
 		opacity: 0;
-		width: 55px;
-		height: 55px;
+		width: 52px;
+		height: 52px;
 		background-color: pink;
 		transform: translateY(-50%) translateX(-50%);
 		z-index: 10;
