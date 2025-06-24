@@ -191,7 +191,7 @@ export const addConnection = <S extends SerializedAudioElements>(
 	endingPlug: Plug
 ): S => {
 	if (startingPlug.type === endingPlug.type) {
-		throw new Error(`You tried connecting two ${startingPlug.type}s together`);
+		throw new Error(`You tried connecting two ${startingPlug.type}s together!`);
 	}
 
 	if (startingPlug.nodeId === endingPlug.nodeId) {
@@ -233,7 +233,7 @@ export const addConnectionToParameter = <S extends SerializedAudioElements>(
 	endingPlug: Plug
 ): S => {
 	if (startingPlug.type === endingPlug.type) {
-		throw new Error(`You tried connecting two ${startingPlug.type}s together`);
+		throw new Error(`You tried connecting input plug to a parameter input!`);
 	}
 
 	if (startingPlug.nodeId === endingPlug.nodeId) {

@@ -30,6 +30,8 @@
 	import DraggingLine from './DraggingLine.svelte';
 	import PlugMask from './PlugMask.svelte';
 	import KnobMask from './KnobMask.svelte';
+	import { NotificationStore } from './AudioCanvas/notifications.svelte';
+	import NotificationContainer from './NotificationContainer.svelte';
 
 	interface Props {
 		chosenProjectName: string;
@@ -59,9 +61,11 @@
 		onChange
 	}: Props = $props();
 
+	const notifications = new NotificationStore();
+
 	const projects = new Projects(tutorialMode, onNewProject, onProjectChange);
 
-	const audioGraph = new AudioGraph(project.audioCanvas, onChange);
+	const audioGraph = new AudioGraph(project.audioCanvas, onChange, notifications);
 
 	const plugPositions = new PlugPositions(audioGraph);
 
@@ -265,6 +269,9 @@
 			/>
 		{/each}
 	</div>
+
+	<!-- Notification system -->
+	<NotificationContainer notificationStore={notifications} />
 </div>
 
 <style>

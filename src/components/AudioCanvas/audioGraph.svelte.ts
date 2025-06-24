@@ -16,6 +16,7 @@ import {
 } from '../../audio/serialized';
 import { changeNodeColor } from '../../ui/changeNodeColor';
 import { dragNode } from '../../ui/dragNode';
+import type { NotificationStore } from './notifications.svelte';
 
 export class AudioGraph {
 	audioNodeDatabase: AudioNodeDatabase = $state({});
@@ -26,7 +27,8 @@ export class AudioGraph {
 
 	constructor(
 		initialAudioGraph: SerializedAudioElements,
-		private onChange: (audioGraph: SerializedAudioElements) => void
+		private onChange: (audioGraph: SerializedAudioElements) => void,
+		private notificationsStore: NotificationStore
 	) {
 		this.audioGraphHistory = [initialAudioGraph];
 		this.audioGraph = initialAudioGraph;
@@ -34,37 +36,47 @@ export class AudioGraph {
 	}
 
 	updateAudioGraphHistory = (map: (a: SerializedAudioElements) => SerializedAudioElements) => {
-		if (this.temporaryAction) {
-			const prevTemporaryGraph = this.temporaryGraph;
-			this.temporaryGraph = map(this.temporaryGraph);
+		try {
+			if (this.temporaryAction) {
+				const prevTemporaryGraph = this.temporaryGraph;
+				this.temporaryGraph = map(this.temporaryGraph);
 
-			this.audioNodeDatabase = updateAudioCanvas(
-				this.temporaryGraph,
-				prevTemporaryGraph,
-				this.audioNodeDatabase
-			);
+				this.audioNodeDatabase = updateAudioCanvas(
+					this.temporaryGraph,
+					prevTemporaryGraph,
+					this.audioNodeDatabase
+				);
 
-			this.audioGraph = this.temporaryGraph;
-		} else {
-			const newAudioGraphHistory = [
-				...this.audioGraphHistory,
-				map(this.audioGraphHistory.at(-1) ?? {})
-			];
+				this.audioGraph = this.temporaryGraph;
+			} else {
+				const newAudioGraphHistory = [
+					...this.audioGraphHistory,
+					map(this.audioGraphHistory.at(-1) ?? {})
+				];
 
-			if (newAudioGraphHistory.length > 100) {
-				this.audioGraphHistory = this.audioGraphHistory.slice(this.audioGraphHistory.length - 100);
+				if (newAudioGraphHistory.length > 100) {
+					this.audioGraphHistory = this.audioGraphHistory.slice(
+						this.audioGraphHistory.length - 100
+					);
+				}
+
+				this.audioGraphHistory = newAudioGraphHistory;
+				this.audioGraph = this.audioGraphHistory.at(-1) ?? {};
+
+				this.audioNodeDatabase = updateAudioCanvas(
+					this.audioGraphHistory.at(-1) ?? {},
+					this.audioGraphHistory.at(-2) ?? {},
+					this.audioNodeDatabase
+				);
+
+				this.onChange(this.audioGraph);
 			}
-
-			this.audioGraphHistory = newAudioGraphHistory;
-			this.audioGraph = this.audioGraphHistory.at(-1) ?? {};
-
-			this.audioNodeDatabase = updateAudioCanvas(
-				this.audioGraphHistory.at(-1) ?? {},
-				this.audioGraphHistory.at(-2) ?? {},
-				this.audioNodeDatabase
-			);
-
-			this.onChange(this.audioGraph);
+		} catch (error) {
+			if (error instanceof Error) {
+				this.notificationsStore.error(error.message);
+			} else {
+				this.notificationsStore.error('Something went wrong!');
+			}
 		}
 	};
 
