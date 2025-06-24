@@ -7,6 +7,7 @@
 		plugId: string;
 		type: 'input' | 'output';
 		position: Position;
+		size: number;
 		onHoveringOver(plug: Plug | null): void;
 		onPointerDown(event: {
 			nodeId: string;
@@ -29,6 +30,7 @@
 		position,
 		type,
 		draggingLine,
+		size,
 		onPointerDown,
 		onPointerUp,
 		onPointerMove,
@@ -69,7 +71,7 @@
 	class:draggingLine
 	data-node-id={nodeId}
 	data-plug-id={plugId}
-	style="top: {position.y}px; left: {position.x}px;"
+	style="top: {position.y - 15}px; left: {position.x - 15}px; transform: scale({size});"
 	onpointerenter={handlePointerEnter}
 	onpointerleave={handlePointerLeave}
 	onpointermove={handlePointerMove}
@@ -81,10 +83,9 @@
 	div {
 		width: 30px;
 		height: 30px;
-		transform: translateX(-50%) translateY(-50%);
 		position: absolute;
 		background-color: blue;
-		opacity: 0;
+		opacity: 0.5;
 		z-index: 10;
 	}
 

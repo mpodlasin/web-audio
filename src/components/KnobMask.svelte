@@ -17,6 +17,7 @@
 		linear?: boolean;
 		discrete?: boolean;
 		position: Position;
+		size: number;
 		onMouseDown(): void;
 		onMouseUp(): void;
 		onChange(event: { id: string; parameterName: string; value: number }): void;
@@ -34,6 +35,7 @@
 		linear = false,
 		discrete = false,
 		position,
+		size,
 		onMouseDown,
 		onMouseUp,
 		onChange
@@ -175,7 +177,7 @@
 <button
 	class="wrapper"
 	class:draggingLine
-	style="top: {position.y}px; left: {position.x}px;"
+	style="top: {position.y - 26}px; left: {position.x - 26}px; transform: scale({size});"
 	data-knob
 	data-node-id={nodeId}
 	data-parameter-name={parameterName}
@@ -191,11 +193,10 @@
 <style>
 	.wrapper {
 		position: absolute;
-		opacity: 0;
+		opacity: 0.5;
 		width: 52px;
 		height: 52px;
 		background-color: pink;
-		transform: translateY(-50%) translateX(-50%);
 		z-index: 10;
 		border-radius: 50%;
 	}

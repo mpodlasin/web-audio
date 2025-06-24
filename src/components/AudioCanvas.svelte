@@ -251,6 +251,7 @@
 		{#each plugPositions.plugMasks as mask (mask.nodeId + ' - ' + mask.plugId + ' - ' + mask.type)}
 			<PlugMask
 				{...mask}
+				size={resize.size}
 				draggingLine={lineDragging.draggingLine || draggingNodes.draggingNodes}
 				onPointerDown={lineDragging.handlePlugDown}
 				onPointerUp={lineDragging.handlePlugUp}
@@ -263,6 +264,7 @@
 		{#each plugPositions.knobMasksWithData as mask (mask.nodeId + ' - ' + mask.parameterName)}
 			<KnobMask
 				{...mask}
+				size={resize.size}
 				draggingLine={lineDragging.draggingLine || draggingNodes.draggingNodes}
 				onMouseDown={nodeParameterChange.handleNodeParameterChangeStart}
 				onChange={nodeParameterChange.handleNodeParameterChange}
