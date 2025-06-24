@@ -149,6 +149,7 @@
 	<div
 		class="audio-canvas"
 		onpointerup={menus.handleOpenContextMenu}
+		onpointermove={lineDragging.handleLineDrag}
 		oncontextmenu={(e) => e.preventDefault()}
 		role="application"
 	>
