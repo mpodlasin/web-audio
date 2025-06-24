@@ -85,7 +85,7 @@
 		height: 30px;
 		position: absolute;
 		background-color: blue;
-		opacity: 0.5;
+		opacity: 0;
 		z-index: 10;
 	}
 

@@ -193,7 +193,7 @@
 <style>
 	.wrapper {
 		position: absolute;
-		opacity: 0.5;
+		opacity: 0;
 		width: 52px;
 		height: 52px;
 		background-color: pink;
