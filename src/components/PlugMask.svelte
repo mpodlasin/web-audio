@@ -20,31 +20,40 @@
 			type: 'input' | 'output';
 			event: MouseEvent;
 		}): void;
+		onPointerMove(event: PointerEvent): void;
 	}
 
 	let {
 		nodeId,
 		plugId,
 		position,
-		onPointerDown,
-		onPointerUp,
 		type,
 		draggingLine,
+		onPointerDown,
+		onPointerUp,
+		onPointerMove,
 		onHoveringOver
 	}: Props = $props();
 
-	const handlePointerDown = (event: MouseEvent) => {
+	const handlePointerDown = (event: PointerEvent) => {
 		event.stopPropagation();
 		event.preventDefault();
 
 		onPointerDown({ nodeId, plugId, type, event });
 	};
 
-	const handlePointerUp = (event: MouseEvent) => {
+	const handlePointerUp = (event: PointerEvent) => {
 		event.stopPropagation();
 		event.preventDefault();
 
 		onPointerUp({ nodeId, plugId, type, event });
+	};
+
+	const handlePointerMove = (event: PointerEvent) => {
+		event.preventDefault();
+		event.stopPropagation();
+
+		onPointerMove(event);
 	};
 
 	const handlePointerEnter = () => {
@@ -63,6 +72,7 @@
 	style="top: {position.y}px; left: {position.x}px;"
 	onpointerenter={handlePointerEnter}
 	onpointerleave={handlePointerLeave}
+	onpointermove={handlePointerMove}
 	onpointerdown={handlePointerDown}
 	onpointerup={handlePointerUp}
 ></div>
@@ -74,12 +84,11 @@
 		transform: translateX(-50%) translateY(-50%);
 		position: absolute;
 		background-color: blue;
-		opacity: 0.5;
+		opacity: 0;
 		z-index: 10;
 	}
 
 	.draggingLine {
 		pointer-events: none;
-		visibility: none;
 	}
 </style>

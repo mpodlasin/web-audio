@@ -150,7 +150,6 @@
 		class="audio-canvas"
 		onpointerup={menus.handleOpenContextMenu}
 		oncontextmenu={(e) => e.preventDefault()}
-		onpointermove={lineDragging.handleLineDrag}
 		role="application"
 	>
 		<div
@@ -250,6 +249,7 @@
 				onPointerDown={lineDragging.handlePlugDown}
 				onPointerUp={lineDragging.handlePlugUp}
 				onHoveringOver={plugPositions.handleHoveringOverPlugMask}
+				onPointerMove={lineDragging.handleLineDrag}
 			></PlugMask>
 		{/each}
 	</div>

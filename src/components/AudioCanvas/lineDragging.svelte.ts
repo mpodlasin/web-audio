@@ -13,6 +13,7 @@ export class LineDragging {
 	) {}
 
 	handlePlugDown = (event: { plugId: string; type: 'input' | 'output'; nodeId: string }) => {
+		console.log('plug down');
 		const { plugId, type, nodeId } = event;
 
 		this.draggingLine = true;
@@ -42,7 +43,6 @@ export class LineDragging {
 	handleLineDrag = (event: PointerEvent) => {
 		if (!this.draggingLine) return;
 
-		event.preventDefault();
 		const position = { x: event.clientX, y: event.clientY };
 
 		this.positionOfEndPlug = {
