@@ -107,6 +107,17 @@
 	onMount(() => {
 		plugPositions.updatePlugPositions();
 	});
+
+	let application: HTMLElement | undefined = $state();
+
+	const handleFullScreenClick = () => {
+
+		if (!document.fullscreenElement) {
+			application && application.requestFullscreen();
+		} else {
+			document.exitFullscreen();
+		}
+	}
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -117,6 +128,7 @@
 	onpointerup={draggingCanvas.handleDragCanvasEnd}
 	onkeydown={() => {}}
 	role="application"
+	bind:this={application}
 >
 	<ProjectHeader
 		projectName={chosenProjectName}
@@ -125,6 +137,7 @@
 		onPlayChange={playing.handlePlayChange}
 		onMakeStuffBigger={resize.makeStuffBigger}
 		onMakeStuffSmaller={resize.makeStuffSmaller}
+		onFullScreenClick={handleFullScreenClick}
 	/>
 	<ProjectsModal
 		open={projects.showProjectsModal}

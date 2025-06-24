@@ -9,6 +9,7 @@
 		projectName: string;
 		playing: boolean;
 		onPlayChange?(event: { playing: boolean }): void;
+		onFullScreenClick?(): void;
 		onProjectNameClick?(): void;
 		onMakeStuffSmaller?(): void;
 		onMakeStuffBigger?(): void;
@@ -17,6 +18,7 @@
 	let {
 		projectName,
 		playing,
+		onFullScreenClick,
 		onMakeStuffBigger,
 		onMakeStuffSmaller,
 		onPlayChange,
@@ -50,6 +52,7 @@
 			</button>
 			<button class="plus" onclick={onMakeStuffBigger} onkeypress={() => {}}><AddPlus /></button>
 		</div>
+		<button onclick={onFullScreenClick}>FS</button>
 	</div>
 </div>
 
