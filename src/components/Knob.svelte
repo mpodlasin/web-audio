@@ -412,7 +412,6 @@
 	.value {
 		font-size: 10px;
 		border: 2px solid transparent;
-		user-select: none;
 	}
 
 	input {
