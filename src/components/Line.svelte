@@ -12,27 +12,40 @@
 
 	let { line, chosenLine, onClick, onContextMenu }: Props = $props();
 
+	let hovering = $state(false);
+
+	let chosen = $derived(chosenLine
+		? plugsEqual(chosenLine.line[0], line.line[0]) && plugsEqual(chosenLine.line[1], line.line[1])
+		: false)
+
+	const toggleHover = () => {
+		hovering = !hovering;
+	};
+
 	// Calculate Bézier curve paths
-	let visiblePath = $derived(calculateBezierPath(line.from, line.to));
-	let interactivePath = $derived(calculateBezierPath(line.from, line.to));
+	let bezierPath = $derived(calculateBezierPath(line.from, line.to));
 </script>
 
-<path d={visiblePath} class="visible" />
+<path d={bezierPath} class="visible" />
+<path
+	d={bezierPath}
+	class="highlighted"
+	class:hovering
+	class:chosen
+/>
 <path
 	onclick={onClick}
 	onkeypress={() => {}}
 	oncontextmenu={onContextMenu}
+	onpointerenter={toggleHover}
+	onpointerleave={toggleHover}
 	role="link"
 	tabindex={0}
-	d={interactivePath}
+	d={bezierPath}
 	stroke="transparent"
-	stroke-width="7"
 	stroke-linecap="round"
 	fill="none"
 	class="invisible"
-	class:chosen={chosenLine
-		? plugsEqual(chosenLine.line[0], line.line[0]) && plugsEqual(chosenLine.line[1], line.line[1])
-		: false}
 />
 
 <style>
@@ -48,11 +61,19 @@
 	}
 
 	path.invisible {
-		transition: stroke 0.2s;
-		opacity: 0.5;
+		stroke-width: 30;
+		stroke: pink;
+		opacity: 0;
 	}
 
-	path.invisible:hover,
+	path.highlighted {
+		stroke-width: 7;
+		transition: stroke 0.2s;
+		opacity: 0.4;
+		stroke-linecap: round;
+	}
+
+	path.hovering,
 	path.chosen {
 		stroke: var(--primary-500);
 	}
