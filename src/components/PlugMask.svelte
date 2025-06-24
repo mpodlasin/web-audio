@@ -74,11 +74,12 @@
 		transform: translateX(-50%) translateY(-50%);
 		position: absolute;
 		background-color: blue;
-		opacity: 0;
+		opacity: 0.5;
 		z-index: 10;
 	}
 
 	.draggingLine {
 		pointer-events: none;
+		visibility: none;
 	}
 </style>
