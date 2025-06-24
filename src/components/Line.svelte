@@ -14,9 +14,11 @@
 
 	let hovering = $state(false);
 
-	let chosen = $derived(chosenLine
-		? plugsEqual(chosenLine.line[0], line.line[0]) && plugsEqual(chosenLine.line[1], line.line[1])
-		: false)
+	let chosen = $derived(
+		chosenLine
+			? plugsEqual(chosenLine.line[0], line.line[0]) && plugsEqual(chosenLine.line[1], line.line[1])
+			: false
+	);
 
 	const toggleHover = () => {
 		hovering = !hovering;
@@ -27,12 +29,7 @@
 </script>
 
 <path d={bezierPath} class="visible" />
-<path
-	d={bezierPath}
-	class="highlighted"
-	class:hovering
-	class:chosen
-/>
+<path d={bezierPath} class="highlighted" class:hovering class:chosen />
 <path
 	onclick={onClick}
 	onkeypress={() => {}}
