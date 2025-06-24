@@ -6,11 +6,12 @@
 	interface Props {
 		line: LineToDisplay;
 		chosenLine: LineToDisplay | null;
+		draggingLine: boolean;
 		onClick(event: MouseEvent): void;
 		onContextMenu(event: MouseEvent): void;
 	}
 
-	let { line, chosenLine, onClick, onContextMenu }: Props = $props();
+	let { line, chosenLine, draggingLine, onClick, onContextMenu }: Props = $props();
 
 	let hovering = $state(false);
 
@@ -29,7 +30,7 @@
 </script>
 
 <path d={bezierPath} class="visible" />
-<path d={bezierPath} class="highlighted" class:hovering class:chosen />
+<path d={bezierPath} class="highlighted" class:hovering class:chosen class:draggingLine />
 <path
 	onclick={onClick}
 	onkeypress={() => {}}
@@ -43,6 +44,7 @@
 	stroke-linecap="round"
 	fill="none"
 	class="invisible"
+	class:draggingLine
 />
 
 <style>
@@ -61,6 +63,10 @@
 		stroke-width: 30;
 		stroke: pink;
 		opacity: 0;
+	}
+
+	path.draggingLine {
+		display: none;
 	}
 
 	path.highlighted {

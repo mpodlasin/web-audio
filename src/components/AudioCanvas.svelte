@@ -139,6 +139,7 @@
 		{#each linesToDisplay as line (line.key)}
 			<Line
 				{line}
+				draggingLine={lineDragging.draggingLine}
 				chosenLine={menus.chosenLine}
 				onClick={menus.handleLineClick(line)}
 				onContextMenu={menus.handleLineClick(line)}
