@@ -4,6 +4,7 @@
 	import ChevronRight from '../icons/Chevron_Right.svg?component';
 	import AddPlus from '../icons/Add_Plus.svg?component';
 	import RemoveMinus from '../icons/Remove_Minus.svg?component';
+	import Expand from '../icons/Expand.svg?component';
 
 	interface Props {
 		projectName: string;
@@ -52,7 +53,9 @@
 			</button>
 			<button class="plus" onclick={onMakeStuffBigger} onkeypress={() => {}}><AddPlus /></button>
 		</div>
-		<button onclick={onFullScreenClick}>FS</button>
+		<button class="fullscreen" onclick={onFullScreenClick} onkeypress={() => {}}>
+			<Expand />
+		</button>
 	</div>
 </div>
 
@@ -136,7 +139,8 @@
 	}
 
 	.minus,
-	.plus {
+	.plus,
+	.fullscreen {
 		cursor: pointer;
 		background: none;
 		color: inherit;
