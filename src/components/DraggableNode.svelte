@@ -8,6 +8,8 @@
 	} from '../audio/AudioCanvas';
 	import Node from './Node.svelte';
 	import { DISTANCE_THAT_IS_CONSIDERED_DRAG } from '../constants';
+	import AddPlus from '../icons/Add_Plus.svg?component';
+	import RemoveMinus from '../icons/Remove_Minus.svg?component';
 
 	interface Props {
 		id: string;
@@ -91,6 +93,18 @@
 	let lastDragPosition: Position | null = null;
 	let draggedDistance = 0;
 
+	let resizable = $derived(node.type === 'tutorial');
+
+	let size = $state(1);
+
+	const onMakeStuffBigger = () => {
+		size += 0.1;
+	};
+
+	const onMakeStuffSmaller = () => {
+		size -= 0.1;
+	};
+
 	const handlePointerDown = (event: PointerEvent) => {
 		event.stopPropagation();
 		event.preventDefault();
@@ -166,7 +180,7 @@
 	onkeydown={() => {}}
 	class="wrapper"
 	class:selected
-	style="position: absolute; left: {position.x}px; top: {position.y}px;"
+	style="position: absolute; left: {position.x}px; top: {position.y}px; transform: scale({size});"
 	role="cell"
 	tabindex={0}
 	bind:this={htmlNode}
@@ -191,14 +205,48 @@
 		{onNodePlugMouseUp}
 		{onPlugCreated}
 	/>
+	{#if resizable}
+		<div class="resize">
+			<button class="minus" onclick={onMakeStuffSmaller} onpointerdown={e => e.stopPropagation()} onkeypress={() => {}}>
+				<RemoveMinus />
+			</button>
+			<button class="plus" onclick={onMakeStuffBigger} onpointerdown={e => e.stopPropagation()} onkeypress={() => {}}><AddPlus /></button>
+		</div>
+	{/if}
 </div>
 
 <style>
 	.wrapper {
 		border-radius: 8px;
+		position: relative;
+
+		transform-origin: top left;
 	}
 
 	.selected {
 		outline: 1px solid var(--neutral-300);
+	}
+
+	.resize {
+		display: flex;
+		gap: 8px;
+		align-items: center;
+
+		position: absolute;
+		top: 12px;
+		right: 12px;
+	}
+
+	.minus,
+	.plus {
+		cursor: pointer;
+		background: none;
+		color: inherit;
+		border: none;
+		padding: 0;
+		font: inherit;
+		cursor: pointer;
+		outline: inherit;
+		padding: 8px 8px 4px 8px;
 	}
 </style>
