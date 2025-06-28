@@ -1,10 +1,11 @@
 <script lang="ts">
-	import type {
-		AllowedSerializedAudioElements,
-		NodeType,
-		Plug,
-		Position,
-		SerializedAudioElements
+	import {
+		nodeTypes,
+		type AllowedSerializedAudioElements,
+		type NodeType,
+		type Plug,
+		type Position,
+		type SerializedAudioElements
 	} from '../audio/AudioCanvas';
 	import Node from './Node.svelte';
 	import { DISTANCE_THAT_IS_CONSIDERED_DRAG } from '../constants';
@@ -46,6 +47,7 @@
 		onCommentChanged(event: { nodeId: string; comment: string }): void;
 		onPlugCreated(plug: HTMLElement): void;
 		onNodeCreated(node: HTMLElement): void;
+		onTutorialSizeChange(event: { nodeId: string; size: number }): void;
 	}
 
 	let {
@@ -60,6 +62,7 @@
 		selected,
 		audioGraph,
 		hoveringOverPlug,
+		onTutorialSizeChange,
 		onDragStart,
 		onDrag,
 		onDragEnd,
@@ -97,12 +100,20 @@
 
 	let size = $state(1);
 
+	$effect(() => {
+		if (node.type === 'tutorial') {
+			size = node.size;
+		}
+	});
+
 	const onMakeStuffBigger = () => {
 		size += 0.1;
+		onTutorialSizeChange({ nodeId: id, size });
 	};
 
 	const onMakeStuffSmaller = () => {
 		size -= 0.1;
+		onTutorialSizeChange({ nodeId: id, size });
 	};
 
 	const handlePointerDown = (event: PointerEvent) => {
@@ -207,10 +218,20 @@
 	/>
 	{#if resizable}
 		<div class="resize">
-			<button class="minus" onclick={onMakeStuffSmaller} onpointerdown={e => e.stopPropagation()} onkeypress={() => {}}>
+			<button
+				class="minus"
+				onclick={onMakeStuffSmaller}
+				onpointerdown={(e) => e.stopPropagation()}
+				onkeypress={() => {}}
+			>
 				<RemoveMinus />
 			</button>
-			<button class="plus" onclick={onMakeStuffBigger} onpointerdown={e => e.stopPropagation()} onkeypress={() => {}}><AddPlus /></button>
+			<button
+				class="plus"
+				onclick={onMakeStuffBigger}
+				onpointerdown={(e) => e.stopPropagation()}
+				onkeypress={() => {}}><AddPlus /></button
+			>
 		</div>
 	{/if}
 </div>

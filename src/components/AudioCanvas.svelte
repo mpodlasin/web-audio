@@ -111,13 +111,16 @@
 	let application: HTMLElement | undefined = $state();
 
 	const handleFullScreenClick = () => {
-
 		if (!document.fullscreenElement) {
 			application && application.requestFullscreen();
 		} else {
 			document.exitFullscreen();
 		}
-	}
+	};
+
+	const handleTutorialSizeChange = (event: { nodeId: string; size: number }) => {
+		audioGraph.changeTutorialSize(event.nodeId, event.size);
+	};
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -204,6 +207,7 @@
 					onKnobCreated={plugPositions.handleKnobCreated}
 					onCommentChanged={handleCommentChanged}
 					onNodeCreated={plugPositions.handleNodeCreated}
+					onTutorialSizeChange={handleTutorialSizeChange}
 				/>
 			{/each}
 		</div>

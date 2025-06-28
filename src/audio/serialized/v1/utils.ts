@@ -140,7 +140,7 @@ export const addNode = <S extends SerializedAudioElements>(
 		[nextId]: {
 			type,
 			inputs: [],
-			...(tutorialId ? { tutorialId } : {}),
+			...(tutorialId ? { tutorialId, size: 1 } : {}),
 			ui: {
 				position,
 				primaryColor: defaultColor
@@ -425,6 +425,24 @@ export const changeComment = <S extends SerializedAudioElements>(
 		[nodeId]: {
 			...node,
 			comment
+		}
+	};
+};
+
+export const changeTutorialSize = <S extends SerializedAudioElements>(
+	audioGraph: S,
+	nodeId: string,
+	size: number
+): S => {
+	const node = audioGraph[nodeId];
+
+	if (!node) return audioGraph;
+
+	return {
+		...audioGraph,
+		[nodeId]: {
+			...node,
+			size
 		}
 	};
 };

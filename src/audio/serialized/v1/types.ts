@@ -92,6 +92,7 @@ export type SerializedPatternNode = SerializedAudioElement<'pattern'>;
 
 export type SerializedTutorialNode = SerializedAudioElement<'tutorial'> & {
 	tutorialId: string;
+	size: number;
 };
 
 export type SerializedCommentNode = SerializedAudioElement<'comment'> & {

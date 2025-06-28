@@ -6,6 +6,7 @@ import {
 	changeComment,
 	changeParameter,
 	changeParameterMultiply,
+	changeTutorialSize,
 	insertExistingNodes,
 	removeConnection,
 	removeNode,
@@ -158,16 +159,7 @@ export class AudioGraph {
 	};
 
 	dragNode = (event: { id: string; x: number; y: number }) => {
-		this.updateAudioGraphHistory((audioGraph) =>
-			dragNode(
-				{
-					id: event.id,
-					x: event.x,
-					y: event.y
-				},
-				audioGraph
-			)
-		);
+		this.updateAudioGraphHistory((audioGraph) => dragNode(event, audioGraph));
 	};
 
 	changeParameter = (id: string, parameterName: string, value: number) => {
@@ -178,5 +170,9 @@ export class AudioGraph {
 
 	changeComment = (nodeId: string, comment: string) => {
 		this.updateAudioGraphHistory((audioGraph) => changeComment(audioGraph, nodeId, comment));
+	};
+
+	changeTutorialSize = (nodeId: string, size: number) => {
+		this.updateAudioGraphHistory((audioGraph) => changeTutorialSize(audioGraph, nodeId, size));
 	};
 }
