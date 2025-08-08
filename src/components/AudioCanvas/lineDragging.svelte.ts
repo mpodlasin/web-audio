@@ -1,4 +1,5 @@
 import type { AudioGraph } from './audioGraph.svelte';
+import type DraggingCanvas from './draggingCanvas.svelte';
 import type PlugPositions from './plugPositions.svelte';
 
 export class LineDragging {
@@ -9,26 +10,16 @@ export class LineDragging {
 
 	constructor(
 		private plugPositionsStore: PlugPositions,
-		private audioGraphStore: AudioGraph
+		private audioGraphStore: AudioGraph,
+		private draggingCanvasStore: DraggingCanvas
 	) {}
 
 	handlePlugDown = (event: { plugId: string; type: 'input' | 'output'; nodeId: string }) => {
-		console.log('plug down');
 		const { plugId, type, nodeId } = event;
 
 		this.draggingLine = true;
 		this.startingPlug = { id: plugId, type, nodeId };
-		const rawPositionOfStartingPlug =
-			this.plugPositionsStore.plugPositions[nodeId]?.[
-				type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'
-			][plugId];
-
-		if (!rawPositionOfStartingPlug) throw new Error('rawPositionOfStartingPlug is undefined!!!');
-
-		this.positionOfStartingPlug = {
-			x: rawPositionOfStartingPlug.x,
-			y: rawPositionOfStartingPlug.y
-		};
+		this.setStartingPlugPosition();
 
 		window.addEventListener('pointerup', this.stopDragging, { once: true });
 	};
@@ -44,6 +35,26 @@ export class LineDragging {
 		if (!this.draggingLine) return;
 
 		const position = { x: event.clientX, y: event.clientY };
+
+		if (event.clientX > window.innerWidth - 10) {
+			this.draggingCanvasStore.move({ x: -10, y: 0 });
+			this.setStartingPlugPosition();
+		}
+
+		if (event.clientY > window.innerHeight - 10) {
+			this.draggingCanvasStore.move({ x: 0, y: -10 });
+			this.setStartingPlugPosition();
+		}
+
+		if (event.clientX < 10) {
+			this.draggingCanvasStore.move({ x: 10, y: 0 });
+			this.setStartingPlugPosition();
+		}
+
+		if (event.clientY < 10) {
+			this.draggingCanvasStore.move({ x: 0, y: 10 });
+			this.setStartingPlugPosition();
+		}
 
 		this.positionOfEndPlug = {
 			x: position.x,
@@ -145,5 +156,22 @@ export class LineDragging {
 		this.stopDragging();
 
 		return true;
+	};
+
+	private setStartingPlugPosition = () => {
+		if (!this.startingPlug) return;
+		const { nodeId, type, id: plugId } = this.startingPlug;
+
+		const rawPositionOfStartingPlug =
+			this.plugPositionsStore.plugPositions[nodeId]?.[
+				type === 'input' ? 'inputPlugPositions' : 'outputPlugPositions'
+			][plugId];
+
+		if (!rawPositionOfStartingPlug) throw new Error('rawPositionOfStartingPlug is undefined!!!');
+
+		this.positionOfStartingPlug = {
+			x: rawPositionOfStartingPlug.x,
+			y: rawPositionOfStartingPlug.y
+		};
 	};
 }

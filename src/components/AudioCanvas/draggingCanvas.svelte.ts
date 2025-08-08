@@ -16,6 +16,15 @@ export default class DraggingCanvas {
 		this.canvasRelativePosition = $state(canvasRelativePosition);
 	}
 
+	move(positionChange: Position) {
+		this.canvasRelativePosition = {
+			x: this.canvasRelativePosition.x + positionChange.x,
+			y: this.canvasRelativePosition.y + positionChange.y
+		};
+
+		this.plugPositionsStore.updatePlugPositions();
+	}
+
 	translatePosition = (position: Position) => {
 		return {
 			x: (position.x - this.canvasRelativePosition.x) / this.resizeStore.size,

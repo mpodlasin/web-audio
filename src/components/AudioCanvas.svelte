@@ -78,7 +78,7 @@
 		plugPositions
 	);
 
-	const lineDragging = new LineDragging(plugPositions, audioGraph);
+	const lineDragging = new LineDragging(plugPositions, audioGraph, draggingCanvas);
 
 	const menus = new Menus(draggingCanvas, lineDragging, audioGraph, plugPositions);
 
