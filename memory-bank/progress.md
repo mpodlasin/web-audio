@@ -149,9 +149,14 @@
    - Teaching the 1/n harmonic amplitude rule
    - Using Switch node for A/B comparison between reference and synthesized versions
    - Implementing frequency control with Number and Times nodes
-   - All 35 steps implemented with placeholder validation functions
+   - All 35 steps implemented with comprehensive validation functions
    - Fully integrated into table of contents and routing system
-   - **COMPLETE** - Ready for validation function implementation
+   - **COMPLETE** - Advanced validation techniques implemented including:
+     - Signal path separation validation
+     - Multi-node connection validation with input port specificity
+     - Harmonic relationship validation (1/n amplitude scaling)
+     - Complete signal chain validation (Number → Times → Sine → Gain → Spectrum)
+     - Edge case prevention for duplicate connections and wrong spectrum paths
 
 ## What's Left to Build
 
