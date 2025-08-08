@@ -1008,6 +1008,7 @@ When validating that multiple nodes of the same type connect to different inputs
 #### The Problem
 
 Simple validation might miss edge cases where:
+
 - Multiple source nodes connect to the same input port
 - Connections exist but don't use the intended input ports
 
@@ -1018,40 +1019,40 @@ Simple validation might miss edge cases where:
 export default function (audioGraph: SerializedAudioElements) {
 	const nodes = Object.values(audioGraph);
 	const entries = Object.entries(audioGraph);
-	
+
 	// 1. Find all source nodes - should be exactly the expected count
-	const spectrumNodes = nodes.filter(node => node.type === 'spectrum');
+	const spectrumNodes = nodes.filter((node) => node.type === 'spectrum');
 	if (spectrumNodes.length !== 2) {
 		return false;
 	}
-	
+
 	// 2. Find the target node
-	const switchNode = nodes.find(node => node.type === 'switch');
+	const switchNode = nodes.find((node) => node.type === 'switch');
 	if (!switchNode) {
 		return false;
 	}
-	
+
 	// 3. Get source node IDs
-	const spectrumNodeIds = spectrumNodes.map(spectrumNode => 
-		entries.find(entry => entry[1] === spectrumNode)?.[0]
-	).filter(id => id !== undefined);
-	
+	const spectrumNodeIds = spectrumNodes
+		.map((spectrumNode) => entries.find((entry) => entry[1] === spectrumNode)?.[0])
+		.filter((id) => id !== undefined);
+
 	// 4. Check that target node has exactly the expected number of inputs
 	if (switchNode.inputs.length !== 2) {
 		return false;
 	}
-	
+
 	// 5. Verify that ALL target inputs come from the correct source node types
-	const switchInputIds = switchNode.inputs.map(input => input.id);
-	const allInputsFromSpectrum = switchInputIds.every(inputId => 
+	const switchInputIds = switchNode.inputs.map((input) => input.id);
+	const allInputsFromSpectrum = switchInputIds.every((inputId) =>
 		spectrumNodeIds.includes(inputId)
 	);
-	
+
 	// 6. CRITICAL: Verify that each source connects to a DIFFERENT input port
-	const inputPortNames = switchNode.inputs.map(input => input.input);
+	const inputPortNames = switchNode.inputs.map((input) => input.input);
 	const uniqueInputPorts = new Set(inputPortNames);
 	const noDuplicateInputPorts = uniqueInputPorts.size === inputPortNames.length;
-	
+
 	return allInputsFromSpectrum && noDuplicateInputPorts;
 }
 ```
@@ -1085,52 +1086,50 @@ Users might accidentally connect nodes to the wrong signal path, bypassing the l
 export default function (audioGraph: SerializedAudioElements) {
 	const nodes = Object.values(audioGraph);
 	const entries = Object.entries(audioGraph);
-	
+
 	// Find all relevant nodes
-	const gainNodes = nodes.filter(node => node.type === 'gain');
-	const spectrumNodes = nodes.filter(node => node.type === 'spectrum');
-	const sawOscillator = nodes.find(node => node.type === 'saw-oscillator');
-	
+	const gainNodes = nodes.filter((node) => node.type === 'gain');
+	const spectrumNodes = nodes.filter((node) => node.type === 'spectrum');
+	const sawOscillator = nodes.find((node) => node.type === 'saw-oscillator');
+
 	if (gainNodes.length < 1 || spectrumNodes.length !== 2 || !sawOscillator) {
 		return false;
 	}
-	
+
 	// 1. Identify the reference path by finding which spectrum the saw connects to
-	const sawOscillatorId = entries.find(entry => entry[1] === sawOscillator)?.[0];
-	const referenceSpectrum = spectrumNodes.find(spectrumNode => 
-		spectrumNode.inputs.some(input => input.id === sawOscillatorId)
+	const sawOscillatorId = entries.find((entry) => entry[1] === sawOscillator)?.[0];
+	const referenceSpectrum = spectrumNodes.find((spectrumNode) =>
+		spectrumNode.inputs.some((input) => input.id === sawOscillatorId)
 	);
-	
+
 	if (!referenceSpectrum) return false;
-	
+
 	// 2. Identify the synthesized path (the OTHER spectrum)
-	const synthesizedSpectrum = spectrumNodes.find(spectrumNode => 
-		spectrumNode !== referenceSpectrum
+	const synthesizedSpectrum = spectrumNodes.find(
+		(spectrumNode) => spectrumNode !== referenceSpectrum
 	);
-	
+
 	if (!synthesizedSpectrum) return false;
-	
+
 	// 3. Ensure ALL gain nodes connect to synthesized spectrum, not reference
-	const synthesizedSpectrumId = entries.find(entry => entry[1] === synthesizedSpectrum)?.[0];
-	
+	const synthesizedSpectrumId = entries.find((entry) => entry[1] === synthesizedSpectrum)?.[0];
+
 	for (const gainNode of gainNodes) {
-		const gainNodeId = entries.find(entry => entry[1] === gainNode)?.[0];
-		
+		const gainNodeId = entries.find((entry) => entry[1] === gainNode)?.[0];
+
 		// Check that this gain connects to synthesized spectrum
-		const connectsToSynthesized = synthesizedSpectrum.inputs.some(input => 
-			input.id === gainNodeId
+		const connectsToSynthesized = synthesizedSpectrum.inputs.some(
+			(input) => input.id === gainNodeId
 		);
-		
+
 		// Check that this gain does NOT connect to reference spectrum
-		const connectsToReference = referenceSpectrum.inputs.some(input => 
-			input.id === gainNodeId
-		);
-		
+		const connectsToReference = referenceSpectrum.inputs.some((input) => input.id === gainNodeId);
+
 		if (!connectsToSynthesized || connectsToReference) {
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 ```
@@ -1156,7 +1155,7 @@ Users might create the correct structure but with wrong mathematical relationshi
 export default function (audioGraph: SerializedAudioElements) {
 	const nodes = Object.values(audioGraph);
 	const entries = Object.entries(audioGraph);
-	
+
 	// Define expected harmonic relationships
 	const harmonicMappings = [
 		{ harmonic: 2, expectedGain: 0.5 },
@@ -1165,55 +1164,53 @@ export default function (audioGraph: SerializedAudioElements) {
 		{ harmonic: 5, expectedGain: 0.2 },
 		{ harmonic: 6, expectedGain: 0.167 }
 	];
-	
+
 	// Find all relevant node types
-	const numberNodes = nodes.filter(node => node.type === 'number');
-	const timesNodes = nodes.filter(node => node.type === 'times');
-	const sineOscillators = nodes.filter(node => node.type === 'sine-oscillator');
-	const gainNodes = nodes.filter(node => node.type === 'gain');
-	
+	const numberNodes = nodes.filter((node) => node.type === 'number');
+	const timesNodes = nodes.filter((node) => node.type === 'times');
+	const sineOscillators = nodes.filter((node) => node.type === 'sine-oscillator');
+	const gainNodes = nodes.filter((node) => node.type === 'gain');
+
 	// Validate each harmonic signal chain
 	for (const mapping of harmonicMappings) {
 		// 1. Find Number node with harmonic value
-		const harmonicNumber = numberNodes.find(num => 
-			num.parameters?.value?.base === mapping.harmonic
+		const harmonicNumber = numberNodes.find(
+			(num) => num.parameters?.value?.base === mapping.harmonic
 		);
 		if (!harmonicNumber) return false;
-		
-		const harmonicNumberId = entries.find(entry => entry[1] === harmonicNumber)?.[0];
-		
+
+		const harmonicNumberId = entries.find((entry) => entry[1] === harmonicNumber)?.[0];
+
 		// 2. Find Times node connected to this Number
-		const connectedTimes = timesNodes.find(times =>
-			times.inputs.some(input => 
-				input.id === harmonicNumberId && input.input === 'number-a'
-			)
+		const connectedTimes = timesNodes.find((times) =>
+			times.inputs.some((input) => input.id === harmonicNumberId && input.input === 'number-a')
 		);
 		if (!connectedTimes) return false;
-		
-		const connectedTimesId = entries.find(entry => entry[1] === connectedTimes)?.[0];
-		
+
+		const connectedTimesId = entries.find((entry) => entry[1] === connectedTimes)?.[0];
+
 		// 3. Find Sine oscillator connected to this Times
-		const connectedSine = sineOscillators.find(sine =>
-			sine.parameters?.frequency?.inputs.some(input => 
-				input.id === connectedTimesId
-			) && sine.parameters?.frequency?.base === 0
+		const connectedSine = sineOscillators.find(
+			(sine) =>
+				sine.parameters?.frequency?.inputs.some((input) => input.id === connectedTimesId) &&
+				sine.parameters?.frequency?.base === 0
 		);
 		if (!connectedSine) return false;
-		
-		const connectedSineId = entries.find(entry => entry[1] === connectedSine)?.[0];
-		
+
+		const connectedSineId = entries.find((entry) => entry[1] === connectedSine)?.[0];
+
 		// 4. Find Gain node connected to this Sine
-		const connectedGain = gainNodes.find(gain =>
-			gain.inputs.some(input => input.id === connectedSineId)
+		const connectedGain = gainNodes.find((gain) =>
+			gain.inputs.some((input) => input.id === connectedSineId)
 		);
 		if (!connectedGain) return false;
-		
+
 		// 5. Verify Gain has correct amplitude scaling (1/n rule)
 		if (connectedGain.parameters?.gain?.base !== mapping.expectedGain) {
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 ```
@@ -1239,40 +1236,40 @@ Users might connect to any available input port instead of the semantically corr
 export default function (audioGraph: SerializedAudioElements) {
 	const nodes = Object.values(audioGraph);
 	const entries = Object.entries(audioGraph);
-	
-	const numberNodes = nodes.filter(node => node.type === 'number');
-	const timesNodes = nodes.filter(node => node.type === 'times');
-	
+
+	const numberNodes = nodes.filter((node) => node.type === 'number');
+	const timesNodes = nodes.filter((node) => node.type === 'times');
+
 	// Find main frequency number (440) and harmonic numbers (2,3,4,5,6)
-	const mainFreqNumber = numberNodes.find(num => num.parameters?.value?.base === 440);
-	const harmonicNumbers = [2,3,4,5,6].map(val => 
-		numberNodes.find(num => num.parameters?.value?.base === val)
+	const mainFreqNumber = numberNodes.find((num) => num.parameters?.value?.base === 440);
+	const harmonicNumbers = [2, 3, 4, 5, 6].map((val) =>
+		numberNodes.find((num) => num.parameters?.value?.base === val)
 	);
-	
-	if (!mainFreqNumber || harmonicNumbers.some(num => !num)) return false;
-	
-	const mainFreqId = entries.find(entry => entry[1] === mainFreqNumber)?.[0];
-	const harmonicIds = harmonicNumbers.map(num => 
-		entries.find(entry => entry[1] === num)?.[0]
-	).filter(id => id !== undefined);
-	
+
+	if (!mainFreqNumber || harmonicNumbers.some((num) => !num)) return false;
+
+	const mainFreqId = entries.find((entry) => entry[1] === mainFreqNumber)?.[0];
+	const harmonicIds = harmonicNumbers
+		.map((num) => entries.find((entry) => entry[1] === num)?.[0])
+		.filter((id) => id !== undefined);
+
 	// Validate each Times node has correct input port usage
 	for (const timesNode of timesNodes) {
 		// Check that main frequency connects to 'number-b' (second input)
-		const mainFreqConnected = timesNode.inputs.some(input => 
-			input.id === mainFreqId && input.input === 'number-b'
+		const mainFreqConnected = timesNode.inputs.some(
+			(input) => input.id === mainFreqId && input.input === 'number-b'
 		);
-		
+
 		// Check that exactly one harmonic connects to 'number-a' (first input)
-		const harmonicConnections = timesNode.inputs.filter(input => 
-			harmonicIds.includes(input.id) && input.input === 'number-a'
+		const harmonicConnections = timesNode.inputs.filter(
+			(input) => harmonicIds.includes(input.id) && input.input === 'number-a'
 		);
-		
+
 		if (!mainFreqConnected || harmonicConnections.length !== 1) {
 			return false;
 		}
 	}
-	
+
 	return true;
 }
 ```
