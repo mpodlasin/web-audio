@@ -11,6 +11,8 @@
 	import { DISTANCE_THAT_IS_CONSIDERED_DRAG } from '../constants';
 	import AddPlus from '../icons/Add_Plus.svg?component';
 	import RemoveMinus from '../icons/Remove_Minus.svg?component';
+	import Lock from '../icons/Lock.svg?component';
+	import LockOpen from '../icons/Lock_Open.svg?component';
 
 	interface Props {
 		id: string;
@@ -27,6 +29,7 @@
 		selected: boolean;
 		audioGraph: SerializedAudioElements;
 		hoveringOverPlug: Plug | null;
+		pinned?: boolean;
 		onClick(event: MouseEvent): void;
 		onDragStart(): void;
 		onDrag(event: { id: string; x: number; y: number }): void;
@@ -48,6 +51,7 @@
 		onPlugCreated(plug: HTMLElement): void;
 		onNodeCreated(node: HTMLElement): void;
 		onTutorialSizeChange(event: { nodeId: string; size: number }): void;
+		onPinClick(): void;
 	}
 
 	let {
@@ -62,6 +66,7 @@
 		selected,
 		audioGraph,
 		hoveringOverPlug,
+		pinned = false,
 		onTutorialSizeChange,
 		onDragStart,
 		onDrag,
@@ -77,7 +82,8 @@
 		onNodePlugMouseDown,
 		onNodePlugMouseUp,
 		onPlugCreated,
-		onNodeCreated
+		onNodeCreated,
+		onPinClick,
 	}: Props = $props();
 
 	let htmlNode: HTMLElement | undefined = $state();
@@ -191,7 +197,7 @@
 	onkeydown={() => {}}
 	class="wrapper"
 	class:selected
-	style="position: absolute; left: {position.x}px; top: {position.y}px; transform: scale({size});"
+	style="left: {position.x}px; top: {position.y}px; transform: scale({size});"
 	role="cell"
 	tabindex={0}
 	bind:this={htmlNode}
@@ -232,6 +238,13 @@
 				onpointerdown={(e) => e.stopPropagation()}
 				onkeypress={() => {}}><AddPlus /></button
 			>
+			<button class="pin" onclick={onPinClick}>
+				{#if pinned}
+					<Lock />
+				{:else}
+					<LockOpen />
+				{/if}
+			</button>
 		</div>
 	{/if}
 </div>
@@ -239,7 +252,7 @@
 <style>
 	.wrapper {
 		border-radius: 8px;
-		position: relative;
+		position: absolute;
 
 		transform-origin: top left;
 	}
@@ -259,7 +272,8 @@
 	}
 
 	.minus,
-	.plus {
+	.plus,
+	.pin {
 		cursor: pointer;
 		background: none;
 		color: inherit;
