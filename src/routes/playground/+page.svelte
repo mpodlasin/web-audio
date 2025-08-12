@@ -3,20 +3,19 @@
 	import { loadCustomNodes } from '../../audio/web-audio/utils';
 	import AudioCanvas from '../../components/AudioCanvas.svelte';
 	import { createProject, type Projects } from '../../ui/project';
+	import { localStorageItem } from '../../utils/localStorage.svelte';
 
 	const customNodesPromise = loadCustomNodes();
 
-	const audioGraphLocalStorageKey = 'audioGraph';
+	const projectsItem = localStorageItem('audioGraph', {} as Projects);
 
-	const projectsString = localStorage.getItem(audioGraphLocalStorageKey);
+	const projects = $derived(projectsItem.value);
 
-	let projects: Projects = $state(
-		projectsString !== null
-			? JSON.parse(projectsString)
-			: {
-					'Project 1': createProject('Project 1')
-				}
-	);
+	$effect(() => {
+		if (Object.keys(projects).length === 0) {
+			projects['Project 1'] = createProject('Project 1');
+		}
+	});
 
 	let projectNames = $derived(
 		Object.values(projects)
@@ -35,30 +34,20 @@
 
 	let chosenProject = $derived(projects[chosenProjectName]);
 
-	$effect(() => {
-		localStorage.setItem(audioGraphLocalStorageKey, JSON.stringify(projects));
-	});
-
 	const handleChange = (audioCanvas: SerializedAudioElements) => {
 		if (!chosenProject) return;
 
-		projects = {
-			...projects,
-			[chosenProjectName]: {
-				...chosenProject,
-				lastChanged: new Date(Date.now()).toISOString(),
-				audioCanvas
-			}
+		projects[chosenProjectName] = {
+			...chosenProject,
+			lastChanged: new Date(Date.now()).toISOString(),
+			audioCanvas
 		};
 	};
 
 	const handleNewProject = () => {
 		chosenProjectName = `Project ${projectNames.length + 1}`;
 
-		projects = {
-			...projects,
-			[chosenProjectName]: createProject(chosenProjectName)
-		};
+		projects[chosenProjectName] = createProject(chosenProjectName);
 	};
 
 	const handleProjectChange = (projectName: string) => {
@@ -66,22 +55,14 @@
 	};
 
 	const handleProjectDelete = (projectName: string) => {
-		const projectsCopy = {
-			...projects
-		};
+		delete projects[projectName];
 
-		delete projectsCopy[projectName];
-
-		if (Object.entries(projectsCopy).length === 0) {
-			projects = {
-				'Project 1': createProject('Project 1')
-			};
+		if (Object.entries(projects).length === 0) {
+			projects['Project 1'] = createProject('Project 1');
 
 			if (projectName === 'Project 1') {
 				window.location.reload();
 			}
-		} else {
-			projects = projectsCopy;
 		}
 
 		const newProjectNames = Object.values(projects).map((project) => project.name);
@@ -98,17 +79,12 @@
 
 		if (!project) return;
 
-		const newProjects = {
-			...projects,
-			[newName]: {
-				...project,
-				name: newName
-			}
+		projects[newName] = {
+			...project,
+			name: newName
 		};
 
-		delete newProjects[oldName];
-
-		projects = newProjects;
+		delete projects[oldName];
 
 		if (chosenProjectName === oldName) {
 			chosenProjectName = newName;
@@ -120,12 +96,9 @@
 
 		if (!project) return;
 
-		projects = {
-			...projects,
-			[chosenProjectName]: {
-				...project,
-				size
-			}
+		projects[chosenProjectName] = {
+			...project,
+			size
 		};
 	};
 
@@ -136,12 +109,9 @@
 
 		if (!project) return;
 
-		projects = {
-			...projects,
-			[chosenProjectName]: {
-				...project,
-				canvasRelativePosition: { x, y }
-			}
+		projects[chosenProjectName] = {
+			...project,
+			canvasRelativePosition: { x, y }
 		};
 	};
 </script>

@@ -128,13 +128,19 @@
 
 	const handlePinClick = () => {
 		tutorialPinnedItem.value = !tutorialPinned;
-	}
+	};
 
-	const [tutorialNodeId, tutorialNode] = $derived(Object.entries(audioGraph.audioGraph).find(entry => entry[1].type === 'tutorial') ?? []);
+	const [tutorialNodeId, tutorialNode] = $derived(
+		Object.entries(audioGraph.audioGraph).find((entry) => entry[1].type === 'tutorial') ?? []
+	);
 
-	const audioGraphToShow = $derived(Object.fromEntries(Object.entries(audioGraph.audioGraph).filter(([key, entry]) => {
-		return entry.type !== 'tutorial' || !tutorialPinned;
-	})))
+	const audioGraphToShow = $derived(
+		Object.fromEntries(
+			Object.entries(audioGraph.audioGraph).filter(([key, entry]) => {
+				return entry.type !== 'tutorial' || !tutorialPinned;
+			})
+		)
+	);
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -228,37 +234,37 @@
 		</div>
 		{#if tutorialPinned && tutorialNode && tutorialNodeId}
 			<div class="pinned-tutorial">
-			<DraggableNode
-				pinned
-				id={tutorialNodeId}
-				node={tutorialNode}
-				order={0}
-				audioGraph={audioGraph.audioGraph}
-				running={playing.playing}
-				selected={false}
-				instantiatedNode={audioGraph.audioNodeDatabase[tutorialNodeId]}
-				hoveringOverPlug={plugPositions.hoveringOverPlug}
-				position={{ x: 0, y: 0 }}
-				color={tutorialNode.ui.primaryColor}
-				draggingLine={lineDragging.draggingLine}
-				onDrag={draggingNodes.handleDragNode}
-				onDragStart={draggingNodes.handleDragStart}
-				onDragEnd={draggingNodes.handleNodeDragEnd}
-				onNodeParameterChangeStart={nodeParameterChange.handleNodeParameterChangeStart}
-				onNodeParamterChange={nodeParameterChange.handleNodeParameterChange}
-				onNodeParameterChangeEnd={nodeParameterChange.handleNodeParameterChangeEnd}
-				onNodePlugMouseDown={lineDragging.handlePlugDown}
-				onNodePlugMouseUp={lineDragging.handlePlugUp}
-				onNodeKnobMouseUp={lineDragging.handleKnobMouseUp}
-				onContextMenu={menus.handleNodeClick}
-				onClick={() => {}}
-				onPlugCreated={plugPositions.andlePlugCreated}
-				onKnobCreated={plugPositions.handleKnobCreated}
-				onCommentChanged={handleCommentChanged}
-				onNodeCreated={plugPositions.handleNodeCreated}
-				onTutorialSizeChange={handleTutorialSizeChange}
-				onPinClick={handlePinClick}
-			/>
+				<DraggableNode
+					pinned
+					id={tutorialNodeId}
+					node={tutorialNode}
+					order={0}
+					audioGraph={audioGraph.audioGraph}
+					running={playing.playing}
+					selected={false}
+					instantiatedNode={audioGraph.audioNodeDatabase[tutorialNodeId]}
+					hoveringOverPlug={plugPositions.hoveringOverPlug}
+					position={{ x: 0, y: 0 }}
+					color={tutorialNode.ui.primaryColor}
+					draggingLine={lineDragging.draggingLine}
+					onDrag={draggingNodes.handleDragNode}
+					onDragStart={draggingNodes.handleDragStart}
+					onDragEnd={draggingNodes.handleNodeDragEnd}
+					onNodeParameterChangeStart={nodeParameterChange.handleNodeParameterChangeStart}
+					onNodeParamterChange={nodeParameterChange.handleNodeParameterChange}
+					onNodeParameterChangeEnd={nodeParameterChange.handleNodeParameterChangeEnd}
+					onNodePlugMouseDown={lineDragging.handlePlugDown}
+					onNodePlugMouseUp={lineDragging.handlePlugUp}
+					onNodeKnobMouseUp={lineDragging.handleKnobMouseUp}
+					onContextMenu={menus.handleNodeClick}
+					onClick={() => {}}
+					onPlugCreated={plugPositions.andlePlugCreated}
+					onKnobCreated={plugPositions.handleKnobCreated}
+					onCommentChanged={handleCommentChanged}
+					onNodeCreated={plugPositions.handleNodeCreated}
+					onTutorialSizeChange={handleTutorialSizeChange}
+					onPinClick={handlePinClick}
+				/>
 			</div>
 		{/if}
 		{#if menus.showMenu && menus.menuKind === 'line'}

@@ -3,6 +3,7 @@
 	import { tutorials } from './Tutorial';
 	import Button from './Button.svelte';
 	import { globalContext } from '../audio/GlobalContext';
+	import { localStorageItem } from '../utils/localStorage.svelte';
 
 	interface Props {
 		audioGraph: SerializedAudioElements;
@@ -11,14 +12,14 @@
 
 	let { audioGraph, node }: Props = $props();
 
-	const localStorageKey = 'tutorial_steps';
+	const tutorialStepsItem = localStorageItem('tutorial_steps', {} as Record<string, number>);
+	const tutorialSteps = $derived(tutorialStepsItem.value);
 
 	let tutorialId = $derived(node.tutorialId);
 
 	let currentStep = $state(0);
 
 	$effect(() => {
-		const tutorialSteps = JSON.parse(window.localStorage.getItem(localStorageKey) ?? '{}');
 		currentStep = tutorialSteps[tutorialId] ?? 0;
 	});
 
@@ -38,9 +39,7 @@
 
 	const handleContinueClick = () => {
 		currentStep = currentStep + 1;
-		const tutorialSteps = JSON.parse(window.localStorage.getItem(localStorageKey) ?? '{}');
 		tutorialSteps[tutorialId] = currentStep;
-		window.localStorage.setItem(localStorageKey, JSON.stringify(tutorialSteps));
 	};
 </script>
 

@@ -83,7 +83,7 @@
 		onNodePlugMouseUp,
 		onPlugCreated,
 		onNodeCreated,
-		onPinClick,
+		onPinClick
 	}: Props = $props();
 
 	let htmlNode: HTMLElement | undefined = $state();
