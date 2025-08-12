@@ -26,6 +26,9 @@ export class AudioGraph {
 	temporaryGraph: SerializedAudioElements = $state({});
 	audioGraph: SerializedAudioElements = $state({});
 
+	tutorialNodeId = $derived(Object.entries(this.audioGraph).find((entry) => entry[1].type === 'tutorial') ?? [])[0];
+	tutorialNode = $derived(Object.entries(this.audioGraph).find((entry) => entry[1].type === 'tutorial') ?? [])[1];
+
 	constructor(
 		initialAudioGraph: SerializedAudioElements,
 		private onChange: (audioGraph: SerializedAudioElements) => void,
@@ -175,4 +178,14 @@ export class AudioGraph {
 	changeTutorialSize = (nodeId: string, size: number) => {
 		this.updateAudioGraphHistory((audioGraph) => changeTutorialSize(audioGraph, nodeId, size));
 	};
+
+	getTutorialNode = () => {
+        const [tutorialNodeId, tutorialNode] = $derived(
+            Object.entries(this.audioGraph).find((entry) => entry[1].type === 'tutorial') ?? []
+        );
+
+		return {
+			tutorialNode, tutorialNodeId
+		}
+    };
 }

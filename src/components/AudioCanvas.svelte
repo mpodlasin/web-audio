@@ -33,6 +33,7 @@
 	import { NotificationStore } from './AudioCanvas/notifications.svelte';
 	import NotificationContainer from './NotificationContainer.svelte';
 	import { localStorageItem } from '../utils/localStorage.svelte';
+	import { TutorialPin } from './AudioCanvas/tutorialPin.svelte';
 
 	interface Props {
 		chosenProjectName: string;
@@ -89,6 +90,8 @@
 
 	const addRemoveNodes = new AddRemoveNodes(audioGraph, draggingCanvas, menus, plugPositions);
 
+	const tutorialPin = new TutorialPin();
+
 	let linesToDisplay = $derived(
 		getLinesToDisplay(audioGraph.audioGraph, plugPositions.plugPositions)
 	);
@@ -123,21 +126,13 @@
 		audioGraph.changeTutorialSize(event.nodeId, event.size);
 	};
 
-	let tutorialPinnedItem = localStorageItem('tutorial_pinned', true);
-	let tutorialPinned = $derived(tutorialPinnedItem.value);
-
-	const handlePinClick = () => {
-		tutorialPinnedItem.value = !tutorialPinned;
-	};
-
-	const [tutorialNodeId, tutorialNode] = $derived(
-		Object.entries(audioGraph.audioGraph).find((entry) => entry[1].type === 'tutorial') ?? []
-	);
+	const tutorialNodeId = $derived(audioGraph.tutorialNodeId);
+	const tutorialNode = $derived(audioGraph.tutorialNode);
 
 	const audioGraphToShow = $derived(
 		Object.fromEntries(
-			Object.entries(audioGraph.audioGraph).filter(([key, entry]) => {
-				return entry.type !== 'tutorial' || !tutorialPinned;
+			Object.entries(audioGraph.audioGraph).filter(([, entry]) => {
+				return entry.type !== 'tutorial' || !tutorialPin.tutorialPinned;
 			})
 		)
 	);
@@ -228,12 +223,12 @@
 					onCommentChanged={handleCommentChanged}
 					onNodeCreated={plugPositions.handleNodeCreated}
 					onTutorialSizeChange={handleTutorialSizeChange}
-					onPinClick={handlePinClick}
+					onPinClick={tutorialPin.handlePinClick}
 				/>
 			{/each}
 		</div>
-		{#if tutorialPinned && tutorialNode && tutorialNodeId}
-			<div class="pinned-tutorial">
+		{#if tutorialPin.tutorialPinned && tutorialNode && tutorialNodeId}
+			<div class="pinned-tutorial" style="transform: scale({resize.size});">
 				<DraggableNode
 					pinned
 					id={tutorialNodeId}
@@ -263,7 +258,7 @@
 					onCommentChanged={handleCommentChanged}
 					onNodeCreated={plugPositions.handleNodeCreated}
 					onTutorialSizeChange={handleTutorialSizeChange}
-					onPinClick={handlePinClick}
+					onPinClick={tutorialPin.handlePinClick}
 				/>
 			</div>
 		{/if}
@@ -387,5 +382,6 @@
 		position: fixed;
 		top: 70px;
 		left: 8px;
+		z-index: 10;
 	}
 </style>
