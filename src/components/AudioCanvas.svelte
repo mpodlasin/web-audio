@@ -32,6 +32,7 @@
 	import KnobMask from './KnobMask.svelte';
 	import { NotificationStore } from './AudioCanvas/notifications.svelte';
 	import NotificationContainer from './NotificationContainer.svelte';
+	import { localStorageItem } from '../utils/localStorage.svelte';
 
 	interface Props {
 		chosenProjectName: string;
@@ -122,10 +123,11 @@
 		audioGraph.changeTutorialSize(event.nodeId, event.size);
 	};
 
-	let tutorialPinned = $state(false);
+	let tutorialPinnedItem = localStorageItem('tutorial_pinned', true);
+	let tutorialPinned = $derived(tutorialPinnedItem.value);
 
 	const handlePinClick = () => {
-		tutorialPinned = !tutorialPinned;
+		tutorialPinnedItem.value = !tutorialPinned;
 	}
 
 	const [tutorialNodeId, tutorialNode] = $derived(Object.entries(audioGraph.audioGraph).find(entry => entry[1].type === 'tutorial') ?? []);
