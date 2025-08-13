@@ -1,9 +1,12 @@
 import type { AudioGraph } from './audioGraph.svelte';
 
 export class NodeParameterChange {
+	changingParameter = $state(false);
+
 	constructor(private audioGraphStore: AudioGraph) {}
 
 	handleNodeParameterChangeStart = () => {
+		this.changingParameter = true;
 		this.audioGraphStore.startTemporaryAction();
 	};
 
@@ -14,6 +17,7 @@ export class NodeParameterChange {
 	};
 
 	handleNodeParameterChangeEnd = () => {
+		this.changingParameter = false;
 		this.audioGraphStore.endTemporaryAction();
 	};
 }

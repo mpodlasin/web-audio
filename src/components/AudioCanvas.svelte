@@ -170,7 +170,7 @@
 		{#each linesToDisplay as line (line.key)}
 			<Line
 				{line}
-				draggingLine={lineDragging.draggingLine}
+				stopSelection={lineDragging.draggingLine || nodeParameterChange.changingParameter}
 				chosenLine={menus.chosenLine}
 				onClick={menus.handleLineClick(line)}
 				onContextMenu={menus.handleLineClick(line)}
