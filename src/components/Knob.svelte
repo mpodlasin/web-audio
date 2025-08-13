@@ -227,6 +227,12 @@
 
 	let input: HTMLInputElement | undefined = $state();
 
+	$effect(() => {
+		if (input) {
+			input.select();
+		}
+	})
+
 	const closeInput = (event: PointerEvent) => {
 		event.stopPropagation();
 
@@ -324,7 +330,6 @@
 		<!-- svelte-ignore a11y_autofocus -->
 		<input
 			bind:this={input}
-			autofocus
 			type="number"
 			bind:value={editedNumber}
 			onkeydown={handleInputEnter}
