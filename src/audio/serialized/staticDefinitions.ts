@@ -1,4 +1,4 @@
-import { equals } from '../../../utils/equals';
+import { equals } from '../../utils/equals';
 import type { NodeType } from './types';
 
 export type StaticInputOutputDefinition = {
