@@ -2,19 +2,19 @@
 
 #define WEBEAUDIO_FRAME_SIZE 128
 
-static float inputBuffer[WEBEAUDIO_FRAME_SIZE];
-static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double inputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double outputBuffer[WEBEAUDIO_FRAME_SIZE];
 
-static float lastValueOfPreviousProcess = 0;
+static double lastValueOfPreviousProcess = 0;
 static int lastTriggerIndex = 0;
 static int previousToLastTriggerIndex = 0;
 
 EMSCRIPTEN_KEEPALIVE
-    float* inputBufferPtr() {
+    double* inputBufferPtr() {
         return inputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* outputBufferPtr() {
+    double* outputBufferPtr() {
         return outputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
@@ -26,13 +26,13 @@ EMSCRIPTEN_KEEPALIVE
                 lastTriggerIndex = i + currentFrame;
             }
 
-            outputBuffer[i] = (lastTriggerIndex - previousToLastTriggerIndex) / (float)sampleRate;
+            outputBuffer[i] = (lastTriggerIndex - previousToLastTriggerIndex) / (double)sampleRate;
         }
 
         lastValueOfPreviousProcess = inputBuffer[WEBEAUDIO_FRAME_SIZE - 1];
     }
 
 // EMSCRIPTEN_KEEPALIVE
-//     float debug() {
-//         return (lastTriggerIndex - previousToLastTriggerIndex) / (float)48000;
+//     double debug() {
+//         return (lastTriggerIndex - previousToLastTriggerIndex) / (double)48000;
 //     }

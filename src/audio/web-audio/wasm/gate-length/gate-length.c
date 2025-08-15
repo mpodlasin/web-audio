@@ -2,23 +2,23 @@
 
 #define WEBEAUDIO_FRAME_SIZE 128
 
-static float length;
-static float inputBuffer[WEBEAUDIO_FRAME_SIZE];
-static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double length;
+static double inputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double outputBuffer[WEBEAUDIO_FRAME_SIZE];
 
 static int triggerEvent[2] = { 0, 0 };
-static float lastValueOfPreviousProcess = 0;
+static double lastValueOfPreviousProcess = 0;
 
 EMSCRIPTEN_KEEPALIVE
-    float* lengthPtr() {
+    double* lengthPtr() {
         return &length;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* inputBufferPtr() {
+    double* inputBufferPtr() {
         return inputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* outputBufferPtr() {
+    double* outputBufferPtr() {
         return outputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
@@ -42,6 +42,6 @@ EMSCRIPTEN_KEEPALIVE
     }
 
 // EMSCRIPTEN_KEEPALIVE
-//     float debug() {
-//         return (triggerEvent[1] - triggerEvent[0]) / (float)44100;
+//     double debug() {
+//         return (triggerEvent[1] - triggerEvent[0]) / (double)44100;
 //     }

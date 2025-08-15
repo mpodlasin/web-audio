@@ -3,41 +3,41 @@
 
 #define WEBEAUDIO_FRAME_SIZE 128
 
-static float attackDecay[2];
+static double attackDecay[2];
 
-static float inputBuffer[WEBEAUDIO_FRAME_SIZE];
-static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double inputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double outputBuffer[WEBEAUDIO_FRAME_SIZE];
 
-static float lastValueOfPreviousProcess = 0;
+static double lastValueOfPreviousProcess = 0;
 
-static float lastEnvelopeValue = 0;
+static double lastEnvelopeValue = 0;
 
 static int envelopeEventStart = -1;
-static float envelopeEventStartValue = -1;
-static float envelopeEventAttack = -1;
-static float envelopeEventDecay = -1;
+static double envelopeEventStartValue = -1;
+static double envelopeEventAttack = -1;
+static double envelopeEventDecay = -1;
 
 EMSCRIPTEN_KEEPALIVE
-    float* attackDecayPtr() {
+    double* attackDecayPtr() {
         return attackDecay;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* inputBufferPtr() {
+    double* inputBufferPtr() {
         return inputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* outputBufferPtr() {
+    double* outputBufferPtr() {
         return outputBuffer;
     }
-    int millisecondsToSamples(float milliseconds, int sampleRate) {
+    int millisecondsToSamples(double milliseconds, int sampleRate) {
         return (int)((milliseconds / 1000.0) * sampleRate);
     }
-    float attackFn(int x, int attack, float startingValue) {
-        return (x / (float)attack) * (1 - startingValue) + startingValue;
+    double attackFn(int x, int attack, double startingValue) {
+        return (x / (double)attack) * (1 - startingValue) + startingValue;
     }
-    float decayFn(int x, int decay) {
-        float e = 7;
-        return ((pow(e, (x / (float)(-decay))) - 1 / e) * e) / (e - 1);
+    double decayFn(int x, int decay) {
+        double e = 7;
+        return ((pow(e, (x / (double)(-decay))) - 1 / e) * e) / (e - 1);
     }
 EMSCRIPTEN_KEEPALIVE
     void process(int currentFrame, int sampleRate) {
@@ -86,6 +86,6 @@ EMSCRIPTEN_KEEPALIVE
     }
 
 // EMSCRIPTEN_KEEPALIVE
-//     float debug() {
+//     double debug() {
 //         return leftCurrentStep;
 //     }

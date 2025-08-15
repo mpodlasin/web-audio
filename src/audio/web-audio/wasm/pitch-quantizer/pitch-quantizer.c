@@ -6,25 +6,25 @@
 #define WEBEAUDIO_FRAME_SIZE 128
 #define NUMBER_OF_NOTES 12
 
-static float notes[NUMBER_OF_NOTES];
+static double notes[NUMBER_OF_NOTES];
 
-static float inputBuffer[WEBEAUDIO_FRAME_SIZE];
-static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double inputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double outputBuffer[WEBEAUDIO_FRAME_SIZE];
 
 EMSCRIPTEN_KEEPALIVE
-    float* notesPtr() {
+    double* notesPtr() {
         return notes;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* inputBufferPtr() {
+    double* inputBufferPtr() {
         return inputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* outputBufferPtr() {
+    double* outputBufferPtr() {
         return outputBuffer;
     }
 
-static float baseFrequencies[NUMBER_OF_NOTES] = {
+static double baseFrequencies[NUMBER_OF_NOTES] = {
     440.00, // A
     466.16, // A#
     493.88, // B
@@ -39,17 +39,17 @@ static float baseFrequencies[NUMBER_OF_NOTES] = {
     830.61  // G#
 };
 
-float findClosestNoteFrequency(float frequency) {
-    float closestFreq = 0.0f;
-    float minDifference = FLT_MAX;
+double findClosestNoteFrequency(double frequency) {
+    double closestFreq = 0.0f;
+    double minDifference = FLT_MAX;
 
     for (int octave = -NUMBER_OF_OCTAVES / 2; octave <= NUMBER_OF_OCTAVES / 2; ++octave) {
-        float octaveMultiplier = pow(2.0, octave);
+        double octaveMultiplier = pow(2.0, octave);
 
         for (int i = 0; i < NUMBER_OF_NOTES; ++i) {
             if (notes[i] == 1) {
-                float noteFreq = baseFrequencies[i] * octaveMultiplier;
-                float diff = fabs(frequency - noteFreq);
+                double noteFreq = baseFrequencies[i] * octaveMultiplier;
+                double diff = fabs(frequency - noteFreq);
 
                 if (diff < minDifference) {
                     minDifference = diff;
@@ -69,7 +69,7 @@ EMSCRIPTEN_KEEPALIVE
     }
 
 // EMSCRIPTEN_KEEPALIVE
-//     float debug() {
+//     double debug() {
 //         return currentStep;
 //     }
 

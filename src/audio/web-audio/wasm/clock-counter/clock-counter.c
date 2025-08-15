@@ -2,24 +2,24 @@
 
 #define WEBEAUDIO_FRAME_SIZE 128
 
-static float moduloParameter;
+static double moduloParameter;
 
-static float inputBuffer[WEBEAUDIO_FRAME_SIZE];
-static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double inputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double outputBuffer[WEBEAUDIO_FRAME_SIZE];
 
-static float lastValueOfPreviousProcess = 0;
+static double lastValueOfPreviousProcess = 0;
 static unsigned int count = 0;
 
 EMSCRIPTEN_KEEPALIVE
-    float* moduloParameterPtr() {
+    double* moduloParameterPtr() {
         return &moduloParameter;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* inputBufferPtr() {
+    double* inputBufferPtr() {
         return inputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* outputBufferPtr() {
+    double* outputBufferPtr() {
         return outputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
@@ -37,6 +37,6 @@ EMSCRIPTEN_KEEPALIVE
     }
 
 // EMSCRIPTEN_KEEPALIVE
-//     float debug() {
+//     double debug() {
 //         return count;
 //     }

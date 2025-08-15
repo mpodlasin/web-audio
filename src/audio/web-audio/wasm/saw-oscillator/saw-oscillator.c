@@ -3,23 +3,23 @@
 
 #define WEBEAUDIO_FRAME_SIZE 128
 
-static float frequency;
+static double frequency;
 
-static float inputBuffer[WEBEAUDIO_FRAME_SIZE];
-static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double inputBuffer[WEBEAUDIO_FRAME_SIZE];
+static double outputBuffer[WEBEAUDIO_FRAME_SIZE];
 
 static double phase = 0;
 
 EMSCRIPTEN_KEEPALIVE
-    float* frequencyPtr() {
+    double* frequencyPtr() {
         return &frequency;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* inputBufferPtr() {
+    double* inputBufferPtr() {
         return inputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
-    float* outputBufferPtr() {
+    double* outputBufferPtr() {
         return outputBuffer;
     }
 
@@ -44,6 +44,6 @@ EMSCRIPTEN_KEEPALIVE
     }
 
 // EMSCRIPTEN_KEEPALIVE
-//     float debug() {
-//         return (float)cycleStart;
+//     double debug() {
+//         return (double)cycleStart;
 //     }
