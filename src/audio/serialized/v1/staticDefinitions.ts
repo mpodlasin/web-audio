@@ -332,10 +332,11 @@ export const allowedSerializedAudioElementStaticDefinitions: {
 		outputs: [],
 		parameters: {
 			volume: {
-				minValue: 0,
-				maxValue: 1,
-				defaultValue: 0,
+				minValue: -60,
+				maxValue: 0,
+				defaultValue: -60,
 				polarity: 'uni',
+				unit: 'dB',
 				linear: true
 			}
 		}

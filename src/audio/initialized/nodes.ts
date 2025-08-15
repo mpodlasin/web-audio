@@ -4,6 +4,7 @@ import { generateReverb } from '../web-audio/reverbGeneration';
 import {
 	createAdEnvelopeWorklet,
 	createClockCounterWorklet,
+	createDecibelsToAmplitudeWorklet,
 	createGateLengthWorklet,
 	createGreaterThanWorklet,
 	createMeasureGateWorklet,
@@ -783,19 +784,28 @@ export class ClockNode extends GenericCustomAudioNode implements CustomAudioNode
 export class DestinationNode extends GenericCustomAudioNode implements CustomAudioNode {
 	private audioDesinationNode: AudioDestinationNode;
 	private gainNode: GainNode;
+	private decibelsNode: ConstantSourceNode;
+	private decibelsToAmplitudeNode: AudioNode;
 
 	constructor(id: string) {
 		super(id, 'destination');
 
 		this.audioDesinationNode = globalContext.destination;
 		this.gainNode = globalContext.createGain();
+		this.decibelsNode = globalContext.createConstantSource();
+		this.decibelsToAmplitudeNode = createDecibelsToAmplitudeWorklet();
+	
+		this.decibelsNode.connect(this.decibelsToAmplitudeNode);
+		this.gainNode.gain.value = 0;
 
 		this.gainNode.connect(this.audioDesinationNode);
+
+		this.decibelsNode.start();
 	}
 
 	getAudioParam(parameterName: string): AudioParam {
 		if (parameterName === 'volume') {
-			return this.gainNode.gain;
+			return this.decibelsNode.offset;
 		}
 
 		throw new Error(`Parmeter ${parameterName} does not exist on Destination node`);
@@ -810,7 +820,11 @@ export class DestinationNode extends GenericCustomAudioNode implements CustomAud
 	}
 
 	cleanup(): void {
+		this.decibelsNode.stop();
+
 		this.gainNode.disconnect();
+		this.decibelsNode.disconnect();
+		this.decibelsToAmplitudeNode.disconnect();
 	}
 }
 

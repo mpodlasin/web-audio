@@ -12,3 +12,4 @@ emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/min-max/min-max.c -o ./src/audio/w
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/greater-than/greater-than.c -o ./src/audio/web-audio/wasm/greater-than/greater-than.wasm --no-entry
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/times/times.c -o ./src/audio/web-audio/wasm/times/times.wasm --no-entry
 emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/switch/switch.c -o ./src/audio/web-audio/wasm/switch/switch.wasm --no-entry
+emcc -O3 -s WASM=1 ./src/audio/web-audio/wasm/decibels-to-amplitude/decibels-to-amplitude.c -o ./src/audio/web-audio/wasm/decibels-to-amplitude/decibels-to-amplitude.wasm --no-entry

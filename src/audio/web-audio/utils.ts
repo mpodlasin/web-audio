@@ -26,6 +26,7 @@ import minMaxWasmUrl from './wasm/min-max/min-max.wasm?url';
 import greaterThanWasmUrl from './wasm/greater-than/greater-than.wasm?url';
 import timesWasmUrl from './wasm/times/times.wasm?url';
 import switchWasmUrl from './wasm/switch/switch.wasm?url';
+import decibelsToAmplitudeWasmUrl from './wasm/decibels-to-amplitude/decibels-to-amplitude.wasm?url';
 
 export async function loadCustomNodes() {
 	try {
@@ -41,7 +42,7 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(adEnvelopeNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(oscillatorNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(minMaxNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(switchNodeWorkletUrl)
+			globalContext.audioWorklet.addModule(switchNodeWorkletUrl),
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');
@@ -98,3 +99,4 @@ export const createTimesWorklet = () =>
 	createWasmWorklet('wasm-dual', timesWasmUrl, { numberOfInputs: 2 });
 export const createSwitchWorklet = () =>
 	createWasmWorklet('switch', switchWasmUrl, { numberOfInputs: 4 });
+export const createDecibelsToAmplitudeWorklet = () => createWasmWorklet('wasm', decibelsToAmplitudeWasmUrl);
