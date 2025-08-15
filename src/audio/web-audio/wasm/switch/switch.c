@@ -2,41 +2,41 @@
 
 #define WEBEAUDIO_FRAME_SIZE 128
 
-static double chosenChannel;
+static float chosenChannel;
 
-static double inputBufferA[WEBEAUDIO_FRAME_SIZE];
-static double inputBufferB[WEBEAUDIO_FRAME_SIZE];
-static double inputBufferC[WEBEAUDIO_FRAME_SIZE];
-static double inputBufferD[WEBEAUDIO_FRAME_SIZE];
-static double outputBuffer[WEBEAUDIO_FRAME_SIZE];
+static float inputBufferA[WEBEAUDIO_FRAME_SIZE];
+static float inputBufferB[WEBEAUDIO_FRAME_SIZE];
+static float inputBufferC[WEBEAUDIO_FRAME_SIZE];
+static float inputBufferD[WEBEAUDIO_FRAME_SIZE];
+static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
 
 EMSCRIPTEN_KEEPALIVE
-double* chosenChannelPtr() {
+float* chosenChannelPtr() {
     return &chosenChannel;
 }
 
 EMSCRIPTEN_KEEPALIVE
-double* inputBufferPtrA() {
+float* inputBufferPtrA() {
     return inputBufferA;
 }
 
 EMSCRIPTEN_KEEPALIVE
-double* inputBufferPtrB() {
+float* inputBufferPtrB() {
     return inputBufferB;
 }
 
 EMSCRIPTEN_KEEPALIVE
-double* inputBufferPtrC() {
+float* inputBufferPtrC() {
     return inputBufferC;
 }
 
 EMSCRIPTEN_KEEPALIVE
-double* inputBufferPtrD() {
+float* inputBufferPtrD() {
     return inputBufferD;
 }
 
 EMSCRIPTEN_KEEPALIVE
-double* outputBufferPtr() {
+float* outputBufferPtr() {
     return outputBuffer;
 }
 
@@ -46,7 +46,7 @@ void process(int currentFrame, int sampleRate) {
     if (selectedChannel < 0) selectedChannel = 0;
     if (selectedChannel > 3) selectedChannel = 3;
     
-    double* selectedBuffer;
+    float* selectedBuffer;
     switch (selectedChannel) {
         case 0:
             selectedBuffer = inputBufferA;
@@ -70,6 +70,6 @@ void process(int currentFrame, int sampleRate) {
 }
 
 // EMSCRIPTEN_KEEPALIVE
-// double debug() {
+// float debug() {
 //     return chosenChannel;
 // }

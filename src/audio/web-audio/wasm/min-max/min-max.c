@@ -3,23 +3,23 @@
 
 #define WEBEAUDIO_FRAME_SIZE 128
 
-static double minMax[2];
-double* min = &(minMax[0]);
-double* max = &(minMax[1]);
+static float minMax[2];
+float* min = &(minMax[0]);
+float* max = &(minMax[1]);
 
-static double inputBuffer[WEBEAUDIO_FRAME_SIZE];
-static double outputBuffer[WEBEAUDIO_FRAME_SIZE];
+static float inputBuffer[WEBEAUDIO_FRAME_SIZE];
+static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
 
 EMSCRIPTEN_KEEPALIVE
-    double* minMaxPtr() {
+    float* minMaxPtr() {
         return minMax;
     }
 EMSCRIPTEN_KEEPALIVE
-    double* inputBufferPtr() {
+    float* inputBufferPtr() {
         return inputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
-    double* outputBufferPtr() {
+    float* outputBufferPtr() {
         return outputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
@@ -30,6 +30,6 @@ EMSCRIPTEN_KEEPALIVE
     }
 
 // EMSCRIPTEN_KEEPALIVE
-//     double debug() {
+//     float debug() {
 //         return leftCurrentStep;
 //     }

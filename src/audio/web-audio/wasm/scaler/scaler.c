@@ -2,26 +2,26 @@
 
 #define WEBEAUDIO_FRAME_SIZE 128
 
-static double fromTo[4];
+static float fromTo[4];
 
-static double* aFrom = &(fromTo[0]);
-static double* aTo = &(fromTo[1]);
-static double* bFrom = &(fromTo[2]);
-static double* bTo = &(fromTo[3]);
+static float* aFrom = &(fromTo[0]);
+static float* aTo = &(fromTo[1]);
+static float* bFrom = &(fromTo[2]);
+static float* bTo = &(fromTo[3]);
 
-static double inputBuffer[WEBEAUDIO_FRAME_SIZE];
-static double outputBuffer[WEBEAUDIO_FRAME_SIZE];
+static float inputBuffer[WEBEAUDIO_FRAME_SIZE];
+static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
 
 EMSCRIPTEN_KEEPALIVE
-    double* fromToPtr() {
+    float* fromToPtr() {
         return fromTo;
     }
 EMSCRIPTEN_KEEPALIVE
-    double* inputBufferPtr() {
+    float* inputBufferPtr() {
         return inputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
-    double* outputBufferPtr() {
+    float* outputBufferPtr() {
         return outputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
@@ -33,6 +33,6 @@ EMSCRIPTEN_KEEPALIVE
     }
 
 // EMSCRIPTEN_KEEPALIVE
-//     double debug() {
+//     float debug() {
 //         return leftCurrentStep;
 //     }

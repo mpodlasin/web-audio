@@ -3,24 +3,24 @@
 #define WEBEAUDIO_FRAME_SIZE 128
 #define NUMBER_OF_STEPS 8
 
-static double steps[NUMBER_OF_STEPS];
+static float steps[NUMBER_OF_STEPS];
 
-static double inputBuffer[WEBEAUDIO_FRAME_SIZE];
-static double outputBuffer[WEBEAUDIO_FRAME_SIZE];
+static float inputBuffer[WEBEAUDIO_FRAME_SIZE];
+static float outputBuffer[WEBEAUDIO_FRAME_SIZE];
 
-static double lastValueOfPreviousProcess = 0;
+static float lastValueOfPreviousProcess = 0;
 static unsigned int currentStep = -1;
 
 EMSCRIPTEN_KEEPALIVE
-    double* stepsPtr() {
+    float* stepsPtr() {
         return steps;
     }
 EMSCRIPTEN_KEEPALIVE
-    double* inputBufferPtr() {
+    float* inputBufferPtr() {
         return inputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
-    double* outputBufferPtr() {
+    float* outputBufferPtr() {
         return outputBuffer;
     }
 EMSCRIPTEN_KEEPALIVE
@@ -40,6 +40,6 @@ EMSCRIPTEN_KEEPALIVE
     }
 
 // EMSCRIPTEN_KEEPALIVE
-//     double debug() {
+//     float debug() {
 //         return leftCurrentStep;
 //     }
