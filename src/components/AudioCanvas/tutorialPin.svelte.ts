@@ -1,7 +1,7 @@
-import { localStorageItem } from "../../utils/localStorage.svelte";
+import { localStorageItem } from '../../utils/localStorage.svelte';
 
 export class TutorialPin {
-    tutorialPinnedItem = localStorageItem('tutorial_pinned', true);
+	tutorialPinnedItem = localStorageItem('tutorial_pinned', true);
 	tutorialPinned = $derived(this.tutorialPinnedItem.value);
 
 	handlePinClick = () => {

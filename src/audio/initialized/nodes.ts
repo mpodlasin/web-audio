@@ -794,7 +794,7 @@ export class DestinationNode extends GenericCustomAudioNode implements CustomAud
 		this.gainNode = globalContext.createGain();
 		this.decibelsNode = globalContext.createConstantSource();
 		this.decibelsToAmplitudeNode = createDecibelsToAmplitudeWorklet();
-	
+
 		this.decibelsNode.connect(this.decibelsToAmplitudeNode);
 		this.decibelsToAmplitudeNode.connect(this.gainNode.gain);
 

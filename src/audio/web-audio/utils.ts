@@ -42,7 +42,7 @@ export async function loadCustomNodes() {
 			globalContext.audioWorklet.addModule(adEnvelopeNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(oscillatorNodeWorkletUrl),
 			globalContext.audioWorklet.addModule(minMaxNodeWorkletUrl),
-			globalContext.audioWorklet.addModule(switchNodeWorkletUrl),
+			globalContext.audioWorklet.addModule(switchNodeWorkletUrl)
 		]);
 	} catch {
 		console.log('Failed to register audio worklet');
@@ -99,4 +99,5 @@ export const createTimesWorklet = () =>
 	createWasmWorklet('wasm-dual', timesWasmUrl, { numberOfInputs: 2 });
 export const createSwitchWorklet = () =>
 	createWasmWorklet('switch', switchWasmUrl, { numberOfInputs: 4 });
-export const createDecibelsToAmplitudeWorklet = () => createWasmWorklet('wasm', decibelsToAmplitudeWasmUrl);
+export const createDecibelsToAmplitudeWorklet = () =>
+	createWasmWorklet('wasm', decibelsToAmplitudeWasmUrl);

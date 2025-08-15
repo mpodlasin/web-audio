@@ -231,7 +231,7 @@
 		if (input) {
 			input.select();
 		}
-	})
+	});
 
 	const closeInput = (event: PointerEvent) => {
 		event.stopPropagation();
@@ -328,12 +328,7 @@
 	</div>
 	{#if numberParameterInput}
 		<!-- svelte-ignore a11y_autofocus -->
-		<input
-			bind:this={input}
-			type="number"
-			bind:value={editedNumber}
-			onkeydown={handleInputEnter}
-		/>
+		<input bind:this={input} type="number" bind:value={editedNumber} onkeydown={handleInputEnter} />
 	{:else if numberParameter !== null}
 		<div
 			class="value"
