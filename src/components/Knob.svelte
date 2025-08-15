@@ -336,7 +336,11 @@
 			onpointerup={handleParameterValueClick}
 		>
 			{#if !discrete}
-				{numberParameter.toFixed(2)}
+				{#if unit === 'dB' && numberParameter <= -60}
+					-Infinity
+				{:else}
+					{numberParameter.toFixed(2)}
+				{/if}
 			{:else}
 				{numberParameter}
 			{/if}
