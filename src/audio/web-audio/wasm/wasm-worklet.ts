@@ -53,8 +53,6 @@ class WorkletProcessor extends AudioWorkletProcessor {
 
 		const input = inputList[0]?.[0];
 
-		console.log(input);
-
 		if (input) {
 			this.inputBuffer.set(input);
 		}
